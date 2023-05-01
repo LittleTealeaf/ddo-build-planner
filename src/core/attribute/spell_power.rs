@@ -1,0 +1,17 @@
+pub enum SpellPower {
+    Universal,
+    Acid,
+    Light,
+    Cold,
+    Electric,
+    Evil,
+    Fire,
+    Force,
+    Negative,
+    Physical,
+    Poison,
+    Positive,
+    Repair,
+    Rust,
+    Sonic,
+}
