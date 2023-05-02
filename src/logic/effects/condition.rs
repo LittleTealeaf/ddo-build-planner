@@ -1,4 +1,4 @@
-use crate::core::attribute::Attribute;
+use crate::logic::attribute::Attribute;
 
 pub enum Condition {
     FlagAttribute(Attribute),

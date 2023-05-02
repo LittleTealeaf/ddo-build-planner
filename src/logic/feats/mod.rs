@@ -8,3 +8,8 @@ pub mod tomes;
 pub enum Feat {
     Heroic(HeroicFeat),
 }
+
+
+pub trait ToFeat {
+    fn to_feat(self) -> Feat;
+}

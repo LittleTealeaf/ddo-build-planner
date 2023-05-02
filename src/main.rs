@@ -1,5 +1,8 @@
-mod core;
+use logic::attribute::{Attribute, SpellPower};
+
+mod logic;
 
 fn main() {
-    println!("Hello, world!");
+    let test = Attribute::SpellPower(SpellPower::Light);
+    let test_b = Attribute::SpellCriticalChance(SpellPower::Fire);
 }
