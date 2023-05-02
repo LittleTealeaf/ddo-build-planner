@@ -1,5 +1,6 @@
-use crate::build::attribute::Attribute;
+use crate::build::{attribute::Attribute, feat::Feat};
 
 pub enum Source {
-    Attribute(Attribute)
+    Attribute(Attribute),
+    Feat(Feat),
 }

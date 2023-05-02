@@ -3,15 +3,16 @@ use self::{
     elemental_defenses::ElementalType,
     saving_throw::SavingThrow,
     skill::Skill,
-    spell::{SpellDamageType, SpellSchool}, proficiency::Proficiency,
+    spell::{SpellDamageType, SpellSchool},
 };
+
+use super::items::types::{WeaponType, ArmorType};
 
 pub mod ability;
 pub mod elemental_defenses;
 pub mod saving_throw;
 pub mod skill;
 pub mod spell;
-pub mod proficiency;
 
 pub enum Attribute {
     BaseAbility(Ability),
@@ -65,5 +66,6 @@ pub enum Attribute {
     CrossbowAttackSpeed,
     RepeatingCrossbowAttackSpeed,
     RangedThreat,
-    Proficiency(Proficiency)
+    WeaponProficiency(WeaponType),
+    ArmorProficiency(ArmorType),
 }
