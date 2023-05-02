@@ -1,8 +1,4 @@
-use logic::attribute::{Attribute, SpellPower};
-
-mod logic;
+mod build;
 
 fn main() {
-    let test = Attribute::SpellPower(SpellPower::Light);
-    let test_b = Attribute::SpellCriticalChance(SpellPower::Fire);
 }
