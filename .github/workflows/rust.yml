@@ -24,24 +24,10 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - uses: actions/cache@v3
-        name: Rust Cache
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-build-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-build-cargo-
-      - name: Target Cache
-        uses: actions/cache@v3
-        with:
-          path: target/
-          key: ${{runner.os}}-build-target-${{hashFiles('**/Cargo.lock')}}-${{hashFiles('**/*.rs')}}
-          restore-keys: |
-            ${{runner.os}}-build-target-${{hashFiles('**/Cargo.lock')}}-
-            ${{runner.os}}-build-target-
+          key: "build"
       - name: Build
         uses: actions-rs/cargo@v1
         with:
@@ -58,24 +44,10 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - uses: actions/cache@v3
-        name: Rust Cache
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ runner.os }}-build-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-build-cargo-
-      - name: Target Cache
-        uses: actions/cache@v3
-        with:
-          path: target/
-          key: ${{runner.os}}-build-target-${{hashFiles('**/Cargo.lock')}}-${{hashFiles('**/*.rs')}}
-          restore-keys: |
-            ${{runner.os}}-build-target-${{hashFiles('**/Cargo.lock')}}-
-            ${{runner.os}}-build-target-
+          key: "test"
       - name: Test
         uses: actions-rs/cargo@v1
         with:
@@ -90,17 +62,16 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af #@v1
         with:
           profile: minimal
           toolchain: stable
           components: clippy
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: "clippy"
       - name: Install required cargo
         run: cargo install clippy-sarif sarif-fmt
       - name: Run rust-clippy
