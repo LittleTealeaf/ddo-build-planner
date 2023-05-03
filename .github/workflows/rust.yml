@@ -73,7 +73,6 @@ jobs:
         name: Rust Cache
         with:
           path: |
-            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
