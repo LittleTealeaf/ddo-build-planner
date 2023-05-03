@@ -7,7 +7,7 @@ use super::Feat;
 pub mod proficiency;
 pub mod skill;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum HeroicFeat {
     SpellFocus(SpellSchool),
     GreaterSpellFocus(SpellSchool),

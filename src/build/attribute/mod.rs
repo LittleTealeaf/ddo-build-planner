@@ -14,7 +14,7 @@ pub mod saving_throw;
 pub mod skill;
 pub mod spell;
 
-#[derive(PartialEq, Eq, Copy, Clone, Hash)]
+#[derive(PartialEq, Eq, Clone, Hash)]
 pub enum Attribute {
     BaseAbility(Ability),
     Ability(Ability),

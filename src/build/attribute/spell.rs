@@ -1,4 +1,4 @@
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum SpellSchool {
     Evocation,
     Illusion,
@@ -10,7 +10,7 @@ pub enum SpellSchool {
 }
 
 
-#[derive(PartialEq, Eq, Copy, Clone, Hash)]
+#[derive(PartialEq, Eq, Clone, Hash)]
 pub enum SpellDamageType {
     Acid,
     Cold,

@@ -6,7 +6,7 @@ use crate::build::{
 
 use super::HeroicFeat;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum SkillFeat {
     SkillFocus(Skill),
     Acrobatic,

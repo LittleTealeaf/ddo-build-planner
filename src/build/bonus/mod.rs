@@ -34,19 +34,19 @@ impl Bonus {
     }
 
     pub fn get_attribute(&self) -> Attribute {
-        self.attribute
+        self.attribute.clone()
     }
     
     pub fn get_bonus_type(&self) -> BonusType {
-        self.bonus_type
+        self.bonus_type.clone()
     }
 
     pub fn get_value(&self) -> f32 {
-        self.value
+        self.value.clone()
     }
 
     pub fn get_source(&self) -> Source {
-        self.source
+        self.source.clone()
     }
 
     pub fn get_condition(&self) -> Vec<Condition> {

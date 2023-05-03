@@ -2,7 +2,7 @@ use crate::build::bonus::{bonuses::Bonuses, Bonus};
 
 use super::{heroic::HeroicFeat, Feat};
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum EpicFeat {
     Heroic(HeroicFeat),
 }
