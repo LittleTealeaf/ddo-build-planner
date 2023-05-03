@@ -152,7 +152,7 @@ mod macros {
 mod tests {
     use crate::build::{
         attribute::{ability::Ability, skill::Skill, Attribute},
-        bonus::{breakdowns::Breakdowns, source::Source, types::BonusType, Bonus},
+        bonus::{source::Source, types::BonusType, Bonus}, breakdowns::Breakdowns,
     };
 
     #[test]

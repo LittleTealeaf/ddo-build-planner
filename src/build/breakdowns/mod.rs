@@ -6,7 +6,8 @@ use crate::build::attribute::Attribute;
 
 use self::updaters::get_updates;
 
-use super::{source::Source, types::BonusType, Bonus};
+use super::bonus::{Bonus, types::BonusType, source::Source};
+
 mod updaters;
 
 pub struct Breakdowns {
