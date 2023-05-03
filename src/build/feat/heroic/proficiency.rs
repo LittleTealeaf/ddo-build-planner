@@ -22,7 +22,7 @@ impl Bonuses for ProficiencyFeat {
     fn get_bonuses(&self) -> Vec<crate::build::bonus::Bonus> {
         match self {
             ProficiencyFeat::Weapon(weapon) => vec![Bonus::new(
-                crate::build::attribute::Attribute::WeaponProficiency(weapon.clone()),
+                crate::build::attribute::Attribute::WeaponProficiency(*weapon),
                 crate::build::bonus::types::BonusType::Flag,
                 1.0,
                 Source::Feat(self.clone().into()),
@@ -30,7 +30,7 @@ impl Bonuses for ProficiencyFeat {
             )],
 
             ProficiencyFeat::Armor(armor) => vec![Bonus::new(
-                crate::build::attribute::Attribute::ArmorProficiency(armor.clone()),
+                crate::build::attribute::Attribute::ArmorProficiency(*armor),
                 crate::build::bonus::types::BonusType::Flag,
                 1.0,
                 Source::Feat(self.clone().into()),

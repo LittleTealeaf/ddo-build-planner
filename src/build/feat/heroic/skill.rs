@@ -33,7 +33,7 @@ impl Bonuses for SkillFeat {
         let source = || Source::Feat(self.clone().into());
         match self {
             SkillFeat::SkillFocus(skill) => vec![Bonus::new(
-                Attribute::Skill(skill.clone()),
+                Attribute::Skill(*skill),
                 BonusType::Stacking,
                 3.0,
                 source(),
