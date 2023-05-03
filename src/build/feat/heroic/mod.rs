@@ -32,7 +32,7 @@ impl Bonuses for HeroicFeat {
                 Attribute::SpellFocus(*school),
                 BonusType::Stacking,
                 1.0,
-                Source::Feat(self.clone().into()),
+                Source::Feat((*self).into()),
                 None,
             )
             .to_vec(),
