@@ -79,11 +79,11 @@ jobs:
             ~/.cargo/git/db/
           key: ${{ runner.os }}-build-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-build-cargo-
-      - name: Run Rust Clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-features --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+      - name: Run rust-clippy
+        run:
+          cargo clippy
+          --all-features
+          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
