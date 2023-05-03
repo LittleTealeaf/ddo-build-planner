@@ -104,23 +104,29 @@ mod tests {
     #[test]
     fn test_insert_attributes() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_attributes(vec![Bonus::new(
-            Attribute::Ability(Ability::Strength),
-            BonusType::Stacking,
-            20.0,
-            Source::Unique(0),
-            None,
-        )]);
+        breakdowns.insert_attributes(
+            Bonus::new(
+                Attribute::Ability(Ability::Strength),
+                BonusType::Stacking,
+                20.0,
+                Source::Unique(0),
+                None,
+            )
+            .to_vec(),
+        );
         let value = breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Strength));
         assert_eq!(value, 5.0);
 
-        breakdowns.insert_attributes(vec![Bonus::new(
-            Attribute::Ability(Ability::Wisdom),
-            BonusType::Stacking,
-            40.0,
-            Source::Unique(0),
-            None,
-        )]);
+        breakdowns.insert_attributes(
+            Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Stacking,
+                40.0,
+                Source::Unique(0),
+                None,
+            )
+            .to_vec(),
+        );
         let value = breakdowns.get_attribute(&Attribute::Skill(Skill::Spot));
         println!("{}", value);
         assert_eq!(value, 15f32);
@@ -155,24 +161,30 @@ mod tests {
     #[test]
     fn values_get_updated() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_attributes(vec![Bonus::new(
-            Attribute::Ability(Ability::Intelligence),
-            BonusType::AbilityScore,
-            20.0,
-            Source::Unique(0),
-            None,
-        )]);
+        breakdowns.insert_attributes(
+            Bonus::new(
+                Attribute::Ability(Ability::Intelligence),
+                BonusType::AbilityScore,
+                20.0,
+                Source::Unique(0),
+                None,
+            )
+            .to_vec(),
+        );
         assert_eq!(
             breakdowns.get_attribute(&Attribute::Ability(Ability::Intelligence)),
             20.0
         );
-        breakdowns.insert_attributes(vec![Bonus::new(
-            Attribute::Ability(Ability::Intelligence),
-            BonusType::Enhancement,
-            13.0,
-            Source::Unique(1),
-            None,
-        )]);
+        breakdowns.insert_attributes(
+            Bonus::new(
+                Attribute::Ability(Ability::Intelligence),
+                BonusType::Enhancement,
+                13.0,
+                Source::Unique(1),
+                None,
+            )
+            .to_vec(),
+        );
         assert_eq!(
             breakdowns.get_attribute(&Attribute::Ability(Ability::Intelligence)),
             33.0

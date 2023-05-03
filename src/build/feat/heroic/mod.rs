@@ -28,13 +28,14 @@ impl Bonuses for HeroicFeat {
     fn get_bonuses(&self) -> Vec<crate::build::bonus::Bonus> {
         match self {
             Self::Skill(skill_feat) => skill_feat.get_bonuses(),
-            Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![Bonus::new(
+            Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => Bonus::new(
                 Attribute::SpellFocus(*school),
                 BonusType::Stacking,
                 1.0,
                 Source::Feat(self.clone().into()),
                 None,
-            )],
+            )
+            .to_vec(),
             _ => Vec::new(),
         }
     }

@@ -53,4 +53,9 @@ impl Bonus {
     pub fn get_condition(&self) -> Vec<Condition> {
         self.condition.clone()
     }
+
+
+    pub fn to_vec(self) -> Vec<Bonus> {
+        vec![self]
+    }
 }
