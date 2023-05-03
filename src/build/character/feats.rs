@@ -1,15 +1,15 @@
 use crate::build::feat::{epic::EpicFeat, heroic::HeroicFeat};
 
 pub struct CharacterFeats {
-    Level1: Option<HeroicFeat>,
-    Level3: Option<HeroicFeat>,
-    Level6: Option<HeroicFeat>,
-    Level9: Option<HeroicFeat>,
-    Level12: Option<HeroicFeat>,
-    Level15: Option<HeroicFeat>,
-    Level18: Option<HeroicFeat>,
-    Level21: Option<EpicFeat>,
-    Level24: Option<EpicFeat>,
-    Level27: Option<EpicFeat>,
-    Level30: Option<EpicFeat>,
+    level_1: Option<HeroicFeat>,
+    level_3: Option<HeroicFeat>,
+    level_6: Option<HeroicFeat>,
+    level_9: Option<HeroicFeat>,
+    level_12: Option<HeroicFeat>,
+    level_15: Option<HeroicFeat>,
+    level_18: Option<HeroicFeat>,
+    level_21: Option<EpicFeat>,
+    level_24: Option<EpicFeat>,
+    level_27: Option<EpicFeat>,
+    level_30: Option<EpicFeat>,
 }
