@@ -77,11 +77,14 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-          key: ${{ runner.os }}-build-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-build-cargo-
+          key: ${{ runner.os }}-clippy-cargo-${{ github.run_id }}-${{github.run_attempt}}
+          restore-keys: |
+            ${{ runner.os }}-clippy-cargo-${{ github.run_id }}-
+            ${{ runner.os }}-clippy-cargo-
+      - name: Install required cargo
+        run: cargo install clippy-sarif sarif-fmt
       - name: Run rust-clippy
-        run:
-          cargo clippy
+        run: cargo clippy
           --all-features
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
