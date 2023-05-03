@@ -1,3 +1,4 @@
+#[derive(PartialEq, Eq, Copy, Clone, Hash)]
 pub enum SavingThrow {
     Fortitude,
     Reflex,
