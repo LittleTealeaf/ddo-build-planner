@@ -1,5 +1,5 @@
 use crate::build::{
-    attribute::{ability::Ability, skill::Skill, Attribute},
+    attribute::{ability::Ability, skill::Skill, Attribute, saving_throw::SavingThrow},
     bonus::{source::Source, types::BonusType, Bonus},
 };
 
@@ -47,6 +47,7 @@ fn get_wisdom_modifier_bonuses(value: f32) -> Vec<Bonus> {
         ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Heal), value),
         ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Listen), value),
         ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Spot), value),
+        ability_mod_bonus!(Ability::Wisdom, Attribute::SavingThrow(SavingThrow::Will), value),
     ]
 }
 
