@@ -35,7 +35,7 @@ impl Breakdowns {
                 values.insert(bonus.get_bonus_type(), bonus.get_value());
             }
         }
-        values.values().into_iter().sum()
+        values.values().sum()
     }
 
     pub fn insert_attributes(&mut self, attributes: Vec<Bonus>) {
