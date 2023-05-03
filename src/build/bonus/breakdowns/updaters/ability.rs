@@ -3,7 +3,7 @@ use crate::build::{
     bonus::{source::Source, types::BonusType, Bonus},
 };
 
-use crate::mod_bonus;
+use crate::ability_mod_bonus;
 
 pub fn get_ability_updates(ability: Ability, value: f32) -> Vec<Bonus> {
     vec![Bonus::new(
@@ -44,9 +44,9 @@ fn get_intelligence_modifier_bonuses(value: f32) -> Vec<Bonus> {
 
 fn get_wisdom_modifier_bonuses(value: f32) -> Vec<Bonus> {
     vec![
-        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Heal), value),
-        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Listen), value),
-        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Spot), value),
+        ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Heal), value),
+        ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Listen), value),
+        ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Spot), value),
     ]
 }
 
@@ -58,7 +58,7 @@ fn get_charisma_modifier_bonuses(value: f32) -> Vec<Bonus> {
 mod macros {
 
     #[macro_export]
-    macro_rules! mod_bonus {
+    macro_rules! ability_mod_bonus {
         ($ability:expr, $attribute:expr, $value:expr) => {
             Bonus::new(
                 $attribute,
