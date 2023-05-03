@@ -67,7 +67,7 @@ impl Breakdowns {
                         .iter()
                         .enumerate()
                         .filter(|(_, item)| {
-                            item.get_source().eq(&Source::Attribute(attribute.clone()))
+                            item.get_source().eq(&Source::Attribute(attribute))
                         })
                         .map(|(i, _)| i)
                         .collect();

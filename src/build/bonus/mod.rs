@@ -34,7 +34,7 @@ impl Bonus {
     }
 
     pub fn get_attribute(&self) -> Attribute {
-        self.attribute.clone()
+        self.attribute
     }
     
     pub fn get_bonus_type(&self) -> BonusType {

@@ -7,10 +7,10 @@ use crate::mod_bonus;
 
 pub fn get_ability_updates(ability: Ability, value: f32) -> Vec<Bonus> {
     vec![Bonus::new(
-        Attribute::AbilityModifier(ability.clone()),
+        Attribute::AbilityModifier(ability),
         BonusType::AbilityScore,
         (value - 10f32) / 2f32,
-        Source::Attribute(Attribute::Ability(ability.clone())),
+        Source::Attribute(Attribute::Ability(ability)),
         None,
     )]
 }
