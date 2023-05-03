@@ -3,7 +3,7 @@ use self::{
     elemental_defenses::ElementalType,
     saving_throw::SavingThrow,
     skill::Skill,
-    spell::{SpellDamageType, SpellSchool},
+    spell::{SpellDamageType, SpellSchool}, flag::Flag,
 };
 
 use super::items::types::{WeaponType, ArmorType};
@@ -13,6 +13,7 @@ pub mod elemental_defenses;
 pub mod saving_throw;
 pub mod skill;
 pub mod spell;
+pub mod flag;
 
 #[derive(PartialEq, Eq, Clone, Hash, Copy)]
 pub enum Attribute {
@@ -70,4 +71,5 @@ pub enum Attribute {
     RangedThreat,
     WeaponProficiency(WeaponType),
     ArmorProficiency(ArmorType),
+    Flag(Flag),
 }
