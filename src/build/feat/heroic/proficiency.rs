@@ -1,4 +1,5 @@
 use crate::build::{
+    attribute::flag::Flag,
     bonus::{bonuses::Bonuses, source::Source, Bonus},
     feat::Feat,
     items::types::{ArmorType, WeaponType},
@@ -22,7 +23,7 @@ impl Bonuses for ProficiencyFeat {
     fn get_bonuses(&self) -> Vec<crate::build::bonus::Bonus> {
         match self {
             ProficiencyFeat::Weapon(weapon) => vec![Bonus::new(
-                crate::build::attribute::Attribute::WeaponProficiency(*weapon),
+                crate::build::attribute::Attribute::Flag(Flag::WeaponProficiency(*weapon)),
                 crate::build::bonus::types::BonusType::Flag,
                 1.0,
                 Source::Feat(self.clone().into()),
@@ -30,7 +31,7 @@ impl Bonuses for ProficiencyFeat {
             )],
 
             ProficiencyFeat::Armor(armor) => vec![Bonus::new(
-                crate::build::attribute::Attribute::ArmorProficiency(*armor),
+                crate::build::attribute::Attribute::Flag(Flag::ArmorProficiency(*armor)),
                 crate::build::bonus::types::BonusType::Flag,
                 1.0,
                 Source::Feat(self.clone().into()),

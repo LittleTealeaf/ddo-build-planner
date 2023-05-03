@@ -1,19 +1,18 @@
 use self::{
     ability::Ability,
     elemental_defenses::ElementalType,
+    flag::Flag,
     saving_throw::SavingThrow,
     skill::Skill,
-    spell::{SpellDamageType, SpellSchool}, flag::Flag,
+    spell::{SpellDamageType, SpellSchool},
 };
-
-use super::items::types::{WeaponType, ArmorType};
 
 pub mod ability;
 pub mod elemental_defenses;
+pub mod flag;
 pub mod saving_throw;
 pub mod skill;
 pub mod spell;
-pub mod flag;
 
 #[derive(PartialEq, Eq, Clone, Hash, Copy)]
 pub enum Attribute {
@@ -69,7 +68,5 @@ pub enum Attribute {
     CrossbowAttackSpeed,
     RepeatingCrossbowAttackSpeed,
     RangedThreat,
-    WeaponProficiency(WeaponType),
-    ArmorProficiency(ArmorType),
     Flag(Flag),
 }
