@@ -32,15 +32,15 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
           key: ${{ runner.os }}-build-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
+          restore-keys: ${{ runner.os }}-build-cargo-
       - name: Target Cache
         uses: actions/cache@v3
         with:
           path: target/
-          key: ${{runner.os}}-target-${{hashFiles('**/Cargo.lock')}}-${{hashFiles('**/*.rs')}}
+          key: ${{runner.os}}-build-target-${{hashFiles('**/Cargo.lock')}}-${{hashFiles('**/*.rs')}}
           restore-keys: |
-            ${{runner.os}}-target-${{hashFiles('**/Cargo.lock')}}-
-            ${{runner.os}}-target-
+            ${{runner.os}}-build-target-${{hashFiles('**/Cargo.lock')}}-
+            ${{runner.os}}-build-target-
       - name: Build
         uses: actions-rs/cargo@v1
         with:
