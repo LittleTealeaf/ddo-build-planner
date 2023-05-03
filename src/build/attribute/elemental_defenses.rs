@@ -1,4 +1,4 @@
-#[derive(PartialEq, Eq, Clone, Hash)]
+#[derive(PartialEq, Eq, Clone, Hash, Copy)]
 pub enum ElementalType {
     Acid,
     Cold,

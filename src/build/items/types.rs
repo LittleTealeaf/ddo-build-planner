@@ -10,7 +10,7 @@ pub enum EquipmentType {
 }
 
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum WeaponType {
     Simple(SimpleWeapon),
     Martial(MartialWeapon),
@@ -18,7 +18,7 @@ pub enum WeaponType {
 }
 
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum SimpleWeapon {
     Club,
     Dagger,
@@ -28,7 +28,7 @@ pub enum SimpleWeapon {
     Unarmed
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum MartialWeapon {
     Battleaxe,
     Falchion,
@@ -52,7 +52,7 @@ pub enum MartialWeapon {
     Warhammer
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum ExoticWeapon {
     BastardSword,
     DwarvenWaraxe,
@@ -65,7 +65,7 @@ pub enum ExoticWeapon {
     Shuriken
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum ArmorType {
     Cloth,
     Light,

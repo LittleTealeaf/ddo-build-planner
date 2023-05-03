@@ -5,7 +5,7 @@ pub mod scion;
 pub mod epic;
 pub mod destiny;
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum Feat {
     Heroic(HeroicFeat),
     Epic(EpicFeat),

@@ -6,7 +6,7 @@ use crate::build::{
 
 use super::HeroicFeat;
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum ProficiencyFeat {
     Weapon(WeaponType),
     Armor(ArmorType),
