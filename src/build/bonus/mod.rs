@@ -8,6 +8,7 @@ pub mod types;
 pub mod bonuses;
 pub mod breakdowns;
 
+#[derive(Clone)]
 pub struct Bonus {
     attribute: Attribute,
     bonus_type: BonusType,
@@ -38,15 +39,15 @@ impl Bonus {
     }
     
     pub fn get_bonus_type(&self) -> BonusType {
-        self.bonus_type.clone()
+        self.bonus_type
     }
 
     pub fn get_value(&self) -> f32 {
-        self.value.clone()
+        self.value
     }
 
     pub fn get_source(&self) -> Source {
-        self.source.clone()
+        self.source
     }
 
     pub fn get_condition(&self) -> Vec<Condition> {

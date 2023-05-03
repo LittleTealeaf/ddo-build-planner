@@ -1,4 +1,4 @@
-#[derive(PartialEq, Eq, Hash, Clone)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub enum BonusType {
     Stacking,
     Flag,
