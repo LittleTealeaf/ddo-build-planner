@@ -1,4 +1,7 @@
-use crate::build::{attribute::spell::SpellSchool, bonus::bonuses::Bonuses};
+use crate::build::{
+    attribute::{spell::SpellSchool, Attribute},
+    bonus::{bonuses::Bonuses, source::Source, types::BonusType, Bonus},
+};
 
 use self::{proficiency::ProficiencyFeat, skill::SkillFeat};
 
@@ -25,6 +28,13 @@ impl Bonuses for HeroicFeat {
     fn get_bonuses(&self) -> Vec<crate::build::bonus::Bonus> {
         match self {
             Self::Skill(skill_feat) => skill_feat.get_bonuses(),
+            Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![Bonus::new(
+                Attribute::SpellFocus(*school),
+                BonusType::Stacking,
+                1.0,
+                Source::Feat(self.clone().into()),
+                None,
+            )],
             _ => Vec::new(),
         }
     }
