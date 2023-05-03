@@ -12,4 +12,5 @@ pub enum BonusType {
     Exceptional,
     Primal,
     Sacred,
+    Skill,
 }

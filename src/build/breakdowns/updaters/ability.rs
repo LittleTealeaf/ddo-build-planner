@@ -3,7 +3,17 @@ use crate::build::{
     bonus::{condition::Condition, source::Source, types::BonusType, Bonus},
 };
 
-use crate::ability_mod_bonus;
+macro_rules! mod_bonus {
+    ($ability:expr, $attribute:expr, $value:expr) => {
+        Bonus::new(
+            $attribute,
+            BonusType::AbilityModifier,
+            $value,
+            Source::Attribute(Attribute::AbilityModifier($ability)),
+            None,
+        )
+    };
+}
 
 pub fn get_ability_updates(ability: Ability, value: f32) -> Vec<Bonus> {
     vec![Bonus::new(
@@ -46,27 +56,27 @@ pub fn get_ability_modifier_updates(ability: Ability, value: f32) -> Vec<Bonus> 
 
 fn get_strength_modifier_bonuses(value: f32) -> Vec<Bonus> {
     vec![
-        ability_mod_bonus!(Ability::Strength, Attribute::Skill(Skill::Jump), value),
-        ability_mod_bonus!(Ability::Strength, Attribute::Skill(Skill::Swim), value),
+        mod_bonus!(Ability::Strength, Attribute::Skill(Skill::Jump), value),
+        mod_bonus!(Ability::Strength, Attribute::Skill(Skill::Swim), value),
     ]
 }
 
 fn get_dexterity_modifier_bonuses(value: f32) -> Vec<Bonus> {
     vec![
-        ability_mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Balance), value),
-        ability_mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Hide), value),
-        ability_mod_bonus!(
+        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Balance), value),
+        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Hide), value),
+        mod_bonus!(
             Ability::Dexterity,
             Attribute::Skill(Skill::MoveSilently),
             value
         ),
-        ability_mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::OpenLock), value),
-        ability_mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Tumble), value),
+        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::OpenLock), value),
+        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Tumble), value),
     ]
 }
 
 fn get_constitution_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    ability_mod_bonus!(
+    mod_bonus!(
         Ability::Dexterity,
         Attribute::Skill(Skill::Concentration),
         value
@@ -76,22 +86,22 @@ fn get_constitution_modifier_bonuses(value: f32) -> Vec<Bonus> {
 
 fn get_intelligence_modifier_bonuses(value: f32) -> Vec<Bonus> {
     vec![
-        ability_mod_bonus!(
+        mod_bonus!(
             Ability::Intelligence,
             Attribute::Skill(Skill::DisableDevice),
             value
         ),
-        ability_mod_bonus!(
+        mod_bonus!(
             Ability::Intelligence,
             Attribute::Skill(Skill::Repair),
             value
         ),
-        ability_mod_bonus!(
+        mod_bonus!(
             Ability::Intelligence,
             Attribute::Skill(Skill::Search),
             value
         ),
-        ability_mod_bonus!(
+        mod_bonus!(
             Ability::Intelligence,
             Attribute::Skill(Skill::Spellcraft),
             value
@@ -101,10 +111,10 @@ fn get_intelligence_modifier_bonuses(value: f32) -> Vec<Bonus> {
 
 fn get_wisdom_modifier_bonuses(value: f32) -> Vec<Bonus> {
     vec![
-        ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Heal), value),
-        ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Listen), value),
-        ability_mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Spot), value),
-        ability_mod_bonus!(
+        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Heal), value),
+        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Listen), value),
+        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Spot), value),
+        mod_bonus!(
             Ability::Wisdom,
             Attribute::SavingThrow(SavingThrow::Will),
             value
@@ -114,16 +124,16 @@ fn get_wisdom_modifier_bonuses(value: f32) -> Vec<Bonus> {
 
 fn get_charisma_modifier_bonuses(value: f32) -> Vec<Bonus> {
     vec![
-        ability_mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Bluff), value),
-        ability_mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Diplomacy), value),
-        ability_mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Haggle), value),
-        ability_mod_bonus!(
+        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Bluff), value),
+        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Diplomacy), value),
+        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Haggle), value),
+        mod_bonus!(
             Ability::Charisma,
             Attribute::Skill(Skill::Intimidate),
             value
         ),
-        ability_mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Perform), value),
-        ability_mod_bonus!(
+        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Perform), value),
+        mod_bonus!(
             Ability::Charisma,
             Attribute::Skill(Skill::UseMagicalDevice),
             value
@@ -131,28 +141,12 @@ fn get_charisma_modifier_bonuses(value: f32) -> Vec<Bonus> {
     ]
 }
 
-#[macro_use]
-mod macros {
-
-    #[macro_export]
-    macro_rules! ability_mod_bonus {
-        ($ability:expr, $attribute:expr, $value:expr) => {
-            Bonus::new(
-                $attribute,
-                BonusType::AbilityModifier,
-                $value,
-                Source::Attribute(Attribute::AbilityModifier($ability)),
-                None,
-            )
-        };
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::build::{
         attribute::{ability::Ability, skill::Skill, Attribute},
-        bonus::{source::Source, types::BonusType, Bonus}, breakdowns::Breakdowns,
+        bonus::{source::Source, types::BonusType, Bonus},
+        breakdowns::Breakdowns,
     };
 
     #[test]
