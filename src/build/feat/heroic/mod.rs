@@ -35,7 +35,7 @@ impl Bonuses for HeroicFeat {
                 Source::Feat((*self).into()),
                 None,
             )
-            .to_vec(),
+            .into_vec(),
             _ => Vec::new(),
         }
     }

@@ -55,7 +55,7 @@ impl Bonus {
     }
 
 
-    pub fn to_vec(self) -> Vec<Bonus> {
+    pub fn into_vec(self) -> Vec<Bonus> {
         vec![self]
     }
 }

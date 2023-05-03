@@ -112,7 +112,7 @@ mod tests {
                 Source::Unique(0),
                 None,
             )
-            .to_vec(),
+            .into_vec(),
         );
         let value = breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Strength));
         assert_eq!(value, 5.0);
@@ -125,7 +125,7 @@ mod tests {
                 Source::Unique(0),
                 None,
             )
-            .to_vec(),
+            .into_vec(),
         );
         let value = breakdowns.get_attribute(&Attribute::Skill(Skill::Spot));
         println!("{}", value);
@@ -169,7 +169,7 @@ mod tests {
                 Source::Unique(0),
                 None,
             )
-            .to_vec(),
+            .into_vec(),
         );
         assert_eq!(
             breakdowns.get_attribute(&Attribute::Ability(Ability::Intelligence)),
@@ -183,7 +183,7 @@ mod tests {
                 Source::Unique(1),
                 None,
             )
-            .to_vec(),
+            .into_vec(),
         );
         assert_eq!(
             breakdowns.get_attribute(&Attribute::Ability(Ability::Intelligence)),
