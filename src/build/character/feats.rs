@@ -1,20 +1,19 @@
 use crate::build::{
-    bonus::{bonuses::Bonuses, Bonus},
-    feat::{epic::EpicFeat, heroic::HeroicFeat},
+    bonus::{bonuses::Bonuses, Bonus}, feat::Feat,
 };
 
 pub struct CharacterFeats {
-    level_1: Option<HeroicFeat>,
-    level_3: Option<HeroicFeat>,
-    level_6: Option<HeroicFeat>,
-    level_9: Option<HeroicFeat>,
-    level_12: Option<HeroicFeat>,
-    level_15: Option<HeroicFeat>,
-    level_18: Option<HeroicFeat>,
-    level_21: Option<EpicFeat>,
-    level_24: Option<EpicFeat>,
-    level_27: Option<EpicFeat>,
-    level_30: Option<EpicFeat>,
+    level_1: Option<Feat>,
+    level_3: Option<Feat>,
+    level_6: Option<Feat>,
+    level_9: Option<Feat>,
+    level_12: Option<Feat>,
+    level_15: Option<Feat>,
+    level_18: Option<Feat>,
+    level_21: Option<Feat>,
+    level_24: Option<Feat>,
+    level_27: Option<Feat>,
+    level_30: Option<Feat>,
 }
 
 impl Bonuses for CharacterFeats {
@@ -28,13 +27,6 @@ impl Bonuses for CharacterFeats {
             &self.level_12,
             &self.level_15,
             &self.level_18,
-        ] {
-            if let Some(feat) = feat {
-                bonuses.append(&mut feat.get_bonuses());
-            }
-        }
-
-        for feat in [
             &self.level_21,
             &self.level_24,
             &self.level_24,
@@ -42,10 +34,10 @@ impl Bonuses for CharacterFeats {
             &self.level_30,
         ] {
             if let Some(feat) = feat {
-                bonuses.append(&mut feat.get_bonuses())
+                bonuses.append(&mut feat.get_bonuses());
             }
         }
-        
+
         bonuses
     }
 }
