@@ -106,14 +106,17 @@ impl Breakdowns {
                         }
                     }
 
-                    let remove_indices = self
+                    let remove_indices: Vec<_> = self
                         .bonuses
                         .iter()
                         .enumerate()
                         .filter(|(_, item)| item.get_source().eq(&Source::Attribute(attribute)))
                         .map(|(i, _)| i)
                         .collect();
-                    batch_remove(&mut self.bonuses, remove_indices);
+                    for (n, i) in remove_indices.into_iter().enumerate() {
+                        self.bonuses.swap_remove(i - n);
+                    }
+
                     let updates = get_updates(attribute, final_value);
                     let attributes = updates.iter().map(|update| update.get_attribute());
                     for attribute in attributes {
@@ -139,12 +142,6 @@ impl Breakdowns {
 
     pub fn clear(&mut self) {
         self.bonuses.clear();
-    }
-}
-
-fn batch_remove<T>(vec: &mut Vec<T>, indices: Vec<usize>) {
-    for (n, i) in indices.into_iter().enumerate() {
-        vec.swap_remove(i - n);
     }
 }
 
