@@ -37,7 +37,6 @@ impl Breakdowns {
     }
 
     fn calculate_attribute(&self, attribute: &Attribute) -> f32 {
-
         let mut values: HashMap<BonusType, f32> = HashMap::new();
 
         let bonuses = self
@@ -73,9 +72,11 @@ impl Breakdowns {
         }
 
         while let Some((attribute, force_update)) = update_attributes.pop_front() {
-            self.cache.remove(&attribute);
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
-                let initial_value = self.calculate_attribute(&attribute);
+                let initial_value = self
+                    .cache
+                    .remove(&attribute)
+                    .unwrap_or(self.calculate_attribute(&attribute));
                 for bonus in bonuses {
                     self.bonuses.push(bonus);
                 }
