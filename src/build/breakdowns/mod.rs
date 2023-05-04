@@ -106,14 +106,15 @@ impl Breakdowns {
                         }
                     }
 
-                    let remove_indices: Vec<_> = self
+                    for (n, i) in self
                         .bonuses
                         .iter()
                         .enumerate()
                         .filter(|(_, item)| item.get_source().eq(&Source::Attribute(attribute)))
                         .map(|(i, _)| i)
-                        .collect();
-                    for (n, i) in remove_indices.into_iter().enumerate() {
+                        .enumerate()
+                        .collect_vec()
+                    {
                         self.bonuses.swap_remove(i - n);
                     }
 
