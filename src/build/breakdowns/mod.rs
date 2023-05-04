@@ -117,6 +117,11 @@ impl Breakdowns {
             }
         }
     }
+
+
+    pub fn clear(&mut self) {
+        self.bonuses.clear();
+    }
 }
 
 fn batch_remove<T>(vec: &mut Vec<T>, indices: Vec<usize>) {
