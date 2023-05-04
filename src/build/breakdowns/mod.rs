@@ -12,16 +12,23 @@ mod updaters;
 
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
+    cache: HashMap<Attribute, f32>,
 }
 
 impl Breakdowns {
     pub fn new() -> Breakdowns {
         Self {
             bonuses: Vec::new(),
+            cache: HashMap::new()
         }
     }
 
-    pub fn get_attribute(&self, attribute: &Attribute) -> f32 {
+    pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
+
+        if let Some(total) = self.cache.get(attribute) {
+            return *total;
+        }
+
         let mut values: HashMap<BonusType, f32> = HashMap::new();
 
         let bonuses = self
@@ -36,7 +43,11 @@ impl Breakdowns {
                 values.insert(bonus.get_bonus_type(), bonus.get_value());
             }
         }
-        values.values().sum()
+        let total = values.values().sum();
+
+        self.cache.insert(attribute.clone(), total);
+
+        total
     }
 
     pub fn insert_attributes(&mut self, attributes: Vec<Bonus>) {
@@ -56,6 +67,7 @@ impl Breakdowns {
         }
 
         while let Some((attribute, force_update)) = update_attributes.pop_front() {
+            self.cache.remove(&attribute);
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
                 let initial_value = self.get_attribute(&attribute);
                 for bonus in bonuses {
