@@ -5,5 +5,18 @@ pub enum Ability {
     Constitution,
     Intelligence,
     Wisdom,
-    Charisma
+    Charisma,
+}
+
+impl ToString for Ability {
+    fn to_string(&self) -> String {
+        String::from(match self {
+            Self::Strength => "Strength",
+            Self::Dexterity => "Dexterity",
+            Self::Constitution => "Constitution",
+            Self::Intelligence => "Intelligence",
+            Self::Wisdom => "Wisdom",
+            Self::Charisma => "Charisma",
+        })
+    }
 }
