@@ -3,6 +3,16 @@ use crate::build::{
     bonus::{condition::Condition, source::Source, types::BonusType, Bonus},
 };
 
+pub fn get_ability_updates(ability: Ability, value: f32) -> Vec<Bonus> {
+    vec![Bonus::new(
+        Attribute::AbilityModifier(ability),
+        BonusType::AbilityScore,
+        (value - 10f32) / 2f32,
+        Source::Attribute(Attribute::Ability(ability)),
+        None,
+    )]
+}
+
 macro_rules! mod_bonus {
     ($ability:expr, $attribute:expr, $value:expr) => {
         Bonus::new(
@@ -15,14 +25,16 @@ macro_rules! mod_bonus {
     };
 }
 
-pub fn get_ability_updates(ability: Ability, value: f32) -> Vec<Bonus> {
-    vec![Bonus::new(
-        Attribute::AbilityModifier(ability),
-        BonusType::AbilityScore,
-        (value - 10f32) / 2f32,
-        Source::Attribute(Attribute::Ability(ability)),
-        None,
-    )]
+macro_rules! mod_attr {
+    ($attribute:expr) => {
+        Bonus::new(
+            $attribute,
+            BonusType::AbilityModifier,
+            value,
+            Source::Attribute(Attribute::AbilityModifier(ability)),
+            None,
+        )
+    };
 }
 
 pub fn get_ability_modifier_updates(ability: Ability, value: f32) -> Vec<Bonus> {
