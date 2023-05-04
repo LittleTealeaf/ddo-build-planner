@@ -1,11 +1,11 @@
-use self::{condition::Condition, types::BonusType, source::Source};
+use self::{condition::Condition, source::Source, types::BonusType};
 
 use super::attribute::Attribute;
 
+pub mod bonuses;
 pub mod condition;
 pub mod source;
 pub mod types;
-pub mod bonuses;
 
 #[derive(Clone)]
 pub struct Bonus {
@@ -36,7 +36,7 @@ impl Bonus {
     pub fn get_attribute(&self) -> Attribute {
         self.attribute
     }
-    
+
     pub fn get_bonus_type(&self) -> BonusType {
         self.bonus_type
     }
@@ -52,7 +52,6 @@ impl Bonus {
     pub fn get_condition(&self) -> Vec<Condition> {
         self.condition.clone()
     }
-
 
     pub fn into_vec(self) -> Vec<Bonus> {
         vec![self]
