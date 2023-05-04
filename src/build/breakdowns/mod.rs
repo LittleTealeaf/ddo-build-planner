@@ -6,7 +6,7 @@ use crate::build::attribute::Attribute;
 
 use self::updaters::get_updates;
 
-use super::bonus::{Bonus, types::BonusType, source::Source};
+use super::bonus::{condition::Condition, source::Source, types::BonusType, Bonus};
 
 mod updaters;
 
@@ -43,6 +43,7 @@ impl Breakdowns {
         let mut update_attributes = attributes
             .iter()
             .map(Bonus::get_attribute)
+            .map(|item| (item, true))
             .collect::<VecDeque<_>>();
 
         let mut update_bonuses: HashMap<Attribute, Vec<Bonus>> = HashMap::new();
@@ -54,7 +55,7 @@ impl Breakdowns {
             update_bonuses.insert(attribute, bonuses);
         }
 
-        while let Some(attribute) = update_attributes.pop_front() {
+        while let Some((attribute, force_update)) = update_attributes.pop_front() {
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
                 let initial_value = self.get_attribute(&attribute);
                 for bonus in bonuses {
@@ -62,7 +63,30 @@ impl Breakdowns {
                 }
                 let final_value = self.get_attribute(&attribute);
 
-                if initial_value != final_value {
+                if force_update || initial_value != final_value {
+                    if let Attribute::Flag(flag) = attribute {
+                        let dependant_attributes = self
+                            .bonuses
+                            .iter()
+                            .filter(|bonus| {
+                                bonus
+                                    .get_condition()
+                                    .iter()
+                                    .filter_map(|condition| match condition {
+                                        Condition::NoFlag(flag) | Condition::Flag(flag) => {
+                                            Some(flag)
+                                        }
+                                    })
+                                    .contains(&flag)
+                            })
+                            .map(|bonus| bonus.get_attribute())
+                            .unique()
+                            .collect::<Vec<_>>();
+                        for attr in dependant_attributes {
+                            update_attributes.push_back((attr, true))
+                        }
+                    }
+
                     let remove_indices = self
                         .bonuses
                         .iter()
@@ -74,8 +98,13 @@ impl Breakdowns {
                     let updates = get_updates(attribute, final_value);
                     let attributes = updates.iter().map(|update| update.get_attribute());
                     for attribute in attributes {
-                        if !update_attributes.contains(&attribute) {
-                            update_attributes.push_back(attribute);
+                        if update_attributes
+                            .iter()
+                            .filter(|(attr, _)| attr.eq(&attribute))
+                            .count()
+                            == 0
+                        {
+                            update_attributes.push_back((attribute, false));
                         }
                     }
                     for bonus in updates {
