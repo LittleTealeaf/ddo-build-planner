@@ -14,37 +14,69 @@ pub fn get_ability_updates(ability: Ability, value: f32) -> Vec<Bonus> {
 }
 
 macro_rules! mod_bonus {
-    ($ability:expr, $attribute:expr, $value:expr) => {
+    ($ability:ident, $attribute:expr, $value:ident) => {
         Bonus::new(
             $attribute,
             BonusType::AbilityModifier,
             $value,
-            Source::Attribute(Attribute::AbilityModifier($ability)),
+            Source::Attribute(Attribute::AbilityModifier(Ability::$ability)),
             None,
         )
     };
 }
 
-macro_rules! mod_attr {
-    ($attribute:expr) => {
-        Bonus::new(
-            $attribute,
-            BonusType::AbilityModifier,
-            value,
-            Source::Attribute(Attribute::AbilityModifier(ability)),
-            None,
-        )
+macro_rules! mod_skill {
+    ($ability: ident, $skill: ident, $value: ident) => {
+        mod_bonus!($ability, Attribute::Skill(Skill::$skill), $value)
     };
 }
 
 pub fn get_ability_modifier_updates(ability: Ability, value: f32) -> Vec<Bonus> {
     let mut bonuses = match ability {
-        Ability::Strength => get_strength_modifier_bonuses(value),
-        Ability::Dexterity => get_dexterity_modifier_bonuses(value),
-        Ability::Constitution => get_constitution_modifier_bonuses(value),
-        Ability::Intelligence => get_intelligence_modifier_bonuses(value),
-        Ability::Wisdom => get_wisdom_modifier_bonuses(value),
-        Ability::Charisma => get_charisma_modifier_bonuses(value),
+        Ability::Strength => vec![
+            mod_skill!(Strength, Jump, value),
+            mod_skill!(Strength, Swim, value),
+        ],
+        Ability::Dexterity => vec![
+            mod_skill!(Dexterity, Balance, value),
+            mod_skill!(Dexterity, Hide, value),
+            mod_skill!(Dexterity, MoveSilently, value),
+            mod_skill!(Dexterity, OpenLock, value),
+            mod_skill!(Dexterity, Tumble, value),
+            mod_bonus!(
+                Dexterity,
+                Attribute::SavingThrow(SavingThrow::Reflex),
+                value
+            ),
+        ],
+        Ability::Constitution => vec![
+            mod_skill!(Constitution, Concentration, value),
+            mod_bonus!(
+                Constitution,
+                Attribute::SavingThrow(SavingThrow::Fortitude),
+                value
+            ),
+        ],
+        Ability::Intelligence => vec![
+            mod_skill!(Intelligence, DisableDevice, value),
+            mod_skill!(Intelligence, Repair, value),
+            mod_skill!(Intelligence, Search, value),
+            mod_skill!(Intelligence, Spellcraft, value),
+        ],
+        Ability::Wisdom => vec![
+            mod_skill!(Wisdom, Heal, value),
+            mod_skill!(Wisdom, Listen, value),
+            mod_skill!(Wisdom, Spot, value),
+            mod_bonus!(Wisdom, Attribute::SavingThrow(SavingThrow::Will), value),
+        ],
+        Ability::Charisma => vec![
+            mod_skill!(Charisma, Bluff, value),
+            mod_skill!(Charisma, Diplomacy, value),
+            mod_skill!(Charisma, Haggle, value),
+            mod_skill!(Charisma, Intimidate, value),
+            mod_skill!(Charisma, Perform, value),
+            mod_skill!(Charisma, UseMagicalDevice, value),
+        ],
     };
 
     bonuses.push(Bonus::new(
@@ -64,93 +96,6 @@ pub fn get_ability_modifier_updates(ability: Ability, value: f32) -> Vec<Bonus> 
     ));
 
     bonuses
-}
-
-fn get_strength_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    vec![
-        mod_bonus!(Ability::Strength, Attribute::Skill(Skill::Jump), value),
-        mod_bonus!(Ability::Strength, Attribute::Skill(Skill::Swim), value),
-    ]
-}
-
-fn get_dexterity_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    vec![
-        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Balance), value),
-        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Hide), value),
-        mod_bonus!(
-            Ability::Dexterity,
-            Attribute::Skill(Skill::MoveSilently),
-            value
-        ),
-        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::OpenLock), value),
-        mod_bonus!(Ability::Dexterity, Attribute::Skill(Skill::Tumble), value),
-    ]
-}
-
-fn get_constitution_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    mod_bonus!(
-        Ability::Dexterity,
-        Attribute::Skill(Skill::Concentration),
-        value
-    )
-    .into_vec()
-}
-
-fn get_intelligence_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    vec![
-        mod_bonus!(
-            Ability::Intelligence,
-            Attribute::Skill(Skill::DisableDevice),
-            value
-        ),
-        mod_bonus!(
-            Ability::Intelligence,
-            Attribute::Skill(Skill::Repair),
-            value
-        ),
-        mod_bonus!(
-            Ability::Intelligence,
-            Attribute::Skill(Skill::Search),
-            value
-        ),
-        mod_bonus!(
-            Ability::Intelligence,
-            Attribute::Skill(Skill::Spellcraft),
-            value
-        ),
-    ]
-}
-
-fn get_wisdom_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    vec![
-        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Heal), value),
-        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Listen), value),
-        mod_bonus!(Ability::Wisdom, Attribute::Skill(Skill::Spot), value),
-        mod_bonus!(
-            Ability::Wisdom,
-            Attribute::SavingThrow(SavingThrow::Will),
-            value
-        ),
-    ]
-}
-
-fn get_charisma_modifier_bonuses(value: f32) -> Vec<Bonus> {
-    vec![
-        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Bluff), value),
-        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Diplomacy), value),
-        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Haggle), value),
-        mod_bonus!(
-            Ability::Charisma,
-            Attribute::Skill(Skill::Intimidate),
-            value
-        ),
-        mod_bonus!(Ability::Charisma, Attribute::Skill(Skill::Perform), value),
-        mod_bonus!(
-            Ability::Charisma,
-            Attribute::Skill(Skill::UseMagicalDevice),
-            value
-        ),
-    ]
 }
 
 #[cfg(test)]
