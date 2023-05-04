@@ -19,12 +19,11 @@ impl Breakdowns {
     pub fn new() -> Breakdowns {
         Self {
             bonuses: Vec::new(),
-            cache: HashMap::new()
+            cache: HashMap::new(),
         }
     }
 
     pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
-
         if let Some(total) = self.cache.get(attribute) {
             return *total;
         }
@@ -129,7 +128,6 @@ impl Breakdowns {
             }
         }
     }
-
 
     pub fn clear(&mut self) {
         self.bonuses.clear();
