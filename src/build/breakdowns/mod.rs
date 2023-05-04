@@ -31,7 +31,7 @@ impl Breakdowns {
 
         let value = self.calculate_attribute(attribute);
 
-        self.cache.insert(attribute.clone(), value);
+        self.cache.insert(*attribute, value);
 
         value
     }
