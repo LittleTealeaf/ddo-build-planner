@@ -2,7 +2,8 @@ use crate::build::attribute::{flag::Flag};
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum Condition {
-    HasFlag(Flag)
+    Flag(Flag),
+    NoFlag(Flag)
 }
 
 
