@@ -1,6 +1,6 @@
 use crate::build::items::types::{WeaponType, ArmorType};
 
-use super::ability::Ability;
+use super::{ability::Ability, saving_throw::SavingThrow};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Flag {
@@ -8,4 +8,5 @@ pub enum Flag {
     ArmorProficiency(ArmorType),
     AbilityForAttack(Ability),
     AbilityForDamage(Ability),
+    AbilityForSavingThrow(Ability, SavingThrow),
 }

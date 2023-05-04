@@ -80,7 +80,7 @@ pub fn get_ability_modifier_updates(ability: Ability, value: f32) -> Vec<Bonus> 
     };
 
     bonuses.push(Bonus::new(
-        Attribute::Flag(Flag::AbilityForAttack(ability)),
+        Attribute::Attack,
         BonusType::AbilityModifier,
         value,
         Source::Attribute(Attribute::AbilityModifier(ability)),
@@ -88,7 +88,7 @@ pub fn get_ability_modifier_updates(ability: Ability, value: f32) -> Vec<Bonus> 
     ));
 
     bonuses.push(Bonus::new(
-        Attribute::Flag(Flag::AbilityForDamage(ability)),
+        Attribute::Damage,
         BonusType::AbilityModifier,
         value,
         Source::Attribute(Attribute::AbilityModifier(ability)),

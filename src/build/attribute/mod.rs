@@ -69,4 +69,6 @@ pub enum Attribute {
     RepeatingCrossbowAttackSpeed,
     RangedThreat,
     Flag(Flag),
+    Attack,
+    Damage
 }
