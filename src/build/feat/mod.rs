@@ -2,7 +2,7 @@ use crate::feats;
 
 use super::{
     attribute::{saving_throw::SavingThrow, skill::Skill, Attribute},
-    bonus::{source::Source, types::BonusType, Bonus, bonuses::Bonuses},
+    bonus::{bonuses::Bonuses, source::Source, types::BonusType, Bonus},
 };
 
 mod macros;
@@ -44,6 +44,30 @@ feats!(
         |source| vec![
             Bonus::new(Attribute::Skill(Skill::Diplomacy), BonusType::Stacking, 2.0, source, None),
             Bonus::new(Attribute::Skill(Skill::Haggle), BonusType::Stacking, 2.0, source, None),
+        ]
+    ),
+    NimbleFingers() => (
+        "Nimble Fingers",
+        "Provides a +2 bonus to the character's Disable Device and Open Lock skills",
+        |source| vec![
+            Bonus::new(Attribute::Skill(Skill::DisableDevice), BonusType::Stacking, 2.0, source, None),
+            Bonus::new(Attribute::Skill(Skill::OpenLock), BonusType::Stacking, 2.0, source, None),
+        ]
+    ),
+    SelfSufficient() => (
+        "Self Sufficient",
+        "Provides a +2 bonus to the character's Heal and Repair skills",
+        |source| vec![
+            Bonus::new(Attribute::Skill(Skill::Heal), BonusType::Stacking, 2.0, source, None),
+            Bonus::new(Attribute::Skill(Skill::Repair), BonusType::Stacking, 2.0, source, None),
+        ]
+    ),
+    Stealthy() => (
+        "Stealthy",
+        "Provides a +2 bonus to the character's Hide and Move Silently skills",
+        |source| vec![
+            Bonus::new(Attribute::Skill(Skill::Hide), BonusType::Stacking, 2.0, source, None),
+            Bonus::new(Attribute::Skill(Skill::MoveSilently), BonusType::Stacking, 2.0, source, None),
         ]
     )
 );
