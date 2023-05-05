@@ -6,9 +6,22 @@ pub enum SpellSchool {
     Abjuration,
     Necromancy,
     Enchantment,
-    Transmutation
+    Transmutation,
 }
 
+impl ToString for SpellSchool {
+    fn to_string(&self) -> String {
+        String::from(match self {
+            SpellSchool::Evocation => "Evocation",
+            SpellSchool::Illusion => "Illusion",
+            SpellSchool::Conjuration => "Conjuration",
+            SpellSchool::Abjuration => "Abjuration",
+            SpellSchool::Necromancy => "Necromancy",
+            SpellSchool::Enchantment => "Enchantment",
+            SpellSchool::Transmutation => "Transmutation",
+        })
+    }
+}
 
 #[derive(PartialEq, Eq, Clone, Hash, Copy)]
 pub enum SpellDamageType {
@@ -23,5 +36,5 @@ pub enum SpellDamageType {
     Positive,
     Repair,
     Sonic,
-    Universal
+    Universal,
 }

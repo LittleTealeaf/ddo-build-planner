@@ -1,8 +1,11 @@
 use crate::feats;
 
 use super::{
-    attribute::{saving_throw::SavingThrow, skill::Skill, Attribute},
-    bonus::{bonuses::Bonuses, source::Source, types::BonusType, Bonus},
+    attribute::{
+        class_lore::ClassLore, saving_throw::SavingThrow, skill::Skill, spell::SpellSchool,
+        Attribute,
+    },
+    bonus::{types::BonusType, Bonus},
 };
 
 mod macros;
@@ -68,6 +71,43 @@ feats!(
         |source| vec![
             Bonus::new(Attribute::Skill(Skill::Hide), BonusType::Stacking, 2.0, source, None),
             Bonus::new(Attribute::Skill(Skill::MoveSilently), BonusType::Stacking, 2.0, source, None),
+        ]
+    ),
+    BullHeaded() => (
+        "Bullheaded",
+        "Provides a +1 on Will saves and +2 to Intimidate skill checks",
+        |source| vec![
+            Bonus::new(Attribute::SavingThrow(SavingThrow::Will), BonusType::Stacking, 1.0, source, None),
+            Bonus::new(Attribute::Skill(Skill::Intimidate), BonusType::Stacking, 2.0, source, None),
+        ]
+    ),
+    Discipline() => (
+        "Discipline",
+        "Provides a +1 on Will saves and +2 to Concentration skill checks",
+        |source| vec![
+            Bonus::new(Attribute::SavingThrow(SavingThrow::Will), BonusType::Stacking, 1.0, source, None),
+            Bonus::new(Attribute::Skill(Skill::Concentration), BonusType::Stacking, 2.0, source, None),
+        ]
+    ),
+    SpellFocus(school: SpellSchool) => (
+        format!("Spell Focus: {}", school.to_string()),
+        format!("You spells from the {} school of magic are harder to resist, receiving a +1 bonus on Save DCs", school.to_string()),
+        |source| vec![
+            Bonus::new(Attribute::SpellFocus(*school), BonusType::Stacking, 1.0, source, None),
+        ]
+    ),
+    GreaterSpellFocus(school: SpellSchool) => (
+        format!("Spell Focus: {}", school.to_string()),
+        format!("You spells from the {} school of magic are harder to resist, receiving a +1 bonus on Save DCs", school.to_string()),
+        |source| vec![
+            Bonus::new(Attribute::SpellFocus(*school), BonusType::Stacking, 1.0, source, None),
+        ]
+    ),
+    ClassLore(class: ClassLore) => (
+        format!("{} Lore", class.to_string()),
+        format!("Indicates your knowledge of {} Lore, and allows for specific interactions with certain areas of the game", class.to_string()),
+        |source| vec![
+            Bonus::new(Attribute::ClassLore(*class), BonusType::Stacking, 1.0, source, None)
         ]
     )
 );

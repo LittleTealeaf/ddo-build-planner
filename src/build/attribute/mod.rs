@@ -4,7 +4,7 @@ use self::{
     flag::Flag,
     saving_throw::SavingThrow,
     skill::Skill,
-    spell::{SpellDamageType, SpellSchool},
+    spell::{SpellDamageType, SpellSchool}, class_lore::ClassLore,
 };
 
 pub mod ability;
@@ -13,6 +13,7 @@ pub mod flag;
 pub mod saving_throw;
 pub mod skill;
 pub mod spell;
+pub mod class_lore;
 
 #[derive(PartialEq, Eq, Clone, Hash, Copy)]
 pub enum Attribute {
@@ -70,5 +71,6 @@ pub enum Attribute {
     RangedThreat,
     Flag(Flag),
     Attack,
-    Damage
+    Damage,
+    ClassLore(ClassLore)
 }
