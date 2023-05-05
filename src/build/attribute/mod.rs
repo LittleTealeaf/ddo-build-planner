@@ -14,6 +14,7 @@ pub mod saving_throw;
 pub mod skill;
 pub mod spell;
 pub mod class_lore;
+pub(crate) mod macros;
 
 #[derive(PartialEq, Eq, Clone, Hash, Copy)]
 pub enum Attribute {
