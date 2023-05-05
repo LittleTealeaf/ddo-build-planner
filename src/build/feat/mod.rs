@@ -13,7 +13,7 @@ feats!(
     SkillFocus(skill: Skill) => (
         format!("Skill Focus: {}", skill.to_string()),
         format!("Grants a +3 bonus to {}", skill.to_string()),
-        |source| vec![Bonus::new(Attribute::Skill(skill.clone()), BonusType::Stacking, 3.0, source, None)]
+        |source| vec![Bonus::new(Attribute::Skill(*skill), BonusType::Stacking, 3.0, source, None)]
     ),
     Acrobatic() => (
         "Acrobatic",
