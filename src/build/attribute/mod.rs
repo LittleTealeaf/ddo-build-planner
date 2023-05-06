@@ -1,4 +1,4 @@
-use crate::{attributes, no_children};
+use crate::attributes;
 
 use self::sub::Ability;
 
@@ -9,7 +9,7 @@ mod sub;
 pub use sub::*;
 
 
-fn no_children(value: f32, source: Source) -> Vec<Bonus> {
+fn no_children(_: f32, _: Source) -> Vec<Bonus> {
     Vec::new()
 }
 
@@ -30,7 +30,7 @@ attributes!(
     ),
     Flag(flag: Flag) => (
         flag.to_string(),
-        no_children!()
+        no_children
     ),
     ClassLore(class_lore: ClassLore) => (
         format!("{} Lore", class_lore.to_string()),
@@ -54,6 +54,14 @@ attributes!(
     ),
     SavingThrow(saving_throw: SavingThrow) => (
         format!("{} Saving Throw", saving_throw.to_string()),
+        no_children
+    ),
+    ElementalResistance(element: ElementalType) => (
+        format!("{} Resistance", element.to_string()),
+        no_children
+    ),
+    ElementalAbsorption(element: ElementalType) => (
+        format!("{} Resistance", element.to_string()),
         no_children
     )
 );

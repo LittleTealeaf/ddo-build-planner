@@ -10,6 +10,8 @@ mod spells;
 pub use spells::*;
 mod saving_throw;
 pub use saving_throw::*;
+mod elemental;
+pub use elemental::*;
 
 
 #[macro_export]
