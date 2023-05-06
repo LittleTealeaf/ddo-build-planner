@@ -68,86 +68,114 @@ impl Breakdowns {
         values.values().sum()
     }
 
-    pub fn insert_attributes(&mut self, attributes: Vec<Bonus>) {
-        let mut update_attributes = attributes
+    pub fn insert_bonuses(&mut self, bonuses: Vec<Bonus>) {
+        {
+            // Remove all previous bonuses in the breakdown that have the same sources
+            let sources = bonuses
+                .iter()
+                .map(|item| item.get_source())
+                .unique()
+                .collect_vec();
+            for (n, i) in self
+                .bonuses
+                .iter()
+                .enumerate()
+                .filter(|(_, item)| (&sources).contains(&item.get_source()))
+                .map(|(i, _)| i)
+                .enumerate()
+                .collect_vec()
+            {
+                self.bonuses.swap_remove(i - n);
+            }
+        }
+
+        // The queue of attributes that still need to be processed
+        let mut attribute_queue = bonuses
             .iter()
             .map(Bonus::get_attribute)
+            .unique()
             .map(|item| (item, true))
             .collect::<VecDeque<_>>();
 
-        let mut update_bonuses: HashMap<Attribute, Vec<Bonus>> = HashMap::new();
+        // The set of bonuses that still need to be inserted into the breakdown
+        let mut update_bonuses = bonuses
+            .into_iter()
+            .map(|bonus| (bonus.get_attribute(), bonus))
+            .into_group_map();
 
-        for bonus in attributes {
-            let attribute = bonus.get_attribute();
-            let mut bonuses = update_bonuses.remove(&attribute).unwrap_or(Vec::new());
-            bonuses.push(bonus);
-            update_bonuses.insert(attribute, bonuses);
-        }
-
-        while let Some((attribute, force_update)) = update_attributes.pop_front() {
+        while let Some((attribute, force_update)) = attribute_queue.pop_front() {
+            let initial_value = match self.cache.remove(&attribute) {
+                Some(value) => value,
+                None => {
+                    if force_update {
+                        0f32
+                    } else {
+                        self.calculate_attribute(&attribute)
+                    }
+                }
+            };
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
-                let initial_value = self
-                    .cache
-                    .remove(&attribute)
-                    .unwrap_or(self.calculate_attribute(&attribute));
                 for bonus in bonuses {
                     self.bonuses.push(bonus);
                 }
-                let final_value = self.calculate_attribute(&attribute);
+            }
 
-                if force_update || initial_value != final_value {
-                    if let Attribute::Flag(flag) = attribute {
-                        let dependant_attributes = self
-                            .bonuses
-                            .iter()
-                            .filter(|bonus| {
-                                bonus
-                                    .get_condition()
-                                    .iter()
-                                    .filter_map(|condition| match condition {
-                                        Condition::NoFlag(flag) | Condition::Flag(flag) => {
-                                            Some(flag)
-                                        }
-                                    })
-                                    .contains(&flag)
-                            })
-                            .map(|bonus| bonus.get_attribute())
-                            .unique()
-                            .collect::<Vec<_>>();
-                        for attr in dependant_attributes {
-                            update_attributes.push_back((attr, true))
-                        }
-                    }
-
-                    for (n, i) in self
+            if force_update || initial_value != self.get_attribute(&attribute) {
+                if let Attribute::Flag(attribute_flag) = attribute {
+                    for attribute in self
                         .bonuses
                         .iter()
-                        .enumerate()
-                        .filter(|(_, item)| item.get_source().eq(&Source::Attribute(attribute)))
-                        .map(|(i, _)| i)
-                        .enumerate()
-                        .collect_vec()
+                        .filter(|bonus| {
+                            bonus
+                                .get_condition()
+                                .iter()
+                                .any(|condition| match condition {
+                                    Condition::Flag(flag) | Condition::NoFlag(flag) => {
+                                        flag.eq(&attribute_flag)
+                                    }
+                                })
+                        })
+                        .map(|bonus| bonus.get_attribute())
                     {
-                        self.bonuses.swap_remove(i - n);
-                    }
-
-                    let updates = attribute.get_bonuses(final_value);
-                    let attributes = updates.iter().map(|update| update.get_attribute());
-                    for attribute in attributes {
-                        if update_attributes
-                            .iter()
-                            .filter(|(attr, _)| attr.eq(&attribute))
-                            .count()
-                            == 0
-                        {
-                            update_attributes.push_back((attribute, false));
+                        if attribute_queue.iter().any(|(attr, _)| attr.eq(&attribute)) {
+                            attribute_queue.push_back((attribute, true));
                         }
                     }
-                    for bonus in updates {
-                        let attribute = bonus.get_attribute();
-                        let mut bonuses = update_bonuses.remove(&attribute).unwrap_or(Vec::new());
-                        bonuses.push(bonus);
-                        update_bonuses.insert(attribute, bonuses);
+                }
+
+                let source = Source::Attribute(attribute);
+
+                // Remove any attributes with this as a source
+                for (n, i) in self
+                    .bonuses
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, item)| item.get_source().eq(&source))
+                    .map(|(i, _)| i)
+                    .enumerate()
+                    .collect_vec()
+                {
+                    self.bonuses.swap_remove(i - n);
+                }
+
+                for (attribute, insert_bonuses) in attribute
+                    .get_bonuses(self.get_attribute(&attribute))
+                    .into_iter()
+                    .map(|bonus| (bonus.get_attribute(), bonus))
+                    .into_group_map()
+                {
+                    let mut insert_bonuses = insert_bonuses;
+                    insert_bonuses.append(
+                        &mut update_bonuses
+                            .remove(&attribute)
+                            .unwrap_or(Vec::new())
+                            .into_iter()
+                            .filter(|item| item.get_source().ne(&source))
+                            .collect_vec(),
+                    );
+                    update_bonuses.insert(attribute, insert_bonuses);
+                    if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
+                        attribute_queue.push_back((attribute, false));
                     }
                 }
             }
@@ -176,5 +204,103 @@ impl Breakdowns {
                 _ => None,
             })
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::build::attribute::Ability;
+
+    use super::*;
+
+    #[test]
+    fn inserting_bonus_updates_attribute() {
+        let mut breakdowns = Breakdowns::new();
+        let initial = breakdowns.get_attribute(&Attribute::Attack());
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::Attack(),
+            BonusType::Stacking,
+            10.0,
+            Source::Unique(0),
+            None,
+        )]);
+        let fin = breakdowns.get_attribute(&Attribute::Attack());
+
+        assert_ne!(initial, fin);
+
+        assert_eq!(breakdowns.get_attribute(&Attribute::Attack()), 10.0);
+    }
+
+    #[test]
+    fn overwriting_source_removes_old_version() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::Ability(Ability::Dexterity),
+            BonusType::Stacking,
+            10.0,
+            Source::Unique(0),
+            None,
+        )]);
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::Ability(Ability::Dexterity),
+            BonusType::Stacking,
+            5.0,
+            Source::Unique(0),
+            None,
+        )]);
+        let value = breakdowns.get_attribute(&Attribute::Ability(Ability::Dexterity));
+
+        assert_eq!(value, 5.0);
+    }
+
+    #[test]
+    fn different_types_stack() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Enhancement,
+                10.0,
+                Source::Unique(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Quality,
+                5.0,
+                Source::Unique(0),
+                None,
+            ),
+        ]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Wisdom)),
+            15.0
+        );
+    }
+    #[test]
+    fn same_type_does_not_stack() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Enhancement,
+                10.0,
+                Source::Unique(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Enhancement,
+                5.0,
+                Source::Unique(0),
+                None,
+            ),
+        ]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Wisdom)),
+            10.0
+        );
     }
 }
