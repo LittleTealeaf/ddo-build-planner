@@ -1,7 +1,5 @@
 use crate::attributes;
 
-use self::sub::Ability;
-
 use super::bonus::{types::BonusType, Bonus, source::Source};
 
 pub(crate) mod macros;
@@ -62,6 +60,14 @@ attributes!(
     ),
     ElementalAbsorption(element: ElementalType) => (
         format!("{} Resistance", element.to_string()),
+        no_children
+    ),
+    Attack() => (
+        String::from("Attack"),
+        no_children
+    ),
+    Damage() => (
+        String::from("Damage"),
         no_children
     )
 );

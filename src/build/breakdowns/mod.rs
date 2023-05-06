@@ -4,8 +4,10 @@ use itertools::Itertools;
 
 use crate::build::attribute::Attribute;
 
-
-use super::bonus::{condition::Condition, source::Source, types::BonusType, Bonus};
+use super::{
+    attribute::Flag,
+    bonus::{condition::Condition, source::Source, types::BonusType, Bonus},
+};
 
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
@@ -22,7 +24,6 @@ impl Breakdowns {
 
     pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
         if let Some(total) = self.cache.get(attribute) {
-            println!("Returning {}", total);
             return *total;
         }
 
@@ -33,13 +34,28 @@ impl Breakdowns {
         value
     }
 
+    fn get_flags(&self) -> Vec<Flag> {
+        self.bonuses
+            .iter()
+            .filter_map(|item| match item.get_attribute() {
+                Attribute::Flag(flag) => Some(flag),
+                _ => None,
+            })
+            .collect()
+    }
+
     fn calculate_attribute(&self, attribute: &Attribute) -> f32 {
         let mut values: HashMap<BonusType, f32> = HashMap::new();
 
-        let bonuses = self
-            .bonuses
-            .iter()
-            .filter(|bonus| &bonus.get_attribute() == attribute);
+        let flags = self.get_flags();
+
+        let bonuses = self.bonuses.iter().filter(|bonus| {
+            &bonus.get_attribute() == attribute
+                && (bonus.get_condition().iter().all(|flag| match flag {
+                    Condition::Flag(flag) => (&flags).contains(flag),
+                    Condition::NoFlag(flag) => !(&flags).contains(flag),
+                }))
+        });
 
         for bonus in bonuses {
             if bonus.get_bonus_type() == BonusType::Stacking
@@ -140,5 +156,15 @@ impl Breakdowns {
 
     pub fn clear(&mut self) {
         self.bonuses.clear();
+    }
+
+    pub fn get_all_attributes(&mut self) -> HashMap<Attribute, f32> {
+        HashMap::from_iter(
+            self.bonuses
+                .iter()
+                .map(|item| item.get_attribute())
+                .unique()
+                .map(|attribute| (attribute, (&self).calculate_attribute(&attribute))),
+        )
     }
 }
