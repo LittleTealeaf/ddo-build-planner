@@ -104,14 +104,13 @@ impl Breakdowns {
             .into_group_map();
 
         while let Some((attribute, force_update)) = attribute_queue.pop_front() {
-            let initial_value = match self.cache.remove(&attribute) {
-                Some(value) => value,
-                None => {
-                    if force_update {
-                        0f32
-                    } else {
-                        self.calculate_attribute(&attribute)
-                    }
+            let initial_value = {
+                if let Some(value) = self.cache.remove(&attribute) {
+                    value
+                } else if force_update {
+                    0f32
+                } else {
+                    self.calculate_attribute(&attribute)
                 }
             };
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
