@@ -26,15 +26,8 @@ macro_rules! attributes {
 }
 
 #[macro_export]
-macro_rules! attr_bonus {
-    ($attribute: ident($($param_type: ident::$param_name: ident),*,), $bonus_type: ident, $value: ident, $source: ident) => {
-        $crate::build::bonus::Bonus::new($crate::build::attribute::Attribute::$attribute($($param_name::$param_type,)*), $crate::build::bonus::types::BonusType::$bonus_type, value, source, None)
-    };
-}
-
-#[macro_export]
 macro_rules! no_children {
     () => {
-        |value, source| Vec::new()
+        |_, _| Vec::new()
     };
 }
