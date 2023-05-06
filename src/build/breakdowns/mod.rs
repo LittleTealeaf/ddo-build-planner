@@ -5,7 +5,7 @@ use itertools::Itertools;
 use crate::build::attribute::Attribute;
 
 use super::{
-    attribute::Flag,
+    attribute::{Flag, Toggle},
     bonus::{condition::Condition, source::Source, types::BonusType, Bonus},
 };
 
@@ -166,5 +166,15 @@ impl Breakdowns {
                 .unique()
                 .map(|attribute| (attribute, (&self).calculate_attribute(&attribute))),
         )
+    }
+
+    pub fn get_toggles(&mut self) -> Vec<Toggle> {
+        self.bonuses
+            .iter()
+            .filter_map(|item| match item.get_attribute() {
+                Attribute::Toggle(toggle) => Some(toggle),
+                _ => None,
+            })
+            .collect()
     }
 }
