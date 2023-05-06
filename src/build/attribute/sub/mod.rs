@@ -12,6 +12,8 @@ mod saving_throw;
 pub use saving_throw::*;
 mod elemental;
 pub use elemental::*;
+mod toggle;
+pub use toggle::*;
 
 
 #[macro_export]

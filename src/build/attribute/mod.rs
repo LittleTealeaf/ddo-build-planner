@@ -1,11 +1,10 @@
 use crate::attributes;
 
-use super::bonus::{types::BonusType, Bonus, source::Source};
+use super::bonus::{source::Source, types::BonusType, Bonus};
 
 pub(crate) mod macros;
 mod sub;
 pub use sub::*;
-
 
 fn no_children(_: f32, _: Source) -> Vec<Bonus> {
     Vec::new()
@@ -68,6 +67,10 @@ attributes!(
     ),
     Damage() => (
         String::from("Damage"),
+        no_children
+    ),
+    Toggle(toggle: Toggle) => (
+        format!("Toggle: {}", toggle.to_string()),
         no_children
     )
 );
