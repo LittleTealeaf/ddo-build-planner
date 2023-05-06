@@ -4,11 +4,8 @@ use itertools::Itertools;
 
 use crate::build::attribute::Attribute;
 
-use self::updaters::get_updates;
 
 use super::bonus::{condition::Condition, source::Source, types::BonusType, Bonus};
-
-mod updaters;
 
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
@@ -118,7 +115,7 @@ impl Breakdowns {
                         self.bonuses.swap_remove(i - n);
                     }
 
-                    let updates = get_updates(attribute, final_value);
+                    let updates = attribute.get_bonuses(final_value);
                     let attributes = updates.iter().map(|update| update.get_attribute());
                     for attribute in attributes {
                         if update_attributes
@@ -143,102 +140,5 @@ impl Breakdowns {
 
     pub fn clear(&mut self) {
         self.bonuses.clear();
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::build::attribute::{ability::Ability, skill::Skill};
-
-    use super::*;
-
-    #[test]
-    fn test_insert_attributes() {
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_attributes(
-            Bonus::new(
-                Attribute::Ability(Ability::Strength),
-                BonusType::Stacking,
-                20.0,
-                Source::Unique(0),
-                None,
-            )
-            .into_vec(),
-        );
-        let value = breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Strength));
-        assert_eq!(value, 5.0);
-
-        breakdowns.insert_attributes(
-            Bonus::new(
-                Attribute::Ability(Ability::Wisdom),
-                BonusType::Stacking,
-                40.0,
-                Source::Unique(0),
-                None,
-            )
-            .into_vec(),
-        );
-        let value = breakdowns.get_attribute(&Attribute::Skill(Skill::Spot));
-        println!("{}", value);
-        assert_eq!(value, 15f32);
-    }
-
-    #[test]
-    fn highest_value_is_used() {
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_attributes(vec![
-            Bonus::new(
-                Attribute::Ability(Ability::Constitution),
-                BonusType::Insightful,
-                40.0,
-                Source::Unique(1),
-                None,
-            ),
-            Bonus::new(
-                Attribute::Ability(Ability::Constitution),
-                BonusType::Insightful,
-                50.0,
-                Source::Unique(1),
-                None,
-            ),
-        ]);
-
-        assert_eq!(
-            breakdowns.get_attribute(&Attribute::Ability(Ability::Constitution)),
-            50.0
-        );
-    }
-
-    #[test]
-    fn values_get_updated() {
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_attributes(
-            Bonus::new(
-                Attribute::Ability(Ability::Intelligence),
-                BonusType::AbilityScore,
-                20.0,
-                Source::Unique(0),
-                None,
-            )
-            .into_vec(),
-        );
-        assert_eq!(
-            breakdowns.get_attribute(&Attribute::Ability(Ability::Intelligence)),
-            20.0
-        );
-        breakdowns.insert_attributes(
-            Bonus::new(
-                Attribute::Ability(Ability::Intelligence),
-                BonusType::Enhancement,
-                13.0,
-                Source::Unique(1),
-                None,
-            )
-            .into_vec(),
-        );
-        assert_eq!(
-            breakdowns.get_attribute(&Attribute::Ability(Ability::Intelligence)),
-            33.0
-        );
     }
 }

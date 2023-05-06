@@ -2,7 +2,7 @@ use crate::feats;
 
 use super::{
     attribute::{
-        class_lore::ClassLore, saving_throw::SavingThrow, skill::Skill, spell::SpellSchool,
+        ClassLore, SavingThrow, Skill, SpellSchool,
         Attribute,
     },
     bonus::{types::BonusType, Bonus},

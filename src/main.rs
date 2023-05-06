@@ -1,4 +1,4 @@
-use build::{feat::Feat, attribute::skill::Skill};
+use build::{feat::Feat, attribute::Skill};
 
 mod build;
 

@@ -1,4 +1,4 @@
-use crate::build::attribute::{flag::Flag};
+use crate::build::attribute::Flag;
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum Condition {

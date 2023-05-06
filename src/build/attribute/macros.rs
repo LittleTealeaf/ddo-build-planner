@@ -1,23 +1,4 @@
 #[macro_export]
-macro_rules! attribute_subtype {
-    ($enum: ident, $(($identifier: ident $name: expr)),*) => {
-        #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-        pub enum $enum {
-            $($identifier,)*
-        }
-
-
-        impl ToString for $enum {
-            fn to_string(&self) -> String {
-                String::from(match self {
-                    $(Self::$identifier => $name,)*
-                })
-            }
-        }
-    };
-}
-
-#[macro_export]
 macro_rules! attributes {
     ($enum: ident, $($id: ident($($param_name: ident: $param_type: ty),*) => ($name: expr, $bonuses: expr)),*) => {
         #[derive(Clone, Copy, PartialEq, Eq, Hash)]
@@ -28,13 +9,13 @@ macro_rules! attributes {
         impl ToString for $enum {
             fn to_string(&self) -> String {
                 String::from(match self {
-                    $(Self::$id => $name,)*
+                    $(Self::$id($($param_name),*) => $name,)*
                 })
             }
         }
 
         impl $enum {
-            fn get_bonuses(&self, value: f32) -> Vec<$crate::build::bonus::Bonus> {
+            pub fn get_bonuses(&self, value: f32) -> Vec<$crate::build::bonus::Bonus> {
                 let source = $crate::build::bonus::source::Source::Attribute(self.clone());
                 match self {
                     $(Self::$id($($param_name),*) => $bonuses(value, source),)*
@@ -42,4 +23,18 @@ macro_rules! attributes {
             }
         }
     }
+}
+
+#[macro_export]
+macro_rules! attr_bonus {
+    ($attribute: ident($($param_type: ident::$param_name: ident),*,), $bonus_type: ident, $value: ident, $source: ident) => {
+        $crate::build::bonus::Bonus::new($crate::build::attribute::Attribute::$attribute($($param_name::$param_type,)*), $crate::build::bonus::types::BonusType::$bonus_type, value, source, None)
+    };
+}
+
+#[macro_export]
+macro_rules! no_children {
+    () => {
+        |value, source| Vec::new()
+    };
 }
