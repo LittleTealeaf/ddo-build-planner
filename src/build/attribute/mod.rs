@@ -1,6 +1,6 @@
 use crate::attributes;
 
-use super::bonus::{Bonus, BonusType, Source};
+use super::{bonus::{Bonus, BonusType, Source}, player_class::PlayerClass};
 
 pub(crate) mod macros;
 mod sub;
@@ -71,6 +71,34 @@ attributes!(
     ),
     Damage() => (
         String::from("Damage"),
+        no_children
+    ),
+    HitPoints() => (
+        String::from("Hit Points"),
+        no_children
+    ),
+    HitPointScaler() => (
+        String::from("Hit Points Scalar"),
+        no_children
+    ),
+    SpellPoints() => (
+        String::from("Spell Points"),
+        no_children
+    ),
+    EffectSpellPoints() => (
+        String::from("Effects Spell Points"),
+        no_children
+    ),
+    SpellPointScaler() => (
+        String::from("Spell Point Scaler"),
+        no_children
+    ),
+    EffectSpellPointsScaler() => (
+        String::from("Effects Spell Points Scaler"),
+        no_children
+    ),
+    ClassLevel(player_class: PlayerClass) => (
+        format!("{} Levels", player_class.to_string()),
         no_children
     )
 );

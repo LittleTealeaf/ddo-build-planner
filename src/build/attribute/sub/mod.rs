@@ -14,6 +14,8 @@ mod elemental;
 pub use elemental::*;
 mod toggle;
 pub use toggle::*;
+mod class_levels;
+pub use class_levels::*;
 
 #[macro_export]
 macro_rules! attribute_subtype {
