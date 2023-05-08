@@ -24,10 +24,3 @@ macro_rules! attributes {
         }
     }
 }
-
-#[macro_export]
-macro_rules! no_children {
-    () => {
-        |_, _| Vec::new()
-    };
-}
