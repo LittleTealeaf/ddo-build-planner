@@ -115,9 +115,7 @@ impl Breakdowns {
                 }
             }
 
-            let final_value = self.get_attribute(&attribute);
-
-            if force_update || initial_value != final_value {
+            if force_update || initial_value != self.get_attribute(&attribute) {
                 self.bonuses
                     .iter()
                     .filter(|bonus| {
