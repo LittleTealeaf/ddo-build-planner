@@ -80,6 +80,22 @@ impl Skill {
                 source,
                 None,
             )],
+            Skill::Repair => vec![
+                Bonus::new(
+                    Attribute::SpellPower(SpellDamageType::Repair),
+                    BonusType::Skill,
+                    value,
+                    source,
+                    None
+                ),
+                Bonus::new(
+                    Attribute::SpellPower(SpellDamageType::Rust),
+                    BonusType::Skill,
+                    value,
+                    source,
+                    None
+                ),
+            ],
             _ => Vec::new(),
         }
     }
