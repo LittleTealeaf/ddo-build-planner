@@ -18,16 +18,20 @@ attributes!(
             Bonus::new(Self::AbilityModifier(*ability), BonusType::AbilityModifier, ((value - 10f32) / 2f32).floor(), source, None)
         ]
     ),
+    Flag(flag: Flag) => (
+        flag.to_string(),
+        no_children
+    ),
+    Toggle(toggle: Toggle) => (
+        format!("Toggle: {}", toggle.to_string()),
+        no_children
+    ),
     AbilityModifier(ability: Ability) => (
         format!("{} Modifier", ability.to_string()),
         |value, source|  ability.get_modifier_bonuses(value, source)   ),
     Skill(skill: Skill) => (
         skill.to_string(),
         |value, source| skill.get_bonuses(value, source)
-    ),
-    Flag(flag: Flag) => (
-        flag.to_string(),
-        no_children
     ),
     ClassLore(class_lore: ClassLore) => (
         format!("{} Lore", class_lore.to_string()),
@@ -67,10 +71,6 @@ attributes!(
     ),
     Damage() => (
         String::from("Damage"),
-        no_children
-    ),
-    Toggle(toggle: Toggle) => (
-        format!("Toggle: {}", toggle.to_string()),
         no_children
     )
 );
