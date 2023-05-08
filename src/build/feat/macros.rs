@@ -30,7 +30,7 @@ macro_rules! feats {
 
         impl $crate::build::bonus::bonuses::Bonuses for $enum {
             fn get_bonuses(&self) -> Vec<$crate::build::bonus::Bonus> {
-                let source = $crate::build::bonus::source::Source::$source(self.clone());
+                let source = $crate::build::bonus::source::Source::$source(self.clone().into());
                 match self {
                     $(Self::$entry($($parameter_name),*) => $bonuses(source),)*
                 }
