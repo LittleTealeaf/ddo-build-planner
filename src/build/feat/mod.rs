@@ -9,7 +9,6 @@ mod macros;
 
 feats!(
     Feat,
-    Feat,
     SkillFocus(skill: Skill) => (
         format!("Skill Focus: {}", skill.to_string()),
         format!("Grants a +3 bonus to {}", skill.to_string()),

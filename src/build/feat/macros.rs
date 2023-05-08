@@ -1,6 +1,6 @@
 #[macro_export]
 macro_rules! feats {
-    ($enum: ident, $source: ident, $($entry: ident ($($parameter_name: ident: $parameter_type: ty),*) => ($name: expr, $description: expr, $bonuses: expr)),*) => {
+    ($enum: ident, $($entry: ident ($($parameter_name: ident: $parameter_type: ty),*) => ($name: expr, $description: expr, $bonuses: expr)),*) => {
         #[derive(Clone, Copy, PartialEq, Eq, Hash)]
         pub enum $enum {
             $($entry($($parameter_type),*)),*
@@ -30,7 +30,7 @@ macro_rules! feats {
 
         impl $crate::build::bonus::bonuses::Bonuses for $enum {
             fn get_bonuses(&self) -> Vec<$crate::build::bonus::Bonus> {
-                let source = $crate::build::bonus::source::Source::$source(self.clone().into());
+                let source = $crate::build::bonus::source::Source::Feat(self.clone().into());
                 match self {
                     $(Self::$entry($($parameter_name),*) => $bonuses(source),)*
                 }
