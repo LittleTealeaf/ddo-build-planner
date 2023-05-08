@@ -6,6 +6,8 @@ pub(crate) mod macros;
 mod sub;
 pub use sub::*;
 
+// TODO: Revert back to manual implementations (for optimization purposes)
+
 fn no_children(_: f32, _: Source) -> Vec<Bonus> {
     Vec::new()
 }

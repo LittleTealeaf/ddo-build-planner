@@ -17,6 +17,8 @@ pub use toggle::*;
 mod class_levels;
 pub use class_levels::*;
 
+// TODO: Move this to a more generlized area
+
 #[macro_export]
 macro_rules! attribute_subtype {
     ($enum: ident, $(($identifier: ident $name: expr)),*) => {
