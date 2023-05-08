@@ -1,5 +1,5 @@
 use crate::build::{
-    bonus::{Bonuses, Bonus},
+    bonus::{Bonus, Bonuses},
     feat::Feat,
 };
 

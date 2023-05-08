@@ -5,8 +5,8 @@ use itertools::Itertools;
 use crate::build::attribute::Attribute;
 
 use super::{
-    attribute::{Flag, Toggle},
-    bonus::{Condition, Source, BonusType, Bonus},
+    attribute::Toggle,
+    bonus::{Bonus, BonusType, Condition, Source},
 };
 
 pub struct Breakdowns {
@@ -34,26 +34,22 @@ impl Breakdowns {
         value
     }
 
-    fn get_flags(&self) -> Vec<Flag> {
-        self.bonuses
-            .iter()
-            .filter_map(|item| match item.get_attribute() {
-                Attribute::Flag(flag) => Some(flag),
-                _ => None,
-            })
-            .collect()
-    }
-
     fn calculate_attribute(&self, attribute: &Attribute) -> f32 {
         let mut values: HashMap<BonusType, f32> = HashMap::new();
-
-        let flags = self.get_flags();
 
         let bonuses = self.bonuses.iter().filter(|bonus| {
             &bonus.get_attribute() == attribute
                 && (bonus.get_condition().iter().all(|flag| match flag {
-                    Condition::Flag(flag) => (&flags).contains(flag),
-                    Condition::NoFlag(flag) => !(&flags).contains(flag),
+                    Condition::Has(attribute) => self.calculate_attribute(attribute) > 0f32,
+                    Condition::Equals(attribute, value) => {
+                        self.calculate_attribute(attribute) == *value
+                    }
+                    Condition::Minimum(attribute, value) => {
+                        self.calculate_attribute(attribute) >= *value
+                    }
+                    Condition::Maximum(attribute, value) => {
+                        self.calculate_attribute(attribute) <= *value
+                    }
                 }))
         });
 
@@ -119,28 +115,30 @@ impl Breakdowns {
                 }
             }
 
-            if force_update || initial_value != self.get_attribute(&attribute) {
-                if let Attribute::Flag(attribute_flag) = attribute {
-                    for attribute in self
-                        .bonuses
-                        .iter()
-                        .filter(|bonus| {
-                            bonus
-                                .get_condition()
-                                .iter()
-                                .any(|condition| match condition {
-                                    Condition::Flag(flag) | Condition::NoFlag(flag) => {
-                                        flag.eq(&attribute_flag)
-                                    }
-                                })
-                        })
-                        .map(|bonus| bonus.get_attribute())
-                    {
-                        if attribute_queue.iter().any(|(attr, _)| attr.eq(&attribute)) {
-                            attribute_queue.push_back((attribute, true));
+            let final_value = self.get_attribute(&attribute);
+
+            if force_update || initial_value != final_value {
+                self.bonuses
+                    .iter()
+                    .filter(|bonus| {
+                        bonus
+                            .get_condition()
+                            .iter()
+                            .any(|condition| match condition {
+                                Condition::Has(attr)
+                                | Condition::Equals(attr, _)
+                                | Condition::Minimum(attr, _)
+                                | Condition::Maximum(attr, _) => attribute.eq(attr),
+                            })
+                    })
+                    .map(|bonus| bonus.get_attribute())
+                    .unique()
+                    .for_each(|attribute| {
+                        let queue = &mut attribute_queue;
+                        if !queue.iter().any(|(attr, _)| attr.eq(&attribute)) {
+                            queue.push_back((attribute, true));
                         }
-                    }
-                }
+                    });
 
                 let source = Source::Attribute(attribute);
 

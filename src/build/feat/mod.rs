@@ -2,11 +2,11 @@ use crate::feats;
 
 use super::{
     attribute::*,
-    bonus::{BonusType, Bonus},
+    bonus::{Bonus, BonusType},
 };
 
-mod macros;
 mod categories;
+mod macros;
 pub use categories::*;
 
 feats!(

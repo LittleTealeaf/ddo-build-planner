@@ -2,7 +2,7 @@ use build::attribute::{Ability, SpellDamageType, SpellSchool};
 use build::bonus::Source;
 use build::{
     attribute::{Attribute, Skill},
-    bonus::{BonusType, Bonus},
+    bonus::{Bonus, BonusType},
     breakdowns::Breakdowns,
     feat::Feat,
 };

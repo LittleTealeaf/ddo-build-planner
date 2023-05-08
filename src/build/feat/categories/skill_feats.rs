@@ -1,5 +1,11 @@
-use crate::{feats, build::{attribute::{Skill, Attribute, SavingThrow}, bonus::{Bonus, BonusType}, feat::Feat}};
-
+use crate::{
+    build::{
+        attribute::{Attribute, SavingThrow, Skill},
+        bonus::{Bonus, BonusType},
+        feat::Feat,
+    },
+    feats,
+};
 
 feats!(
     SkillFeat,

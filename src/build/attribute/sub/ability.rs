@@ -2,7 +2,7 @@ use crate::{
     attribute_subtype,
     build::{
         attribute::Attribute,
-        bonus::{Condition, Source, BonusType, Bonus},
+        bonus::{Bonus, BonusType, Condition, Source},
     },
 };
 
@@ -177,14 +177,18 @@ impl Ability {
             BonusType::AbilityModifier,
             value,
             source,
-            Some(vec![Condition::Flag(Flag::AbilityToAttack(*self))]),
+            Some(vec![Condition::Has(Attribute::Flag(
+                Flag::AbilityToAttack(*self),
+            ))]),
         ));
         bonuses.push(Bonus::new(
             Attribute::Damage(),
             BonusType::AbilityModifier,
             value,
             source,
-            Some(vec![Condition::Flag(Flag::AbilityToDamage(*self))]),
+            Some(vec![Condition::Has(Attribute::Flag(
+                Flag::AbilityToDamage(*self),
+            ))]),
         ));
         for saving_throw in [
             SavingThrow::Reflex,
@@ -196,9 +200,8 @@ impl Ability {
                 BonusType::AbilityModifier,
                 value,
                 source,
-                Some(vec![Condition::Flag(Flag::AbilityToSavingThrow(
-                    *self,
-                    saving_throw,
+                Some(vec![Condition::Has(Attribute::Flag(
+                    Flag::AbilityToSavingThrow(*self, saving_throw),
                 ))]),
             ));
         }
