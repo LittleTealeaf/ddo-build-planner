@@ -13,6 +13,6 @@ macro_rules! flatten_vecs {
                     combined_vec.push(item);
                 }
             }
-        } 
+        }
     };
 }

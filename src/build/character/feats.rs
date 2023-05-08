@@ -1,5 +1,6 @@
 use crate::build::{
-    bonus::{bonuses::Bonuses, Bonus}, feat::Feat,
+    bonus::{bonuses::Bonuses, Bonus},
+    feat::Feat,
 };
 
 pub struct CharacterFeats {

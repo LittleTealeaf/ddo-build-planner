@@ -1,10 +1,7 @@
 use crate::feats;
 
 use super::{
-    attribute::{
-        ClassLore, SavingThrow, Skill, SpellSchool,
-        Attribute,
-    },
+    attribute::{Attribute, ClassLore, SavingThrow, Skill, SpellSchool},
     bonus::{types::BonusType, Bonus},
 };
 

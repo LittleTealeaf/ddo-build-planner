@@ -1,22 +1,15 @@
-
-
 pub enum ItemType {
-    Weapon(WeaponType)
+    Weapon(WeaponType),
 }
 
-
-pub enum EquipmentType {
-
-}
-
+pub enum EquipmentType {}
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum WeaponType {
     Simple(SimpleWeapon),
     Martial(MartialWeapon),
-    Exotic(ExoticWeapon)
+    Exotic(ExoticWeapon),
 }
-
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
 pub enum SimpleWeapon {
@@ -25,7 +18,7 @@ pub enum SimpleWeapon {
     Dart,
     Quarterstaff,
     Sickle,
-    Unarmed
+    Unarmed,
 }
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
@@ -49,7 +42,7 @@ pub enum MartialWeapon {
     Shortbow,
     ThrowingAxe,
     ThrowingHammer,
-    Warhammer
+    Warhammer,
 }
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
@@ -62,7 +55,7 @@ pub enum ExoticWeapon {
     Khopesh,
     RepeatingHeavyCrossbow,
     RepeatingLightCrossbow,
-    Shuriken
+    Shuriken,
 }
 
 #[derive(Clone, PartialEq, Eq, Hash, Copy)]
@@ -70,5 +63,5 @@ pub enum ArmorType {
     Cloth,
     Light,
     Medium,
-    Heavy
+    Heavy,
 }

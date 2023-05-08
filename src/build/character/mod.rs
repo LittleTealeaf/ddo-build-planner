@@ -1,6 +1,4 @@
 mod feats;
 pub use feats::*;
 
-pub struct Character {
-
-}
+pub struct Character {}

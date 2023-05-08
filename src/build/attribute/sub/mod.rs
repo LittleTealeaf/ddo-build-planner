@@ -15,7 +15,6 @@ pub use elemental::*;
 mod toggle;
 pub use toggle::*;
 
-
 #[macro_export]
 macro_rules! attribute_subtype {
     ($enum: ident, $(($identifier: ident $name: expr)),*) => {
