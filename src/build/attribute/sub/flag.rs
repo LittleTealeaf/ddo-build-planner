@@ -1,3 +1,5 @@
+use crate::build::attribute::Attribute;
+
 use super::{Ability, SavingThrow, Toggle};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
@@ -20,5 +22,11 @@ impl ToString for Flag {
             ),
             Self::Toggle(toggle) => toggle.to_string(),
         })
+    }
+}
+
+impl From<Flag> for Attribute {
+    fn from(value: Flag) -> Self {
+        Attribute::Flag(value)
     }
 }
