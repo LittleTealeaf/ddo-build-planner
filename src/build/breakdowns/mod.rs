@@ -6,7 +6,7 @@ use crate::build::attribute::Attribute;
 
 use super::{
     attribute::{Flag, Toggle},
-    bonus::{condition::Condition, source::Source, types::BonusType, Bonus},
+    bonus::{Condition, Source, BonusType, Bonus},
 };
 
 pub struct Breakdowns {

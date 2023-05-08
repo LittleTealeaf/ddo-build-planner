@@ -1,6 +1,6 @@
 use crate::attributes;
 
-use super::bonus::{source::Source, types::BonusType, Bonus};
+use super::bonus::{Source, BonusType, Bonus};
 
 pub(crate) mod macros;
 mod sub;

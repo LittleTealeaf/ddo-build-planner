@@ -2,7 +2,7 @@ use crate::{
     attribute_subtype,
     build::{
         attribute::Attribute,
-        bonus::{source::Source, types::BonusType, Bonus},
+        bonus::{Source, BonusType, Bonus},
     },
 };
 

@@ -16,7 +16,7 @@ macro_rules! attributes {
 
         impl $enum {
             pub fn get_bonuses(&self, value: f32) -> Vec<$crate::build::bonus::Bonus> {
-                let source = $crate::build::bonus::source::Source::Attribute(self.clone());
+                let source = $crate::build::bonus::Source::Attribute(self.clone());
                 match self {
                     $(Self::$id($($param_name),*) => $bonuses(value, source),)*
                 }

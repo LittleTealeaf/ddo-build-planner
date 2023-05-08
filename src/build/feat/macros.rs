@@ -28,9 +28,9 @@ macro_rules! feats {
             }
         }
 
-        impl $crate::build::bonus::bonuses::Bonuses for $enum {
+        impl $crate::build::bonus::Bonuses for $enum {
             fn get_bonuses(&self) -> Vec<$crate::build::bonus::Bonus> {
-                let source = $crate::build::bonus::source::Source::Feat(self.clone().into());
+                let source = $crate::build::bonus::Source::Feat(self.clone().into());
                 match self {
                     $(Self::$entry($($parameter_name),*) => $bonuses(source),)*
                 }

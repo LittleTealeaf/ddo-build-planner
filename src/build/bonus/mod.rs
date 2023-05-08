@@ -1,11 +1,13 @@
-use self::{condition::Condition, source::Source, types::BonusType};
-
 use super::attribute::Attribute;
 
-pub mod bonuses;
-pub mod condition;
-pub mod source;
-pub mod types;
+mod bonuses;
+pub use bonuses::*;
+mod condition;
+pub use condition::*;
+mod source;
+pub use source::*;
+mod types;
+pub use types::*;
 
 #[derive(Clone)]
 pub struct Bonus {

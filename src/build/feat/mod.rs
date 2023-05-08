@@ -2,7 +2,7 @@ use crate::feats;
 
 use super::{
     attribute::{Attribute, ClassLore, SavingThrow, Skill, SpellSchool},
-    bonus::{types::BonusType, Bonus},
+    bonus::{BonusType, Bonus},
 };
 
 mod macros;
