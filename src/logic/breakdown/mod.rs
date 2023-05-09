@@ -72,17 +72,17 @@ impl Breakdowns {
         {
             let sources = bonuses.iter().map(Bonus::get_source).unique().collect_vec();
 
-            for (n, i) in self
-                .bonuses
+            self.bonuses
                 .iter()
                 .enumerate()
-                .filter(|(_, item)| (&sources).contains(&item.get_source()))
+                .filter(|(_, item)| sources.contains(&item.get_source()))
                 .map(|(i, _)| i)
                 .enumerate()
                 .collect_vec()
-            {
-                self.bonuses.swap_remove(i - n);
-            }
+                .into_iter()
+                .for_each(|(n, i)| {
+                    self.bonuses.swap_remove(i - n);
+                });
         }
 
         // The queue of attributes that still need to be processed
@@ -141,38 +141,39 @@ impl Breakdowns {
 
                 let source = BonusSource::Attribute(attribute);
 
-                for (n, i) in self
-                    .bonuses
+                self.bonuses
                     .iter()
                     .enumerate()
                     .filter(|(_, item)| item.get_source().eq(&source))
                     .map(|(i, _)| i)
                     .enumerate()
                     .collect_vec()
-                {
-                    self.bonuses.swap_remove(i - n);
-                }
+                    .into_iter()
+                    .for_each(|(n, i)| {
+                        self.bonuses.swap_remove(i - n);
+                    });
 
-                for (attribute, mut insert_bonuses) in attribute
+                attribute
                     .get_attribute_bonuses(self.get_attribute(&attribute))
                     .unwrap()
                     .into_iter()
                     .map(|bonus| (bonus.get_attribute(), bonus))
                     .into_group_map()
-                {
-                    insert_bonuses.append(
-                        &mut update_bonuses
-                            .remove(&attribute)
-                            .unwrap_or(Vec::new())
-                            .into_iter()
-                            .filter(|item| item.get_source().ne(&source))
-                            .collect_vec(),
-                    );
-                    update_bonuses.insert(attribute, insert_bonuses);
-                    if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
-                        attribute_queue.push_back((attribute, false));
-                    }
-                }
+                    .into_iter()
+                    .for_each(|(attribute, mut insert_bonuses)| {
+                        insert_bonuses.append(
+                            &mut update_bonuses
+                                .remove(&attribute)
+                                .unwrap_or(Vec::new())
+                                .into_iter()
+                                .filter(|item| item.get_source().ne(&source))
+                                .collect_vec(),
+                        );
+                        update_bonuses.insert(attribute, insert_bonuses);
+                        if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
+                            attribute_queue.push_back((attribute, false));
+                        }
+                    })
             }
         }
     }
