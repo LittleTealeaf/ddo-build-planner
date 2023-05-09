@@ -18,6 +18,9 @@ pub enum Attribute {
     SpellCriticalChance(SpellPower),
     SpellCriticalDamage(SpellPower),
     SpellFocus(SpellSchool),
+    SavingThrow(SavingThrow),
+    ElementalAbsortion(ElementalType),
+    ElementalResistance(ElementalType),
 }
 
 impl ToString for Attribute {
@@ -37,6 +40,9 @@ impl ToString for Attribute {
                 format!("{} Spell Critical Damage", spell_damage_type.to_string())
             }
             Attribute::SpellFocus(school) => format!("Spell Focus: {}", school.to_string()),
+            Attribute::SavingThrow(saving_throw) => format!("{} Saving Throw", saving_throw.to_string()),
+            Attribute::ElementalAbsortion(element) => format!("{} Absorption", element.to_string()),
+            Attribute::ElementalResistance(element) => format!("{} Resistance", element.to_string()),
         }
     }
 }
@@ -55,7 +61,8 @@ impl Attribute {
             }
             Attribute::SpellCriticalDamage(SpellPower::Universal) => {
                 Some(spell_power_universal_to_others!(SpellCriticalDamage, value))
-            }
+            },
+            Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value)
             _ => None,
         }
     }

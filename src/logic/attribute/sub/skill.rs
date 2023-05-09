@@ -1,151 +1,45 @@
-use crate::logic::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
-};
+use crate::{logic::bonus::Bonus, simple_attribute_enum};
 
-use super::SpellPower;
+simple_attribute_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "Disable Device", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device"));
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
-pub enum Skill {
-    Balance,
-    Bluff,
-    Concentration,
-    Diplomacy,
-    DisableDevice,
-    Haggle,
-    Heal,
-    Hide,
-    Intimidate,
-    Jump,
-    Listen,
-    MoveSilently,
-    OpenLock,
-    Perform,
-    Repair,
-    Search,
-    SpellCraft,
-    Spot,
-    Swim,
-    Tumble,
-    UseMagicalDevice,
+macro_rules! skill_spell_power {
+    ($skill: ident, $spellpower: ident, $value: expr) => {
+        Bonus::new(
+            $crate::logic::attribute::Attribute::SpellPower(
+                $crate::logic::attribute::SpellPower::$spellpower,
+            ),
+            $crate::logic::bonus::BonusType::Stacking,
+            $value,
+            $crate::logic::bonus::BonusSource::Attribute(
+                $crate::logic::attribute::Attribute::Skill(Skill::$skill),
+            ),
+            None,
+        )
+    };
 }
 
 impl Skill {
     pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Skill::Heal => Some(vec![
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Positive),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::Heal)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Negative),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::Heal)),
-                    None,
-                ),
+                skill_spell_power!(Heal, Positive, value),
+                skill_spell_power!(Heal, Negative, value),
             ]),
-            Skill::Perform => Some(vec![Bonus::new(
-                Attribute::SpellPower(SpellPower::Sonic),
-                BonusType::Stacking,
-                value,
-                BonusSource::Attribute(Attribute::Skill(Skill::Heal)),
-                None,
-            )]),
+            Skill::Perform => Some(vec![skill_spell_power!(Perform, Sonic, value)]),
             Skill::SpellCraft => Some(vec![
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Acid),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::SpellCraft)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Cold),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::SpellCraft)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Electric),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::SpellCraft)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Fire),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::SpellCraft)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Force),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::SpellCraft)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Light),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::SpellCraft)),
-                    None,
-                ),
-                // TODO: Figure out which skill improves poison spell power
+                skill_spell_power!(SpellCraft, Acid, value),
+                skill_spell_power!(SpellCraft, Cold, value),
+                skill_spell_power!(SpellCraft, Electric, value),
+                skill_spell_power!(SpellCraft, Fire, value),
+                skill_spell_power!(SpellCraft, Force, value),
+                skill_spell_power!(SpellCraft, Light, value),
+                skill_spell_power!(SpellCraft, Poison, value),
             ]),
             Skill::Repair => Some(vec![
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Rust),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::Repair)),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::SpellPower(SpellPower::Repair),
-                    BonusType::Stacking,
-                    value,
-                    BonusSource::Attribute(Attribute::Skill(Skill::Repair)),
-                    None,
-                ),
+                skill_spell_power!(Repair, Rust, value),
+                skill_spell_power!(Repair, Repair, value),
             ]),
             _ => None,
         }
-    }
-}
-
-impl ToString for Skill {
-    fn to_string(&self) -> String {
-        String::from(match self {
-            Skill::Balance => "Balance",
-            Skill::Bluff => "Bluff",
-            Skill::Concentration => "Concentration",
-            Skill::Diplomacy => "Diplomacy",
-            Skill::DisableDevice => "Disable Device",
-            Skill::Haggle => "Haggle",
-            Skill::Heal => "Heal",
-            Skill::Hide => "Hide",
-            Skill::Intimidate => "Intimidate",
-            Skill::Jump => "Jump",
-            Skill::Listen => "Listen",
-            Skill::MoveSilently => "Move Silently",
-            Skill::OpenLock => "Open Lock",
-            Skill::Perform => "Perform",
-            Skill::Repair => "Repair",
-            Skill::Search => "Search",
-            Skill::SpellCraft => "Spell Craft",
-            Skill::Spot => "Spot",
-            Skill::Swim => "Swim",
-            Skill::Tumble => "Tumble",
-            Skill::UseMagicalDevice => "Use Magical Device",
-        })
     }
 }

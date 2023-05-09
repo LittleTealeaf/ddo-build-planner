@@ -2,16 +2,19 @@
 pub enum SpellPower {
     Universal,
     Acid,
-    Fire,
-    Electric,
-    Cold,
-    Positive,
-    Negative,
-    Sonic,
-    Force,
     Light,
+    Cold,
+    Electric,
+    Evil,
+    Fire,
+    Force,
+    Negative,
+    Poison,
+    Physical,
+    Positive,
     Repair,
     Rust,
+    Sonic,
 }
 
 impl ToString for SpellPower {
@@ -29,6 +32,9 @@ impl ToString for SpellPower {
             SpellPower::Repair => "Repair",
             SpellPower::Rust => "Rust",
             SpellPower::Universal => "Universal",
+            SpellPower::Evil => "Evil",
+            SpellPower::Poison => "Poison",
+            SpellPower::Physical => "Physica;",
         })
     }
 }
@@ -65,6 +71,9 @@ macro_rules! spell_power_universal_to_others {
             $crate::spell_power_universal_to_other_helper!($attribute, Light, $value),
             $crate::spell_power_universal_to_other_helper!($attribute, Repair, $value),
             $crate::spell_power_universal_to_other_helper!($attribute, Rust, $value),
+            $crate::spell_power_universal_to_other_helper!($attribute, Evil, $value),
+            $crate::spell_power_universal_to_other_helper!($attribute, Poison, $value),
+            $crate::spell_power_universal_to_other_helper!($attribute, Physical, $value),
         ]
     };
 }

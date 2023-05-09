@@ -1,32 +1,14 @@
-use crate::logic::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
+use crate::{
+    logic::{
+        attribute::Attribute,
+        bonus::{Bonus, BonusSource, BonusType},
+    },
+    simple_attribute_enum,
 };
 
 use super::Skill;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Ability {
-    Strength,
-    Dexterity,
-    Constitution,
-    Intelligence,
-    Wisdom,
-    Charisma,
-}
-
-impl ToString for Ability {
-    fn to_string(&self) -> String {
-        String::from(match self {
-            Ability::Strength => "Strength",
-            Ability::Dexterity => "Dexterity",
-            Ability::Constitution => "Constitution",
-            Ability::Intelligence => "Intelligence",
-            Ability::Wisdom => "Wisdom",
-            Ability::Charisma => "Charisma",
-        })
-    }
-}
+simple_attribute_enum!(Ability, (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma"));
 
 macro_rules! modifier_skill {
     ($modifier: ident, $skill: ident, $value: expr) => {
