@@ -2,7 +2,6 @@ use crate::logic::attribute::Attribute;
 
 use super::{BonusSource, BonusType, Condition};
 
-
 #[derive(PartialEq, Clone)]
 pub struct Bonus {
     attribute: Attribute,

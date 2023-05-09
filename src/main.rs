@@ -1,5 +1,3 @@
 mod logic;
 
-fn main() {
-
-}
+fn main() {}

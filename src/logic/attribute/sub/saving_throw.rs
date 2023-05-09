@@ -72,3 +72,9 @@ impl SavingThrow {
         }
     }
 }
+
+impl From<SavingThrow> for Attribute {
+    fn from(value: SavingThrow) -> Self {
+        Attribute::SavingThrow(value)
+    }
+}

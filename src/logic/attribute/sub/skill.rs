@@ -1,4 +1,7 @@
-use crate::{logic::bonus::Bonus, simple_attribute_enum};
+use crate::{
+    logic::{attribute::Attribute, bonus::Bonus},
+    simple_attribute_enum,
+};
 
 simple_attribute_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "Disable Device", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device"));
 
@@ -41,5 +44,11 @@ impl Skill {
             ]),
             _ => None,
         }
+    }
+}
+
+impl From<Skill> for Attribute {
+    fn from(value: Skill) -> Self {
+        Attribute::Skill(value)
     }
 }

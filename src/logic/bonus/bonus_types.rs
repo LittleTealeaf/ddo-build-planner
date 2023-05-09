@@ -7,4 +7,6 @@ pub enum BonusType {
     Quality,
     Feat,
     AbilityModifier,
+    Artifact,
+    Legendary,
 }

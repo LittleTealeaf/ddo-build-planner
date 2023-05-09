@@ -10,6 +10,14 @@ mod saving_throw;
 pub use saving_throw::*;
 mod elemental_defenses;
 pub use elemental_defenses::*;
+mod weapon;
+pub use weapon::*;
+mod damage_reduction;
+pub use damage_reduction::*;
+mod offensive;
+pub use offensive::*;
+mod set_bonus;
+pub use set_bonus::*;
 
 #[macro_export]
 macro_rules! simple_attribute_enum {

@@ -21,6 +21,13 @@ pub enum Attribute {
     SavingThrow(SavingThrow),
     ElementalAbsortion(ElementalType),
     ElementalResistance(ElementalType),
+    MagicalSheltering,
+    PhysicalSheltering,
+    MagicalShelteringCap,
+    MainHandWeapon(WeaponStat),
+    OffHandWeapon(WeaponStat),
+    Offensive(Offensive),
+    SetBonus(SetBonus),
 }
 
 impl ToString for Attribute {
@@ -40,9 +47,20 @@ impl ToString for Attribute {
                 format!("{} Spell Critical Damage", spell_damage_type.to_string())
             }
             Attribute::SpellFocus(school) => format!("Spell Focus: {}", school.to_string()),
-            Attribute::SavingThrow(saving_throw) => format!("{} Saving Throw", saving_throw.to_string()),
+            Attribute::SavingThrow(saving_throw) => {
+                format!("{} Saving Throw", saving_throw.to_string())
+            }
             Attribute::ElementalAbsortion(element) => format!("{} Absorption", element.to_string()),
-            Attribute::ElementalResistance(element) => format!("{} Resistance", element.to_string()),
+            Attribute::ElementalResistance(element) => {
+                format!("{} Resistance", element.to_string())
+            }
+            Attribute::MagicalSheltering => String::from("Magical Sheltering"),
+            Attribute::PhysicalSheltering => String::from("Physical Sheltering"),
+            Attribute::MagicalShelteringCap => String::from("Magical Sheltering Cap"),
+            Attribute::MainHandWeapon(attribute) => format!("Main Hand {}", attribute.to_string()),
+            Attribute::OffHandWeapon(attribute) => format!("Off Hand {}", attribute.to_string()),
+            Attribute::Offensive(offensive) => offensive.to_string(),
+            Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
         }
     }
 }
@@ -61,7 +79,7 @@ impl Attribute {
             }
             Attribute::SpellCriticalDamage(SpellPower::Universal) => {
                 Some(spell_power_universal_to_others!(SpellCriticalDamage, value))
-            },
+            }
             Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
             _ => None,
         }
