@@ -1,26 +1,3 @@
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub enum SpellSchool {
-    Abjuration,
-    Conjuration,
-    Divination,
-    Enchantment,
-    Evocation,
-    Illusion,
-    Necromancy,
-    Transmutation,
-}
+use crate::simple_attribute_enum;
 
-impl ToString for SpellSchool {
-    fn to_string(&self) -> String {
-        String::from(match self {
-            SpellSchool::Abjuration => "Abjuration",
-            SpellSchool::Conjuration => "Conjuration",
-            SpellSchool::Divination => "Divintation",
-            SpellSchool::Enchantment => "Enchantment",
-            SpellSchool::Evocation => "Evocation",
-            SpellSchool::Illusion => "Illusion",
-            SpellSchool::Necromancy => "Necromancy",
-            SpellSchool::Transmutation => "Transmutation",
-        })
-    }
-}
+simple_attribute_enum!(SpellSchool, (Abjuration "Abjuration", Conjuration "Conjuration", Divination "Divintation", Enchantment "Enchantment", Evocation "Evocation", Illusion "Illusion", Necromancy "Necromancy", Transmutation "Transmutation"));
