@@ -1,43 +1,6 @@
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub enum SpellPower {
-    Universal,
-    Acid,
-    Light,
-    Cold,
-    Electric,
-    Evil,
-    Fire,
-    Force,
-    Negative,
-    Poison,
-    Physical,
-    Positive,
-    Repair,
-    Rust,
-    Sonic,
-}
+use crate::simple_attribute_enum;
 
-impl ToString for SpellPower {
-    fn to_string(&self) -> String {
-        String::from(match self {
-            SpellPower::Acid => "Acid",
-            SpellPower::Fire => "Fire",
-            SpellPower::Electric => "Electric",
-            SpellPower::Cold => "Cold",
-            SpellPower::Positive => "Positive",
-            SpellPower::Negative => "Negative",
-            SpellPower::Sonic => "Sonic",
-            SpellPower::Force => "Force",
-            SpellPower::Light => "Light",
-            SpellPower::Repair => "Repair",
-            SpellPower::Rust => "Rust",
-            SpellPower::Universal => "Universal",
-            SpellPower::Evil => "Evil",
-            SpellPower::Poison => "Poison",
-            SpellPower::Physical => "Physica;",
-        })
-    }
-}
+simple_attribute_enum!(SpellPower, (Universal "Universal", Acid "Acid", Light "Light", Cold "Cold", Electric "Electric", Evil "Evil", Fire "Fire", Force "Force", Negative "Negative", Poison "Poison", Positive "Positive", Repair "Repair", Rust "Rust", Sonic "Sonic"));
 
 #[macro_export]
 macro_rules! spell_power_universal_to_other_helper {
@@ -73,7 +36,6 @@ macro_rules! spell_power_universal_to_others {
             $crate::spell_power_universal_to_other_helper!($attribute, Rust, $value),
             $crate::spell_power_universal_to_other_helper!($attribute, Evil, $value),
             $crate::spell_power_universal_to_other_helper!($attribute, Poison, $value),
-            $crate::spell_power_universal_to_other_helper!($attribute, Physical, $value),
         ]
     };
 }
