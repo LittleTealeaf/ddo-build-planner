@@ -10,6 +10,7 @@ pub use sub::*;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Attribute {
+    Dummy,
     Feat(Feat),
     AbilityScore(Ability),
     AbilityModifier(Ability),
@@ -61,12 +62,13 @@ impl ToString for Attribute {
             Attribute::OffHandWeapon(attribute) => format!("Off Hand {}", attribute.to_string()),
             Attribute::Offensive(offensive) => offensive.to_string(),
             Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
+            Attribute::Dummy => String::from("Dummy"),
         }
     }
 }
 
 impl Attribute {
-    fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Attribute::AbilityScore(ability) => Some(ability.get_score_bonuses(value)),
             Attribute::AbilityModifier(ability) => Some(ability.get_modifier_bonuses(value)),

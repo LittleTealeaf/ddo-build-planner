@@ -5,7 +5,6 @@ use crate::logic::{
 
 use super::SpellPower;
 
-
 macro_rules! set_bonuses {
     ($($id: ident, $name: expr => ($($count: expr => $bonuses: expr),*)),*) => {
         #[derive(Copy, Clone, PartialEq, Eq, Hash)]
@@ -25,7 +24,9 @@ macro_rules! set_bonuses {
             pub fn get_bonuses(&self, value: f32) -> Option<Vec<$crate::logic::bonus::Bonus>> {
                 match self {
                     $(Self::$id => {
-                        let mut vec = Vec::new();
+                        let mut vec = vec![
+                            Bonus::new(Attribute::Dummy, BonusType::Stacking, 0f32, BonusSource::Attribute(Attribute::SetBonus(SetBonus::$id)), None)
+                        ];
                         $(
                             if value >= $count {
                                 for item in $bonuses {

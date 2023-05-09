@@ -27,4 +27,24 @@ impl Bonus {
             conditions: conditions.unwrap_or(Vec::new()),
         }
     }
+
+    pub fn get_attribute(&self) -> Attribute {
+        self.attribute
+    }
+
+    pub fn get_value(&self) -> f32 {
+        self.value
+    }
+
+    pub fn get_bonus_type(&self) -> BonusType {
+        self.bonus_type
+    }
+
+    pub fn get_source(&self) -> BonusSource {
+        self.source
+    }
+
+    pub fn get_conditions(&self) -> Vec<Condition> {
+        self.conditions.clone()
+    }
 }
