@@ -11,8 +11,6 @@ pub use saving_throw::*;
 mod elemental_defenses;
 pub use elemental_defenses::*;
 
-
-
 #[macro_export]
 macro_rules! simple_attribute_enum {
     ($enum_name: ident, ($($id: ident $name: expr),*)) => {
@@ -24,7 +22,7 @@ macro_rules! simple_attribute_enum {
         impl ToString for $enum_name {
             fn to_string(&self) -> String {
                 String::from(match self {
-                    $($id => $name),*
+                    $(Self::$id => $name),*
                 })
             }
         }
