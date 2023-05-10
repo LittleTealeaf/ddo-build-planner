@@ -49,5 +49,5 @@ macro_rules! spell_power_universal_to_others {
             ),
             None,
         )
-    }
+    };
 }

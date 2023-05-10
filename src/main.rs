@@ -67,8 +67,6 @@ fn main() {
         None,
     )]);
 
-
-
     for (key, value) in breakdowns.get_all_attributes().into_iter() {
         println!("{}: {}", key.to_string(), value);
     }
