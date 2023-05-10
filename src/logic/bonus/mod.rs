@@ -9,7 +9,6 @@ pub use traits::*;
 
 use super::attribute::Attribute;
 
-
 #[derive(PartialEq, Clone)]
 pub struct Bonus {
     attribute: Attribute,

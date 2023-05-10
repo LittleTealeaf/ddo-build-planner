@@ -1,7 +1,10 @@
-use crate::{logic::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
-}, simple_attribute_enum};
+use crate::{
+    logic::{
+        attribute::Attribute,
+        bonus::{Bonus, BonusSource, BonusType},
+    },
+    simple_attribute_enum,
+};
 
 simple_attribute_enum!(SavingThrow, (Fortitude "Fortitude", Poison "Poison", Disease "Disease", Reflex "Reflex", Traps "Traps", Spell "Spell", Magic "Magic", Will "Will", Enchantment "Enchantment", Illusion "Illusion", Fear "Fear", Curse "Curse"));
 

@@ -55,7 +55,6 @@ impl PartialEq for Condition {
                     false
                 }
             }
-
         }
     }
 }
