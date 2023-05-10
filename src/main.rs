@@ -72,5 +72,5 @@ fn main() {
     //     println!("{}: {}", key.to_string(), value);
     // }
 
-    println!("{}", ron::ser::to_string(&breakdowns).unwrap());
+    println!("{}", ron::ser::to_string_pretty(&breakdowns, ron::ser::PrettyConfig::default()).unwrap());
 }
