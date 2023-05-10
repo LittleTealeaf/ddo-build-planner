@@ -3,10 +3,10 @@ use crate::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType},
     },
-    simple_attribute_enum,
+    simple_enum,
 };
 
-simple_attribute_enum!(SavingThrow, (Fortitude "Fortitude", Poison "Poison", Disease "Disease", Reflex "Reflex", Traps "Traps", Spell "Spell", Magic "Magic", Will "Will", Enchantment "Enchantment", Illusion "Illusion", Fear "Fear", Curse "Curse"));
+simple_enum!(SavingThrow, (Fortitude "Fortitude", Poison "Poison", Disease "Disease", Reflex "Reflex", Traps "Traps", Spell "Spell", Magic "Magic", Will "Will", Enchantment "Enchantment", Illusion "Illusion", Fear "Fear", Curse "Curse"));
 
 macro_rules! child_saving_throw {
     ($parent: ident, $child: ident, $value: expr) => {

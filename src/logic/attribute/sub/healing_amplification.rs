@@ -1,3 +1,3 @@
-use crate::simple_attribute_enum;
+use crate::simple_enum;
 
-simple_attribute_enum!(HealingAmplification, (Positive "Positive", Negative "Negative", Repair "Repair"));
+simple_enum!(HealingAmplification, (Positive "Positive", Negative "Negative", Repair "Repair"));

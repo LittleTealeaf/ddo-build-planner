@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::simple_attribute_enum;
+use crate::simple_enum;
 
 use super::DamageReduction;
 
@@ -33,4 +33,4 @@ impl ToString for WeaponStat {
     }
 }
 
-simple_attribute_enum!(WeaponHand, (Both "", MainHand "Main Hand ", OffHand "Off Hand "));
+simple_enum!(WeaponHand, (Both "", MainHand "Main Hand ", OffHand "Off Hand "));

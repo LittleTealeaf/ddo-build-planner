@@ -5,12 +5,12 @@ use crate::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType, Condition},
     },
-    simple_attribute_enum,
+    simple_enum,
 };
 
 use super::{Flag, SavingThrow, Skill, WeaponHand, WeaponStat};
 
-simple_attribute_enum!(Ability, (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma"));
+simple_enum!(Ability, (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma"));
 
 macro_rules! modifier_skill {
     ($modifier: ident, $skill: ident, $value: expr) => {

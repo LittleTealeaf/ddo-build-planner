@@ -1,14 +1,16 @@
-use serde::{Deserialize, Serialize};
+use crate::simple_enum;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BonusType {
-    Stacking,
-    Enhancement,
-    Equipment,
-    Insightful,
-    Quality,
-    Feat,
-    AbilityModifier,
-    Artifact,
-    Legendary,
-}
+simple_enum!(
+    BonusType,
+    (
+        Stacking "Stacking",
+        Enhancement "Enhancement",
+        Equipment "Equipment",
+        Insightful "Insightful",
+        Quality "Quality",
+        Feat "Feat",
+        AbilityModifier "Ability Modifier",
+        Artifact "Artifact",
+        Legendary "Legendary"
+    )
+);
