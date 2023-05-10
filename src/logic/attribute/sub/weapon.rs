@@ -1,4 +1,4 @@
-use crate::{logic::bonus::BonusSource, simple_attribute_enum};
+use crate::simple_attribute_enum;
 
 use super::DamageReduction;
 

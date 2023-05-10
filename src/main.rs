@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use logic::{
     attribute::{Ability, Attribute, SpellPower},
     bonus::{Bonus, BonusSource, BonusType},
