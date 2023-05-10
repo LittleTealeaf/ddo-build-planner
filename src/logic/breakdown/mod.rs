@@ -73,8 +73,6 @@ impl Breakdowns {
     }
 
     fn calculate_attribute(&self, attribute: &Attribute) -> f32 {
-        let mut values = HashMap::new();
-
         self.bonuses
             .iter()
             .filter(|bonus| {
@@ -92,19 +90,27 @@ impl Breakdowns {
                         },
                     ))
             })
-            .for_each(|bonus| {
-                if bonus.get_bonus_type().eq(&BonusType::Stacking) {
-                    let previous_value = values.remove(&BonusType::Stacking).unwrap_or(0f32);
-                    values.insert(BonusType::Stacking, previous_value + bonus.get_value());
-                } else {
-                    let value = bonus.get_value();
-                    if &value > values.get(&bonus.get_bonus_type()).unwrap_or(&0f32) {
-                        values.insert(bonus.get_bonus_type(), value);
+            .map(|bonus| (bonus.get_bonus_type(), bonus.get_value()))
+            .into_group_map()
+            .into_iter()
+            .map(|(bonus_type, items)| {
+                if bonus_type.eq(&BonusType::Stacking) {
+                    let mut total = 0f32;
+                    for item in items {
+                        total += item;
                     }
+                    total
+                } else {
+                    let mut max = 0f32;
+                    for item in items {
+                        if max < item {
+                            max = item;
+                        }
+                    }
+                    max
                 }
-            });
-
-        values.into_values().sum()
+            })
+            .sum()
     }
 
     pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
