@@ -1,42 +1,9 @@
-use crate::logic::{
+use crate::{logic::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType},
-};
+}, simple_attribute_enum};
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub enum SavingThrow {
-    Fortitude,
-    Poison,
-    Disease,
-    Reflex,
-    Traps,
-    Spell,
-    Magic,
-    Will,
-    Enchantment,
-    Illusion,
-    Fear,
-    Curse,
-}
-
-impl ToString for SavingThrow {
-    fn to_string(&self) -> String {
-        String::from(match self {
-            SavingThrow::Fortitude => "Fortitude",
-            SavingThrow::Poison => "Poison",
-            SavingThrow::Disease => "Disease",
-            SavingThrow::Reflex => "Reflex",
-            SavingThrow::Traps => "Traps",
-            SavingThrow::Spell => "Spells",
-            SavingThrow::Magic => "Magic",
-            SavingThrow::Will => "Will",
-            SavingThrow::Enchantment => "Enchantment",
-            SavingThrow::Illusion => "Illusion",
-            SavingThrow::Fear => "Fear",
-            SavingThrow::Curse => "Curse",
-        })
-    }
-}
+simple_attribute_enum!(SavingThrow, (Fortitude "Fortitude", Poison "Poison", Disease "Disease", Reflex "Reflex", Traps "Traps", Spell "Spell", Magic "Magic", Will "Will", Enchantment "Enchantment", Illusion "Illusion", Fear "Fear", Curse "Curse"));
 
 macro_rules! child_saving_throw {
     ($parent: ident, $child: ident, $value: expr) => {
