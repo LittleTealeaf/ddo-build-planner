@@ -78,7 +78,7 @@ impl Breakdowns {
         self.bonuses
             .iter()
             .filter(|bonus| {
-                bonus.get_attribute().eq(&attribute)
+                bonus.get_attribute().eq(attribute)
                     && (bonus.get_conditions().iter().all(
                         |condition: &Condition| match condition {
                             Condition::Has(attr) => self.calculate_attribute(attr) > 0f32,
