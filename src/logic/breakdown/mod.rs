@@ -85,6 +85,8 @@ impl Breakdowns {
                 });
         }
 
+        // Appends "Cloned Bonuses" created from the "get_clone_attributes" function for each of
+        // the bonuses
         bonuses.append(
             &mut bonuses
                 .iter()
@@ -123,7 +125,10 @@ impl Breakdowns {
             .map(|bonus| (bonus.get_attribute(), bonus))
             .into_group_map();
 
+        // Fetch the next attribute to update
         while let Some((attribute, force_update)) = attribute_queue.pop_front() {
+            // Fetches the initial value. If we're forcing the update, we won't care about it if
+            // it's not stored in the cache
             let initial_value = {
                 if let Some(value) = self.cache.remove(&attribute) {
                     value
@@ -133,6 +138,7 @@ impl Breakdowns {
                     self.calculate_attribute(&attribute)
                 }
             };
+            // Inserts the updated bonuses into the stack if they're not 0
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
                 for bonus in bonuses {
                     if bonus.get_value() != 0f32 {
@@ -140,6 +146,9 @@ impl Breakdowns {
                     }
                 }
             }
+
+            // If it's forced updte, or if the initial value is not equal to the current value.
+            // This will coincidentially load the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
                 self.bonuses
                     .iter()
@@ -163,8 +172,10 @@ impl Breakdowns {
                         }
                     });
 
+                //Builds the source for any children bonuses
                 let source = BonusSource::Attribute(attribute);
 
+                // Removes any bonuses that have a source as this attribute
                 self.bonuses
                     .iter()
                     .enumerate()
@@ -177,9 +188,11 @@ impl Breakdowns {
                         self.bonuses.swap_remove(i - n);
                     });
 
+                // Checks if there are any children bonuses
                 if let Some(mut bonuses) =
                     attribute.get_attribute_bonuses(self.get_attribute(&attribute))
                 {
+                    // Includes any cloned attributes into the bonuses list
                     bonuses.append(
                         &mut bonuses
                             .iter()
@@ -204,6 +217,8 @@ impl Breakdowns {
                             .collect_vec(),
                     );
 
+                    // Groups bonuses by attribute, and inserts them into the HashMap
+                    // accordingly
                     bonuses
                         .into_iter()
                         .map(|bonus| (bonus.get_attribute(), bonus))
