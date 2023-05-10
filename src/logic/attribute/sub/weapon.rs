@@ -1,4 +1,4 @@
-use crate::logic::bonus::BonusSource;
+use crate::{logic::bonus::BonusSource, simple_attribute_enum};
 
 use super::DamageReduction;
 
@@ -30,3 +30,5 @@ impl ToString for WeaponStat {
         }
     }
 }
+
+simple_attribute_enum!(WeaponHand, (Both "", MainHand "Main Hand", OffHand "Off Hand"));

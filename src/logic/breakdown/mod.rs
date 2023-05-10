@@ -232,7 +232,7 @@ impl Breakdowns {
 
 #[cfg(test)]
 mod tests {
-    use crate::logic::attribute::{Ability, WeaponStat};
+    use crate::logic::attribute::{Ability, WeaponStat, WeaponHand};
 
     use super::*;
 
@@ -259,7 +259,7 @@ mod tests {
         let mut breakdowns = Breakdowns::new();
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::WeaponStat(WeaponStat::Attack),
+            Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack),
             BonusType::Stacking,
             10f32,
             BonusSource::Unique(2),
@@ -267,7 +267,7 @@ mod tests {
         )]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::MainHandWeapon(WeaponStat::Attack)),
+            breakdowns.get_attribute(&Attribute::WeaponStat(WeaponHand::MainHand, WeaponStat::Attack)),
             10f32
         );
     }

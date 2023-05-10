@@ -1,12 +1,14 @@
+use itertools::Itertools;
+
 use crate::{
     logic::{
         attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType},
+        bonus::{Bonus, BonusSource, BonusType, Condition},
     },
     simple_attribute_enum,
 };
 
-use super::Skill;
+use super::{Flag, Skill, WeaponHand, WeaponStat};
 
 simple_attribute_enum!(Ability, (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma"));
 
@@ -67,6 +69,40 @@ impl Ability {
                 modifier_skill!(Charisma, UseMagicalDevice, value),
             ],
         };
+
+        vec.append(
+            &mut [WeaponHand::Both, WeaponHand::OffHand, WeaponHand::MainHand]
+                .into_iter()
+                .map(|hand| {
+                    Bonus::new(
+                        Attribute::WeaponStat(hand, WeaponStat::Attack),
+                        BonusType::AbilityModifier,
+                        value,
+                        BonusSource::Attribute(Attribute::AbilityModifier(*self)),
+                        Some(vec![Condition::Has(Attribute::Flag(
+                            Flag::AbilityToAttack(hand, *self),
+                        ))]),
+                    )
+                })
+                .collect_vec(),
+        );
+
+        vec.append(
+            &mut [WeaponHand::Both, WeaponHand::OffHand, WeaponHand::MainHand]
+                .into_iter()
+                .map(|hand| {
+                    Bonus::new(
+                        Attribute::WeaponStat(hand, WeaponStat::Damage),
+                        BonusType::AbilityModifier,
+                        value,
+                        BonusSource::Attribute(Attribute::AbilityModifier(*self)),
+                        Some(vec![Condition::Has(Attribute::Flag(
+                            Flag::AbilityToDamage(hand, *self),
+                        ))]),
+                    )
+                })
+                .collect_vec(),
+        );
 
         vec
     }

@@ -25,13 +25,12 @@ pub enum Attribute {
     MagicalSheltering,
     PhysicalSheltering,
     MagicalShelteringCap,
-    WeaponStat(WeaponStat),
-    MainHandWeapon(WeaponStat),
-    OffHandWeapon(WeaponStat),
+    WeaponStat(WeaponHand, WeaponStat),
     Offensive(Offensive),
     SetBonus(SetBonus),
     SpellPoints(SpellPoints),
     HealingAmplification(HealingAmplification),
+    Flag(Flag),
 }
 
 impl ToString for Attribute {
@@ -62,15 +61,16 @@ impl ToString for Attribute {
             Attribute::MagicalSheltering => String::from("Magical Sheltering"),
             Attribute::PhysicalSheltering => String::from("Physical Sheltering"),
             Attribute::MagicalShelteringCap => String::from("Magical Sheltering Cap"),
-            Attribute::MainHandWeapon(attribute) => format!("Main Hand {}", attribute.to_string()),
-            Attribute::OffHandWeapon(attribute) => format!("Off Hand {}", attribute.to_string()),
             Attribute::Offensive(offensive) => offensive.to_string(),
             Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
             Attribute::SpellPoints(spell_points) => spell_points.to_string(),
             Attribute::HealingAmplification(amp_type) => {
                 format!("{} Amplification", amp_type.to_string())
             }
-            Attribute::WeaponStat(weapon_stat) => weapon_stat.to_string(),
+            Attribute::WeaponStat(weapon_hand, weapon_stat) => {
+                format!("{} {}", weapon_hand.to_string(), weapon_stat.to_string())
+            }
+            Attribute::Flag(flag) => flag.to_string(),
         }
     }
 }
@@ -97,9 +97,9 @@ impl Attribute {
 
     pub fn get_clone_attributes(&self) -> Option<Vec<Attribute>> {
         match self {
-            Attribute::WeaponStat(weapon_stat) => Some(vec![
-                Attribute::MainHandWeapon(*weapon_stat),
-                Attribute::OffHandWeapon(*weapon_stat),
+            Attribute::WeaponStat(WeaponHand::Both, weapon_stat) => Some(vec![
+                Attribute::WeaponStat(WeaponHand::MainHand, *weapon_stat),
+                Attribute::WeaponStat(WeaponHand::OffHand, *weapon_stat),
             ]),
             _ => None,
         }

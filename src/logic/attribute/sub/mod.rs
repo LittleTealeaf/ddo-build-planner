@@ -22,6 +22,8 @@ mod spell_points;
 pub use spell_points::*;
 mod healing_amplification;
 pub use healing_amplification::*;
+mod flag;
+pub use flag::*;
 
 #[macro_export]
 macro_rules! simple_attribute_enum {
