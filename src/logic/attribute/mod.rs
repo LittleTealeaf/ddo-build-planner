@@ -29,11 +29,13 @@ pub enum Attribute {
     OffHandWeapon(WeaponStat),
     Offensive(Offensive),
     SetBonus(SetBonus),
+    SpellPoints(SpellPoints),
 }
 
 impl ToString for Attribute {
     fn to_string(&self) -> String {
         match self {
+            Attribute::Dummy => String::from("Dummy"),
             Attribute::Feat(feat) => format!("Feat: {}", feat.to_string()),
             Attribute::AbilityScore(ability) => format!("{} Score", ability.to_string()),
             Attribute::AbilityModifier(ability) => format!("{} Modifier", ability.to_string()),
@@ -62,7 +64,7 @@ impl ToString for Attribute {
             Attribute::OffHandWeapon(attribute) => format!("Off Hand {}", attribute.to_string()),
             Attribute::Offensive(offensive) => offensive.to_string(),
             Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
-            Attribute::Dummy => String::from("Dummy"),
+            Attribute::SpellPoints(spell_points) => spell_points.to_string(),
         }
     }
 }

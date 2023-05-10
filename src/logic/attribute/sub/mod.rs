@@ -18,6 +18,8 @@ mod offensive;
 pub use offensive::*;
 mod set_bonus;
 pub use set_bonus::*;
+mod spell_points;
+pub use spell_points::*;
 
 #[macro_export]
 macro_rules! simple_attribute_enum {
