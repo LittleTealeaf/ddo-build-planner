@@ -2,7 +2,7 @@ use crate::simple_attribute_enum;
 
 simple_attribute_enum!(SpellPower, (Universal "Universal", Acid "Acid", Light "Light", Cold "Cold", Electric "Electric", Evil "Evil", Fire "Fire", Force "Force", Negative "Negative", Poison "Poison", Positive "Positive", Repair "Repair", Rust "Rust", Sonic "Sonic", Potency "Potency"));
 
-pub const PotencyClonedAttributes: [SpellPower; 13] = [
+pub const POTENCY_CLONED_ATTRIBUTES: [SpellPower; 13] = [
     SpellPower::Acid,
     SpellPower::Light,
     SpellPower::Cold,

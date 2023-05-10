@@ -102,7 +102,7 @@ impl Attribute {
                 Attribute::WeaponStat(WeaponHand::OffHand, *weapon_stat),
             ]),
             Attribute::SpellPower(SpellPower::Potency) => Some(
-                PotencyClonedAttributes
+                POTENCY_CLONED_ATTRIBUTES
                     .map(|spell_power| Attribute::SpellPower(spell_power))
                     .to_vec(),
             ),
