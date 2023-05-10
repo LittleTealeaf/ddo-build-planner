@@ -7,6 +7,35 @@ use super::{
     bonus::{Bonus, BonusSource, BonusType, Condition},
 };
 
+/// Builds the child bonuses by taking the bonus, fetching the "clone" attributes from the bonus attribute, and creating a duplicate bonus for each one
+macro_rules! build_child_bonuses {
+    ($bonuses: expr) => {
+        $bonuses.append(
+            &mut $bonuses
+                .iter()
+                .filter_map(|bonus| {
+                    Some(
+                        bonus
+                            .get_attribute()
+                            .get_clone_attributes()?
+                            .into_iter()
+                            .map(|attribute| {
+                                Bonus::new(
+                                    attribute,
+                                    bonus.get_bonus_type(),
+                                    bonus.get_value(),
+                                    bonus.get_source(),
+                                    Some(bonus.get_conditions()),
+                                )
+                            }),
+                    )
+                })
+                .flatten()
+                .collect_vec(),
+        );
+    }
+}
+
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
     cache: HashMap<Attribute, f32>,
@@ -87,29 +116,8 @@ impl Breakdowns {
 
         // Appends "Cloned Bonuses" created from the "get_clone_attributes" function for each of
         // the bonuses
-        bonuses.append(
-            &mut bonuses
-                .iter()
-                .filter_map(|bonus| {
-                    Some(
-                        bonus
-                            .get_attribute()
-                            .get_clone_attributes()?
-                            .into_iter()
-                            .map(|attribute| {
-                                Bonus::new(
-                                    attribute,
-                                    bonus.get_bonus_type(),
-                                    bonus.get_value(),
-                                    bonus.get_source(),
-                                    Some(bonus.get_conditions()),
-                                )
-                            }),
-                    )
-                })
-                .flatten()
-                .collect_vec(),
-        );
+        build_child_bonuses!(bonuses);
+
 
         // The queue of attributes that still need to be processed
         let mut attribute_queue = bonuses
@@ -193,29 +201,7 @@ impl Breakdowns {
                     attribute.get_attribute_bonuses(self.get_attribute(&attribute))
                 {
                     // Includes any cloned attributes into the bonuses list
-                    bonuses.append(
-                        &mut bonuses
-                            .iter()
-                            .filter_map(|bonus| {
-                                Some(
-                                    bonus
-                                        .get_attribute()
-                                        .get_clone_attributes()?
-                                        .into_iter()
-                                        .map(|attribute| {
-                                            Bonus::new(
-                                                attribute,
-                                                bonus.get_bonus_type(),
-                                                bonus.get_value(),
-                                                bonus.get_source(),
-                                                Some(bonus.get_conditions()),
-                                            )
-                                        }),
-                                )
-                            })
-                            .flatten()
-                            .collect_vec(),
-                    );
+                    build_child_bonuses!(bonuses);
 
                     // Groups bonuses by attribute, and inserts them into the HashMap
                     // accordingly
