@@ -1,3 +1,5 @@
+use crate::logic::bonus::BonusSource;
+
 use super::DamageReduction;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]

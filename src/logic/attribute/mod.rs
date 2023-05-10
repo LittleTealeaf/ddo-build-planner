@@ -30,6 +30,7 @@ pub enum Attribute {
     Offensive(Offensive),
     SetBonus(SetBonus),
     SpellPoints(SpellPoints),
+    HealingAmplification(HealingAmplification),
 }
 
 impl ToString for Attribute {
@@ -65,6 +66,9 @@ impl ToString for Attribute {
             Attribute::Offensive(offensive) => offensive.to_string(),
             Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
             Attribute::SpellPoints(spell_points) => spell_points.to_string(),
+            Attribute::HealingAmplification(amp_type) => {
+                format!("{} Amplification", amp_type.to_string())
+            }
         }
     }
 }

@@ -4,4 +4,5 @@ use crate::logic::{attribute::Attribute, feat::Feat};
 pub enum BonusSource {
     Attribute(Attribute),
     Feat(Feat),
+    Unique(usize),
 }
