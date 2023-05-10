@@ -101,6 +101,11 @@ impl Attribute {
                 Attribute::WeaponStat(WeaponHand::MainHand, *weapon_stat),
                 Attribute::WeaponStat(WeaponHand::OffHand, *weapon_stat),
             ]),
+            Attribute::SpellPower(SpellPower::Potency) => Some(
+                PotencyClonedAttributes
+                    .map(|spell_power| Attribute::SpellPower(spell_power))
+                    .to_vec(),
+            ),
             _ => None,
         }
     }
