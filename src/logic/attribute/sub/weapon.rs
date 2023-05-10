@@ -31,4 +31,4 @@ impl ToString for WeaponStat {
     }
 }
 
-simple_attribute_enum!(WeaponHand, (Both "", MainHand "Main Hand", OffHand "Off Hand"));
+simple_attribute_enum!(WeaponHand, (Both "", MainHand "Main Hand ", OffHand "Off Hand "));

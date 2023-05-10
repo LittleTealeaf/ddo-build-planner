@@ -68,7 +68,7 @@ impl ToString for Attribute {
                 format!("{} Amplification", amp_type.to_string())
             }
             Attribute::WeaponStat(weapon_hand, weapon_stat) => {
-                format!("{} {}", weapon_hand.to_string(), weapon_stat.to_string())
+                format!("{}{}", weapon_hand.to_string(), weapon_stat.to_string())
             }
             Attribute::Flag(flag) => flag.to_string(),
         }

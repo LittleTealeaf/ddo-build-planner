@@ -61,31 +61,36 @@ impl Breakdowns {
         value
     }
 
+    pub fn get_all_attributes(&mut self) -> HashMap<Attribute, f32> {
+        self.bonuses
+            .iter()
+            .map(Bonus::get_attribute)
+            .unique()
+            .collect_vec()
+            .into_iter()
+            .map(|attribute| (attribute, self.get_attribute(&attribute)))
+            .collect()
+    }
+
     fn calculate_attribute(&self, attribute: &Attribute) -> f32 {
         let mut values = HashMap::new();
 
         self.bonuses
             .iter()
             .filter(|bonus| {
-                &bonus.get_attribute() == attribute
-                    && (bonus.get_conditions().iter().all(|flag| match flag {
-                        Condition::Has(attribute) => self.calculate_attribute(attribute) >= 0f32,
-                        Condition::NotHave(attribute) => {
-                            self.calculate_attribute(attribute) == 0f32
-                        }
-                        Condition::Eq(attribute, value) => {
-                            self.calculate_attribute(attribute) == *value
-                        }
-                        Condition::Max(attribute, value) => {
-                            self.calculate_attribute(attribute) >= *value
-                        }
-                        Condition::Min(attribute, value) => {
-                            self.calculate_attribute(attribute) <= *value
-                        }
-                        Condition::NotEq(attribute, value) => {
-                            self.calculate_attribute(attribute) != *value
-                        }
-                    }))
+                bonus.get_attribute().eq(&attribute)
+                    && (bonus.get_conditions().iter().all(
+                        |condition: &Condition| match condition {
+                            Condition::Has(attr) => self.calculate_attribute(attr) > 0f32,
+                            Condition::NotHave(attr) => self.calculate_attribute(attr) == 0f32,
+                            Condition::Eq(attr, value) => self.calculate_attribute(attr) == *value,
+                            Condition::Max(attr, value) => self.calculate_attribute(attr) >= *value,
+                            Condition::Min(attr, value) => self.calculate_attribute(attr) <= *value,
+                            Condition::NotEq(attr, value) => {
+                                self.calculate_attribute(attr) != *value
+                            }
+                        },
+                    ))
             })
             .for_each(|bonus| {
                 if bonus.get_bonus_type().eq(&BonusType::Stacking) {
@@ -99,10 +104,23 @@ impl Breakdowns {
                 }
             });
 
-        values.into_values().sum()
+        let value = values.into_values().sum();
+        value
     }
 
     pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
+        // Appends "Cloned Bonuses" created from the "get_clone_attributes" function for each of
+        // the bonuses
+        build_child_bonuses!(bonuses);
+
+        // The queue of attributes that still need to be processed
+        let mut attribute_queue = bonuses
+            .iter()
+            .map(Bonus::get_attribute)
+            .unique()
+            .map(|item| (item, true))
+            .collect::<VecDeque<_>>();
+
         // Remove all previous bonuses in the breakdown with the same sources
         {
             let sources = bonuses.iter().map(Bonus::get_source).unique().collect_vec();
@@ -115,22 +133,14 @@ impl Breakdowns {
                 .enumerate()
                 .collect_vec()
                 .into_iter()
-                .for_each(|(n, i)| {
-                    self.bonuses.swap_remove(i - n);
+                .map(|(n, i)| self.bonuses.swap_remove(i - n).get_attribute())
+                .unique()
+                .for_each(|attribute| {
+                    if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
+                        attribute_queue.push_back((attribute, false));
+                    }
                 });
         }
-
-        // Appends "Cloned Bonuses" created from the "get_clone_attributes" function for each of
-        // the bonuses
-        build_child_bonuses!(bonuses);
-
-        // The queue of attributes that still need to be processed
-        let mut attribute_queue = bonuses
-            .iter()
-            .map(Bonus::get_attribute)
-            .unique()
-            .map(|item| (item, true))
-            .collect::<VecDeque<_>>();
 
         // The set of bonuses that still need to be inserted into the breakdown
         let mut update_bonuses = bonuses
@@ -163,6 +173,7 @@ impl Breakdowns {
             // If it's forced updte, or if the initial value is not equal to the current value.
             // This will coincidentially load the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
+                println!("Calculating {}", attribute.to_string());
                 self.bonuses
                     .iter()
                     .filter(|bonus| {
@@ -199,8 +210,12 @@ impl Breakdowns {
                     .enumerate()
                     .collect_vec()
                     .into_iter()
-                    .for_each(|(n, i)| {
-                        self.bonuses.swap_remove(i - n);
+                    .map(|(n, i)| self.bonuses.swap_remove(i - n).get_attribute())
+                    .unique()
+                    .for_each(|attribute| {
+                        if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
+                            attribute_queue.push_back((attribute, false));
+                        }
                     });
 
                 // Checks if there are any children bonuses
@@ -360,6 +375,41 @@ mod tests {
         assert_eq!(
             breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Strength)),
             15f32
+        );
+    }
+
+    #[test]
+    fn replacing_source_removes_all_attributes() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Wisdom),
+                BonusType::Stacking,
+                10f32,
+                BonusSource::Unique(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Charisma),
+                BonusType::Stacking,
+                10f32,
+                BonusSource::Unique(0),
+                None,
+            ),
+        ]);
+
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::AbilityScore(Ability::Wisdom),
+            BonusType::Stacking,
+            10f32,
+            BonusSource::Unique(0),
+            None,
+        )]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            0f32
         );
     }
 }
