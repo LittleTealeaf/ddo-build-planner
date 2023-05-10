@@ -173,7 +173,6 @@ impl Breakdowns {
             // If it's forced updte, or if the initial value is not equal to the current value.
             // This will coincidentially load the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
-                println!("Calculating {}", attribute.to_string());
                 self.bonuses
                     .iter()
                     .filter(|bonus| {
