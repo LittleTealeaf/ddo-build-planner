@@ -29,9 +29,7 @@ macro_rules! set_bonuses {
                         ];
                         $(
                             if value >= $count {
-                                for item in $bonuses {
-                                    vec.push(item)
-                                }
+                                vec.append(&mut $bonuses);
                             }
                         )*
                         if vec.len() > 0 {Some(vec)} else {None}
