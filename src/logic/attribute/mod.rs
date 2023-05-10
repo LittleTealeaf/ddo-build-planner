@@ -25,6 +25,7 @@ pub enum Attribute {
     MagicalSheltering,
     PhysicalSheltering,
     MagicalShelteringCap,
+    WeaponStat(WeaponStat),
     MainHandWeapon(WeaponStat),
     OffHandWeapon(WeaponStat),
     Offensive(Offensive),
@@ -69,6 +70,7 @@ impl ToString for Attribute {
             Attribute::HealingAmplification(amp_type) => {
                 format!("{} Amplification", amp_type.to_string())
             }
+            Attribute::WeaponStat(weapon_stat) => weapon_stat.to_string(),
         }
     }
 }
@@ -89,6 +91,16 @@ impl Attribute {
                 Some(spell_power_universal_to_others!(SpellCriticalDamage, value))
             }
             Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
+            _ => None,
+        }
+    }
+
+    pub fn get_clone_attributes(&self) -> Option<Vec<Attribute>> {
+        match self {
+            Attribute::WeaponStat(weapon_stat) => Some(vec![
+                Attribute::MainHandWeapon(*weapon_stat),
+                Attribute::OffHandWeapon(*weapon_stat),
+            ]),
             _ => None,
         }
     }

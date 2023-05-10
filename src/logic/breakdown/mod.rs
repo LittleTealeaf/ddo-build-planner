@@ -153,27 +153,53 @@ impl Breakdowns {
                         self.bonuses.swap_remove(i - n);
                     });
 
-                attribute
-                    .get_attribute_bonuses(self.get_attribute(&attribute))
-                    .unwrap()
-                    .into_iter()
-                    .map(|bonus| (bonus.get_attribute(), bonus))
-                    .into_group_map()
-                    .into_iter()
-                    .for_each(|(attribute, mut insert_bonuses)| {
-                        insert_bonuses.append(
-                            &mut update_bonuses
-                                .remove(&attribute)
-                                .unwrap_or(Vec::new())
-                                .into_iter()
-                                .filter(|item| item.get_source().ne(&source))
-                                .collect_vec(),
-                        );
-                        update_bonuses.insert(attribute, insert_bonuses);
-                        if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
-                            attribute_queue.push_back((attribute, false));
-                        }
-                    })
+                if let Some(mut bonuses) =
+                    attribute.get_attribute_bonuses(self.get_attribute(&attribute))
+                {
+                    bonuses.append(
+                        &mut bonuses
+                            .iter()
+                            .filter_map(|bonus| {
+                                Some(
+                                    bonus
+                                        .get_attribute()
+                                        .get_clone_attributes()?
+                                        .into_iter()
+                                        .map(|attribute| {
+                                            Bonus::new(
+                                                attribute,
+                                                bonus.get_bonus_type(),
+                                                bonus.get_value(),
+                                                bonus.get_source(),
+                                                Some(bonus.get_conditions()),
+                                            )
+                                        }),
+                                )
+                            })
+                            .flatten()
+                            .collect_vec(),
+                    );
+
+                    bonuses
+                        .into_iter()
+                        .map(|bonus| (bonus.get_attribute(), bonus))
+                        .into_group_map()
+                        .into_iter()
+                        .for_each(|(attribute, mut insert_bonuses)| {
+                            insert_bonuses.append(
+                                &mut update_bonuses
+                                    .remove(&attribute)
+                                    .unwrap_or(Vec::new())
+                                    .into_iter()
+                                    .filter(|item| item.get_source().ne(&source))
+                                    .collect_vec(),
+                            );
+                            update_bonuses.insert(attribute, insert_bonuses);
+                            if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
+                                attribute_queue.push_back((attribute, false));
+                            }
+                        });
+                }
             }
         }
     }
