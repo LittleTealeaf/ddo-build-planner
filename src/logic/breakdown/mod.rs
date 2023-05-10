@@ -67,7 +67,7 @@ impl Breakdowns {
         values.iter().map(|(_, value)| value).sum()
     }
 
-    pub fn insert_bonuses(&mut self, bonuses: Vec<Bonus>) {
+    pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
         // Remove all previous bonuses in the breakdown with the same sources
         {
             let sources = bonuses.iter().map(Bonus::get_source).unique().collect_vec();
@@ -84,6 +84,30 @@ impl Breakdowns {
                     self.bonuses.swap_remove(i - n);
                 });
         }
+
+        bonuses.append(
+            &mut bonuses
+                .iter()
+                .filter_map(|bonus| {
+                    Some(
+                        bonus
+                            .get_attribute()
+                            .get_clone_attributes()?
+                            .into_iter()
+                            .map(|attribute| {
+                                Bonus::new(
+                                    attribute,
+                                    bonus.get_bonus_type(),
+                                    bonus.get_value(),
+                                    bonus.get_source(),
+                                    Some(bonus.get_conditions()),
+                                )
+                            }),
+                    )
+                })
+                .flatten()
+                .collect_vec(),
+        );
 
         // The queue of attributes that still need to be processed
         let mut attribute_queue = bonuses
@@ -202,5 +226,129 @@ impl Breakdowns {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::logic::attribute::{Ability, WeaponStat};
+
+    use super::*;
+
+    #[test]
+    fn attribute_fetches() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::AbilityScore(Ability::Wisdom),
+            BonusType::Feat,
+            20f32,
+            BonusSource::Unique(1),
+            None,
+        )]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Wisdom)),
+            20f32
+        );
+    }
+
+    #[test]
+    fn cloned_attributes() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::WeaponStat(WeaponStat::Attack),
+            BonusType::Stacking,
+            10f32,
+            BonusSource::Unique(2),
+            None,
+        )]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::MainHandWeapon(WeaponStat::Attack)),
+            10f32
+        );
+    }
+
+    #[test]
+    fn same_types_dont_stack() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Charisma),
+                BonusType::Enhancement,
+                10f32,
+                BonusSource::Unique(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Charisma),
+                BonusType::Enhancement,
+                5f32,
+                BonusSource::Unique(1),
+                None,
+            ),
+        ]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            10f32
+        );
+    }
+
+    #[test]
+    fn different_types_stack() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Charisma),
+                BonusType::Enhancement,
+                10f32,
+                BonusSource::Unique(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Charisma),
+                BonusType::Insightful,
+                5f32,
+                BonusSource::Unique(1),
+                None,
+            ),
+        ]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            15f32
+        );
+    }
+
+    #[test]
+    fn stacking_types_stack() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Strength),
+                BonusType::Stacking,
+                10f32,
+                BonusSource::Unique(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Strength),
+                BonusType::Stacking,
+                5f32,
+                BonusSource::Unique(1),
+                None,
+            ),
+        ]);
+
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Strength)),
+            15f32
+        );
     }
 }
