@@ -103,7 +103,7 @@ impl Attribute {
             ]),
             Attribute::SpellPower(SpellPower::Potency) => Some(
                 POTENCY_CLONED_ATTRIBUTES
-                    .map(|spell_power| Attribute::SpellPower(spell_power))
+                    .map(Attribute::SpellPower)
                     .to_vec(),
             ),
             _ => None,
