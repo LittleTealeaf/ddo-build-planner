@@ -6,7 +6,7 @@ use super::{
 };
 
 mod sub;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 pub use sub::*;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
