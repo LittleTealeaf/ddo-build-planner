@@ -1,4 +1,6 @@
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+use serde::{Serialize, Deserialize};
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum BonusType {
     Stacking,
     Enhancement,

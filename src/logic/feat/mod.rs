@@ -3,7 +3,7 @@ use super::{
     bonus::{Bonus, BonusSource, BonusType, Bonuses},
 };
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum Feat {
     Test,
 }

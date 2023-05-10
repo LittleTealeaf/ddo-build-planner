@@ -36,6 +36,7 @@ macro_rules! build_child_bonuses {
     };
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
     cache: HashMap<Attribute, f32>,
@@ -47,6 +48,13 @@ impl Breakdowns {
             bonuses: Vec::new(),
             cache: HashMap::new(),
         }
+    }
+
+    pub fn get_breakdown(&self, attribute: &Attribute) -> Vec<&Bonus> {
+        self.bonuses
+            .iter()
+            .filter(|bonus| bonus.get_attribute().eq(&attribute))
+            .collect_vec()
     }
 
     pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {

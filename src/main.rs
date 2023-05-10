@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 use logic::{
-    attribute::{Ability, Attribute, SpellPower},
+    attribute::{Ability, Attribute, SpellPower, SavingThrow},
     bonus::{Bonus, BonusSource, BonusType},
     breakdown::Breakdowns,
 };
 
-use crate::logic::attribute::{Flag, WeaponHand};
+use crate::logic::{attribute::{Flag, WeaponHand}, breakdown};
 
 mod logic;
 
@@ -68,7 +68,9 @@ fn main() {
         None,
     )]);
 
-    for (key, value) in breakdowns.get_all_attributes().into_iter() {
-        println!("{}: {}", key.to_string(), value);
-    }
+    // for (key, value) in breakdowns.get_all_attributes().into_iter() {
+    //     println!("{}: {}", key.to_string(), value);
+    // }
+
+    println!("{}", ron::ser::to_string(&breakdowns).unwrap());
 }

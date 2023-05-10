@@ -1,6 +1,6 @@
 use super::{Ability, SavingThrow, WeaponHand};
 
-#[derive(Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Flag {
     AbilityToDamage(WeaponHand, Ability),
     AbilityToAttack(WeaponHand, Ability),

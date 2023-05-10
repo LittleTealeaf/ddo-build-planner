@@ -6,9 +6,10 @@ use super::{
 };
 
 mod sub;
+use serde::{Serialize, Deserialize};
 pub use sub::*;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Attribute {
     Dummy,
     Feat(Feat),

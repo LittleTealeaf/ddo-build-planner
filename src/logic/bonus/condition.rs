@@ -1,6 +1,6 @@
 use crate::logic::attribute::Attribute;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub enum Condition {
     Has(Attribute),
     NotHave(Attribute),

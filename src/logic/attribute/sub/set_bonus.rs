@@ -7,7 +7,7 @@ use super::SpellPower;
 
 macro_rules! set_bonuses {
     ($($id: ident, $name: expr => ($($count: expr => $bonuses: expr),*)),*) => {
-        #[derive(Copy, Clone, PartialEq, Eq, Hash)]
+        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
         pub enum SetBonus {
             $($id),*
         }

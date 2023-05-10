@@ -9,7 +9,7 @@ pub use traits::*;
 
 use super::attribute::Attribute;
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Bonus {
     attribute: Attribute,
     bonus_type: BonusType,

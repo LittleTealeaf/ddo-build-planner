@@ -1,8 +1,10 @@
+use serde::{Serialize, Deserialize};
+
 use crate::simple_attribute_enum;
 
 use super::DamageReduction;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum WeaponStat {
     Attack,
     Damage,
