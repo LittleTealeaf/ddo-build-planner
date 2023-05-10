@@ -93,7 +93,7 @@ impl Breakdowns {
                 }
             });
 
-        values.iter().map(|(_, value)| value).sum()
+        values.into_values().sum()
     }
 
     pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
