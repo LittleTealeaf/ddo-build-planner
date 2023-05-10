@@ -3,9 +3,11 @@ use crate::logic::attribute::Attribute;
 #[derive(Clone, Copy)]
 pub enum Condition {
     Has(Attribute),
+    NotHave(Attribute),
     Max(Attribute, f32),
     Min(Attribute, f32),
     Eq(Attribute, f32),
+    NotEq(Attribute, f32),
 }
 
 impl PartialEq for Condition {
@@ -13,6 +15,13 @@ impl PartialEq for Condition {
         match self {
             Condition::Has(attr) => {
                 if let Condition::Has(other_attr) = other {
+                    attr.eq(other_attr)
+                } else {
+                    false
+                }
+            }
+            Condition::NotHave(attr) => {
+                if let Condition::NotHave(other_attr) = other {
                     attr.eq(other_attr)
                 } else {
                     false
@@ -33,12 +42,20 @@ impl PartialEq for Condition {
                 }
             }
             Condition::Eq(attr, val) => {
-                if let Condition::Min(other_attr, other_val) = other {
+                if let Condition::Eq(other_attr, other_val) = other {
                     attr.eq(other_attr) && val == other_val
                 } else {
                     false
                 }
             }
+            Condition::NotEq(attr, val) => {
+                if let Condition::NotEq(other_attr, other_val) = other {
+                    attr.eq(other_attr) && val == other_val
+                } else {
+                    false
+                }
+            }
+
         }
     }
 }

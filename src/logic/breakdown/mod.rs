@@ -33,7 +33,7 @@ macro_rules! build_child_bonuses {
                 .flatten()
                 .collect_vec(),
         );
-    }
+    };
 }
 
 pub struct Breakdowns {
@@ -70,6 +70,9 @@ impl Breakdowns {
                 &bonus.get_attribute() == attribute
                     && (bonus.get_conditions().iter().all(|flag| match flag {
                         Condition::Has(attribute) => self.calculate_attribute(attribute) >= 0f32,
+                        Condition::NotHave(attribute) => {
+                            self.calculate_attribute(attribute) == 0f32
+                        }
                         Condition::Eq(attribute, value) => {
                             self.calculate_attribute(attribute) == *value
                         }
@@ -78,6 +81,9 @@ impl Breakdowns {
                         }
                         Condition::Min(attribute, value) => {
                             self.calculate_attribute(attribute) <= *value
+                        }
+                        Condition::NotEq(attribute, value) => {
+                            self.calculate_attribute(attribute) != *value
                         }
                     }))
             })
@@ -117,7 +123,6 @@ impl Breakdowns {
         // Appends "Cloned Bonuses" created from the "get_clone_attributes" function for each of
         // the bonuses
         build_child_bonuses!(bonuses);
-
 
         // The queue of attributes that still need to be processed
         let mut attribute_queue = bonuses
@@ -166,6 +171,8 @@ impl Breakdowns {
                             .iter()
                             .any(|condition| match condition {
                                 Condition::Has(attr)
+                                | Condition::NotHave(attr)
+                                | Condition::NotEq(attr, _)
                                 | Condition::Eq(attr, _)
                                 | Condition::Max(attr, _)
                                 | Condition::Min(attr, _) => attribute.eq(attr),
@@ -232,7 +239,7 @@ impl Breakdowns {
 
 #[cfg(test)]
 mod tests {
-    use crate::logic::attribute::{Ability, WeaponStat, WeaponHand};
+    use crate::logic::attribute::{Ability, WeaponHand, WeaponStat};
 
     use super::*;
 
@@ -267,7 +274,10 @@ mod tests {
         )]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::WeaponStat(WeaponHand::MainHand, WeaponStat::Attack)),
+            breakdowns.get_attribute(&Attribute::WeaponStat(
+                WeaponHand::MainHand,
+                WeaponStat::Attack
+            )),
             10f32
         );
     }
