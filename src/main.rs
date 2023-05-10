@@ -5,9 +5,7 @@ use logic::{
     breakdown::Breakdowns,
 };
 
-use crate::logic::{
-    attribute::{Flag, WeaponHand}
-};
+use crate::logic::attribute::{Flag, WeaponHand};
 
 mod logic;
 mod utils;

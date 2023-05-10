@@ -1,4 +1,4 @@
-use crate::logic::attribute::Attribute;
+use crate::logic::attribute::{self, Attribute};
 
 #[derive(Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub enum Condition {
@@ -8,6 +8,25 @@ pub enum Condition {
     Min(Attribute, f32),
     Eq(Attribute, f32),
     NotEq(Attribute, f32),
+}
+
+impl ToString for Condition {
+    fn to_string(&self) -> String {
+        match self {
+            Condition::Has(attribute) => format!("Has {}", attribute.to_string()),
+            Condition::NotHave(attribute) => format!("Does not have {}", attribute.to_string()),
+            Condition::Max(attribute, value) => {
+                format!("{} is at most {}", attribute.to_string(), value)
+            }
+            Condition::Min(attribute, value) => {
+                format!("{} is at least {}", attribute.to_string(), value)
+            }
+            Condition::Eq(attribute, value) => format!("{} is {}", attribute.to_string(), value),
+            Condition::NotEq(attribute, value) => {
+                format!("{} is not {}", attribute.to_string(), value)
+            }
+        }
+    }
 }
 
 impl PartialEq for Condition {
