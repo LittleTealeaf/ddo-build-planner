@@ -9,7 +9,7 @@ pub enum Flag {
 
 impl ToString for Flag {
     fn to_string(&self) -> String {
-        String::from(match self {
+        match self {
             Flag::AbilityToAttack(weapon_hand, ability) => format!(
                 "{}{} to attack",
                 weapon_hand.to_string(),
@@ -23,6 +23,6 @@ impl ToString for Flag {
             Flag::AbilityToSavingThrow(ability, saving_throw) => {
                 format!("{} to {}", ability.to_string(), saving_throw.to_string())
             }
-        })
+        }
     }
 }
