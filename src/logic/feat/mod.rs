@@ -3,6 +3,9 @@ use super::{
     bonus::{Bonus, BonusSource, BonusType, Bonuses},
 };
 
+mod feat_trait;
+pub use feat_trait::*;
+
 #[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum Feat {
     Test,
