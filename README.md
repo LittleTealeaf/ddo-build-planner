@@ -1,6 +1,8 @@
 # ddo-build-planner
 
-A Dungeons & Dragons Online Build Planner written in Rust.
+A Cross-Platform Dungeons & Dragons Online Build Planner written in Rust.
+
+The goal of this project is to make a ddo build planner that's blazingly fast, and runs on any system. Relatively high potential of a corredsponding website-based version in the future.
 
 
 ## Inspiration
