@@ -26,6 +26,8 @@ jobs:
           override: true
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./builder-core -> target"
       - name: Build
         run: cd builder-core && cargo build
   test:
@@ -42,6 +44,8 @@ jobs:
           override: true
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./builder-core -> target"
       - name: Test
         run: cd builder-core && cargo build
   analyze:
