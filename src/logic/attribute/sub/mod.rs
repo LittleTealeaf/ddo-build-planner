@@ -24,3 +24,5 @@ mod healing_amplification;
 pub use healing_amplification::*;
 mod flag;
 pub use flag::*;
+mod toggle;
+pub use toggle::*;

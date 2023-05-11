@@ -5,6 +5,7 @@ pub enum Flag {
     AbilityToDamage(WeaponHand, Ability),
     AbilityToAttack(WeaponHand, Ability),
     AbilityToSavingThrow(Ability, SavingThrow),
+    Centered,
 }
 
 impl ToString for Flag {
@@ -23,6 +24,7 @@ impl ToString for Flag {
             Flag::AbilityToSavingThrow(ability, saving_throw) => {
                 format!("{} to {}", ability.to_string(), saving_throw.to_string())
             }
+            Flag::Centered => String::from("Centered"),
         }
     }
 }

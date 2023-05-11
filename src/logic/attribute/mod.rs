@@ -12,6 +12,8 @@ pub use sub::*;
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Attribute {
     Dummy,
+    Flag(Flag),
+    Toggle(Toggle),
     Feat(Feat),
     AbilityScore(Ability),
     AbilityModifier(Ability),
@@ -31,7 +33,6 @@ pub enum Attribute {
     SetBonus(SetBonus),
     SpellPoints(SpellPoint),
     HealingAmplification(HealingAmplification),
-    Flag(Flag),
 }
 
 impl ToString for Attribute {
@@ -72,6 +73,7 @@ impl ToString for Attribute {
                 format!("{}{}", weapon_hand.to_string(), weapon_stat.to_string())
             }
             Attribute::Flag(flag) => flag.to_string(),
+            Attribute::Toggle(toggle) => format!("Toggle: {}", toggle.to_string()),
         }
     }
 }
