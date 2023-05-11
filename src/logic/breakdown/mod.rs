@@ -53,7 +53,7 @@ impl Breakdowns {
     pub fn get_breakdown(&self, attribute: &Attribute) -> Vec<&Bonus> {
         self.bonuses
             .iter()
-            .filter(|bonus| bonus.get_attribute().eq(&attribute))
+            .filter(|bonus| bonus.get_attribute().eq(attribute))
             .collect_vec()
     }
 
