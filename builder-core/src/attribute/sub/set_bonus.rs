@@ -1,4 +1,4 @@
-use crate::logic::{
+use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusType},
 };
@@ -21,7 +21,7 @@ macro_rules! set_bonuses {
         }
 
         impl SetBonus {
-            pub fn get_bonuses(&self, value: f32) -> Option<Vec<$crate::logic::bonus::Bonus>> {
+            pub fn get_bonuses(&self, value: f32) -> Option<Vec<$crate::bonus::Bonus>> {
                 match self {
                     $(Self::$id => {
                         let mut vec = Vec::new();
@@ -40,7 +40,7 @@ macro_rules! set_bonuses {
 
 macro_rules! set_bonus_source {
     ($set_bonus: ident) => {
-        $crate::logic::bonus::BonusSource::Attribute($crate::logic::attribute::Attribute::SetBonus(
+        $crate::bonus::BonusSource::Attribute($crate::attribute::Attribute::SetBonus(
             SetBonus::$set_bonus,
         ))
     };

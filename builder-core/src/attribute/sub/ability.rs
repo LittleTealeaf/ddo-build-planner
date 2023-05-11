@@ -1,10 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
-    logic::{
+
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType, Condition},
-    },
     simple_enum,
 };
 

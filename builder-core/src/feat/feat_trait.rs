@@ -1,4 +1,4 @@
-use crate::logic::bonus::Bonus;
+use crate::bonus::Bonus;
 
 pub trait FeatTrait: ToString {
     fn get_feat_bonuses(&self, value: f32) -> Vec<Bonus>;

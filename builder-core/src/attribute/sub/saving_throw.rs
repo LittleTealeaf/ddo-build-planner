@@ -1,8 +1,8 @@
 use crate::{
-    logic::{
+
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType},
-    },
+
     simple_enum,
 };
 

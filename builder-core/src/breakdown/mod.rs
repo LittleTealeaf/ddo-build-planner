@@ -265,7 +265,7 @@ impl Breakdowns {
 
 #[cfg(test)]
 mod tests {
-    use crate::logic::attribute::{Ability, WeaponHand, WeaponStat};
+    use crate::attribute::{Ability, WeaponHand, WeaponStat};
 
     use super::*;
 
