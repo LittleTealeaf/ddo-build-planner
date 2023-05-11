@@ -1,9 +1,12 @@
-use crate::logic::{bonus::{Bonus, BonusType}, attribute::Attribute};
+use crate::logic::{
+    attribute::Attribute,
+    bonus::{Bonus, BonusType},
+};
 
 use super::{Ability, ElementalType, Offensive, SpellPower, SpellSchool};
 
 macro_rules! set_bonuses {
-    ($($id: ident, $name: expr => ($($count: expr => $bonuses: expr),*)),*) => {
+    ($($id: ident $name: expr => ($($count: expr => $bonuses: expr),*))*) => {
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
         pub enum SetBonus {
             $($id),*
@@ -44,13 +47,13 @@ macro_rules! set_bonus_source {
 }
 
 set_bonuses!(
-    LegendaryEldersKnowledge, "Legendary Elder's Knowledge" => (
+    LegendaryEldersKnowledge "Legendary Elder's Knowledge" => (
         2f32 => vec![
             Bonus::new(Attribute::SpellCriticalChance(SpellPower::Universal), BonusType::Artifact, 6f32, set_bonus_source!(LegendaryEldersKnowledge), None),
             Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Universal), BonusType::Legendary, 15f32, set_bonus_source!(LegendaryEldersKnowledge), None),
         ]
-    ),
-    LegendaryVulkoorsChosen, "Legendary Vulkoor's Chosen" => (
+    )
+    LegendaryVulkoorsChosen "Legendary Vulkoor's Chosen" => (
         3f32 => vec![
             Bonus::new(Attribute::ElementalResistance(ElementalType::Poison), BonusType::Artifact, 30f32, set_bonus_source!(LegendaryVulkoorsChosen), None),
             Bonus::new(Attribute::Offensive(Offensive::SneakAttackDice), BonusType::Artifact, 3f32, set_bonus_source!(LegendaryVulkoorsChosen), None),
@@ -58,18 +61,23 @@ set_bonuses!(
             Bonus::new(Attribute::AbilityScore(super::Ability::Dexterity), BonusType::Artifact, 3f32, set_bonus_source!(LegendaryVulkoorsChosen), None),
             Bonus::new(Attribute::AbilityScore(super::Ability::Constitution), BonusType::Artifact, 3f32, set_bonus_source!(LegendaryVulkoorsChosen), None),
         ]
-    ),
-    ArcaneGuardian, "Arcane Guardian" => (
+    )
+    ArcaneGuardian "Arcane Guardian" => (
         3f32 => vec![
             Bonus::new(Attribute::MagicalSheltering, BonusType::Artifact, 30f32, set_bonus_source!(ArcaneGuardian), None)
         ]
-    ),
-    WildFortitude, "Wild Fortitude" => (
+    )
+    WildFortitude "Wild Fortitude" => (
         3f32 => vec![
             Bonus::new(Attribute::AbilityScore(Ability::Constitution), BonusType::Artifact, 3f32, set_bonus_source!(WildFortitude), None)
         ]
-    ),
-    LegendaryHruitsInfluence, "Legendary Hruit's Influence" => (
+    )
+    TouchOfPower "Touch of Power" => (
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Artifact, 25f32, set_bonus_source!(TouchOfPower), None)
+        ]
+    )
+    LegendaryHruitsInfluence "Legendary Hruit's Influence" => (
         3f32 => vec![
             Bonus::new(Attribute::AbilityScore(Ability::Wisdom), BonusType::Artifact, 3f32, set_bonus_source!(LegendaryHruitsInfluence), None),
             Bonus::new(Attribute::SpellPower(SpellPower::Fire), BonusType::Artifact, 30f32, set_bonus_source!(LegendaryHruitsInfluence), None),
