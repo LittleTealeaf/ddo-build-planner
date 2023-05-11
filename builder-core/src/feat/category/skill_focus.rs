@@ -1,7 +1,6 @@
-use ron::value;
 use serde::{Deserialize, Serialize};
 
-use crate::logic::{
+use crate::{
     attribute::{Attribute, SavingThrow, Skill},
     bonus::{Bonus, BonusSource, BonusType},
     feat::{Feat, FeatTrait},
@@ -66,7 +65,7 @@ macro_rules! saving_throw_bonus {
 }
 
 impl FeatTrait for SkillFocus {
-    fn get_feat_bonuses(&self, value: f32) -> Vec<crate::logic::bonus::Bonus> {
+    fn get_feat_bonuses(&self, value: f32) -> Vec<crate::bonus::Bonus> {
         if value > 0f32 {
             match self {
                 SkillFocus::Acrobatic => vec![

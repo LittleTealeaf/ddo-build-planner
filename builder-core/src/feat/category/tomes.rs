@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::logic::{
+use crate::{
     attribute::{Ability, Attribute, SpellPower},
     bonus::{Bonus, BonusSource, BonusType},
     feat::{Feat, FeatTrait},
@@ -26,7 +26,7 @@ impl ToString for Tome {
 }
 
 impl FeatTrait for Tome {
-    fn get_feat_bonuses(&self, value: f32) -> Vec<crate::logic::bonus::Bonus> {
+    fn get_feat_bonuses(&self, value: f32) -> Vec<crate::bonus::Bonus> {
         match self {
             Tome::Ability(ability) => vec![Bonus::new(
                 Attribute::AbilityScore(*ability),

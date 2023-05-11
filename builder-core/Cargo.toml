@@ -1,15 +1,11 @@
 [package]
-name = "ddo-build-planner"
+name = "builder-core"
 version = "0.1.0"
 edition = "2021"
-readme = "README.md"
-repository = "https://www.github.com/LittleTealeaf/ddo-build-planner"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ron = "0.8"
 itertools = "0.10.5"
 serde = { version = "1.0.163", features = ["derive"] }
-serde_json = "1.0.96"
-ron = "0.8"
-iced = "0.9"

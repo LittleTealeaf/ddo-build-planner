@@ -1,5 +1,5 @@
 use crate::{
-    logic::{attribute::Attribute, bonus::Bonus},
+    attribute::Attribute, bonus::Bonus,
     simple_enum,
 };
 
@@ -8,13 +8,13 @@ simple_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentrat
 macro_rules! skill_spell_power {
     ($skill: ident, $spellpower: ident, $value: expr) => {
         Bonus::new(
-            $crate::logic::attribute::Attribute::SpellPower(
-                $crate::logic::attribute::SpellPower::$spellpower,
+            $crate::attribute::Attribute::SpellPower(
+                $crate::attribute::SpellPower::$spellpower,
             ),
-            $crate::logic::bonus::BonusType::Stacking,
+            $crate::bonus::BonusType::Stacking,
             $value,
-            $crate::logic::bonus::BonusSource::Attribute(
-                $crate::logic::attribute::Attribute::Skill(Skill::$skill),
+            $crate::bonus::BonusSource::Attribute(
+                $crate::attribute::Attribute::Skill(Skill::$skill),
             ),
             None,
         )

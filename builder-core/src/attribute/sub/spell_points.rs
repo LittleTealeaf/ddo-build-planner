@@ -1,5 +1,5 @@
 use crate::{
-    logic::{attribute::Attribute, breakdown::Breakdowns},
+    attribute::Attribute, breakdown::Breakdowns,
     simple_enum,
 };
 

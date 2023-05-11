@@ -1,4 +1,4 @@
-use crate::logic::attribute::Attribute;
+use crate::attribute::Attribute;
 
 #[derive(Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub enum Condition {

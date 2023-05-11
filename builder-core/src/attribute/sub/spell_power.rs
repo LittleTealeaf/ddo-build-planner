@@ -38,13 +38,13 @@ macro_rules! spell_power_universal_to_others {
         ]
     };
     ($attribute: ident, $spell_power: ident, $value: expr) => {
-        $crate::logic::bonus::Bonus::new(
-            Attribute::$attribute($crate::logic::attribute::SpellPower::$spell_power),
-            $crate::logic::bonus::BonusType::Stacking,
+        $crate::bonus::Bonus::new(
+            Attribute::$attribute($crate::attribute::SpellPower::$spell_power),
+            $crate::bonus::BonusType::Stacking,
             $value,
-            $crate::logic::bonus::BonusSource::Attribute(
-                $crate::logic::attribute::Attribute::$attribute(
-                    $crate::logic::attribute::SpellPower::Universal,
+            $crate::bonus::BonusSource::Attribute(
+                $crate::attribute::Attribute::$attribute(
+                    $crate::attribute::SpellPower::Universal,
                 ),
             ),
             None,

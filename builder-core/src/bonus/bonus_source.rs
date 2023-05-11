@@ -1,4 +1,4 @@
-use crate::logic::{attribute::Attribute, feat::Feat};
+use crate::{attribute::Attribute, feat::Feat};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum BonusSource {

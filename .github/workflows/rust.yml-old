@@ -6,48 +6,34 @@ on:
   pull_request:
     branches: ["main"]
   schedule:
-    - cron: "28 13 * * 1"
+    - cron: '28 13 * * 1'
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    name: Build Core
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout Repository
-      - name: Install Rust Toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "./builder-core -> target"
-      - name: Build
-        run: cd builder-core && cargo build
-  test:
-    name: Test Core
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout Repository
-      - name: Install Rust Toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "./builder-core -> target"
-      - name: Test
-        run: cd builder-core && cargo build
+  # build:
+  #   name: Build Rust
+  #   runs-on: ubuntu-latest
+
+  # test:
+  #   name: Test Rust
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       name: Checkout Repository
+  #     - name: Install Rust Toolchain
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
+  #     - name: Rust Cache
+  #       uses: Swatinem/rust-cache@v2
+  #     - name: Test
+  #       uses: actions-rs/cargo@v1
+  #       with:
+  #         command: test
   analyze:
     name: Clippy Analyze
     runs-on: ubuntu-latest
@@ -73,6 +59,7 @@ jobs:
           --all-features
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
+
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
