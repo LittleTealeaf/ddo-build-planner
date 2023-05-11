@@ -94,7 +94,9 @@ impl Attribute {
                 Some(spell_power_universal_to_others!(SpellCriticalDamage, value))
             }
             Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
+            Attribute::SetBonus(set_bonus) => set_bonus.get_bonuses(value),
             Attribute::Feat(feat) => feat.get_attribute_bonuses(value),
+
             _ => None,
         }
     }
@@ -110,6 +112,14 @@ impl Attribute {
                     .map(Attribute::SpellPower)
                     .to_vec(),
             ),
+            Attribute::SavingThrow(SavingThrow::All) => Some(vec![
+                Attribute::SavingThrow(SavingThrow::Reflex),
+                Attribute::SavingThrow(SavingThrow::Fortitude),
+                Attribute::SavingThrow(SavingThrow::Will),
+            ]),
+            Attribute::SpellFocus(SpellSchool::All) => {
+                Some(SPELL_SCHOOL_ALL_TO_CLONED_ATTRIUBTES.to_vec())
+            }
             _ => None,
         }
     }

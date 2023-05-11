@@ -11,12 +11,14 @@ pub use category::*;
 #[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum Feat {
     SkillFocus(SkillFocus),
+    Tome(Tome),
 }
 
 impl Feat {
     pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Feat::SkillFocus(skill_focus) => Some(skill_focus.get_feat_bonuses(value)),
+            Feat::Tome(tome) => Some(tome.get_feat_bonuses(value)),
         }
     }
 }
@@ -25,6 +27,7 @@ impl ToString for Feat {
     fn to_string(&self) -> String {
         match self {
             Feat::SkillFocus(skill_focus) => skill_focus.to_string(),
+            Feat::Tome(tome) => tome.to_string(),
         }
     }
 }

@@ -6,7 +6,7 @@ use crate::{
     simple_enum,
 };
 
-simple_enum!(SavingThrow, (Fortitude "Fortitude", Poison "Poison", Disease "Disease", Reflex "Reflex", Traps "Traps", Spell "Spell", Magic "Magic", Will "Will", Enchantment "Enchantment", Illusion "Illusion", Fear "Fear", Curse "Curse"));
+simple_enum!(SavingThrow, (Fortitude "Fortitude", Poison "Poison", Disease "Disease", Reflex "Reflex", Traps "Traps", Spell "Spell", Magic "Magic", Will "Will", Enchantment "Enchantment", Illusion "Illusion", Fear "Fear", Curse "Curse", All "All"));
 
 macro_rules! child_saving_throw {
     ($parent: ident, $child: ident, $value: expr) => {

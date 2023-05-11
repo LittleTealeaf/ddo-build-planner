@@ -11,6 +11,10 @@ simple_enum!(
         Feat "Feat",
         AbilityModifier "Ability Modifier",
         Artifact "Artifact",
-        Legendary "Legendary"
+        Legendary "Legendary",
+        Sacred "Sacred",
+        Exceptional "Exceptional",
+        Festive "Festive",
+        Profane "Profane"
     )
 );
