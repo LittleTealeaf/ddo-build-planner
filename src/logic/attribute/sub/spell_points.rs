@@ -3,19 +3,19 @@ use crate::{
     simple_enum,
 };
 
-simple_enum!(SpellPoints, (SpellPoints "Spell Points", BonusSpellPoints "Bonus Spell Points", SpellPointScalar "Spell Points Scalar", BonusSpellPointScalar "Bonus Spell Point Scalar"));
+simple_enum!(SpellPoint, (Points "Spell Points", BonusPoints "Bonus Spell Points", Scalar "Spell Points Scalar", BonusScalar "Bonus Spell Point Scalar"));
 
 impl Breakdowns {
     pub fn get_total_spell_points(&mut self) -> f32 {
-        (self.get_attribute(&SpellPoints::SpellPoints.into())
-            + self.get_attribute(&SpellPoints::BonusSpellPoints.into())
-                * (1f32 + self.get_attribute(&SpellPoints::BonusSpellPointScalar.into())))
-            * (1f32 + self.get_attribute(&SpellPoints::SpellPointScalar.into()))
+        (self.get_attribute(&SpellPoint::Points.into())
+            + self.get_attribute(&SpellPoint::BonusPoints.into())
+                * (1f32 + self.get_attribute(&SpellPoint::BonusScalar.into())))
+            * (1f32 + self.get_attribute(&SpellPoint::Scalar.into()))
     }
 }
 
-impl From<SpellPoints> for Attribute {
-    fn from(value: SpellPoints) -> Self {
+impl From<SpellPoint> for Attribute {
+    fn from(value: SpellPoint) -> Self {
         Attribute::SpellPoints(value)
     }
 }

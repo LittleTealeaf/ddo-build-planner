@@ -29,7 +29,7 @@ pub enum Attribute {
     WeaponStat(WeaponHand, WeaponStat),
     Offensive(Offensive),
     SetBonus(SetBonus),
-    SpellPoints(SpellPoints),
+    SpellPoints(SpellPoint),
     HealingAmplification(HealingAmplification),
     Flag(Flag),
 }
