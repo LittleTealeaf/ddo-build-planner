@@ -204,9 +204,8 @@ impl Breakdowns {
                     .map(|bonus| bonus.get_attribute())
                     .unique()
                     .for_each(|attribute| {
-                        let queue = &mut attribute_queue;
-                        if !queue.iter().any(|(attr, _)| attr.eq(&attribute)) {
-                            queue.push_back((attribute, true));
+                        if !attribute_queue.iter().any(|(attr, _)| attr.eq(&attribute)) {
+                            attribute_queue.push_back((attribute, true));
                         }
                     });
 
