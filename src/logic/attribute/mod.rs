@@ -81,8 +81,8 @@ impl ToString for Attribute {
 impl Attribute {
     pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Attribute::AbilityScore(ability) => Some(ability.get_score_bonuses(value)),
-            Attribute::AbilityModifier(ability) => Some(ability.get_modifier_bonuses(value)),
+            Attribute::AbilityScore(ability) => ability.get_score_bonuses(value),
+            Attribute::AbilityModifier(ability) => ability.get_modifier_bonuses(value),
             Attribute::Skill(skill) => skill.get_attribute_bonuses(value),
             Attribute::SpellPower(SpellPower::Universal) => {
                 Some(spell_power_universal_to_others!(SpellPower, value))
@@ -117,9 +117,8 @@ impl Attribute {
                 Attribute::SavingThrow(SavingThrow::Fortitude),
                 Attribute::SavingThrow(SavingThrow::Will),
             ]),
-            Attribute::SpellFocus(SpellSchool::All) => {
-                Some(SPELL_SCHOOL_ALL_TO_CLONED_ATTRIUBTES.to_vec())
-            }
+            Attribute::SpellFocus(SpellSchool::All) => Some(SPELL_FOCUS_CLONE_ATTRIBUTES.to_vec()),
+            Attribute::AbilityScore(Ability::All) => Some(ABILITY_SCORE_CLONE_ATTRIBUTES.to_vec()),
             _ => None,
         }
     }

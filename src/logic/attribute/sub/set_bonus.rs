@@ -92,4 +92,16 @@ set_bonuses!(
 
         ]
     )
+    LegendaryDreadIsleCurse "The Legendary Dread Isle's Curse" => (
+        5f32 => vec![
+            Bonus::new(Attribute::Offensive(Offensive::MeleePower), BonusType::Profane, 15f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+            Bonus::new(Attribute::Offensive(Offensive::RangedPower), BonusType::Profane, 15f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+            Bonus::new(Attribute::PhysicalSheltering, BonusType::Profane, 30f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Profane, 2f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+            Bonus::new(Attribute::AbilityScore(Ability::All), BonusType::Profane, 2f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+            Bonus::new(Attribute::WeaponStat(super::WeaponHand::Both, super::WeaponStat::Attack), BonusType::Profane, 3f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+            Bonus::new(Attribute::WeaponStat(super::WeaponHand::Both, super::WeaponStat::Damage), BonusType::Profane, 3f32, set_bonus_source!(LegendaryDreadIsleCurse), None),
+
+        ]
+    )
 );

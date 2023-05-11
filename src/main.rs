@@ -19,28 +19,14 @@ fn main() {
 
     breakdowns.insert_bonuses(vec![
         Bonus::new(
-            Attribute::AbilityScore(Ability::Constitution),
+            Attribute::AbilityScore(Ability::All),
             BonusType::Stacking,
             10f32,
             BonusSource::Unique(0),
             None,
         ),
         Bonus::new(
-            Attribute::AbilityScore(Ability::Strength),
-            BonusType::Stacking,
-            10f32,
-            BonusSource::Unique(0),
-            None,
-        ),
-        Bonus::new(
-            Attribute::AbilityScore(Ability::Constitution),
-            BonusType::Stacking,
-            8f32,
-            BonusSource::Unique(1),
-            None,
-        ),
-        Bonus::new(
-            Attribute::AbilityScore(Ability::Constitution),
+            Attribute::AbilityScore(Ability::All),
             BonusType::Stacking,
             8f32,
             BonusSource::Unique(1),
@@ -86,7 +72,6 @@ fn main() {
         (BonusType::Stacking, 1f32),
         (BonusType::Stacking, 2f32),
         (BonusType::Sacred, 6f32),
-        (BonusType::Profane, 6f32),
     ]
     .iter()
     .enumerate()
@@ -120,6 +105,15 @@ fn main() {
             BonusType::Stacking,
             1f32,
             BonusSource::Unique(1000),
+            None,
+        ),
+        Bonus::new(Attribute::Flag(Flag::AbilityToDamage(WeaponHand::Both, Ability::Constitution)), BonusType::Stacking, 1f32, BonusSource::Unique(1000), None),
+        Bonus::new(Attribute::Flag(Flag::AbilityToAttack(WeaponHand::Both, Ability::Constitution)), BonusType::Stacking, 1f32, BonusSource::Unique(1000), None),
+        Bonus::new(
+            Attribute::SetBonus(logic::attribute::SetBonus::LegendaryDreadIsleCurse),
+            BonusType::Stacking,
+            5f32,
+            BonusSource::Unique(999),
             None,
         ),
     ]);
