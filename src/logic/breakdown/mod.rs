@@ -423,4 +423,21 @@ mod tests {
             0f32
         );
     }
+
+    #[test]
+    fn sub_types_fetch() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![
+            Bonus::new(
+                Attribute::AbilityScore(Ability::Constitution),
+                BonusType::Stacking,
+                20f32,
+                BonusSource::Unique(0),
+                None
+            )
+        ]);
+
+        assert_eq!(breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Constitution)), 5f32);
+    }
 }
