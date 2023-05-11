@@ -7,3 +7,13 @@ pub enum BonusSource {
     /// Indicates some unique identifier, indicated with a usize
     Unique(usize),
 }
+
+impl ToString for BonusSource {
+    fn to_string(&self) -> String {
+        match self {
+            BonusSource::Attribute(attribute) => format!("Attribute: {}", attribute.to_string()),
+            BonusSource::Feat(feat) => format!("Feat: {}", feat.to_string()),
+            BonusSource::Unique(i) => format!("Unique: {}", i),
+        }
+    }
+}

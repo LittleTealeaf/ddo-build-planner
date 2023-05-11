@@ -94,6 +94,7 @@ impl Attribute {
                 Some(spell_power_universal_to_others!(SpellCriticalDamage, value))
             }
             Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
+            Attribute::Feat(feat) => feat.get_attribute_bonuses(value),
             _ => None,
         }
     }

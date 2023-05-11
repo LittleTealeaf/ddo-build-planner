@@ -143,10 +143,10 @@ impl Breakdowns {
                 .enumerate()
                 .filter(|(_, item)| sources.contains(&item.get_source()))
                 .map(|(i, _)| i)
-                .enumerate()
+                .rev()
                 .collect_vec()
                 .into_iter()
-                .map(|(n, i)| self.bonuses.swap_remove(i - n).get_attribute())
+                .map(|i| self.bonuses.swap_remove(i).get_attribute())
                 .unique()
                 .for_each(|attribute| {
                     if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
@@ -217,12 +217,12 @@ impl Breakdowns {
                 self.bonuses
                     .iter()
                     .enumerate()
-                    .filter(|(_, item)| item.get_source().eq(&source))
+                    .filter(|(_, item)| source.eq(&item.get_source()))
                     .map(|(i, _)| i)
-                    .enumerate()
+                    .rev()
                     .collect_vec()
                     .into_iter()
-                    .map(|(n, i)| self.bonuses.swap_remove(i - n).get_attribute())
+                    .map(|i| self.bonuses.swap_remove(i).get_attribute())
                     .unique()
                     .for_each(|attribute| {
                         if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {

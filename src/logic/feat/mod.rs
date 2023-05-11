@@ -5,17 +5,27 @@ use super::{
 
 mod feat_trait;
 pub use feat_trait::*;
+mod category;
+pub use category::*;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub enum Feat {
-    Test,
+    SkillFocus(SkillFocus),
+}
+
+impl Feat {
+    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        match self {
+            Feat::SkillFocus(skill_focus) => Some(skill_focus.get_feat_bonuses(value)),
+        }
+    }
 }
 
 impl ToString for Feat {
     fn to_string(&self) -> String {
-        String::from(match self {
-            Feat::Test => "Hi",
-        })
+        match self {
+            Feat::SkillFocus(skill_focus) => skill_focus.to_string(),
+        }
     }
 }
 
@@ -23,8 +33,17 @@ impl Bonuses for Feat {
     fn get_bonuses(&self) -> Vec<super::bonus::Bonus> {
         vec![Bonus::new(
             Attribute::Feat(*self),
-            BonusType::Feat,
+            BonusType::Stacking,
             1f32,
+            BonusSource::Feat(*self),
+            None,
+        )]
+    }
+    fn remove_bonuses(&self) -> Vec<Bonus> {
+        vec![Bonus::new(
+            Attribute::Feat(*self),
+            BonusType::Stacking,
+            0f32,
             BonusSource::Feat(*self),
             None,
         )]
