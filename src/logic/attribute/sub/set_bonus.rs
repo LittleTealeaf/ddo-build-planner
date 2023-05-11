@@ -6,7 +6,7 @@ use crate::logic::{
 use super::{Ability, ElementalType, Offensive, SpellPower, SpellSchool};
 
 macro_rules! set_bonuses {
-    ($($id: ident $name: expr => ($($count: expr => $bonuses: expr),*))*) => {
+    ($($id: ident $name: expr => ($($count: expr => $bonuses: expr)*))*) => {
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
         pub enum SetBonus {
             $($id),*
