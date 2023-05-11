@@ -3,18 +3,18 @@ use crate::simple_enum;
 simple_enum!(
     BonusType,
     (
-        Stacking "Stacking",
-        Enhancement "Enhancement",
-        Equipment "Equipment",
-        Insightful "Insightful",
-        Quality "Quality",
-        Feat "Feat",
         AbilityModifier "Ability Modifier",
         Artifact "Artifact",
-        Legendary "Legendary",
-        Sacred "Sacred",
+        Enhancement "Enhancement",
+        Equipment "Equipment",
         Exceptional "Exceptional",
+        Feat "Feat",
         Festive "Festive",
-        Profane "Profane"
+        Insightful "Insightful",
+        Legendary "Legendary",
+        Profane "Profane",
+        Quality "Quality",
+        Sacred "Sacred",
+        Stacking "Stacking"
     )
 );
