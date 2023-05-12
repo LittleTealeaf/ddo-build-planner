@@ -33,6 +33,7 @@ pub enum Attribute {
     SetBonus(SetBonus),
     SpellPoints(SpellPoint),
     HealingAmplification(HealingAmplification),
+    Health(Health),
 }
 
 impl ToString for Attribute {
@@ -74,6 +75,7 @@ impl ToString for Attribute {
             }
             Attribute::Flag(flag) => flag.to_string(),
             Attribute::Toggle(toggle) => format!("Toggle: {}", toggle.to_string()),
+            Attribute::Health(health) => health.to_string(),
         }
     }
 }
@@ -96,7 +98,6 @@ impl Attribute {
             Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
             Attribute::SetBonus(set_bonus) => set_bonus.get_bonuses(value),
             Attribute::Feat(feat) => feat.get_attribute_bonuses(value),
-
             _ => None,
         }
     }
