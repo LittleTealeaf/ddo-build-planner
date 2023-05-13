@@ -22,6 +22,7 @@ impl WeaponStat {
             WeaponHand::Off => format!("Off Hand {}", self.to_string())
         }
     }
+    // TODO: add "get_cloned_attributes" here
 }
 
 simple_enum!(WeaponHand, (Main "Main Hand", Off "Off Hand", Both "Both Hand"));
