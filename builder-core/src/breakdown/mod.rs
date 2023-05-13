@@ -17,7 +17,7 @@ macro_rules! build_child_bonuses {
                     Some(
                         bonus
                             .get_attribute()
-                            .get_clone_attributes()?
+                            .get_attribute_clones()?
                             .into_iter()
                             .map(|attribute| {
                                 Bonus::new(
