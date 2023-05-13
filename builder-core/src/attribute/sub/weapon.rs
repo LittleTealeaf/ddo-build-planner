@@ -1,4 +1,4 @@
-use crate::simple_enum;
+use crate::{attribute::Attribute, simple_enum};
 
 use super::DamageReduction;
 
@@ -19,11 +19,21 @@ impl WeaponStat {
         match hand {
             WeaponHand::Both => self.to_string(),
             WeaponHand::Main => format!("Main Hand {}", self.to_string()),
-            WeaponHand::Off => format!("Off Hand {}", self.to_string())
+            WeaponHand::Off => format!("Off Hand {}", self.to_string()),
         }
     }
-    // TODO: add "get_cloned_attributes" here
+
+    pub fn get_cloned_attributes(&self, hand: &WeaponHand) -> Option<Vec<Attribute>> {
+        Some(
+            match hand {
+                WeaponHand::Both => Some(vec![WeaponHand::Main, WeaponHand::Off]),
+                _ => None,
+            }?
+            .into_iter()
+            .map(|item| Attribute::WeaponStat(item, *self))
+            .collect(),
+        )
+    }
 }
 
 simple_enum!(WeaponHand, (Main "Main Hand", Off "Off Hand", Both "Both Hand"));
-

@@ -87,8 +87,23 @@ attributes!(
     WeaponStat(weaponhand: WeaponHand, weaponstat: WeaponStat) => (
         weaponstat.custom_to_string(weaponhand),
         None,
-        None
+        weaponstat.get_cloned_attributes(weaponhand)
     )
+    OffHandAttackChance() => (String::from("Off Hand Attack Chance"), None, None)
+    Doublestrike() => ( String::from("Doublestrike"), None, None)
+    Doubleshot() => (String::from("Doubleshot"), None, None)
+    ImbueDice() => (String::from("Imbue Dice"), None, None)
+    SneakAttackDice() => (String::from("Sneak Attack Dice"), None, None)
+    SneakAttackDamage() => (String::from("Sneak Attack Bonus"), None, None)
+    MeleePower() => (String::from("Melee Power"), None, None)
+    RangedPower() => (String::from("Ranged Power"), None, None)
+    SecondaryShieldBash() => (String::from("Secondary Shield Bash Chance"), None, None)
+    DodgeBypass() => (String::from("Dodge Bypass"), None, None)
+    FortificationBypass() => (String::from("Fortification Bypass"), None, None)
+    MissileDeflection() => (String::from("Missile Deflection"), None, None)
+    MissileDeflectionBypass() => (String::from("Missile Deflection Bypass"), None, None)
+    Strikethrough() => (String::from("Strikethrough"), None, None)
+    HelplessDamage() => (String::from("Helpless Damage"), None, None)
 );
 
 impl From<Attribute> for BonusSource {
