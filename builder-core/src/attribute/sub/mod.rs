@@ -16,3 +16,5 @@ mod damage_reduction;
 pub use damage_reduction::*;
 mod threat;
 pub use threat::*;
+mod elemental_defenses;
+pub use elemental_defenses::*;

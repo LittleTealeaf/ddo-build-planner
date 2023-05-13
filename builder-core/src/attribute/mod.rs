@@ -114,6 +114,16 @@ attributes!(
         None, 
         Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
     )
+    ElementalResistance(element: ElementalType) => (
+        format!("{} Resistance", element.to_string()),
+        None,
+        None
+    )
+    ElementalAbsorption(element: ElementalType) => (
+        format!("{} Absorption", element.to_string()),
+        None,
+        None
+    )
 );
 
 impl From<Attribute> for BonusSource {
