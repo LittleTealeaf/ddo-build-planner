@@ -5,6 +5,7 @@ pub use bonus_types::*;
 mod condition;
 pub use condition::*;
 mod traits;
+use itertools::Itertools;
 pub use traits::*;
 
 use super::attribute::Attribute;
@@ -16,6 +17,27 @@ pub struct Bonus {
     value: f32,
     source: BonusSource,
     conditions: Vec<Condition>,
+}
+
+impl ToString for Bonus {
+    fn to_string(&self) -> String {
+        if self.conditions.len() == 0 {
+            format!(
+                "{} {} bonus to {}",
+                self.value,
+                self.bonus_type.to_string(),
+                self.attribute.to_string()
+            )
+        } else {
+            format!(
+                "{} {} bonus to {} when {}",
+                self.value,
+                self.bonus_type.to_string(),
+                self.attribute.to_string(),
+                self.conditions.iter().map(Condition::to_string).join(", ")
+            )
+        }
+    }
 }
 
 impl Bonus {

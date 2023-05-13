@@ -24,17 +24,35 @@ attributes!(
         feat.get_attribute_bonuses(val),
         None
     )
+    Flag(flag: Flag) => (
+        flag.to_string(),
+        flag.get_attribute_bonuses(val),
+        None
+    )
+    Toggle(toggle: Toggle) => (
+        toggle.to_string(),
+        None,
+        None
+    )
     Ability(ability: Ability) => (
         ability.to_string(),
-        Some(vec![
-             Bonus::new(Attribute::AbilityModifier(*ability), BonusType::Stacking, ((val - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*ability)), None),
-        ]),
+        Some(vec![Bonus::new(Attribute::AbilityModifier(*ability), BonusType::Stacking, ((val - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*ability)), None)]),
         Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::Ability).collect())
     )
     AbilityModifier(ability: Ability) => (
         format!("{} Modifier", ability.to_string()),
-        None,
-        None
+        Some(ability.get_modifier_bonuses(val)),
+        Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::AbilityModifier).collect())
+    )
+    Skill(skill: Skill) => (
+        skill.to_string(),
+        skill.get_attribute_bonuses(val),
+        Some(skill.get_cloned_skills()?.into_iter().map(Attribute::Skill).collect())
+    )
+    SavingThrow(savingthrow: SavingThrow) => (
+        savingthrow.to_string(),
+        savingthrow.get_attribute_bonuses(val),
+        Some(savingthrow.get_cloned_values()?.into_iter().map(Attribute::SavingThrow).collect())
     )
     SpellPower(spellpower: SpellPower) => (
         format!("{} Spell Power", spellpower.to_string()),

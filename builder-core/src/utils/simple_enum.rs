@@ -49,7 +49,7 @@ macro_rules! simple_enum {
         impl ToString for $enum_name {
             fn to_string(&self) -> String {
                 match self {
-                    $($Self::$id($($param_name),*) => $name),*
+                    $(Self::$id($($param_name),*) => $name),*
                 }
             }
         }
