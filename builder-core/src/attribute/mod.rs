@@ -25,15 +25,13 @@ pub enum Attribute {
     SavingThrow(SavingThrow),
     ElementalAbsortion(ElementalType),
     ElementalResistance(ElementalType),
-    MagicalSheltering,
-    PhysicalSheltering,
-    MagicalShelteringCap,
     WeaponStat(WeaponHand, WeaponStat),
     Offensive(Offensive),
     SetBonus(SetBonus),
     SpellPoints(SpellPoint),
     HealingAmplification(HealingAmplification),
     Health(Health),
+    Defensive(Defensive),
 }
 
 impl ToString for Attribute {
@@ -61,9 +59,6 @@ impl ToString for Attribute {
             Attribute::ElementalResistance(element) => {
                 format!("{} Resistance", element.to_string())
             }
-            Attribute::MagicalSheltering => String::from("Magical Sheltering"),
-            Attribute::PhysicalSheltering => String::from("Physical Sheltering"),
-            Attribute::MagicalShelteringCap => String::from("Magical Sheltering Cap"),
             Attribute::Offensive(offensive) => offensive.to_string(),
             Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
             Attribute::SpellPoints(spell_points) => spell_points.to_string(),
@@ -76,6 +71,7 @@ impl ToString for Attribute {
             Attribute::Flag(flag) => flag.to_string(),
             Attribute::Toggle(toggle) => format!("Toggle: {}", toggle.to_string()),
             Attribute::Health(health) => health.to_string(),
+            Attribute::Defensive(defensive) => defensive.to_string(),
         }
     }
 }

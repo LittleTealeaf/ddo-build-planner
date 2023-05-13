@@ -225,7 +225,7 @@ impl Breakdowns {
                     .unique()
                     .for_each(|attribute| {
                         if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
-                            attribute_queue.push_back((attribute, false));
+                            attribute_queue.push_back((attribute, true));
                         }
                     });
 

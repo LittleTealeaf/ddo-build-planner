@@ -43,14 +43,14 @@ impl FeatTrait for Tome {
                 None,
             )],
             Tome::PhysicalSheltering => vec![Bonus::new(
-                Attribute::PhysicalSheltering,
+                Attribute::Defensive(crate::attribute::Defensive::PhysicalSheltering),
                 BonusType::Stacking,
                 value,
                 BonusSource::Feat(Feat::Tome(Tome::PhysicalSheltering)),
                 None,
             )],
             Tome::MagicalSheltering => vec![Bonus::new(
-                Attribute::MagicalSheltering,
+                Attribute::Defensive(crate::attribute::Defensive::MagicalSheltering),
                 BonusType::Stacking,
                 value,
                 BonusSource::Feat(Feat::Tome(Tome::MagicalSheltering)),
