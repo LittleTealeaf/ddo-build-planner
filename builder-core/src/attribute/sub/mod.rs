@@ -10,3 +10,7 @@ mod toggle;
 pub use toggle::*;
 mod saving_throw;
 pub use saving_throw::*;
+mod weapon;
+pub use weapon::*;
+mod damage_reduction;
+pub use damage_reduction::*;

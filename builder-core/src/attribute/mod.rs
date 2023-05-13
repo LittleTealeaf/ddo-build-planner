@@ -41,7 +41,7 @@ attributes!(
     )
     AbilityModifier(ability: Ability) => (
         format!("{} Modifier", ability.to_string()),
-        Some(ability.get_modifier_bonuses(val)),
+        ability.get_modifier_bonuses(val),
         Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::AbilityModifier).collect())
     )
     Skill(skill: Skill) => (
@@ -68,6 +68,26 @@ attributes!(
         format!("{} Spell Critical Damage", spellpower.to_string()),
         None,
         Some(spellpower.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
+    )
+    PhysicalSheltering() => (
+        String::from("Physical Sheltering"),
+        None,
+        None
+    )
+    MagicalSheltering() => (
+        String::from("Magical Sheltering"),
+        None,
+        None
+    )
+    Sheltering() => (
+        String::from("Sheltering"),
+        None,
+        Some(vec![Attribute::PhysicalSheltering(), Attribute::MagicalSheltering()])
+    )
+    WeaponStat(weaponhand: WeaponHand, weaponstat: WeaponStat) => (
+        weaponstat.custom_to_string(weaponhand),
+        None,
+        None
     )
 );
 
