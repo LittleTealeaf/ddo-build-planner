@@ -4,7 +4,7 @@ use crate::simple_enum;
 
 use super::DamageReduction;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug)]
 pub enum WeaponStat {
     Attack,
     Damage,
@@ -33,4 +33,4 @@ impl ToString for WeaponStat {
     }
 }
 
-simple_enum!(WeaponHand, (Both "", MainHand "Main Hand ", OffHand "Off Hand "));
+simple_enum!(WeaponHand, (Both "Weapon ", MainHand "Main Hand ", OffHand "Off Hand "));

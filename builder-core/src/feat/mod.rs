@@ -8,7 +8,7 @@ pub use feat_trait::*;
 mod category;
 pub use category::*;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
 pub enum Feat {
     SkillFocus(SkillFocus),
     Tome(Tome),

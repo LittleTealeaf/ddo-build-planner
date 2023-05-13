@@ -30,3 +30,7 @@ mod health;
 pub use health::*;
 mod defensive;
 pub use defensive::*;
+mod armor_class;
+pub use armor_class::*;
+mod threat;
+pub use threat::*;

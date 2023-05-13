@@ -3,7 +3,31 @@ use crate::{
     simple_enum,
 };
 
-simple_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "Disable Device", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device"));
+pub const ALL_SKILLS: [Skill; 21] = [
+    Skill::Balance,
+    Skill::Bluff,
+    Skill::Concentration,
+    Skill::Diplomacy,
+    Skill::DisableDevice,
+    Skill::Haggle,
+    Skill::Heal,
+    Skill::Hide,
+    Skill::Intimidate,
+    Skill::Jump,
+    Skill::Listen,
+    Skill::MoveSilently,
+    Skill::OpenLock,
+    Skill::Perform,
+    Skill::Repair,
+    Skill::Search,
+    Skill::SpellCraft,
+    Skill::Spot,
+    Skill::Swim,
+    Skill::Tumble,
+    Skill::UseMagicalDevice
+];
+
+simple_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "Disable Device", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device", All "All"));
 
 macro_rules! skill_spell_power {
     ($skill: ident, $spellpower: ident, $value: expr) => {

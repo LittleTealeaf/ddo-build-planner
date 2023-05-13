@@ -9,7 +9,7 @@ mod sub;
 use serde::{Deserialize, Serialize};
 pub use sub::*;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug)]
 pub enum Attribute {
     Dummy,
     Flag(Flag),
@@ -32,6 +32,9 @@ pub enum Attribute {
     HealingAmplification(HealingAmplification),
     Health(Health),
     Defensive(Defensive),
+    ArmorClass(ArmorClass),
+    MovementSpeed,
+    ThreatMultipler(Threat),
 }
 
 impl ToString for Attribute {
@@ -68,10 +71,13 @@ impl ToString for Attribute {
             Attribute::WeaponStat(weapon_hand, weapon_stat) => {
                 format!("{}{}", weapon_hand.to_string(), weapon_stat.to_string())
             }
-            Attribute::Flag(flag) => flag.to_string(),
+            Attribute::Flag(flag) => format!("Flag: {}", flag.to_string()),
             Attribute::Toggle(toggle) => format!("Toggle: {}", toggle.to_string()),
             Attribute::Health(health) => health.to_string(),
             Attribute::Defensive(defensive) => defensive.to_string(),
+            Attribute::ArmorClass(armor_class) => armor_class.to_string(),
+            Attribute::MovementSpeed => String::from("Movement Speed"),
+            Attribute::ThreatMultipler(threat) => format!("{} Threat", threat.to_string()),
         }
     }
 }
@@ -94,6 +100,7 @@ impl Attribute {
             Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
             Attribute::SetBonus(set_bonus) => set_bonus.get_bonuses(value),
             Attribute::Feat(feat) => feat.get_attribute_bonuses(value),
+            Attribute::Flag(flag) => flag.get_attribute_bonuses(value),
             _ => None,
         }
     }
@@ -116,6 +123,9 @@ impl Attribute {
             ]),
             Attribute::SpellFocus(SpellSchool::All) => Some(SPELL_FOCUS_CLONE_ATTRIBUTES.to_vec()),
             Attribute::AbilityScore(Ability::All) => Some(ABILITY_SCORE_CLONE_ATTRIBUTES.to_vec()),
+            Attribute::Defensive(Defensive::Sheltering) => Some(EXPORT_SHELTERING_ATTRIBUTES.to_vec()),
+            Attribute::Skill(Skill::All) => Some(ALL_SKILLS.map(Attribute::Skill).to_vec()),
+            Attribute::ThreatMultipler(Threat::All) => Some(ALL_THREAT.map(Attribute::ThreatMultipler).to_vec()),
             _ => None,
         }
     }

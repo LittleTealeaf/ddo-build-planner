@@ -1,6 +1,6 @@
 use crate::{attribute::Attribute, feat::Feat};
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
 pub enum BonusSource {
     Attribute(Attribute),
     Feat(Feat),
