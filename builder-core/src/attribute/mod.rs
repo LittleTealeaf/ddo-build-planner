@@ -104,6 +104,16 @@ attributes!(
     MissileDeflectionBypass() => (String::from("Missile Deflection Bypass"), None, None)
     Strikethrough() => (String::from("Strikethrough"), None, None)
     HelplessDamage() => (String::from("Helpless Damage"), None, None)
+    ThreatGeneration(threat_type: ThreatType) => (
+        format!("{} Threat Generation", threat_type.to_string()), 
+        None, 
+        Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
+    )
+    ThreatReduction(threat_type: ThreatType) => (
+        format!("{} Threat Reduction", threat_type.to_string()), 
+        None, 
+        Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
+    )
 );
 
 impl From<Attribute> for BonusSource {

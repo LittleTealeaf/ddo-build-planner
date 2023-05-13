@@ -14,3 +14,5 @@ mod weapon;
 pub use weapon::*;
 mod damage_reduction;
 pub use damage_reduction::*;
+mod threat;
+pub use threat::*;
