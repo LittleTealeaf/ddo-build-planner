@@ -29,7 +29,7 @@ macro_rules! build_child_bonuses {
                                     bonus.get_bonus_type(),
                                     bonus.get_value(),
                                     bonus.get_source(),
-                                    Some(bonus.get_conditions()),
+                                    bonus.get_conditions(),
                                 )
                             }),
                     )
@@ -96,8 +96,8 @@ impl Breakdowns {
             .iter()
             .filter(|bonus| {
                 bonus.get_attribute().eq(attribute)
-                    && (bonus.get_conditions().iter().all(
-                        |condition: &Condition| match condition {
+                    && bonus.get_conditions().map_or(true, |conditions| {
+                        conditions.iter().all(|condition| match condition {
                             Condition::Has(attr) => self.calculate_attribute(attr) > 0f32,
                             Condition::NotHave(attr) => self.calculate_attribute(attr) == 0f32,
                             Condition::Eq(attr, value) => self.calculate_attribute(attr) == *value,
@@ -106,8 +106,8 @@ impl Breakdowns {
                             Condition::NotEq(attr, value) => {
                                 self.calculate_attribute(attr) != *value
                             }
-                        },
-                    ))
+                        })
+                    })
             })
             .map(|bonus| (bonus.get_bonus_type(), bonus.get_value()))
             .into_group_map()
@@ -201,10 +201,8 @@ impl Breakdowns {
                     self.bonuses
                         .iter()
                         .filter(|bonus| {
-                            bonus
-                                .get_conditions()
-                                .iter()
-                                .any(|condition| match condition {
+                            bonus.get_conditions().map_or(false, |conditions| {
+                                conditions.iter().any(|condition| match condition {
                                     Condition::Has(attr)
                                     | Condition::NotHave(attr)
                                     | Condition::NotEq(attr, _)
@@ -212,6 +210,7 @@ impl Breakdowns {
                                     | Condition::Max(attr, _)
                                     | Condition::Min(attr, _) => attribute.eq(attr),
                                 })
+                            })
                         })
                         .map(Bonus::get_attribute)
                         .unique()

@@ -16,25 +16,25 @@ pub struct Bonus {
     bonus_type: BonusType,
     value: f32,
     source: BonusSource,
-    conditions: Vec<Condition>,
+    conditions: Option<Vec<Condition>>,
 }
 
 impl ToString for Bonus {
     fn to_string(&self) -> String {
-        if self.conditions.len() == 0 {
-            format!(
-                "{} {} bonus to {}",
-                self.value,
-                self.bonus_type.to_string(),
-                self.attribute.to_string()
-            )
-        } else {
+        if let Some(conditions) = &self.conditions {
             format!(
                 "{} {} bonus to {} when {}",
                 self.value,
                 self.bonus_type.to_string(),
                 self.attribute.to_string(),
-                self.conditions.iter().map(Condition::to_string).join(", ")
+                conditions.iter().map(Condition::to_string).join(", ")
+            )
+        } else {
+            format!(
+                "{} {} bonus to {}",
+                self.value,
+                self.bonus_type.to_string(),
+                self.attribute.to_string()
             )
         }
     }
@@ -53,7 +53,7 @@ impl Bonus {
             bonus_type,
             value,
             source,
-            conditions: conditions.unwrap_or(Vec::new()),
+            conditions,
         }
     }
 
@@ -63,7 +63,7 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 0f32,
             source,
-            conditions: Vec::new(),
+            conditions: None,
         }
     }
 
@@ -83,7 +83,7 @@ impl Bonus {
         self.source
     }
 
-    pub fn get_conditions(&self) -> Vec<Condition> {
+    pub fn get_conditions(&self) -> Option<Vec<Condition>> {
         self.conditions.clone()
     }
 }
