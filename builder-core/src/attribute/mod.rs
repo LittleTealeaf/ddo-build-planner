@@ -54,20 +54,20 @@ attributes!(
         savingthrow.get_attribute_bonuses(val),
         Some(savingthrow.get_cloned_values()?.into_iter().map(Attribute::SavingThrow).collect())
     )
-    SpellPower(spellpower: SpellPower) => (
-        format!("{} Spell Power", spellpower.to_string()),
+    SpellPower(spell_power: SpellPower) => (
+        format!("{} Spell Power", spell_power.to_string()),
         None,
-        Some(spellpower.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellPower).collect())
+        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellPower).collect())
     )
-    SpellCriticalChance(spellpower: SpellPower) => (
-        format!("{} Spell Critical Chance", spellpower.to_string()),
+    SpellCriticalChance(spell_power: SpellPower) => (
+        format!("{} Spell Critical Chance", spell_power.to_string()),
         None,
-        Some(spellpower.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalChance).collect())
+        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalChance).collect())
     )
-    SpellCriticalDamage(spellpower: SpellPower) => (
-        format!("{} Spell Critical Damage", spellpower.to_string()),
+    SpellCriticalDamage(spell_power: SpellPower) => (
+        format!("{} Spell Critical Damage", spell_power.to_string()),
         None,
-        Some(spellpower.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
+        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
     )
     PhysicalSheltering() => (
         String::from("Physical Sheltering"),
@@ -84,10 +84,10 @@ attributes!(
         None,
         Some(vec![Attribute::PhysicalSheltering(), Attribute::MagicalSheltering()])
     )
-    WeaponStat(weaponhand: WeaponHand, weaponstat: WeaponStat) => (
-        weaponstat.custom_to_string(weaponhand),
+    WeaponStat(weapon_hand: WeaponHand, weapon_stat: WeaponStat) => (
+        weapon_stat.custom_to_string(weapon_hand),
         None,
-        weaponstat.get_cloned_attributes(weaponhand)
+        weapon_stat.get_cloned_attributes(weapon_hand)
     )
     OffHandAttackChance() => (String::from("Off Hand Attack Chance"), None, None)
     Doublestrike() => ( String::from("Doublestrike"), None, None)
