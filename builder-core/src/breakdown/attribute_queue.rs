@@ -1,7 +1,5 @@
 use std::collections::{HashSet, VecDeque};
 
-use itertools::Itertools;
-
 use crate::attribute::Attribute;
 
 pub struct AttributeQueue {
