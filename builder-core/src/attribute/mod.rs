@@ -81,6 +81,7 @@ attributes!(
         None,
         None
     )
+    MagicalShelteringCap() => (String::from("Magical Sheltering Cap"), None, None)
     Sheltering() => (
         String::from("Sheltering"),
         None,
@@ -102,6 +103,7 @@ attributes!(
     SecondaryShieldBash() => (String::from("Secondary Shield Bash Chance"), None, None)
     DodgeBypass() => (String::from("Dodge Bypass"), None, None)
     FortificationBypass() => (String::from("Fortification Bypass"), None, None)
+    Fortification() => (String::from("Fortification"), None, None)
     MissileDeflection() => (String::from("Missile Deflection"), None, None)
     MissileDeflectionBypass() => (String::from("Missile Deflection Bypass"), None, None)
     Strikethrough() => (String::from("Strikethrough"), None, None)
@@ -148,6 +150,12 @@ attributes!(
     SpellCostReduction() => (String::from("Spell Cost Reduction"), None, None)
     SpellResistance() => (String::from("Spell Resistance"), None, None)
     SpellPenetration() => (String::from("Spell Penetation"), None, None)
+    NaturalArmor() => (String::from("Natural Armor"), None, None)
+    FiligreeSet(set: FiligreeSet) => (set.to_string(), set.get_attribute_bonuses(val), None)
+    Dodge() => (String::from("Dodge"), None, None)
+    MaxDodge() => (String::from("Maximum Dodge"), None, None)
+    Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), None, None)
+    BonusActionBoosts() => (String::from("Bonus Action Boosts"), None, None)
 );
 
 impl From<Attribute> for BonusSource {

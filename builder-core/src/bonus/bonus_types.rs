@@ -23,6 +23,7 @@ simple_enum!(
         Profane "Profane",
         Quality "Quality",
         Sacred "Sacred",
+        Shield "Shield",
         Size "Size",
         Stacking "Stacking",
         Spooky "Spooky"

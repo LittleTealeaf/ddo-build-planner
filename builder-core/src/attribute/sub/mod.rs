@@ -30,3 +30,7 @@ mod class_lore;
 pub use class_lore::*;
 mod tactics;
 pub use tactics::*;
+mod item_set_bonus;
+pub use item_set_bonus::*;
+mod filigree_set_bonus;
+pub use filigree_set_bonus::*;
