@@ -2,7 +2,8 @@ use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(
     Toggle, (
-        Blocking() String::from("Blocking")
+        Blocking() String::from("Blocking"),
+        InReaper() String::from("In Reaper")
     )
 );
 
