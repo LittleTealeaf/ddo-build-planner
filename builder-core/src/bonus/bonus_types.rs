@@ -8,6 +8,7 @@ simple_enum!(
         Alchemical "Alchemical",
         Artifact "Artifact",
         Competence "Competence",
+        Deflection "Deflection",
         Enhancement "Enhancement",
         Equipment "Equipment",
         Exceptional "Exceptional",
