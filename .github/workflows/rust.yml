@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    name: Build Core
+    name: Rust Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,12 +26,10 @@ jobs:
           override: true
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "./builder-core -> target"
       - name: Build
-        run: cargo build -p builder-core
+        run: cargo build
   test:
-    name: Test Core
+    name: Rust Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -44,10 +42,8 @@ jobs:
           override: true
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "./builder-core -> target"
       - name: Test
-        run: cargo build -p builder-core
+        run: cargo build
   analyze:
     name: Clippy Analyze Core
     runs-on: ubuntu-latest
