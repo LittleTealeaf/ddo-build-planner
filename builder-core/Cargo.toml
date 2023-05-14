@@ -7,6 +7,5 @@ edition = "2021"
 
 [dependencies]
 itertools = "0.10.5"
-ron = "0.8.0"
 serde = { version = "1.0.163", features = ["derive"] }
 serde_test = "1.0.163"
