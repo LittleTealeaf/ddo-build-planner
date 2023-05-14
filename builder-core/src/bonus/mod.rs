@@ -57,6 +57,16 @@ impl Bonus {
         }
     }
 
+    pub fn dummy(source: BonusSource) -> Bonus {
+        Self {
+            attribute: Attribute::Dummy(),
+            bonus_type: BonusType::Stacking,
+            value: 0f32,
+            source,
+            conditions: Vec::new()
+        }
+    }
+
     pub fn get_attribute(&self) -> Attribute {
         self.attribute
     }
