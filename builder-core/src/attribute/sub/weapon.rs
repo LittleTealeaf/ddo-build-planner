@@ -1,36 +1,39 @@
-use serde::{Deserialize, Serialize};
-
-use crate::simple_enum;
+use crate::{attribute::Attribute, simple_enum};
 
 use super::DamageReduction;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug)]
-pub enum WeaponStat {
-    Attack,
-    Damage,
-    CriticalAttack,
-    CriticalDamage,
-    CriticalThreat,
-    CriticalMultiplier,
-    CriticalMultiplier1920,
-    DamageReductionBypass(DamageReduction),
-}
+simple_enum!(
+    WeaponStat, (
+        Attack() String::from("Attack"),
+        Damage() String::from("Damage"),
+        CriticalAttack() String::from("Critical Attack"),
+        CriticalDamage() String::from("Critical Damage"),
+        CriticalMultiplier() String::from("Critical Multiplier"),
+        CriticalMultiplier1920() String::from("Critical Multiplier (19-20)"),
+        DamageReductionBypass(damagereduction: DamageReduction) format!("{} Bypass", damagereduction.to_string())
+    )
+);
 
-impl ToString for WeaponStat {
-    fn to_string(&self) -> String {
-        match self {
-            WeaponStat::Attack => String::from("Attack"),
-            WeaponStat::Damage => String::from("Damage"),
-            WeaponStat::CriticalAttack => String::from("Critical Attack"),
-            WeaponStat::CriticalDamage => String::from("Critical Damage"),
-            WeaponStat::CriticalThreat => String::from("Critical Threat"),
-            WeaponStat::CriticalMultiplier => String::from("Critical Multiplier"),
-            WeaponStat::CriticalMultiplier1920 => String::from("Critical Multiplier (19-20)"),
-            WeaponStat::DamageReductionBypass(bypass) => {
-                format!("{} Damage Reduction Bypass", bypass.to_string())
-            }
+impl WeaponStat {
+    pub fn custom_to_string(&self, hand: &WeaponHand) -> String {
+        match hand {
+            WeaponHand::Both => self.to_string(),
+            WeaponHand::Main => format!("Main Hand {}", self.to_string()),
+            WeaponHand::Off => format!("Off Hand {}", self.to_string()),
         }
+    }
+
+    pub fn get_cloned_attributes(&self, hand: &WeaponHand) -> Option<Vec<Attribute>> {
+        Some(
+            match hand {
+                WeaponHand::Both => Some(vec![WeaponHand::Main, WeaponHand::Off]),
+                _ => None,
+            }?
+            .into_iter()
+            .map(|item| Attribute::WeaponStat(item, *self))
+            .collect(),
+        )
     }
 }
 
-simple_enum!(WeaponHand, (Both "Weapon ", MainHand "Main Hand ", OffHand "Off Hand "));
+simple_enum!(WeaponHand, (Main "Main Hand", Off "Off Hand", Both "Both Hand"));

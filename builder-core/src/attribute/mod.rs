@@ -1,135 +1,148 @@
-use crate::spell_power_universal_to_others;
-
-use super::{
-    bonus::{Bonus, BonusSource},
-    feat::Feat,
+#![allow(unused_variables)]
+use crate::{
+    attributes,
+    bonus::{Bonus, BonusType},
+    player_class::PlayerClass,
 };
 
+use super::{bonus::BonusSource, feat::Feat};
+
+mod macros;
 mod sub;
+pub use macros::*;
 use serde::{Deserialize, Serialize};
 pub use sub::*;
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug)]
-pub enum Attribute {
-    Dummy,
-    Flag(Flag),
-    Toggle(Toggle),
-    Feat(Feat),
-    AbilityScore(Ability),
-    AbilityModifier(Ability),
-    Skill(Skill),
-    SpellPower(SpellPower),
-    SpellCriticalChance(SpellPower),
-    SpellCriticalDamage(SpellPower),
-    SpellFocus(SpellSchool),
-    SavingThrow(SavingThrow),
-    ElementalAbsortion(ElementalType),
-    ElementalResistance(ElementalType),
-    WeaponStat(WeaponHand, WeaponStat),
-    Offensive(Offensive),
-    SetBonus(SetBonus),
-    SpellPoints(SpellPoint),
-    HealingAmplification(HealingAmplification),
-    Health(Health),
-    Defensive(Defensive),
-    ArmorClass(ArmorClass),
-    MovementSpeed,
-    ThreatMultipler(Threat),
-}
-
-impl ToString for Attribute {
-    fn to_string(&self) -> String {
-        match self {
-            Attribute::Dummy => String::from("Dummy"),
-            Attribute::Feat(feat) => format!("Feat: {}", feat.to_string()),
-            Attribute::AbilityScore(ability) => format!("{} Score", ability.to_string()),
-            Attribute::AbilityModifier(ability) => format!("{} Modifier", ability.to_string()),
-            Attribute::Skill(skill) => skill.to_string(),
-            Attribute::SpellPower(spell_damage_type) => {
-                format!("{} Spell Power", spell_damage_type.to_string())
-            }
-            Attribute::SpellCriticalChance(spell_damage_type) => {
-                format!("{} Spell Critical Chance", spell_damage_type.to_string())
-            }
-            Attribute::SpellCriticalDamage(spell_damage_type) => {
-                format!("{} Spell Critical Damage", spell_damage_type.to_string())
-            }
-            Attribute::SpellFocus(school) => format!("Spell Focus: {}", school.to_string()),
-            Attribute::SavingThrow(saving_throw) => {
-                format!("{} Saving Throw", saving_throw.to_string())
-            }
-            Attribute::ElementalAbsortion(element) => format!("{} Absorption", element.to_string()),
-            Attribute::ElementalResistance(element) => {
-                format!("{} Resistance", element.to_string())
-            }
-            Attribute::Offensive(offensive) => offensive.to_string(),
-            Attribute::SetBonus(set_bonus) => set_bonus.to_string(),
-            Attribute::SpellPoints(spell_points) => spell_points.to_string(),
-            Attribute::HealingAmplification(amp_type) => {
-                format!("{} Amplification", amp_type.to_string())
-            }
-            Attribute::WeaponStat(weapon_hand, weapon_stat) => {
-                format!("{}{}", weapon_hand.to_string(), weapon_stat.to_string())
-            }
-            Attribute::Flag(flag) => format!("Flag: {}", flag.to_string()),
-            Attribute::Toggle(toggle) => format!("Toggle: {}", toggle.to_string()),
-            Attribute::Health(health) => health.to_string(),
-            Attribute::Defensive(defensive) => defensive.to_string(),
-            Attribute::ArmorClass(armor_class) => armor_class.to_string(),
-            Attribute::MovementSpeed => String::from("Movement Speed"),
-            Attribute::ThreatMultipler(threat) => format!("{} Threat", threat.to_string()),
-        }
-    }
-}
-
-impl Attribute {
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            Attribute::AbilityScore(ability) => ability.get_score_bonuses(value),
-            Attribute::AbilityModifier(ability) => ability.get_modifier_bonuses(value),
-            Attribute::Skill(skill) => skill.get_attribute_bonuses(value),
-            Attribute::SpellPower(SpellPower::Universal) => {
-                Some(spell_power_universal_to_others!(SpellPower, value))
-            }
-            Attribute::SpellCriticalChance(SpellPower::Universal) => {
-                Some(spell_power_universal_to_others!(SpellCriticalChance, value))
-            }
-            Attribute::SpellCriticalDamage(SpellPower::Universal) => {
-                Some(spell_power_universal_to_others!(SpellCriticalDamage, value))
-            }
-            Attribute::SavingThrow(saving_throw) => saving_throw.get_attribute_bonuses(value),
-            Attribute::SetBonus(set_bonus) => set_bonus.get_bonuses(value),
-            Attribute::Feat(feat) => feat.get_attribute_bonuses(value),
-            Attribute::Flag(flag) => flag.get_attribute_bonuses(value),
-            _ => None,
-        }
-    }
-
-    pub fn get_clone_attributes(&self) -> Option<Vec<Attribute>> {
-        match self {
-            Attribute::WeaponStat(WeaponHand::Both, weapon_stat) => Some(vec![
-                Attribute::WeaponStat(WeaponHand::MainHand, *weapon_stat),
-                Attribute::WeaponStat(WeaponHand::OffHand, *weapon_stat),
-            ]),
-            Attribute::SpellPower(SpellPower::Potency) => Some(
-                POTENCY_CLONED_ATTRIBUTES
-                    .map(Attribute::SpellPower)
-                    .to_vec(),
-            ),
-            Attribute::SavingThrow(SavingThrow::All) => Some(vec![
-                Attribute::SavingThrow(SavingThrow::Reflex),
-                Attribute::SavingThrow(SavingThrow::Fortitude),
-                Attribute::SavingThrow(SavingThrow::Will),
-            ]),
-            Attribute::SpellFocus(SpellSchool::All) => Some(SPELL_FOCUS_CLONE_ATTRIBUTES.to_vec()),
-            Attribute::AbilityScore(Ability::All) => Some(ABILITY_SCORE_CLONE_ATTRIBUTES.to_vec()),
-            Attribute::Defensive(Defensive::Sheltering) => Some(EXPORT_SHELTERING_ATTRIBUTES.to_vec()),
-            Attribute::Skill(Skill::All) => Some(ALL_SKILLS.map(Attribute::Skill).to_vec()),
-            Attribute::ThreatMultipler(Threat::All) => Some(ALL_THREAT.map(Attribute::ThreatMultipler).to_vec()),
-            _ => None,
-        }
-    }
-}
+attributes!(
+    Attribute,
+    val,
+    Dummy() => (
+        String::from("Dummy"),
+        None,
+        None
+    )
+    Feat(feat: Feat) => (
+        feat.to_string(),
+        feat.get_attribute_bonuses(val),
+        None
+    )
+    Flag(flag: Flag) => (
+        flag.to_string(),
+        flag.get_attribute_bonuses(val),
+        None
+    )
+    Toggle(toggle: Toggle) => (
+        toggle.to_string(),
+        None,
+        None
+    )
+    Ability(ability: Ability) => (
+        ability.to_string(),
+        Some(vec![Bonus::new(Attribute::AbilityModifier(*ability), BonusType::Stacking, ((val - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*ability)), None)]),
+        Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::Ability).collect())
+    )
+    AbilityModifier(ability: Ability) => (
+        format!("{} Modifier", ability.to_string()),
+        ability.get_modifier_bonuses(val),
+        Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::AbilityModifier).collect())
+    )
+    Skill(skill: Skill) => (
+        skill.to_string(),
+        skill.get_attribute_bonuses(val),
+        Some(skill.get_cloned_skills()?.into_iter().map(Attribute::Skill).collect())
+    )
+    SavingThrow(savingthrow: SavingThrow) => (
+        savingthrow.to_string(),
+        savingthrow.get_attribute_bonuses(val),
+        Some(savingthrow.get_cloned_values()?.into_iter().map(Attribute::SavingThrow).collect())
+    )
+    SpellPower(spell_power: SpellPower) => (
+        format!("{} Spell Power", spell_power.to_string()),
+        None,
+        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellPower).collect())
+    )
+    SpellCriticalChance(spell_power: SpellPower) => (
+        format!("{} Spell Critical Chance", spell_power.to_string()),
+        None,
+        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalChance).collect())
+    )
+    SpellCriticalDamage(spell_power: SpellPower) => (
+        format!("{} Spell Critical Damage", spell_power.to_string()),
+        None,
+        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
+    )
+    PhysicalSheltering() => (
+        String::from("Physical Sheltering"),
+        None,
+        None
+    )
+    MagicalSheltering() => (
+        String::from("Magical Sheltering"),
+        None,
+        None
+    )
+    Sheltering() => (
+        String::from("Sheltering"),
+        None,
+        Some(vec![Attribute::PhysicalSheltering(), Attribute::MagicalSheltering()])
+    )
+    WeaponStat(weapon_hand: WeaponHand, weapon_stat: WeaponStat) => (
+        weapon_stat.custom_to_string(weapon_hand),
+        None,
+        weapon_stat.get_cloned_attributes(weapon_hand)
+    )
+    OffHandAttackChance() => (String::from("Off Hand Attack Chance"), None, None)
+    Doublestrike() => ( String::from("Doublestrike"), None, None)
+    Doubleshot() => (String::from("Doubleshot"), None, None)
+    ImbueDice() => (String::from("Imbue Dice"), None, None)
+    SneakAttackDice() => (String::from("Sneak Attack Dice"), None, None)
+    SneakAttackDamage() => (String::from("Sneak Attack Bonus"), None, None)
+    MeleePower() => (String::from("Melee Power"), None, None)
+    RangedPower() => (String::from("Ranged Power"), None, None)
+    SecondaryShieldBash() => (String::from("Secondary Shield Bash Chance"), None, None)
+    DodgeBypass() => (String::from("Dodge Bypass"), None, None)
+    FortificationBypass() => (String::from("Fortification Bypass"), None, None)
+    MissileDeflection() => (String::from("Missile Deflection"), None, None)
+    MissileDeflectionBypass() => (String::from("Missile Deflection Bypass"), None, None)
+    Strikethrough() => (String::from("Strikethrough"), None, None)
+    HelplessDamage() => (String::from("Helpless Damage"), None, None)
+    ThreatGeneration(threat_type: ThreatType) => (
+        format!("{} Threat Generation", threat_type.to_string()),
+        None,
+        Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
+    )
+    ThreatReduction(threat_type: ThreatType) => (
+        format!("{} Threat Reduction", threat_type.to_string()),
+        None,
+        Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
+    )
+    ElementalResistance(element: ElementalType) => (
+        format!("{} Resistance", element.to_string()),
+        None,
+        None
+    )
+    ElementalAbsorption(element: ElementalType) => (
+        format!("{} Absorption", element.to_string()),
+        None,
+        None
+    )
+    SpellFocus(spellschool: SpellSchool) => (
+        format!("{} Spell Focus", spellschool.to_string()),
+        None,
+        Some(spellschool.get_cloned_schools()?.into_iter().map(Attribute::SpellFocus).collect())
+    )
+    SpellPoints(spellpoint: SpellPoint) => (spellpoint.to_string(), None, None)
+    HitPoints(hitpoint: HitPoint) => (hitpoint.to_string(), None, None)
+    Vitality() => (
+        String::from("Vitality"),
+        Some(vec![Bonus::new(Attribute::HitPoints(HitPoint::Bonus), BonusType::Stacking, val, BonusSource::Attribute(Attribute::Vitality()), None)]),
+        None
+    )
+    UnconsciousRange() => (String::from("Unconscious Range"), None, None)
+    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), None, None)
+    ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), lore.get_attribute_bonuses(val), None)
+    ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), player_class.get_attribute_bonuses(val), None)
+);
 
 impl From<Attribute> for BonusSource {
     fn from(value: Attribute) -> Self {

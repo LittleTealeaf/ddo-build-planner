@@ -2,10 +2,14 @@ use std::collections::{HashMap, VecDeque};
 
 use itertools::Itertools;
 
+use crate::breakdown::attribute_queue::AttributeQueue;
+
 use super::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType, Condition},
 };
+
+mod attribute_queue;
 
 /// Builds the child bonuses by taking the bonus, fetching the "clone" attributes from the bonus attribute, and creating a duplicate bonus for each one
 macro_rules! build_child_bonuses {
@@ -17,7 +21,7 @@ macro_rules! build_child_bonuses {
                     Some(
                         bonus
                             .get_attribute()
-                            .get_clone_attributes()?
+                            .get_attribute_clones()?
                             .into_iter()
                             .map(|attribute| {
                                 Bonus::new(
@@ -127,32 +131,26 @@ impl Breakdowns {
         build_child_bonuses!(bonuses);
 
         // The queue of attributes that still need to be processed
-        let mut attribute_queue = bonuses
-            .iter()
-            .map(Bonus::get_attribute)
-            .unique()
-            .map(|item| (item, true))
-            .collect::<VecDeque<_>>();
+        let mut attribute_queue = AttributeQueue::new();
+
+        attribute_queue.insert_updates(bonuses.iter().map(Bonus::get_attribute), true);
 
         // Remove all previous bonuses in the breakdown with the same sources
         {
             let sources = bonuses.iter().map(Bonus::get_source).unique().collect_vec();
 
-            self.bonuses
-                .iter()
-                .enumerate()
-                .filter(|(_, item)| sources.contains(&item.get_source()))
-                .map(|(i, _)| i)
-                .rev()
-                .collect_vec()
-                .into_iter()
-                .map(|i| self.bonuses.swap_remove(i).get_attribute())
-                .unique()
-                .for_each(|attribute| {
-                    if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
-                        attribute_queue.push_back((attribute, false));
-                    }
-                });
+            attribute_queue.insert_updates(
+                self.bonuses
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, item)| sources.contains(&item.get_source()))
+                    .map(|(i, _)| i)
+                    .rev()
+                    .collect_vec()
+                    .into_iter()
+                    .map(|i| self.bonuses.swap_remove(i).get_attribute()),
+                false,
+            );
         }
 
         // The set of bonuses that still need to be inserted into the breakdown
@@ -162,7 +160,7 @@ impl Breakdowns {
             .into_group_map();
 
         // Fetch the next attribute to update
-        while let Some((attribute, force_update)) = attribute_queue.pop_front() {
+        while let Some((attribute, force_update)) = attribute_queue.get_next_attribute() {
             // Fetches the initial value. If we're forcing the update, we won't care about it if
             // it's not stored in the cache
             let initial_value = {
@@ -183,51 +181,47 @@ impl Breakdowns {
                 }
             }
 
-            // If it's forced updte, or if the initial value is not equal to the current value.
+            // If it's forced update, or if the initial value is not equal to the current value.
             // This will coincidentially load the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
-                self.bonuses
-                    .iter()
-                    .filter(|bonus| {
-                        bonus
-                            .get_conditions()
-                            .iter()
-                            .any(|condition| match condition {
-                                Condition::Has(attr)
-                                | Condition::NotHave(attr)
-                                | Condition::NotEq(attr, _)
-                                | Condition::Eq(attr, _)
-                                | Condition::Max(attr, _)
-                                | Condition::Min(attr, _) => attribute.eq(attr),
-                            })
-                    })
-                    .map(|bonus| bonus.get_attribute())
-                    .unique()
-                    .for_each(|attribute| {
-                        if !attribute_queue.iter().any(|(attr, _)| attr.eq(&attribute)) {
-                            attribute_queue.push_back((attribute, true));
-                        }
-                    });
+                // Push any bonus attributes that have referenced the attribute to the queue
+
+                attribute_queue.insert_updates(
+                    self.bonuses
+                        .iter()
+                        .filter(|bonus| {
+                            bonus
+                                .get_conditions()
+                                .iter()
+                                .any(|condition| match condition {
+                                    Condition::Has(attr)
+                                    | Condition::NotHave(attr)
+                                    | Condition::NotEq(attr, _)
+                                    | Condition::Eq(attr, _)
+                                    | Condition::Max(attr, _)
+                                    | Condition::Min(attr, _) => attribute.eq(attr),
+                                })
+                        })
+                        .map(|bonus| bonus.get_attribute()),
+                    true,
+                );
 
                 //Builds the source for any children bonuses
                 let source = BonusSource::Attribute(attribute);
 
                 // Removes any bonuses that have a source as this attribute
-                self.bonuses
-                    .iter()
-                    .enumerate()
-                    .filter(|(_, item)| source.eq(&item.get_source()))
-                    .map(|(i, _)| i)
-                    .rev()
-                    .collect_vec()
-                    .into_iter()
-                    .map(|i| self.bonuses.swap_remove(i).get_attribute())
-                    .unique()
-                    .for_each(|attribute| {
-                        if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
-                            attribute_queue.push_back((attribute, true));
-                        }
-                    });
+                attribute_queue.insert_updates(
+                    self.bonuses
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, item)| source.eq(&item.get_source()))
+                        .map(|(i, _)| i)
+                        .rev()
+                        .collect_vec()
+                        .into_iter()
+                        .map(|i| self.bonuses.swap_remove(i).get_attribute()),
+                    true,
+                );
 
                 // Checks if there are any children bonuses
                 if let Some(mut bonuses) =
@@ -238,25 +232,26 @@ impl Breakdowns {
 
                     // Groups bonuses by attribute, and inserts them into the HashMap
                     // accordingly
-                    bonuses
-                        .into_iter()
-                        .map(|bonus| (bonus.get_attribute(), bonus))
-                        .into_group_map()
-                        .into_iter()
-                        .for_each(|(attribute, mut insert_bonuses)| {
-                            insert_bonuses.append(
-                                &mut update_bonuses
-                                    .remove(&attribute)
-                                    .unwrap_or(Vec::new())
-                                    .into_iter()
-                                    .filter(|item| item.get_source().ne(&source))
-                                    .collect_vec(),
-                            );
-                            update_bonuses.insert(attribute, insert_bonuses);
-                            if !attribute_queue.iter().any(|(item, _)| item.eq(&attribute)) {
-                                attribute_queue.push_back((attribute, false));
-                            }
-                        });
+                    attribute_queue.insert_updates(
+                        bonuses
+                            .into_iter()
+                            .map(|bonus| (bonus.get_attribute(), bonus))
+                            .into_group_map()
+                            .into_iter()
+                            .map(|(attribute, mut insert_bonuses)| {
+                                insert_bonuses.append(
+                                    &mut update_bonuses
+                                        .remove(&attribute)
+                                        .unwrap_or(Vec::new())
+                                        .into_iter()
+                                        .filter(|item| item.get_source().ne(&source))
+                                        .collect_vec(),
+                                );
+                                update_bonuses.insert(attribute, insert_bonuses);
+                                attribute
+                            }),
+                        false,
+                    )
                 }
             }
         }
@@ -265,7 +260,7 @@ impl Breakdowns {
 
 #[cfg(test)]
 mod tests {
-    use crate::attribute::{Ability, WeaponHand, WeaponStat};
+    use crate::attribute::{Ability, Flag, WeaponHand, WeaponStat};
 
     use super::*;
 
@@ -274,7 +269,7 @@ mod tests {
         let mut breakdowns = Breakdowns::new();
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::AbilityScore(Ability::Wisdom),
+            Attribute::Ability(Ability::Wisdom),
             BonusType::Feat,
             20f32,
             BonusSource::Unique(1),
@@ -282,7 +277,7 @@ mod tests {
         )]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Wisdom)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Wisdom)),
             20f32
         );
     }
@@ -292,7 +287,7 @@ mod tests {
         let mut breakdowns = Breakdowns::new();
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack),
+            Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack()),
             BonusType::Stacking,
             10f32,
             BonusSource::Unique(2),
@@ -301,8 +296,8 @@ mod tests {
 
         assert_eq!(
             breakdowns.get_attribute(&Attribute::WeaponStat(
-                WeaponHand::MainHand,
-                WeaponStat::Attack
+                WeaponHand::Main,
+                WeaponStat::Attack()
             )),
             10f32
         );
@@ -314,14 +309,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Enhancement,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Enhancement,
                 5f32,
                 BonusSource::Unique(1),
@@ -330,7 +325,7 @@ mod tests {
         ]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Charisma)),
             10f32
         );
     }
@@ -341,14 +336,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Enhancement,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Insightful,
                 5f32,
                 BonusSource::Unique(1),
@@ -357,7 +352,7 @@ mod tests {
         ]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Charisma)),
             15f32
         );
     }
@@ -368,14 +363,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Strength),
+                Attribute::Ability(Ability::Strength),
                 BonusType::Stacking,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Strength),
+                Attribute::Ability(Ability::Strength),
                 BonusType::Stacking,
                 5f32,
                 BonusSource::Unique(1),
@@ -384,7 +379,7 @@ mod tests {
         ]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Strength)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Strength)),
             15f32
         );
     }
@@ -395,14 +390,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Wisdom),
+                Attribute::Ability(Ability::Wisdom),
                 BonusType::Stacking,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Stacking,
                 10f32,
                 BonusSource::Unique(0),
@@ -411,7 +406,7 @@ mod tests {
         ]);
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::AbilityScore(Ability::Wisdom),
+            Attribute::Ability(Ability::Wisdom),
             BonusType::Stacking,
             10f32,
             BonusSource::Unique(0),
@@ -419,7 +414,7 @@ mod tests {
         )]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Charisma)),
             0f32
         );
     }
@@ -428,16 +423,55 @@ mod tests {
     fn sub_types_fetch() {
         let mut breakdowns = Breakdowns::new();
 
-        breakdowns.insert_bonuses(vec![
-            Bonus::new(
-                Attribute::AbilityScore(Ability::Constitution),
-                BonusType::Stacking,
-                20f32,
-                BonusSource::Unique(0),
-                None
-            )
-        ]);
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::Ability(Ability::Constitution),
+            BonusType::Stacking,
+            20f32,
+            BonusSource::Unique(0),
+            None,
+        )]);
 
-        assert_eq!(breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Constitution)), 5f32);
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Constitution)),
+            5f32
+        );
+    }
+
+    #[test]
+    fn conditions_work() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::ClassLore(crate::attribute::ClassLore::Religious),
+            BonusType::Stacking,
+            10f32,
+            BonusSource::Unique(0),
+            None,
+        )]);
+
+        assert_eq!(
+            0f32,
+            breakdowns.get_attribute(&Attribute::MagicalSheltering())
+        );
+
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::Flag(Flag::ReligiousLoreToQualityMagicalSheltering()),
+            BonusType::Stacking,
+            1f32,
+            BonusSource::Unique(1),
+            None,
+        )]);
+
+        assert_eq!(
+            10f32,
+            breakdowns.get_attribute(&Attribute::MagicalSheltering())
+        );
+
+        breakdowns.insert_bonuses(vec![Bonus::dummy(BonusSource::Unique(1))]);
+
+        assert_eq!(
+            0f32,
+            breakdowns.get_attribute(&Attribute::MagicalSheltering())
+        );
     }
 }

@@ -121,13 +121,9 @@ impl FeatTrait for SkillFocus {
                 ],
             }
         } else {
-            vec![Bonus::new(
-                Attribute::Dummy,
-                BonusType::Stacking,
-                0f32,
-                BonusSource::Attribute(Attribute::Feat(Feat::SkillFocus(*self))),
-                None,
-            )]
+            vec![Bonus::dummy(BonusSource::Attribute(Attribute::Feat(
+                Feat::SkillFocus(*self),
+            )))]
         }
     }
 

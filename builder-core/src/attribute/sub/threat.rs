@@ -1,10 +1,13 @@
 use crate::simple_enum;
 
+simple_enum!(ThreatType, (Ranged "Ranged", Melee "Melee", Spell "Spell", All "All"));
 
-pub const ALL_THREAT: [Threat; 3] = [
-    Threat::Spell,
-    Threat::Ranged,
-    Threat::Melee
-];
-
-simple_enum!(Threat, (Spell "Spell", Ranged "Ranged", Melee "Melee", All "All"));
+impl ThreatType {
+    pub fn get_cloned_types(&self) -> Option<Vec<ThreatType>> {
+        if let Self::All = self {
+            Some(vec![Self::Ranged, Self::Melee, Self::Spell])
+        } else {
+            None
+        }
+    }
+}

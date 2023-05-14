@@ -1,7 +1,5 @@
 use std::collections::HashSet;
 
-
-
 #[macro_export]
 macro_rules! simple_enum {
     ($enum_name: ident, ($($id: ident $name: expr),*)) => {
@@ -42,4 +40,18 @@ macro_rules! simple_enum {
             }
         }
     };
+    ($enum_name: ident, ($($id: ident($($param_name: ident: $param_type: ty),*) $name: expr),*)) => {
+        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
+        pub enum $enum_name {
+            $($id($($param_type),*)),*
+        }
+
+        impl ToString for $enum_name {
+            fn to_string(&self) -> String {
+                match self {
+                    $(Self::$id($($param_name),*) => $name),*
+                }
+            }
+        }
+    }
 }
