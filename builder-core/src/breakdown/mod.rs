@@ -202,7 +202,7 @@ impl Breakdowns {
                                     | Condition::Min(attr, _) => attribute.eq(attr),
                                 })
                         })
-                        .map(|bonus| bonus.get_attribute()),
+                        .map(Bonus::get_attribute),
                     true,
                 );
 
