@@ -43,13 +43,7 @@ impl Bonuses for Feat {
         )]
     }
     fn remove_bonuses(&self) -> Vec<Bonus> {
-        vec![Bonus::new(
-            Attribute::Feat(*self),
-            BonusType::Stacking,
-            0f32,
-            BonusSource::Feat(*self),
-            None,
-        )]
+        vec![Bonus::dummy(BonusSource::Feat(*self))]
     }
 }
 
