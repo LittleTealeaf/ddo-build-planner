@@ -8,7 +8,6 @@ pub use feat_trait::*;
 mod category;
 pub use category::*;
 
-
 // TODO: Make macros to build the feats list. Each sub-feat list will be a list of different
 // "custom" feats (grouped by their source)
 

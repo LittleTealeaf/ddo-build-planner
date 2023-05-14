@@ -63,7 +63,7 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 0f32,
             source,
-            conditions: Vec::new()
+            conditions: Vec::new(),
         }
     }
 

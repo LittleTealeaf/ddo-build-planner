@@ -43,7 +43,7 @@ macro_rules! build_child_bonuses {
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
-    #[serde(skip)] 
+    #[serde(skip)]
     cache: HashMap<Attribute, f32>,
 }
 
