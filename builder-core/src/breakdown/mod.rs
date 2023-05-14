@@ -186,11 +186,12 @@ impl Breakdowns {
             };
             // Inserts the updated bonuses into the stack if they're not 0
             if let Some(bonuses) = update_bonuses.remove(&attribute) {
-                for bonus in bonuses {
-                    if bonus.get_value() != 0f32 {
-                        self.bonuses.push(bonus);
-                    }
-                }
+                self.bonuses.append(
+                    &mut bonuses
+                        .into_iter()
+                        .filter(|bonus| bonus.get_value() != 0f32)
+                        .collect(),
+                )
             }
 
             // If it's forced update, or if the initial value is not equal to the current value.
