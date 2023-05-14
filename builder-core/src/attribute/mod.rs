@@ -105,13 +105,13 @@ attributes!(
     Strikethrough() => (String::from("Strikethrough"), None, None)
     HelplessDamage() => (String::from("Helpless Damage"), None, None)
     ThreatGeneration(threat_type: ThreatType) => (
-        format!("{} Threat Generation", threat_type.to_string()), 
-        None, 
+        format!("{} Threat Generation", threat_type.to_string()),
+        None,
         Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
     )
     ThreatReduction(threat_type: ThreatType) => (
-        format!("{} Threat Reduction", threat_type.to_string()), 
-        None, 
+        format!("{} Threat Reduction", threat_type.to_string()),
+        None,
         Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
     )
     ElementalResistance(element: ElementalType) => (
@@ -123,6 +123,11 @@ attributes!(
         format!("{} Absorption", element.to_string()),
         None,
         None
+    )
+    SpellFocus(spellschool: SpellSchool) => (
+        format!("{} Spell Focus", spellschool.to_string()),
+        None,
+        Some(spellschool.get_cloned_schools()?.into_iter().map(Attribute::SpellFocus).collect())
     )
 );
 

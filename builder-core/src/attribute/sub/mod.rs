@@ -18,3 +18,5 @@ mod threat;
 pub use threat::*;
 mod elemental_defenses;
 pub use elemental_defenses::*;
+mod spell_school;
+pub use spell_school::*;
