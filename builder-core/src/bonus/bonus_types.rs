@@ -4,7 +4,10 @@ simple_enum!(
     BonusType,
     (
         AbilityModifier "Ability Modifier",
+        ActionBoost "Action Boost",
+        Alchemical "Alchemical",
         Artifact "Artifact",
+        Competence "Competence",
         Enhancement "Enhancement",
         Equipment "Equipment",
         Exceptional "Exceptional",
@@ -12,9 +15,13 @@ simple_enum!(
         Festive "Festive",
         Insightful "Insightful",
         Legendary "Legendary",
+        Morale "Morale",
+        Music "Music",
         Profane "Profane",
         Quality "Quality",
         Sacred "Sacred",
-        Stacking "Stacking"
+        Size "Size",
+        Stacking "Stacking",
+        Spooky "Spooky"
     )
 );
