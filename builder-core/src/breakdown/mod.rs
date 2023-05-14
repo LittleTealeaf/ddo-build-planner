@@ -274,7 +274,7 @@ mod tests {
         let mut breakdowns = Breakdowns::new();
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::AbilityScore(Ability::Wisdom),
+            Attribute::Ability(Ability::Wisdom),
             BonusType::Feat,
             20f32,
             BonusSource::Unique(1),
@@ -282,7 +282,7 @@ mod tests {
         )]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Wisdom)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Wisdom)),
             20f32
         );
     }
@@ -292,7 +292,7 @@ mod tests {
         let mut breakdowns = Breakdowns::new();
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack),
+            Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack()),
             BonusType::Stacking,
             10f32,
             BonusSource::Unique(2),
@@ -301,8 +301,8 @@ mod tests {
 
         assert_eq!(
             breakdowns.get_attribute(&Attribute::WeaponStat(
-                WeaponHand::MainHand,
-                WeaponStat::Attack
+                WeaponHand::Main,
+                WeaponStat::Attack()
             )),
             10f32
         );
@@ -314,14 +314,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Enhancement,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Enhancement,
                 5f32,
                 BonusSource::Unique(1),
@@ -330,7 +330,7 @@ mod tests {
         ]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Charisma)),
             10f32
         );
     }
@@ -341,14 +341,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Enhancement,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Insightful,
                 5f32,
                 BonusSource::Unique(1),
@@ -357,7 +357,7 @@ mod tests {
         ]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Charisma)),
             15f32
         );
     }
@@ -368,14 +368,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Strength),
+                Attribute::Ability(Ability::Strength),
                 BonusType::Stacking,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Strength),
+                Attribute::Ability(Ability::Strength),
                 BonusType::Stacking,
                 5f32,
                 BonusSource::Unique(1),
@@ -384,7 +384,7 @@ mod tests {
         ]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Strength)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Strength)),
             15f32
         );
     }
@@ -395,14 +395,14 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Wisdom),
+                Attribute::Ability(Ability::Wisdom),
                 BonusType::Stacking,
                 10f32,
                 BonusSource::Unique(0),
                 None,
             ),
             Bonus::new(
-                Attribute::AbilityScore(Ability::Charisma),
+                Attribute::Ability(Ability::Charisma),
                 BonusType::Stacking,
                 10f32,
                 BonusSource::Unique(0),
@@ -411,7 +411,7 @@ mod tests {
         ]);
 
         breakdowns.insert_bonuses(vec![Bonus::new(
-            Attribute::AbilityScore(Ability::Wisdom),
+            Attribute::Ability(Ability::Wisdom),
             BonusType::Stacking,
             10f32,
             BonusSource::Unique(0),
@@ -419,7 +419,7 @@ mod tests {
         )]);
 
         assert_eq!(
-            breakdowns.get_attribute(&Attribute::AbilityScore(Ability::Charisma)),
+            breakdowns.get_attribute(&Attribute::Ability(Ability::Charisma)),
             0f32
         );
     }
@@ -430,7 +430,7 @@ mod tests {
 
         breakdowns.insert_bonuses(vec![
             Bonus::new(
-                Attribute::AbilityScore(Ability::Constitution),
+                Attribute::Ability(Ability::Constitution),
                 BonusType::Stacking,
                 20f32,
                 BonusSource::Unique(0),

@@ -29,7 +29,7 @@ impl FeatTrait for Tome {
     fn get_feat_bonuses(&self, value: f32) -> Vec<crate::bonus::Bonus> {
         match self {
             Tome::Ability(ability) => vec![Bonus::new(
-                Attribute::AbilityScore(*ability),
+                Attribute::Ability(*ability),
                 BonusType::Stacking,
                 value,
                 BonusSource::Feat(Feat::Tome(Tome::Ability(*ability))),
@@ -43,14 +43,14 @@ impl FeatTrait for Tome {
                 None,
             )],
             Tome::PhysicalSheltering => vec![Bonus::new(
-                Attribute::Defensive(crate::attribute::Defensive::PhysicalSheltering),
+                Attribute::PhysicalSheltering(),
                 BonusType::Stacking,
                 value,
                 BonusSource::Feat(Feat::Tome(Tome::PhysicalSheltering)),
                 None,
             )],
             Tome::MagicalSheltering => vec![Bonus::new(
-                Attribute::Defensive(crate::attribute::Defensive::MagicalSheltering),
+                Attribute::MagicalSheltering(),
                 BonusType::Stacking,
                 value,
                 BonusSource::Feat(Feat::Tome(Tome::MagicalSheltering)),
