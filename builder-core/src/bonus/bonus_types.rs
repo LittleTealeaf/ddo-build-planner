@@ -11,6 +11,7 @@ simple_enum!(
         Deflection "Deflection",
         Enhancement "Enhancement",
         Equipment "Equipment",
+        Epic "Epic",
         Exceptional "Exceptional",
         Feat "Feat",
         Festive "Festive",
