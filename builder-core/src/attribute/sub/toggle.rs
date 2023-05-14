@@ -9,8 +9,6 @@ simple_enum!(
 
 impl Toggle {
     pub fn get_toggled_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            _ => None,
-        }
+        None
     }
 }
