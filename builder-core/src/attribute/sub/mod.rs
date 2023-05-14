@@ -24,3 +24,7 @@ mod spell_points;
 pub use spell_points::*;
 mod hit_points;
 pub use hit_points::*;
+mod heal_amp;
+pub use heal_amp::*;
+mod class_lore;
+pub use class_lore::*;

@@ -1,6 +1,4 @@
-use crate::{simple_enum, bonus::Bonus};
-
-
+use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(
     Toggle, (
@@ -8,12 +6,10 @@ simple_enum!(
     )
 );
 
-
 impl Toggle {
     pub fn get_toggled_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-
-            _ => None
+            _ => None,
         }
     }
 }

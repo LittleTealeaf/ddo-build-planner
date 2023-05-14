@@ -2,6 +2,7 @@
 use crate::{
     attributes,
     bonus::{Bonus, BonusType},
+    player_class::PlayerClass,
 };
 
 use super::{bonus::BonusSource, feat::Feat};
@@ -138,6 +139,9 @@ attributes!(
         None
     )
     UnconsciousRange() => (String::from("Unconscious Range"), None, None)
+    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), None, None)
+    ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), lore.get_attribute_bonuses(val), None)
+    ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), player_class.get_attribute_bonuses(val), None)
 );
 
 impl From<Attribute> for BonusSource {

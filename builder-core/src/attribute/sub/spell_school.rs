@@ -6,17 +6,17 @@ impl SpellSchool {
     pub fn get_cloned_schools(&self) -> Option<Vec<SpellSchool>> {
         if let Self::All = self {
             Some(vec![
-                 Self::Abjuration,
-                 Self::Conjuration,
-                 Self::Divination,
-                 Self::Enchantment,
-                 Self::Evocation,
-                 Self::Illusion,
-                 Self::Necromancy,
-                 Self::Transmutation,
+                Self::Abjuration,
+                Self::Conjuration,
+                Self::Divination,
+                Self::Enchantment,
+                Self::Evocation,
+                Self::Illusion,
+                Self::Necromancy,
+                Self::Transmutation,
             ])
         } else {
             None
-        } 
+        }
     }
 }

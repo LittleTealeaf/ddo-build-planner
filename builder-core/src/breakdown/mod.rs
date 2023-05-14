@@ -428,16 +428,17 @@ mod tests {
     fn sub_types_fetch() {
         let mut breakdowns = Breakdowns::new();
 
-        breakdowns.insert_bonuses(vec![
-            Bonus::new(
-                Attribute::Ability(Ability::Constitution),
-                BonusType::Stacking,
-                20f32,
-                BonusSource::Unique(0),
-                None
-            )
-        ]);
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::Ability(Ability::Constitution),
+            BonusType::Stacking,
+            20f32,
+            BonusSource::Unique(0),
+            None,
+        )]);
 
-        assert_eq!(breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Constitution)), 5f32);
+        assert_eq!(
+            breakdowns.get_attribute(&Attribute::AbilityModifier(Ability::Constitution)),
+            5f32
+        );
     }
 }

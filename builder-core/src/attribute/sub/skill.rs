@@ -1,4 +1,4 @@
-use crate::{simple_enum, bonus::Bonus};
+use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "DisableDevice", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device", All "All"));
 
@@ -34,7 +34,7 @@ impl Skill {
 
     pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            _ => None
+            _ => None,
         }
     }
 }
