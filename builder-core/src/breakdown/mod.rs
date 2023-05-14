@@ -238,10 +238,10 @@ impl Breakdowns {
                     true,
                 );
 
+                let value = self.get_attribute(&attribute);
+
                 // Checks if there are any children bonuses
-                if let Some(mut bonuses) =
-                    attribute.get_attribute_bonuses(self.get_attribute(&attribute))
-                {
+                if let Some(mut bonuses) = attribute.get_attribute_bonuses(value) {
                     // Includes any cloned attributes into the bonuses list
                     build_child_bonuses!(bonuses);
 
