@@ -1,2 +1,2 @@
 [workspace]
-members = ["builder-core"]
+members = ["builder-core", "app"]
