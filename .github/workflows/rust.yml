@@ -29,7 +29,7 @@ jobs:
         with:
           workspaces: "./builder-core -> target"
       - name: Build
-        run: cd builder-core && cargo build
+        run: cargo build -p builder-core
   test:
     name: Test Core
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
         with:
           workspaces: "./builder-core -> target"
       - name: Test
-        run: cd builder-core && cargo build
+        run: cargo build -p builder-core
   analyze:
     name: Clippy Analyze Core
     runs-on: ubuntu-latest
@@ -69,12 +69,12 @@ jobs:
       - name: Install required cargo
         run: cargo install clippy-sarif sarif-fmt
       - name: Run rust-clippy
-        run: cd builder-core && cargo clippy
+        run: cargo clippy -p builder-core
           --all-features
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: builder-core/rust-clippy-results.sarif
+          sarif_file: rust-clippy-results.sarif
           wait-for-processing: true
