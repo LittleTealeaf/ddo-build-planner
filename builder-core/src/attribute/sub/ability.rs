@@ -1,4 +1,4 @@
-use crate::{attribute::Attribute, bonus::Bonus, simple_enum};
+use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(Ability, (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All"));
 
