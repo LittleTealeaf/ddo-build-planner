@@ -149,3 +149,25 @@ impl From<Attribute> for BonusSource {
         BonusSource::Attribute(value)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn attribute_serialization() {
+        let attribute = Attribute::WeaponStat(
+            WeaponHand::Main,
+            WeaponStat::DamageReductionBypass(DamageReduction::Byeshk),
+        );
+
+        let serialized = ron::to_string(&attribute).unwrap();
+        println!("{}", serialized);
+
+        let deserialized = ron::from_str(serialized.as_str()).unwrap();
+
+
+        assert_eq!(attribute, deserialized);
+
+    }
+}
