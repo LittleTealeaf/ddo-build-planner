@@ -20,3 +20,7 @@ mod elemental_defenses;
 pub use elemental_defenses::*;
 mod spell_school;
 pub use spell_school::*;
+mod spell_points;
+pub use spell_points::*;
+mod hit_points;
+pub use hit_points::*;
