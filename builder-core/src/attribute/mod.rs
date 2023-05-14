@@ -142,6 +142,12 @@ attributes!(
     HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), None, None)
     ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), lore.get_attribute_bonuses(val), None)
     ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), player_class.get_attribute_bonuses(val), None)
+    MovementSpeed() => (String::from("Movement Speed"), None, None)
+    PactDice() => (String::from("Pact Dice"), None, None)
+    EldritchBlastDice() => (String::from("Eldritch Blast Dice"), None, None)
+    SpellCostReduction() => (String::from("Spell Cost Reduction"), None, None)
+    SpellResistance() => (String::from("Spell Resistance"), None, None)
+    SpellPenetration() => (String::from("Spell Penetation"), None, None)
 );
 
 impl From<Attribute> for BonusSource {

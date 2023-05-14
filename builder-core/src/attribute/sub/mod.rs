@@ -28,3 +28,5 @@ mod heal_amp;
 pub use heal_amp::*;
 mod class_lore;
 pub use class_lore::*;
+mod tactics;
+pub use tactics::*;
