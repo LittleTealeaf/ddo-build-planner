@@ -18,6 +18,7 @@ simple_enum!(
         Legendary "Legendary",
         Morale "Morale",
         Music "Music",
+        Primal "Primal",
         Profane "Profane",
         Quality "Quality",
         Sacred "Sacred",
