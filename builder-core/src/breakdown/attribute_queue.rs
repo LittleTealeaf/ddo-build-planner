@@ -20,22 +20,18 @@ impl AttributeQueue {
     }
 
     pub fn get_next_attribute(&mut self) -> Option<(Attribute, bool)> {
-        self.buffer.iter().unique().for_each(|attribute| {
-            if !self.queue.contains(attribute) {
-                self.queue.push_back(*attribute)
+        while let Some(attribute) = self.buffer.pop() {
+            if !self.queue.contains(&attribute) {
+                self.queue.push_back(attribute);
             }
-        });
-
-        self.buffer.clear();
+        }
 
         let attribute = self.queue.pop_front()?;
         let forced = self.forced.remove(&attribute);
         Some((attribute, forced))
     }
 
-    pub fn insert_updates<T: Iterator<Item = Attribute>>(&mut self, attributes: T, forced: bool) {
-        let mut attributes: Vec<Attribute> = attributes.collect();
-
+    pub fn insert_updates(&mut self, mut attributes: Vec<Attribute>, forced: bool) {
         if forced {
             for attribute in attributes.iter() {
                 self.forced.insert(*attribute);

@@ -133,7 +133,10 @@ impl Breakdowns {
         // The queue of attributes that still need to be processed
         let mut attribute_queue = AttributeQueue::new();
 
-        attribute_queue.insert_updates(bonuses.iter().map(Bonus::get_attribute), true);
+        attribute_queue.insert_updates(
+            bonuses.iter().map(Bonus::get_attribute).unique().collect(),
+            false,
+        );
 
         // Remove all previous bonuses in the breakdown with the same sources
         {
@@ -148,8 +151,10 @@ impl Breakdowns {
                     .rev()
                     .collect_vec()
                     .into_iter()
-                    .map(|i| self.bonuses.swap_remove(i).get_attribute()),
-                false,
+                    .map(|i| self.bonuses.swap_remove(i).get_attribute())
+                    .unique()
+                    .collect(),
+                true,
             );
         }
 
@@ -185,7 +190,6 @@ impl Breakdowns {
             // This will coincidentially load the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
                 // Push any bonus attributes that have referenced the attribute to the queue
-
                 attribute_queue.insert_updates(
                     self.bonuses
                         .iter()
@@ -202,7 +206,9 @@ impl Breakdowns {
                                     | Condition::Min(attr, _) => attribute.eq(attr),
                                 })
                         })
-                        .map(Bonus::get_attribute),
+                        .map(Bonus::get_attribute)
+                        .unique()
+                        .collect(),
                     true,
                 );
 
@@ -219,7 +225,9 @@ impl Breakdowns {
                         .rev()
                         .collect_vec()
                         .into_iter()
-                        .map(|i| self.bonuses.swap_remove(i).get_attribute()),
+                        .map(|i| self.bonuses.swap_remove(i).get_attribute())
+                        .unique()
+                        .collect(),
                     true,
                 );
 
@@ -249,7 +257,9 @@ impl Breakdowns {
                                 );
                                 update_bonuses.insert(attribute, insert_bonuses);
                                 attribute
-                            }),
+                            })
+                            .unique()
+                            .collect(),
                         false,
                     )
                 }
