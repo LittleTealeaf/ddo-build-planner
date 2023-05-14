@@ -9,3 +9,6 @@ edition = "2021"
 itertools = "0.10.5"
 serde = { version = "1.0.163", features = ["derive"] }
 serde_test = "1.0.163"
+
+[dev-dependencies]
+ron = "0.8.0"

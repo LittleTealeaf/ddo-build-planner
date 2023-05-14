@@ -12,10 +12,15 @@ use super::attribute::Attribute;
 
 #[derive(PartialEq, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Bonus {
+    #[serde(rename = "atr")]
     attribute: Attribute,
+    #[serde(rename = "ty")]
     bonus_type: BonusType,
+    #[serde(rename = "val")]
     value: f32,
+    #[serde(rename = "src")]
     source: BonusSource,
+    #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
     conditions: Option<Vec<Condition>>,
 }
 

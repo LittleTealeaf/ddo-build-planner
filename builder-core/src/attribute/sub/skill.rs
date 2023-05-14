@@ -2,6 +2,20 @@ use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(Skill, (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "DisableDevice", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device", All "All"));
 
+macro_rules! spell_power {
+    ($skill: ident, $spell_power: ident, $value: expr) => {
+        $crate::bonus::Bonus::new(
+            $crate::attribute::Attribute::SpellPower($crate::attribute::SpellPower::$spell_power),
+            $crate::bonus::BonusType::Stacking,
+            $value,
+            $crate::bonus::BonusSource::Attribute($crate::attribute::Attribute::Skill(
+                Skill::$skill,
+            )),
+            None,
+        )
+    };
+}
+
 impl Skill {
     pub fn get_cloned_skills(&self) -> Option<Vec<Skill>> {
         match self {
@@ -34,6 +48,20 @@ impl Skill {
 
     pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
+            Skill::Heal => Some(vec![
+                spell_power!(Heal, Positive, value),
+                spell_power!(Heal, Negative, value),
+            ]),
+            Skill::Perform => Some(vec![spell_power!(Perform, Sonic, value)]),
+            Skill::SpellCraft => Some(vec![
+                spell_power!(SpellCraft, Acid, value),
+                spell_power!(SpellCraft, Cold, value),
+                spell_power!(SpellCraft, Electric, value),
+                spell_power!(SpellCraft, Fire, value),
+                spell_power!(SpellCraft, Force, value),
+                spell_power!(SpellCraft, Light, value),
+                spell_power!(SpellCraft, Poison, value),
+            ]),
             _ => None,
         }
     }
