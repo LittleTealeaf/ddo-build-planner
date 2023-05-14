@@ -1,3 +1,4 @@
+#![allow(unused_variables)]
 use crate::{
     attributes,
     bonus::{Bonus, BonusType},
@@ -129,21 +130,14 @@ attributes!(
         None,
         Some(spellschool.get_cloned_schools()?.into_iter().map(Attribute::SpellFocus).collect())
     )
-    SpellPoints(spellpoint: SpellPoint) => (
-        spellpoint.to_string(),
-        None,
-        None
-    )
-    HitPoints(hitpoint: HitPoint) => (
-        hitpoint.to_string(),
-        None,
-        None
-    )
+    SpellPoints(spellpoint: SpellPoint) => (spellpoint.to_string(), None, None)
+    HitPoints(hitpoint: HitPoint) => (hitpoint.to_string(), None, None)
     Vitality() => (
         String::from("Vitality"),
         Some(vec![Bonus::new(Attribute::HitPoints(HitPoint::Bonus), BonusType::Stacking, val, BonusSource::Attribute(Attribute::Vitality()), None)]),
         None
     )
+    UnconsciousRange() => (String::from("Unconscious Range"), None, None)
 );
 
 impl From<Attribute> for BonusSource {
