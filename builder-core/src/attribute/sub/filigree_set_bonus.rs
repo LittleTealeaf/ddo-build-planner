@@ -5,7 +5,7 @@ use crate::{
 
 use super::{
     Ability, ElementalType, Flag, HealAmp, HitPoint, SavingThrow, Skill, SpellPoint, SpellPower,
-    SpellSchool, Tactics, Toggle, WeaponHand, WeaponStat, ThreatType
+    SpellSchool, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,
 };
 
 macro_rules! filigree_set_bonuses {
@@ -635,6 +635,208 @@ filigree_set_bonuses!(
         ]
         4f32 => vec![
             Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(ZarigansArcaneEnlightenment), None)
+        ]
+    )
+    TheAbidingPath "The Abiding Path" => (
+        2f32 => vec![
+            Bonus::new(Attribute::MagicalShelteringCap(), BonusType::Stacking, 10f32, source!(TheAbidingPath), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::Tactics(Tactics::Stun), BonusType::Stacking, 2f32, source!(TheAbidingPath), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(TheAbidingPath), None),
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 5f32, source!(TheAbidingPath), None),
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::Dodge(), BonusType::Stacking, 1f32, source!(TheAbidingPath), None),
+            Bonus::new(Attribute::MaxDodge(), BonusType::Stacking, 1f32, source!(TheAbidingPath), None),
+        ]
+    )
+    AngelicWings "Angelic Wings" => (
+        2f32 => vec![
+            // TODO: +3 Turn Undead Charges
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(AngelicWings), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellPoints(SpellPoint::Bonus), BonusType::Stacking, 200f32, source!(AngelicWings), None)
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Light), BonusType::Stacking, 5f32, source!(AngelicWings), None)
+        ]
+    )
+    BendFate "Bend Fate" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Sonic), BonusType::Stacking, 10f32, source!(BendFate), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPenetration(), BonusType::Stacking, 1f32, source!(BendFate), None)
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellFocus(SpellSchool::Enchantment), BonusType::Stacking, 2f32, source!(BendFate), None)
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(BendFate), None)
+        ]
+    )
+    Divinity "Divinity" => (
+        2f32 => vec![
+            // TODO: Smite Evil Charges
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::FortificationBypass(), BonusType::Stacking, 10f32, source!(Divinity), None)
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::HealAmp(HealAmp::Positive), BonusType::Stacking, 10f32, source!(Divinity), None)
+        ]
+    )
+    Dragonsoul "Dragonsoul" => (
+        2f32 => vec![
+            // TODO: Spell Cooldowns
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::All), BonusType::Stacking, 5f32, source!(Dragonsoul), None)
+        ]
+        4f32 => vec![
+            // TODO: 5% spell cooldowns
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::All), BonusType::Stacking, 5f32, source!(Dragonsoul), None)
+        ]
+    )
+    Dreadbringer "Dreadbringer" => (
+        2f32 => vec![
+            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(Dreadbringer), None),
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 5f32, source!(Dreadbringer), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::FortificationBypass(), BonusType::Stacking, 10f32, source!(Dreadbringer), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 10f32, source!(Dreadbringer), None),
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 10f32, source!(Dreadbringer), None),
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::FortificationBypass(), BonusType::Stacking, 20f32, source!(Dreadbringer), None),
+        ]
+    )
+    ElementalAvatar "Elemental Avatar" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellCriticalChance(SpellPower::All), BonusType::Stacking, f32::max(5f32, value - 1f32), source!(ElementalAvatar), None)
+        ]
+    )
+    KeeperOfTheCurse "Keeper of the Curse" => (
+        2f32 => vec![
+            Bonus::new(Attribute::HealAmp(HealAmp::Positive), BonusType::Stacking, 10f32, source!(KeeperOfTheCurse), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(KeeperOfTheCurse), None)
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(KeeperOfTheCurse), None)
+        ]
+        5f32 => vec![
+            // TODO: Pact Dice
+        ]
+    )
+    LunarMagic "Lunar Magic" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellPoints(SpellPoint::Bonus), BonusType::Stacking, 100f32, source!(LunarMagic), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, if value >= 5f32 {2f32} else {1f32}, source!(LunarMagic), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 20f32, source!(LunarMagic), None),
+        ]
+    )
+    TheSerpent "The Serpent" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Poison), BonusType::Stacking, 20f32, source!(TheSerpent), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Poison), BonusType::Stacking, 5f32, source!(TheSerpent), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellFocus(SpellSchool::Transmutation), BonusType::Stacking, 2f32, source!(TheSerpent), None),
+            Bonus::new(Attribute::SpellFocus(SpellSchool::Conjuration), BonusType::Stacking, 2f32, source!(TheSerpent), None),
+        ]
+        5f32 => vec![
+            // TODO: Immunity to Petrification
+        ]
+    )
+    Shadowstrike "Shadowstrike" => (
+        2f32 => vec![
+            Bonus::new(Attribute::Tactics(Tactics::Assassinate), BonusType::Stacking, 2f32, source!(Shadowstrike), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::Dodge(), BonusType::Stacking, 1f32, source!(Shadowstrike), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SavingThrow(SavingThrow::Reflex), BonusType::Stacking, 3f32, source!(Shadowstrike), None)
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::SneakAttackDice(), BonusType::Stacking, 2f32, source!(Shadowstrike), None)
+        ]
+    )
+    Technomage "Technomage" => (
+        2f32 => vec![
+            Bonus::new(Attribute::Tactics(Tactics::RuneArm), BonusType::Stacking, 2f32, source!(Technomage), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::Sheltering(), BonusType::Stacking, 10f32, source!(Technomage), None),
+        ]
+        4f32 => vec![
+            // TODO: 5% armor class
+        ]
+        5f32 => vec![
+            // TODO: 20% runearm recharge rate
+        ]
+    )
+    UltimateFury "Ultimate Fury" => (
+        2f32 => vec![
+            Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking, f32::max(5f32, value - 1f32), source!(UltimateFury), None)
+        ]
+    )
+    Unbreakable "Unbreakable" => (
+        2f32 => vec![
+            // TODO: +2 Lay on Hands Charges
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::PhysicalSheltering(), BonusType::Stacking, 10f32, source!(Unbreakable), None),
+        ]
+        4f32 => vec![
+            // TODO: +5 Armor Class
+        ]
+        5f32 => vec![
+            // TODO: +5% Armor Class
+        ]
+    )
+    Wildhunter "Wildhunter" => (
+        2f32 => vec![
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 5f32, source!(Wildhunter), None)
+        ]
+        3f32 => vec![
+            // TODO: +2 Wild Empathy Cjharges
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 5f32, source!(Wildhunter), None),
+        ]
+        5f32 => vec![
+            // TODO: +1 Manyshot Charges
+        ]
+    )
+    SnowpeaksGifts "Snowpeak's Gifts" => (
+        2f32 => vec![
+            Bonus::new(Attribute::HealAmp(HealAmp::All), BonusType::Stacking, 10f32, source!(SnowpeaksGifts), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 10f32, source!(SnowpeaksGifts), None)
+        ]
+        4f32 => vec![
+            // TODO: Immune to most slow forms
         ]
     )
 );

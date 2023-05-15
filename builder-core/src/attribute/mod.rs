@@ -141,7 +141,7 @@ attributes!(
         None
     )
     UnconsciousRange() => (String::from("Unconscious Range"), None, None)
-    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), None, None)
+    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), None, Some(healamp.get_cloned_attributes()?.into_iter().map(Attribute::HealAmp).collect()))
     ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), lore.get_attribute_bonuses(val), None)
     ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), player_class.get_attribute_bonuses(val), None)
     MovementSpeed() => (String::from("Movement Speed"), None, None)
