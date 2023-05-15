@@ -48,7 +48,7 @@ macro_rules! filigree_set_bonuses {
             use super::*;
 
             #[test]
-            fn attributes_have_correct_source() {
+            fn bonuses_have_correct_source() {
                 $(
                     $(
                         {
