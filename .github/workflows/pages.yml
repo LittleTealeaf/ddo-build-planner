@@ -41,6 +41,8 @@ jobs:
           override: true
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
+        with:
+            cache-targets: false
       - name: Build Documentation
         run: cargo doc --package builder-core
       - name: Setup Pages
