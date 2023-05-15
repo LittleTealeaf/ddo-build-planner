@@ -14,7 +14,7 @@ simple_enum!(
         Illusion "Illusion",
         Fear "Fear",
         Curse "Curse",
-        All "All"
+        All "All Saving Throws"
     )
 );
 
