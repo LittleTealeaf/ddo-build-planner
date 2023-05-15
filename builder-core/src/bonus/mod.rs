@@ -12,7 +12,7 @@ use crate::attribute::{Flag, Toggle};
 
 use super::attribute::Attribute;
 
-#[derive(PartialEq, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(PartialEq, Clone, serde::Serialize, serde::Deserialize, Debug)]
 pub struct Bonus {
     #[serde(rename = "atr")]
     attribute: Attribute,

@@ -40,6 +40,9 @@ macro_rules! build_child_bonuses {
     };
 }
 
+/// Handles compilation and breaking down attributes for a DDO Character.
+///
+/// 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,
@@ -140,7 +143,7 @@ impl Breakdowns {
         // The queue of attributes that still need to be processed
         let mut attribute_queue = AttributeQueue::new();
 
-        attribute_queue.insert_updates(
+        attribute_queue.insert_attributes(
             bonuses.iter().map(Bonus::get_attribute).unique().collect(),
             false,
         );
@@ -149,7 +152,7 @@ impl Breakdowns {
         {
             let sources = bonuses.iter().map(Bonus::get_source).unique().collect_vec();
 
-            attribute_queue.insert_updates(
+            attribute_queue.insert_attributes(
                 self.bonuses
                     .iter()
                     .enumerate()
@@ -198,7 +201,7 @@ impl Breakdowns {
             // This will coincidentially load the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
                 // Push any bonus attributes that have referenced the attribute to the queue
-                attribute_queue.insert_updates(
+                attribute_queue.insert_attributes(
                     self.bonuses
                         .iter()
                         .filter(|bonus| {
@@ -223,7 +226,7 @@ impl Breakdowns {
                 let source = BonusSource::Attribute(attribute);
 
                 // Removes any bonuses that have a source as this attribute
-                attribute_queue.insert_updates(
+                attribute_queue.insert_attributes(
                     self.bonuses
                         .iter()
                         .enumerate()
@@ -247,7 +250,7 @@ impl Breakdowns {
 
                     // Groups bonuses by attribute, and inserts them into the HashMap
                     // accordingly
-                    attribute_queue.insert_updates(
+                    attribute_queue.insert_attributes(
                         bonuses
                             .into_iter()
                             .map(|bonus| (bonus.get_attribute(), bonus))

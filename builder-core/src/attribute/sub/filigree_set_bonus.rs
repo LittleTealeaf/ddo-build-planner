@@ -71,6 +71,13 @@ macro_rules! filigree_set_bonuses {
                     )*
                 )*
             }
+
+            #[test]
+            fn zero_value_returns_no_bonuses() {
+                $(
+                    assert_eq!(None, FiligreeSet::$set_name.get_attribute_bonuses(0f32));
+                )*
+            }
         }
     };
 }
