@@ -689,15 +689,11 @@ filigree_set_bonuses!(
     )
     Dreadbringer "Dreadbringer" => (
         2f32 => vec![
-            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(Dreadbringer), None),
-            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 5f32, source!(Dreadbringer), None)
+            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, if value >= 4f32 {15f32} else {5f32}, source!(Dreadbringer), None),
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, if value >= 4f32 {15f32} else {5f32}, source!(Dreadbringer), None)
         ]
         3f32 => vec![
             Bonus::new(Attribute::FortificationBypass(), BonusType::Stacking, if value >= 5f32 {30f32} else {10f32}, source!(Dreadbringer), None),
-        ]
-        4f32 => vec![
-            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 10f32, source!(Dreadbringer), None),
-            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 10f32, source!(Dreadbringer), None),
         ]
     )
     ElementalAvatar "Elemental Avatar" => (
