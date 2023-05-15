@@ -356,25 +356,11 @@ filigree_set_bonuses!(
     )
     TrappersDelight "Trapper's Delight" => (
         2f32 => vec![
-            Bonus::new(Attribute::Skill(Skill::OpenLock), BonusType::Stacking, 1f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::DisableDevice), BonusType::Stacking, 1f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::Search), BonusType::Stacking, 1f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::Spot), BonusType::Stacking, 1f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::SavingThrow(SavingThrow::Traps), BonusType::Stacking, 1f32, source!(TrappersDelight), None)
-        ]
-        3f32 => vec![
-            Bonus::new(Attribute::Skill(Skill::OpenLock), BonusType::Stacking, 2f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::DisableDevice), BonusType::Stacking, 2f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::Search), BonusType::Stacking, 2f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::Spot), BonusType::Stacking, 2f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::SavingThrow(SavingThrow::Traps), BonusType::Stacking, 2f32, source!(TrappersDelight), None)
-        ]
-        4f32 => vec![
-            Bonus::new(Attribute::Skill(Skill::OpenLock), BonusType::Stacking, 3f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::DisableDevice), BonusType::Stacking, 3f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::Search), BonusType::Stacking, 3f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::Skill(Skill::Spot), BonusType::Stacking, 3f32, source!(TrappersDelight), None),
-            Bonus::new(Attribute::SavingThrow(SavingThrow::Traps), BonusType::Stacking, 3f32, source!(TrappersDelight), None)
+            Bonus::new(Attribute::Skill(Skill::OpenLock), BonusType::Stacking, if value >= 4f32 {6f32} else if value == 3f32 {3f32} else {1f32}, source!(TrappersDelight), None),
+            Bonus::new(Attribute::Skill(Skill::DisableDevice), BonusType::Stacking, if value >= 4f32 {6f32} else if value == 3f32 {3f32} else {1f32}, source!(TrappersDelight), None),
+            Bonus::new(Attribute::Skill(Skill::Search), BonusType::Stacking, if value >= 4f32 {6f32} else if value == 3f32 {3f32} else {1f32}, source!(TrappersDelight), None),
+            Bonus::new(Attribute::Skill(Skill::Spot), BonusType::Stacking, if value >= 4f32 {6f32} else if value == 3f32 {3f32} else {1f32}, source!(TrappersDelight), None),
+            Bonus::new(Attribute::SavingThrow(SavingThrow::Traps), BonusType::Stacking, if value >= 4f32 {6f32} else if value == 3f32 {3f32} else {1f32}, source!(TrappersDelight), None)
         ]
     )
     Treachery "Treachery" => (
