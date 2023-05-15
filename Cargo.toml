@@ -1,4 +1,3 @@
 [workspace]
 members = ["builder-core", "app"]
-edition = "2021"
 resolver = "2"
