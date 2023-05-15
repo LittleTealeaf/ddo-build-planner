@@ -5,7 +5,7 @@ use crate::{
 
 use super::{
     Ability, ElementalType, Flag, HealAmp, HitPoint, SavingThrow, Skill, SpellPoint, SpellPower,
-    SpellSchool, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,
+    SpellSchool, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat, CasterLevel
 };
 
 macro_rules! filigree_set_bonuses {
@@ -157,7 +157,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SavingThrow(SavingThrow::All), BonusType::Stacking, 1f32, source!(EmbracedByLight), None),
         ]
         5f32 => vec![
-            // TODO: Casting level with spells / items
+            Bonus::new(Attribute::CasterLevel(CasterLevel::SpellPower(SpellPower::Positive)), BonusType::Stacking, 2f32, source!(EmbracedByLight), None)
         ]
     )
     EnlightenedStep "Enlightened Step" => (

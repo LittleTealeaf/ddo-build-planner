@@ -156,6 +156,7 @@ attributes!(
     MaxDodge() => (String::from("Maximum Dodge"), None, None)
     Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), None, None)
     BonusActionBoosts() => (String::from("Bonus Action Boosts"), None, None)
+    CasterLevel(casterlevel: CasterLevel) => (casterlevel.to_string(), None, Some(casterlevel.get_cloned_attributes()?.into_iter().map(Attribute::CasterLevel).collect()))
 );
 
 impl From<Attribute> for BonusSource {
