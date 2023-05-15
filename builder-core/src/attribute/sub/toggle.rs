@@ -1,7 +1,7 @@
 use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(
-    Toggle, (
+    Toggle, "", (
         Blocking() String::from("Blocking"),
         InReaper() String::from("In Reaper"),
         AttackingTrippedTarget() String::from("Attacking Tripped Targets")

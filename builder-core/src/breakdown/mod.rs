@@ -40,9 +40,6 @@ macro_rules! build_child_bonuses {
     };
 }
 
-/// Handles compilation and breaking down attributes for a DDO Character.
-///
-/// 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Breakdowns {
     bonuses: Vec<Bonus>,

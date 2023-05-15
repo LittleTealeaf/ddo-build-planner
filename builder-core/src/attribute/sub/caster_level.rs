@@ -4,6 +4,7 @@ use super::{SpellPower, SpellSchool};
 
 simple_enum!(
     CasterLevel,
+    "", 
     (
         SpellPower(spellpower: SpellPower) format!("{} Spell Caster Level", spellpower.to_string()),
         PlayerClass(playerclass: PlayerClass) format!("{} Spell Caster Level", playerclass.to_string()),
@@ -16,6 +17,7 @@ simple_enum!(
 
 simple_enum!(
     SpellType,
+    "",
     (
         Arcane "Arcane", Divine "Divine"
     )

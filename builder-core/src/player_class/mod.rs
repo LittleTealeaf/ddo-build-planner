@@ -3,7 +3,7 @@ use crate::simple_enum;
 mod class_bonuses;
 pub use class_bonuses::*;
 
-simple_enum!(PlayerClass, (
+simple_enum!(PlayerClass, "", (
     Alchemist "Alchemist",
     Artificer "Artificer",
     Barbarian "Barbarian",

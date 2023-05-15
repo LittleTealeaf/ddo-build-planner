@@ -1,7 +1,7 @@
 use crate::{bonus::Bonus, simple_enum};
 
 simple_enum!(
-    SavingThrow, (
+    SavingThrow, "", (
         Fortitude "Fortitude",
         Poison "Poison",
         Disease "Disease",

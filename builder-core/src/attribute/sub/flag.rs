@@ -3,7 +3,7 @@ use crate::{attribute::Attribute, bonus::Bonus, simple_enum};
 use super::{Ability, SavingThrow, Toggle};
 
 simple_enum!(
-    Flag, (
+    Flag, "", (
         Centered() String::from("Centered"),
         Toggle(toggle: Toggle) format!("Toggled: {}", toggle.to_string()),
         AbilityToSavingThrow(ability: Ability, savingthrow: SavingThrow) format!("{} to {} saving throw", ability.to_string(), savingthrow.to_string()),

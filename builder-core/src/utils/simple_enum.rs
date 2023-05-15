@@ -1,6 +1,8 @@
+/// Generates a simple enum implementing the [ToString] trait.
 #[macro_export]
 macro_rules! simple_enum {
-    ($enum_name: ident, ($($id: ident $name: expr),*)) => {
+    ($enum_name: ident, $documentation: expr, ($($id: ident $name: expr),*)) => {
+        #[doc = $documentation]
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
         pub enum $enum_name {
             $(
@@ -41,7 +43,7 @@ macro_rules! simple_enum {
             }
         }
     };
-    ($enum_name: ident, ($($id: ident($($param_name: ident: $param_type: ty),*) $name: expr),*)) => {
+    ($enum_name: ident, $documentation: expr, ($($id: ident($($param_name: ident: $param_type: ty),*) $name: expr),*)) => {
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
         pub enum $enum_name {
             $($id($($param_type),*)),*

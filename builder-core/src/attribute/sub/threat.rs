@@ -1,6 +1,6 @@
 use crate::simple_enum;
 
-simple_enum!(ThreatType, (Ranged "Ranged", Melee "Melee", Spell "Spell", All "All"));
+simple_enum!(ThreatType, "", (Ranged "Ranged", Melee "Melee", Spell "Spell", All "All"));
 
 impl ThreatType {
     pub fn get_cloned_types(&self) -> Option<Vec<ThreatType>> {

@@ -2,6 +2,7 @@ use crate::simple_enum;
 
 simple_enum!(
     BonusType,
+    "", 
     (
         AbilityModifier "Ability Modifier",
         ActionBoost "Action Boost",

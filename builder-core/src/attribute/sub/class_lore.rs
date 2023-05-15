@@ -4,7 +4,7 @@ use crate::{
     simple_enum,
 };
 
-simple_enum!(ClassLore, (Religious "Religious", Arcane "Arcane", Wilderness "Wilderness"));
+simple_enum!(ClassLore, "", (Religious "Religious", Arcane "Arcane", Wilderness "Wilderness"));
 
 impl ClassLore {
     pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {

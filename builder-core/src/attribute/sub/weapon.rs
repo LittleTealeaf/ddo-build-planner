@@ -3,7 +3,7 @@ use crate::{attribute::Attribute, simple_enum};
 use super::DamageReduction;
 
 simple_enum!(
-    WeaponStat, (
+    WeaponStat, "", (
         Attack() String::from("Attack"),
         Damage() String::from("Damage"),
         CriticalAttack() String::from("Critical Attack"),
@@ -36,4 +36,4 @@ impl WeaponStat {
     }
 }
 
-simple_enum!(WeaponHand, (Main "Main Hand", Off "Off Hand", Both "Both Hand"));
+simple_enum!(WeaponHand, "", (Main "Main Hand", Off "Off Hand", Both "Both Hand"));

@@ -1,7 +1,7 @@
 use crate::simple_enum;
 
 simple_enum!(
-    Tactics, (
+    Tactics, "", (
         Assassinate "Assassinate",
         Stun "Stun",
         Sunder "Sunder",

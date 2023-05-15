@@ -1,6 +1,6 @@
 use crate::simple_enum;
 
-simple_enum!(HealAmp, (Positive "Positive", Negative "Negative", Repair "Repair", All "All"));
+simple_enum!(HealAmp, "", (Positive "Positive", Negative "Negative", Repair "Repair", All "All"));
 
 impl HealAmp {
     pub fn get_cloned_attributes(&self) -> Option<Vec<HealAmp>> {

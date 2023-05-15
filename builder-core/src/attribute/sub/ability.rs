@@ -1,6 +1,10 @@
 use crate::{bonus::Bonus, simple_enum};
 
-simple_enum!(Ability, (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All"));
+simple_enum!(
+    Ability,
+    "Documentation",
+    (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All")
+);
 
 macro_rules! modifier_skill {
     ($modifier: ident, $skill: ident, $value: expr) => {
