@@ -4,7 +4,7 @@
 /// Implements the idea that Bonuses of the same type do not stack, and bonuses of different types stack.
 ///
 /// The [`Stacking`] bonus type indicates that a bonus stacks with all other bonuses.
-/// 
+///
 /// [`Stacking`]: BonusType::Stacking
 
 #[derive(PartialEq, Eq, Copy, Clone, Hash, serde::Serialize, serde::Deserialize, Debug)]
@@ -55,6 +55,8 @@ pub enum BonusType {
     Sacred,
     /// Describes bonuses with the Size type.
     Size,
+    /// Describes bonuses with the Shield type.
+    Shield,
     /// Describes bonuses that stack with anything.
     ///
     /// This is the most used and therefore default bonus type, as it indicates that the bonus should be added no matter what. With the use of a well built source system, the need for various artificial bonus types is removed, so this is used in many circumstances.
@@ -85,6 +87,7 @@ impl ToString for BonusType {
             BonusType::Profane => "Profane",
             BonusType::Quality => "Quality",
             BonusType::Sacred => "Sacred",
+            BonusType::Shield => "Shield",
             BonusType::Size => "Size",
             BonusType::Stacking => "Stacking",
             BonusType::Spooky => "Spooky",
