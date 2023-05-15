@@ -8,6 +8,8 @@ mod traits;
 use itertools::Itertools;
 pub use traits::*;
 
+use crate::attribute::{Flag, Toggle};
+
 use super::attribute::Attribute;
 
 #[derive(PartialEq, Clone, serde::Serialize, serde::Deserialize)]
@@ -69,6 +71,26 @@ impl Bonus {
             value: 0f32,
             source,
             conditions: None,
+        }
+    }
+
+    pub fn flag(flag: Flag, source: BonusSource) -> Bonus {
+        Self {
+            attribute: Attribute::Flag(flag),
+            bonus_type: BonusType::Stacking,
+            value: 1f32,
+            source,
+            conditions: None
+        }
+    }
+
+    pub fn toggle(toggle: Toggle, source: BonusSource) -> Bonus {
+        Self {
+            attribute: Attribute::Toggle(toggle),
+            bonus_type: BonusType::Stacking,
+            value: 1f32,
+            source,
+            conditions: None
         }
     }
 

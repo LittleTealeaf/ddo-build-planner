@@ -1,4 +1,4 @@
-use crate::{bonus::Bonus, simple_enum};
+use crate::{bonus::Bonus, simple_enum, attribute::Attribute};
 
 use super::{Ability, SavingThrow, Toggle};
 
@@ -8,7 +8,8 @@ simple_enum!(
         Toggle(toggle: Toggle) format!("Toggled: {}", toggle.to_string()),
         AbilityToSavingThrow(ability: Ability, savingthrow: SavingThrow) format!("{} to {} saving throw", ability.to_string(), savingthrow.to_string()),
         ReligiousLoreToQualityMagicalSheltering() String::from("Religious Lore to Quality Magical Sheltering"),
-        ReligiousLoreToQualityPhysicalSheltering() String::from("Religious Lore to Quality Physical Sheltering")
+        ReligiousLoreToQualityPhysicalSheltering() String::from("Religious Lore to Quality Physical Sheltering"),
+        TrueSeeing() String::from("True Seeing")
     )
 );
 
@@ -18,5 +19,8 @@ impl Flag {
             Self::Toggle(toggle) => toggle.get_toggled_bonuses(value),
             _ => None,
         }
+    }
+    pub fn get_cloned_attributes(&self) -> Option<Vec<Attribute>> {
+        None
     }
 }

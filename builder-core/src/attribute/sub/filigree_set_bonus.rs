@@ -1,11 +1,11 @@
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, Condition},
 };
 
 use super::{
-    Ability, ElementalType, HealAmp, HitPoint, SavingThrow, Skill, SpellPoint, SpellPower,
-    SpellSchool, Tactics, WeaponHand, WeaponStat,
+    Ability, ElementalType, Flag, HealAmp, HitPoint, SavingThrow, Skill, SpellPoint, SpellPower,
+    SpellSchool, Tactics, Toggle, WeaponHand, WeaponStat, ThreatType
 };
 
 macro_rules! filigree_set_bonuses {
@@ -432,6 +432,209 @@ filigree_set_bonuses!(
         4f32 => vec![
             // TODO: Immunity to Slippery Surfaces
             // TODO: Immunity to Knockdown
+        ]
+    )
+    BraveryThroughout "Bravery Throughout" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SavingThrow(SavingThrow::All), BonusType::Stacking, 1f32, source!(BraveryThroughout), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::PhysicalSheltering(), BonusType::Stacking, 5f32, source!(BraveryThroughout), None)
+        ]
+        4f32 => vec![
+            // TODO: 5% Armor Class
+        ]
+    )
+    CoalescedMagic "Coalesced Magic" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 10f32, source!(CoalescedMagic), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Universal), BonusType::Stacking, 4f32, source!(CoalescedMagic), None)
+        ]
+        4f32 => vec![
+            // TODO: +1 Caster Levels with Arcane
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 30f32, source!(CoalescedMagic), None)
+        ]
+    )
+    CrackshotNegotiator "Crackshot Negotiator" => (
+        2f32 => vec![
+            Bonus::new(Attribute::Skill(Skill::Diplomacy), BonusType::Stacking, 10f32, source!(CrackshotNegotiator), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 15f32, source!(CrackshotNegotiator), None)
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 5f32, source!(CrackshotNegotiator), None)
+        ]
+    )
+    DanceOfTheWind "Dance of the Wind" => (
+        2f32 => vec![
+            Bonus::new(Attribute::MissileDeflection(), BonusType::Stacking, 5f32, source!(DanceOfTheWind), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::MagicalShelteringCap(), BonusType::Stacking, 10f32, source!(DanceOfTheWind), None)
+        ]
+        4f32 => vec![
+            // TODO: Tumble Movement Speed
+        ]
+    )
+    Darkhallow "Darkhallow" => (
+        2f32 => vec![
+            Bonus::new(Attribute::HealAmp(HealAmp::Negative), BonusType::Stacking, 20f32, source!(Darkhallow), None)
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 20f32, source!(Darkhallow), None)
+        ]
+        4f32 => vec![
+            // TODO: Darkhallow Proc
+        ]
+    )
+    // TODO: Final Burial
+    NextFall "Next Fall" => (
+        2f32 => vec![
+            Bonus::new(Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack()), BonusType::Stacking, 2f32, source!(NextFall), None),
+            Bonus::new(Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Damage()), BonusType::Stacking, 2f32, source!(NextFall), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(NextFall), None),
+        ]
+        4f32 => vec![
+            Bonus::toggle(Toggle::AttackingTrippedTarget(), source!(NextFall)),
+            Bonus::new(Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack()), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
+                Condition::Has(Attribute::Flag(Flag::Toggle(Toggle::AttackingTrippedTarget())))
+            ])),
+            Bonus::new(Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Damage()), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
+                Condition::Has(Attribute::Flag(Flag::Toggle(Toggle::AttackingTrippedTarget())))
+            ])),
+        ]
+    )
+    RadiantShield "Radiant Shield" => (
+        2f32 => vec![
+            Bonus::new(Attribute::ThreatGeneration(ThreatType::Melee), BonusType::Stacking, 50f32, source!(RadiantShield), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(RadiantShield), None)
+        ]
+        4f32 => vec![
+            // TODO: Immunity to Quell
+        ]
+    )
+    Reverberation "Reverberation" => (
+        2f32 => vec![
+            Bonus::new(Attribute::ImbueDice(), BonusType::Stacking, 2f32, source!(Reverberation), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Sonic), BonusType::Stacking, 20f32, source!(Reverberation), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Sonic), BonusType::Stacking, 3f32, source!(Reverberation), None),
+        ]
+    )
+    SanctifiedFervor "Sanctified Fervor" => (
+        2f32 => vec![
+            Bonus::new(Attribute::HealAmp(HealAmp::Positive), BonusType::Stacking, 5f32, source!(SanctifiedFervor), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(SanctifiedFervor), None),
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 5f32, source!(SanctifiedFervor), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::Doublestrike(), BonusType::Stacking, 2f32, source!(SanctifiedFervor), None),
+            Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 2f32, source!(SanctifiedFervor), None),
+        ]
+        5f32 => vec![
+            // TODO: SmiteEvilBonus
+        ]
+    )
+    ShardsOfMechanus "Shards of Mechanus" => (
+        2f32 => vec![
+            Bonus::new(Attribute::HealAmp(HealAmp::Repair), BonusType::Stacking, 20f32, source!(ShardsOfMechanus), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::PhysicalSheltering(), BonusType::Stacking, 10f32, source!(ShardsOfMechanus), None)
+        ]
+        4f32 => vec![
+            // TODO: Repair damage on attack
+        ]
+    )
+    ShatteredDevice "Shattered Device" => (
+        2f32 => vec![
+            Bonus::new(Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Attack()), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
+            Bonus::new(Attribute::WeaponStat(WeaponHand::Both, WeaponStat::Damage()), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::Doublestrike(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
+            Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
+        ]
+        4f32 => vec![
+            // TODO: Shattered Device Debuff
+        ]
+        5f32 => vec![
+            // TODO: Shattered Device Debuff
+        ]
+    )
+    Soulweaver "Soulweaver" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Positive), BonusType::Stacking, 10f32, source!(Soulweaver), None),
+        ]
+        3f32 => vec![
+            // TODO: Caster Level with Positive Spells
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SavingThrow(SavingThrow::All), BonusType::Stacking, 2f32, source!(Soulweaver), None),
+        ]
+        5f32 => vec![
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Positive), BonusType::Stacking, 5f32, source!(Soulweaver), None),
+        ]
+    )
+    SplendidCacophony "Splendid Cacophony" => (
+        2f32 => vec![
+            Bonus::new(Attribute::Doublestrike(), BonusType::Stacking, 2f32, source!(SplendidCacophony), None),
+            Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 2f32, source!(SplendidCacophony), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Positive), BonusType::Stacking, 20f32, source!(SplendidCacophony), None)
+        ]
+        4f32 => vec![
+            // TODO: Inspire Courage +1 attack, damage, save vs fear, and +3 universal spell power
+        ]
+    )
+    ThroughTheMists "Through the Mists" => (
+        2f32 => vec![
+            Bonus::flag(Flag::TrueSeeing(), source!(ThroughTheMists))
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::Dodge(), BonusType::Stacking, 1f32, source!(ThroughTheMists), None),
+            Bonus::new(Attribute::MaxDodge(), BonusType::Stacking, 1f32, source!(ThroughTheMists), None),
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::RangedPower(), BonusType::Stacking, 10f32, source!(ThroughTheMists), None),
+        ]
+        5f32 => vec![
+            // Uncanny Dodge to 50 ranged power
+        ]
+    )
+    VoltaicExperiment "Voltaic Experiment" => (
+        2f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 10f32, source!(VoltaicExperiment), None),
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::Doublestrike(), BonusType::Stacking, 2f32, source!(VoltaicExperiment), None),
+            Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 2f32, source!(VoltaicExperiment), None),
+        ]
+    )
+    ZarigansArcaneEnlightenment "Zarigan's Arcane Enlightenment" => (
+        2f32 => vec![
+            // TODO: Arcane Spell Failure
+        ]
+        3f32 => vec![
+            Bonus::new(Attribute::SpellPower(SpellPower::Force), BonusType::Stacking, 20f32, source!(ZarigansArcaneEnlightenment), None)
+        ]
+        4f32 => vec![
+            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(ZarigansArcaneEnlightenment), None)
         ]
     )
 );
