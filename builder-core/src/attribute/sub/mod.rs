@@ -1,5 +1,3 @@
-
-
 mod ability;
 pub use ability::*;
 mod skill;

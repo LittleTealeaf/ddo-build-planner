@@ -1,13 +1,20 @@
 use builder_core::{
-    attribute::{Attribute, FiligreeSet},
+    attribute::{Ability, Attribute, FiligreeSet},
     bonus::{Bonus, BonusSource, BonusType},
-    breakdown::Breakdowns
+    breakdown::Breakdowns,
 };
 
 fn main() {
     let mut breakdown = Breakdowns::new();
 
     breakdown.insert_bonuses(vec![
+        Bonus::new(
+            Attribute::Ability(Ability::Strength),
+            BonusType::Stacking,
+            50f32,
+            BonusSource::Unique(1),
+            None,
+        ),
         Bonus::new(
             Attribute::FiligreeSet(FiligreeSet::NystulsMysticalDefense),
             BonusType::Stacking,

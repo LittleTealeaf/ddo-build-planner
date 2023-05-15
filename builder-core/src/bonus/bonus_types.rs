@@ -1,4 +1,3 @@
-
 /// Identifies the type that a [Bonus](crate::bonus::Bonus) is.
 ///
 /// Implements the idea that Bonuses of the same type do not stack, and bonuses of different types stack.

@@ -1,10 +1,49 @@
-use crate::{bonus::Bonus, simple_enum};
+use crate::{
+    attribute::Attribute,
+    bonus::{Bonus, BonusType, Condition},
+};
 
-simple_enum!(
-    Ability,
-    "Documentation",
-    (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All")
-);
+use super::Flag;
+
+// simple_enum!(
+//     Ability,
+//     "Documentation",
+//     (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All")
+// );
+/// Describes the six main stats for a character.
+#[derive(Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug)]
+pub enum Ability {
+    /// Describes how strong the person is.
+    Strength,
+    /// Describes how flexible the person is
+    Dexterity,
+    /// Describes how much the person can take a hit.
+    Constitution,
+    /// Describes how smart the person is
+    Intelligence,
+    /// Describes how wise the person is
+    Wisdom,
+    /// Describes how influential the person is
+    Charisma,
+    /// References all abilities at once.
+    ///
+    /// This is used mostly when giving some bonus to all ability scores, as it clones to the others using [`Self::get_cloned_abilities()`]
+    All,
+}
+
+impl ToString for Ability {
+    fn to_string(&self) -> String {
+        String::from(match self {
+            Ability::Strength => "Strength",
+            Ability::Dexterity => "Dexterity",
+            Ability::Constitution => "Constitution",
+            Ability::Intelligence => "Intelligence",
+            Ability::Wisdom => "Wisdom",
+            Ability::Charisma => "Charisma",
+            Ability::All => "All Abilities",
+        })
+    }
+}
 
 macro_rules! modifier_skill {
     ($modifier: ident, $skill: ident, $value: expr) => {
@@ -48,6 +87,32 @@ macro_rules! modifier_saving_throw {
 }
 
 impl Ability {
+    /// Splits up the [`Self::All`] ability into each of the other abilities.
+    ///
+    /// If used on any other ability, returns `None`. Otherwise, will return a `Some` object with the list of the other abilties.
+    ///
+    /// ```
+    /// use builder_core::attribute::Ability;
+    ///
+    /// assert_eq!(None, Ability::Strength.get_cloned_abilities());
+    /// assert_eq!(None, Ability::Dexterity.get_cloned_abilities());
+    /// assert_eq!(None, Ability::Constitution.get_cloned_abilities());
+    /// assert_eq!(None, Ability::Intelligence.get_cloned_abilities());
+    /// assert_eq!(None, Ability::Wisdom.get_cloned_abilities());
+    /// assert_eq!(None, Ability::Charisma.get_cloned_abilities());
+    ///
+    ///
+    /// let abilities = vec![
+    ///     Ability::Strength,
+    ///     Ability::Dexterity,
+    ///     Ability::Constitution,
+    ///     Ability::Intelligence,
+    ///     Ability::Wisdom,
+    ///     Ability::Charisma
+    /// ];
+    ///
+    /// assert_eq!(Some(abilities), Ability::All.get_cloned_abilities());
+    /// ```
     pub fn get_cloned_abilities(&self) -> Option<Vec<Ability>> {
         if let Self::All = self {
             Some(vec![
@@ -63,6 +128,19 @@ impl Ability {
         }
     }
 
+    /// Returns a list of modifier bonuses when provided the current modifier value
+    ///
+    /// The goal of this function is to link each ability to other attirbutes. This includes, but is not limited to, skills, saving throws, and attack/damage modifiers.
+    ///
+    /// This function returns an [Option] because of the case of [`Self::All`], where there should not be any modifier bonuses. Therefore, if you try to get the modifier bonuses of [`Self::All`], you will get [None]
+    ///
+    /// ```
+    /// use builder_core::attribute::Ability;
+    ///
+    /// assert_eq!(None, Ability::All.get_modifier_bonuses(30f32));
+    /// ```
+    ///
+    /// However, for each other ability, a list of bonuses will be returned that should be added to the [Breakdowns](crate::breakdown::Breakdowns). Note that this function is used by [Breakdowns](crate::breakdown::Breakdowns) and should not be manually used.
     pub fn get_modifier_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         let mut values = vec![];
 
@@ -120,6 +198,45 @@ impl Ability {
             ]),
             Self::All => None,
         }?);
+
+        values.append(&mut vec![
+            Bonus::new(
+                Attribute::WeaponStat(super::WeaponHand::Main, super::WeaponStat::Attack()),
+                BonusType::AbilityModifier,
+                value,
+                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
+                Some(vec![Condition::Has(Attribute::Flag(
+                    Flag::AbilityToAttack(*self, super::WeaponHand::Main),
+                ))]),
+            ),
+            Bonus::new(
+                Attribute::WeaponStat(super::WeaponHand::Off, super::WeaponStat::Attack()),
+                BonusType::AbilityModifier,
+                value,
+                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
+                Some(vec![Condition::Has(Attribute::Flag(
+                    Flag::AbilityToAttack(*self, super::WeaponHand::Off),
+                ))]),
+            ),
+            Bonus::new(
+                Attribute::WeaponStat(super::WeaponHand::Main, super::WeaponStat::Damage()),
+                BonusType::AbilityModifier,
+                value,
+                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
+                Some(vec![Condition::Has(Attribute::Flag(
+                    Flag::AbilityToDamage(*self, super::WeaponHand::Main),
+                ))]),
+            ),
+            Bonus::new(
+                Attribute::WeaponStat(super::WeaponHand::Off, super::WeaponStat::Damage()),
+                BonusType::AbilityModifier,
+                value,
+                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
+                Some(vec![Condition::Has(Attribute::Flag(
+                    Flag::AbilityToDamage(*self, super::WeaponHand::Off),
+                ))]),
+            ),
+        ]);
 
         Some(values)
     }

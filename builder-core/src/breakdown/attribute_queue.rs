@@ -39,7 +39,6 @@ impl AttributeQueue {
         Some((attribute, forced))
     }
 
-
     pub fn insert_attributes(&mut self, mut attributes: Vec<Attribute>, forced: bool) {
         if forced {
             for attribute in attributes.iter() {
@@ -77,12 +76,21 @@ mod tests {
     fn inserted_attributes_returned_in_order() {
         let mut queue = AttributeQueue::new();
 
-        queue.insert_attributes(vec![Attribute::MagicalSheltering(), Attribute::Dummy()], false);
+        queue.insert_attributes(
+            vec![Attribute::MagicalSheltering(), Attribute::Dummy()],
+            false,
+        );
         queue.get_next_attribute();
         queue.insert_attributes(vec![Attribute::PhysicalSheltering()], false);
 
-        assert_eq!(Some((Attribute::MagicalSheltering(), false)), queue.get_next_attribute());
-        assert_eq!(Some((Attribute::PhysicalSheltering(), false)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::MagicalSheltering(), false)),
+            queue.get_next_attribute()
+        );
+        assert_eq!(
+            Some((Attribute::PhysicalSheltering(), false)),
+            queue.get_next_attribute()
+        );
     }
 
     #[test]
@@ -92,7 +100,10 @@ mod tests {
         queue.insert_attributes(vec![Attribute::MagicalSheltering()], false);
         queue.insert_attributes(vec![Attribute::MagicalSheltering()], false);
 
-        assert_eq!(Some((Attribute::MagicalSheltering(), false)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::MagicalSheltering(), false)),
+            queue.get_next_attribute()
+        );
         assert_eq!(None, queue.get_next_attribute());
     }
 
@@ -103,7 +114,10 @@ mod tests {
         queue.insert_attributes(vec![Attribute::MagicalSheltering()], false);
         queue.insert_attributes(vec![Attribute::MagicalSheltering()], true);
 
-        assert_eq!(Some((Attribute::MagicalSheltering(), true)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::MagicalSheltering(), true)),
+            queue.get_next_attribute()
+        );
         assert_eq!(None, queue.get_next_attribute());
     }
 
@@ -113,18 +127,30 @@ mod tests {
 
         queue.insert_attributes(vec![Attribute::MagicalSheltering()], true);
 
-        assert_eq!(Some((Attribute::MagicalSheltering(), true)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::MagicalSheltering(), true)),
+            queue.get_next_attribute()
+        );
     }
 
     #[test]
     fn forcing_attribute_only_updates_attribute() {
         let mut queue = AttributeQueue::new();
 
-        queue.insert_attributes(vec![Attribute::MagicalSheltering(), Attribute::Dummy()], false);
+        queue.insert_attributes(
+            vec![Attribute::MagicalSheltering(), Attribute::Dummy()],
+            false,
+        );
         queue.get_next_attribute();
         queue.insert_attributes(vec![Attribute::PhysicalSheltering()], true);
 
-        assert_eq!(Some((Attribute::MagicalSheltering(), false)), queue.get_next_attribute());
-        assert_eq!(Some((Attribute::PhysicalSheltering(), true)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::MagicalSheltering(), false)),
+            queue.get_next_attribute()
+        );
+        assert_eq!(
+            Some((Attribute::PhysicalSheltering(), true)),
+            queue.get_next_attribute()
+        );
     }
 }

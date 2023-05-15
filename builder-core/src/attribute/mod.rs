@@ -29,7 +29,7 @@ attributes!(
     Flag(flag: Flag) => (
         format!("Flag: {}", flag.to_string()),
         flag.get_attribute_bonuses(val),
-        None
+        Some(flag.get_cloned_flags()?.into_iter().map(Attribute::Flag).collect())
     )
     Toggle(toggle: Toggle) => (
         format!("Toggle: {}", toggle.to_string()),
