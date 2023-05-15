@@ -31,6 +31,15 @@ simple_enum!(
     )
 );
 
+impl BonusType {
+    /// Returns `true` if the bonus type is [`Stacking`].
+    ///
+    /// [`Stacking`]: Condition::Stacking
+    pub fn is_stacking(&self) -> bool {
+        matches!(self, Self::Stacking)
+    }
+}
+
 impl Default for BonusType {
     fn default() -> Self {
         Self::Stacking

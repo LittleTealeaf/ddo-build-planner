@@ -1,12 +1,21 @@
 use crate::attribute::Attribute;
 
+/// Describes a condition that must be met for a [Bonus](crate::bonus::Bonus) to be active.
+///
+/// Specifically asserts whether an attribute must be present, have a particular value, or fulfil some inequality.
 #[derive(Clone, Copy, serde::Serialize, serde::Deserialize, Debug)]
 pub enum Condition {
+    /// Asserts that an attribute must be non-zero
     Has(Attribute),
+    /// Asserts that an attribute must be zero
     NotHave(Attribute),
+    /// Asserts that an attribute must be at most a particular value
     Max(Attribute, f32),
+    /// Asserts that an attribute must be at least a particular value
     Min(Attribute, f32),
+    /// Asserts that an attribute must be equal to a particular value
     Eq(Attribute, f32),
+    /// Asserts that an attribute must not be equal to a particular value
     NotEq(Attribute, f32),
 }
 

@@ -113,7 +113,7 @@ impl Breakdowns {
             .into_group_map()
             .into_iter()
             .map(|(bonus_type, items)| {
-                if bonus_type.eq(&BonusType::Stacking) {
+                if bonus_type.is_stacking() {
                     let mut total = 0f32;
                     for item in items {
                         total += item;
