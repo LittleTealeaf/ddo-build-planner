@@ -3,7 +3,10 @@ macro_rules! simple_enum {
     ($enum_name: ident, ($($id: ident $name: expr),*)) => {
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
         pub enum $enum_name {
-            $($id),*
+            $(
+                #[doc = $name]
+                $id
+            ),*
         }
 
         impl ToString for $enum_name {

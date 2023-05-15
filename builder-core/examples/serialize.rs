@@ -43,6 +43,13 @@ fn main() {
             BonusSource::Unique(1),
             None,
         ),
+        Bonus::new(
+            Attribute::FiligreeSet(FiligreeSet::Divinity),
+            BonusType::Stacking,
+            5f32,
+            BonusSource::Unique(1),
+            None,
+        ),
     ]);
 
     let ser = ron::to_string(&breakdown).unwrap();

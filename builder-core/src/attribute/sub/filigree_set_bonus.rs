@@ -12,7 +12,10 @@ macro_rules! filigree_set_bonuses {
     ($value: ident, $($set_name: ident $set_string: expr => ($($count: expr => $bonuses: expr)*))*) => {
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
         pub enum FiligreeSet {
-            $($set_name),*
+            $(
+                #[doc = $set_string]
+                $set_name
+            ),*
         }
 
         impl ToString for FiligreeSet {
