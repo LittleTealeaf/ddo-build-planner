@@ -1,4 +1,4 @@
-use crate::{bonus::Bonus, simple_enum, attribute::Attribute};
+use crate::{attribute::Attribute, bonus::Bonus, simple_enum};
 
 use super::{Ability, SavingThrow, Toggle};
 

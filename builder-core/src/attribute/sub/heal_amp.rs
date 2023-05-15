@@ -6,7 +6,7 @@ impl HealAmp {
     pub fn get_cloned_attributes(&self) -> Option<Vec<HealAmp>> {
         match self {
             Self::All => Some(vec![Self::Positive, Self::Negative, Self::Repair]),
-            _ => None
+            _ => None,
         }
     }
 }

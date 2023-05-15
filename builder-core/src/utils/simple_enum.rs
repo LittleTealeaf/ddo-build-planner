@@ -1,5 +1,3 @@
-
-
 #[macro_export]
 macro_rules! simple_enum {
     ($enum_name: ident, ($($id: ident $name: expr),*)) => {

@@ -80,7 +80,7 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 1f32,
             source,
-            conditions: None
+            conditions: None,
         }
     }
 
@@ -90,7 +90,7 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 1f32,
             source,
-            conditions: None
+            conditions: None,
         }
     }
 
