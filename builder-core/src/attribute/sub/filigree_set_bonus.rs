@@ -58,7 +58,8 @@ macro_rules! filigree_set_bonuses {
                                 assert_eq!(
                                     source!($set_name),
                                     bonus.get_source(),
-                                    "A [{}] bonus has a [{}] source",
+                                    "The [{}] bonus for [{}] has an incorrect source: [{}]",
+                                    bonus.to_string(),
                                     FiligreeSet::$set_name.to_string(),
                                     bonus.get_source().to_string()
                                 );
