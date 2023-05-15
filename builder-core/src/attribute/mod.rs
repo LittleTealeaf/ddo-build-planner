@@ -27,12 +27,12 @@ attributes!(
         None
     )
     Flag(flag: Flag) => (
-        flag.to_string(),
+        format!("Flag: {}", flag.to_string()),
         flag.get_attribute_bonuses(val),
         None
     )
     Toggle(toggle: Toggle) => (
-        toggle.to_string(),
+        format!("Toggle: {}", toggle.to_string()),
         None,
         None
     )
