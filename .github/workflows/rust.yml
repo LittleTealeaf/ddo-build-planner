@@ -27,7 +27,7 @@ jobs:
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
       - name: Build
-        run: cargo build
+        run: cargo build --release
   test:
     name: Rust Tests
     runs-on: ubuntu-latest
