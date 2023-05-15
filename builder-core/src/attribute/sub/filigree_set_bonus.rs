@@ -680,16 +680,10 @@ filigree_set_bonuses!(
     )
     Dragonsoul "Dragonsoul" => (
         2f32 => vec![
-            // TODO: Spell Cooldowns
+            // TODO: Spell Cooldowns 5% at 2f32, 10% at 4f32
         ]
         3f32 => vec![
-            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::All), BonusType::Stacking, 5f32, source!(Dragonsoul), None)
-        ]
-        4f32 => vec![
-            // TODO: 5% spell cooldowns
-        ]
-        5f32 => vec![
-            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::All), BonusType::Stacking, 5f32, source!(Dragonsoul), None)
+            Bonus::new(Attribute::SpellCriticalDamage(SpellPower::All), BonusType::Stacking, if value >= 5f32 {10f32} else {5f32}, source!(Dragonsoul), None)
         ]
     )
     Dreadbringer "Dreadbringer" => (
