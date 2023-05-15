@@ -1,8 +1,7 @@
 use builder_core::{
-    attribute::{Ability, Attribute, FiligreeSet, Skill, SpellPower},
+    attribute::{Attribute, FiligreeSet},
     bonus::{Bonus, BonusSource, BonusType},
-    breakdown::Breakdowns,
-    feat::{Feat, SkillFocus},
+    breakdown::Breakdowns
 };
 
 fn main() {
