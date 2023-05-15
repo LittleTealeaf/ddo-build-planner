@@ -10,10 +10,12 @@ use super::{
 
 macro_rules! filigree_set_bonuses {
     ($value: ident, $($set_name: ident $set_string: expr => ($($count: expr => $bonuses: expr)*))*) => {
+
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
         pub enum FiligreeSet {
             $(
                 #[doc = $set_string]
+                #[doc = " Filigree Set"]
                 $set_name
             ),*
         }
