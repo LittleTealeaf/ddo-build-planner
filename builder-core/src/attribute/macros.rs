@@ -1,4 +1,3 @@
-#[macro_export]
 macro_rules! attributes {
     ($enum_name: ident, $value: ident, $($name: ident($($param_name: ident: $param_type: ty),*) => ($string: expr, $bonuses: expr, $clones: expr))*) => {
         #[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug)]

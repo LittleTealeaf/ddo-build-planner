@@ -2,7 +2,7 @@ use crate::simple_enum;
 
 simple_enum!(
     BonusType,
-    "", 
+    "",
     (
         AbilityModifier "Ability Modifier",
         ActionBoost "Action Boost",
@@ -30,3 +30,9 @@ simple_enum!(
         Spooky "Spooky"
     )
 );
+
+impl Default for BonusType {
+    fn default() -> Self {
+        Self::Stacking
+    }
+}

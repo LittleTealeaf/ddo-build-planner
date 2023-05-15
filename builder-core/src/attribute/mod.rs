@@ -1,12 +1,12 @@
 #![allow(unused_variables)]
 use crate::{
-    attributes,
     bonus::{Bonus, BonusType},
     player_class::PlayerClass,
 };
 
 use super::{bonus::BonusSource, feat::Feat};
 
+#[macro_use]
 mod macros;
 mod sub;
 pub use macros::*;
