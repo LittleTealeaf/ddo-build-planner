@@ -48,6 +48,7 @@
 ///
 /// assert_eq!(String::from("Complex A"), ComplexEnum::ComplexA().to_string());
 /// assert_eq!(String::from("Complex B: Option B"), ComplexEnum::ComplexB(SimpleEnum::OptionB).to_string());
+/// ```
 #[macro_export]
 macro_rules! simple_enum {
     ($enum_name: ident, $documentation: expr, ($($id: ident $name: expr),*)) => {

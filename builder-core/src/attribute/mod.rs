@@ -185,8 +185,24 @@ attributes!(
     CasterLevel(casterlevel: CasterLevel) => (casterlevel.to_string(), "", None, Some(casterlevel.get_cloned_attributes()?.into_iter().map(Attribute::CasterLevel).collect()))
 );
 
+impl Default for Attribute {
+    fn default() -> Self {
+        Self::Dummy()
+    }
+}
+
 impl From<Attribute> for BonusSource {
     fn from(value: Attribute) -> Self {
         BonusSource::Attribute(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_is_dummy() {
+        assert_eq!(Attribute::Dummy(), Attribute::default());
     }
 }
