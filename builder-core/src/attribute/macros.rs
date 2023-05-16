@@ -1,8 +1,12 @@
 macro_rules! attributes {
-    ($enum_name: ident, $value: ident, $($name: ident($($param_name: ident: $param_type: ty),*) => ($string: expr, $bonuses: expr, $clones: expr))*) => {
+    ($enum_name: ident, $value: ident, $($name: ident($($param_name: ident: $param_type: ty),*) => ($string: expr, $description: expr, $bonuses: expr, $clones: expr))*) => {
+        /// Describes different attributes that a character can have.  Each bonus may give one or morre of these attributes.
         #[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug)]
         pub enum $enum_name {
-            $($name($($param_type),*)),*
+            $(
+                #[doc = $description]
+                $name($($param_type),*)
+            ),*
         }
 
         impl ToString for $enum_name {
@@ -14,12 +18,14 @@ macro_rules! attributes {
         }
 
         impl $enum_name {
+            /// Gets any subsidary bonuses that an attribute might have.
             pub fn get_attribute_bonuses(&self, $value: f32) -> Option<Vec<$crate::bonus::Bonus>> {
                 match self {
                     $($enum_name::$name($($param_name),*) => $bonuses),*
                 }
             }
 
+            /// Gets any clones that an attribute might split into.
             pub fn get_attribute_clones(&self) -> Option<Vec<$enum_name>> {
                 match self {
                     $($enum_name::$name($($param_name),*) => $clones),*
