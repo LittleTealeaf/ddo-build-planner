@@ -1,4 +1,4 @@
-use crate::{attribute::Attribute, bonus::Bonus, simple_enum};
+use crate::{attribute::{GetCloned}, bonus::Bonus, simple_enum};
 
 use super::{Ability, SavingThrow, Toggle, WeaponHand};
 
@@ -22,7 +22,10 @@ impl Flag {
             _ => None,
         }
     }
-    pub fn get_cloned_flags(&self) -> Option<Vec<Flag>> {
+}
+
+impl GetCloned<Flag> for Flag {
+    fn get_cloned(&self) -> Option<Vec<Flag>> {
         match self {
             Flag::AbilityToAttack(ability, WeaponHand::Both) => Some(vec![
                 Flag::AbilityToAttack(*ability, WeaponHand::Main),

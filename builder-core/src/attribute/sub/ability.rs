@@ -1,5 +1,5 @@
 use crate::{
-    attribute::Attribute,
+    attribute::{Attribute, GetCloned},
     bonus::{Bonus, BonusType, Condition},
 };
 
@@ -27,7 +27,7 @@ pub enum Ability {
     Charisma,
     /// References all abilities at once.
     ///
-    /// This is used mostly when giving some bonus to all ability scores, as it clones to the others using [`Self::get_cloned_abilities()`]
+    /// This is used mostly when giving some bonus to all ability scores, as it clones to the others using [`Self::get_cloned()`]
     All,
 }
 
@@ -87,47 +87,6 @@ macro_rules! modifier_saving_throw {
 }
 
 impl Ability {
-    /// Splits up the [`Self::All`] ability into each of the other abilities.
-    ///
-    /// If used on any other ability, returns `None`. Otherwise, will return a `Some` object with the list of the other abilties.
-    ///
-    /// ```
-    /// use builder_core::attribute::Ability;
-    ///
-    /// assert_eq!(None, Ability::Strength.get_cloned_abilities());
-    /// assert_eq!(None, Ability::Dexterity.get_cloned_abilities());
-    /// assert_eq!(None, Ability::Constitution.get_cloned_abilities());
-    /// assert_eq!(None, Ability::Intelligence.get_cloned_abilities());
-    /// assert_eq!(None, Ability::Wisdom.get_cloned_abilities());
-    /// assert_eq!(None, Ability::Charisma.get_cloned_abilities());
-    ///
-    ///
-    /// let abilities = vec![
-    ///     Ability::Strength,
-    ///     Ability::Dexterity,
-    ///     Ability::Constitution,
-    ///     Ability::Intelligence,
-    ///     Ability::Wisdom,
-    ///     Ability::Charisma
-    /// ];
-    ///
-    /// assert_eq!(Some(abilities), Ability::All.get_cloned_abilities());
-    /// ```
-    pub fn get_cloned_abilities(&self) -> Option<Vec<Ability>> {
-        if let Self::All = self {
-            Some(vec![
-                Self::Strength,
-                Self::Dexterity,
-                Self::Constitution,
-                Self::Intelligence,
-                Self::Wisdom,
-                Self::Charisma,
-            ])
-        } else {
-            None
-        }
-    }
-
     /// Returns a list of modifier bonuses when provided the current modifier value
     ///
     /// The goal of this function is to link each ability to other attirbutes. This includes, but is not limited to, skills, saving throws, and attack/damage modifiers.
@@ -239,5 +198,22 @@ impl Ability {
         ]);
 
         Some(values)
+    }
+}
+
+impl GetCloned<Ability> for Ability {
+    fn get_cloned(&self) -> Option<Vec<Ability>> {
+        if let Self::All = self {
+            Some(vec![
+                Self::Strength,
+                Self::Dexterity,
+                Self::Constitution,
+                Self::Intelligence,
+                Self::Wisdom,
+                Self::Charisma,
+            ])
+        } else {
+            None
+        }
     }
 }

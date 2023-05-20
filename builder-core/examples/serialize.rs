@@ -69,7 +69,7 @@ fn main() {
 
     println!();
 
-    values.iter().for_each(|(key, value)| {
-        println!("{}: {}", key.to_string(), value);
-    });
+    values
+        .iter()
+        .for_each(|(key, value)| println!("{}: {}", key.to_string(), value));
 }

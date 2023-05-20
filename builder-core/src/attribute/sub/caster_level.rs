@@ -1,10 +1,10 @@
-use crate::{attribute::Attribute, player_class::PlayerClass, simple_enum};
+use crate::{player_class::PlayerClass, simple_enum, attribute::GetCloned};
 
 use super::{SpellPower, SpellSchool};
 
 simple_enum!(
     CasterLevel,
-    "", 
+    "",
     (
         SpellPower(spellpower: SpellPower) format!("{} Spell Caster Level", spellpower.to_string()),
         PlayerClass(playerclass: PlayerClass) format!("{} Spell Caster Level", playerclass.to_string()),
@@ -23,15 +23,45 @@ simple_enum!(
     )
 );
 
-impl CasterLevel {
-    pub fn get_cloned_attributes(&self) -> Option<Vec<CasterLevel>> {
+impl SpellType {
+    /// Converts the spell type to each of the player classes represented by that type.
+    pub fn to_player_classes(&self) -> Option<Vec<PlayerClass>> {
         match self {
-            Self::SpellType(SpellType::Arcane) => Some(vec![
-                Self::PlayerClass(PlayerClass::Wizard),
-                Self::PlayerClass(PlayerClass::Sorcerer),
-                Self::PlayerClass(PlayerClass::Ranger),
-                Self::PlayerClass(PlayerClass::DarkHunter),
+            Self::Arcane => Some(vec![
+                PlayerClass::Wizard,
+                PlayerClass::Sorcerer,
+                PlayerClass::Ranger,
+                PlayerClass::DarkHunter,
             ]),
+            _ => None,
+        }
+    }
+}
+
+impl GetCloned<CasterLevel> for CasterLevel {
+    fn get_cloned(&self) -> Option<Vec<CasterLevel>> {
+        match self {
+            Self::SpellType(spell_type) => Some(
+                spell_type
+                    .to_player_classes()?
+                    .into_iter()
+                    .map(Self::PlayerClass)
+                    .collect(),
+            ),
+            Self::SpellPower(spell_power) => Some(
+                spell_power
+                    .get_cloned()?
+                    .into_iter()
+                    .map(Self::SpellPower)
+                    .collect(),
+            ),
+            Self::SpellSchool(school) => Some(
+                school
+                    .get_cloned()?
+                    .into_iter()
+                    .map(Self::SpellSchool)
+                    .collect(),
+            ),
             _ => None,
         }
     }

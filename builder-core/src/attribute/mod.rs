@@ -12,6 +12,8 @@ mod sub;
 pub use macros::*;
 use serde::{Deserialize, Serialize};
 pub use sub::*;
+mod traits;
+pub use traits::*;
 
 attributes!(
     Attribute,
@@ -32,7 +34,7 @@ attributes!(
         format!("Flag: {}", flag.to_string()),
         "Represents any flags that the character has.",
         flag.get_attribute_bonuses(val),
-        Some(flag.get_cloned_flags()?.into_iter().map(Attribute::Flag).collect())
+        Some(flag.get_cloned()?.into_iter().map(Attribute::Flag).collect())
     )
     Toggle(toggle: Toggle) => (
         format!("Toggle: {}", toggle.to_string()),
@@ -44,81 +46,116 @@ attributes!(
         ability.to_string(),
         "The score for each of the character's 6 abilities.",
         Some(vec![Bonus::new(Attribute::AbilityModifier(*ability), BonusType::Stacking, ((val - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*ability)), None)]),
-        Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::Ability).collect())
+        Some(ability.get_cloned()?.into_iter().map(Attribute::Ability).collect())
     )
     AbilityModifier(ability: Ability) => (
         format!("{} Modifier", ability.to_string()),
         "The modifier, derived from the Ability Score, for each of the 6 abilities.",
         ability.get_modifier_bonuses(val),
-        Some(ability.get_cloned_abilities()?.into_iter().map(Attribute::AbilityModifier).collect())
+        Some(ability.get_cloned()?.into_iter().map(Attribute::AbilityModifier).collect())
     )
     Skill(skill: Skill) => (
         skill.to_string(),
-        "",
+        "Skills that provide additional attributes and abilities for the character.",
         skill.get_attribute_bonuses(val),
-        Some(skill.get_cloned_skills()?.into_iter().map(Attribute::Skill).collect())
+        Some(skill.get_cloned()?.into_iter().map(Attribute::Skill).collect())
     )
     SavingThrow(savingthrow: SavingThrow) => (
         savingthrow.to_string(),
-        "",
+        "Represents the three main saving throws: [Reflex](SavingThrow::Reflex) ([Dexterity](Ability::Dexterity)), [Fortitude](SavingThrow::Fortitude) ([Constitution](Ability::Constitution)), and [Will](SavingThrow::Will) ([Wisdom](Ability::Wisdom)). Also represents additional specific saving throws.",
         savingthrow.get_attribute_bonuses(val),
-        Some(savingthrow.get_cloned_values()?.into_iter().map(Attribute::SavingThrow).collect())
+        Some(savingthrow.get_cloned()?.into_iter().map(Attribute::SavingThrow).collect())
     )
     SpellPower(spell_power: SpellPower) => (
         format!("{} Spell Power", spell_power.to_string()),
-        "",
+        "For each point in a spell power, spells of that type gain 1% more damage. [SpellPower::All] will automatically split off to other spell powers.",
         None,
-        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellPower).collect())
+        Some(spell_power.get_cloned()?.into_iter().map(Attribute::SpellPower).collect())
     )
     SpellCriticalChance(spell_power: SpellPower) => (
         format!("{} Spell Critical Chance", spell_power.to_string()),
-        "",
+        "The chance that spells of a given type will critically hit. [SpellPower::All] will automatically split off to other spell powers.",
         None,
-        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalChance).collect())
+        Some(spell_power.get_cloned()?.into_iter().map(Attribute::SpellCriticalChance).collect())
     )
     SpellCriticalDamage(spell_power: SpellPower) => (
         format!("{} Spell Critical Damage", spell_power.to_string()),
-        "",
+        "The % bonus damage that critical hits deal with spells of a certain type. [SpellPower::All] will automatically split off to other spell powers.",
         None,
-        Some(spell_power.get_cloned_spellpowers()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
+        Some(spell_power.get_cloned()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
     )
     PhysicalSheltering() => (
         String::from("Physical Sheltering"),
-        "",
+        "Physical Resistance Rating, which decreases the amount of physical damage taken.",
         None,
         None
     )
     MagicalSheltering() => (
         String::from("Magical Sheltering"),
-        "",
+        "Magical Resistance Rating, which decreases the amount of magical damage taken",
         None,
         None
     )
     MagicalShelteringCap() => (
         String::from("Magical Sheltering Cap"),
-        "",
+        "Magical Resistance Rating Cap, which increases the maximum that you Magical Resistance Rating can be when wearing light or cloth armor",
          None,
          None
     )
     Sheltering() => (
         String::from("Sheltering"),
-        "",
+        "Adds bonuses to both [Magical Sheltering](Attribute::MagicalSheltering) and [Physical Sheltering](Self::PhysicalSheltering)",
         None,
         Some(vec![Attribute::PhysicalSheltering(), Attribute::MagicalSheltering()])
     )
     WeaponStat(weapon_hand: WeaponHand, weapon_stat: WeaponStat) => (
         weapon_stat.custom_to_string(weapon_hand),
-        "",
+        "Any specific stats that might only pertain to a specific weapon. Using [WeaponHand::Both] can be used for overall bonuses",
         None,
         weapon_stat.get_cloned_attributes(weapon_hand)
     )
-    OffHandAttackChance() => (String::from("Off Hand Attack Chance"), "", None, None)
-    Doublestrike() => ( String::from("Doublestrike"), "", None, None)
-    Doubleshot() => (String::from("Doubleshot"), "", None, None)
-    ImbueDice() => (String::from("Imbue Dice"), "", None, None)
-    SneakAttackDice() => (String::from("Sneak Attack Dice"), "", None, None)
-    SneakAttackDamage() => (String::from("Sneak Attack Bonus"), "", None, None)
-    MeleePower() => (String::from("Melee Power"), "", None, None)
+    OffHandAttackChance() => (
+        String::from("Off Hand Attack Chance"),
+        "The chance that the off-hand weapon will roll to attack",
+        None,
+        None
+    )
+    Doublestrike() => (
+        String::from("Doublestrike"),
+        "Chance that melee attacks will gain a x2 multiplier to implement hitting twice",
+        None,
+        None
+    )
+    Doubleshot() => (
+        String::from("Doubleshot"),
+        "Chance that ranged attacks will gain a x2 multiplier to implement shooting twice",
+        None,
+        None
+    )
+    ImbueDice() => (
+        String::from("Imbue Dice"),
+        "Bonus dice to imbue damage",
+        None,
+        None
+    )
+    SneakAttackDice() => (
+        String::from("Sneak Attack Dice"),
+        "Bonus dice for Sneak Attacks",
+        None,
+        None
+    )
+    SneakAttackDamage() => (
+        String::from("Sneak Attack Bonus"),
+        "Bonus to attack for sneak attacks",
+        None,
+        None
+    )
+    MeleePower() => (
+        String::from("Melee Power"),
+        "Bonus to melee power",
+        None,
+        None
+    )
     RangedPower() => (String::from("Ranged Power"), "", None, None)
     SecondaryShieldBash() => (String::from("Secondary Shield Bash Chance"), "", None, None)
     DodgeBypass() => (String::from("Dodge Bypass"), "", None, None)
@@ -132,13 +169,13 @@ attributes!(
         format!("{} Threat Generation", threat_type.to_string()),
         "",
         None,
-        Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
+        Some(threat_type.get_cloned()?.into_iter().map(Attribute::ThreatGeneration).collect())
     )
     ThreatReduction(threat_type: ThreatType) => (
         format!("{} Threat Reduction", threat_type.to_string()),
         "",
         None,
-        Some(threat_type.get_cloned_types()?.into_iter().map(Attribute::ThreatGeneration).collect())
+        Some(threat_type.get_cloned()?.into_iter().map(Attribute::ThreatGeneration).collect())
     )
     ElementalResistance(element: ElementalType) => (
         format!("{} Resistance", element.to_string()),
@@ -156,7 +193,7 @@ attributes!(
         format!("{} Spell Focus", spellschool.to_string()),
         "",
         None,
-        Some(spellschool.get_cloned_schools()?.into_iter().map(Attribute::SpellFocus).collect())
+        Some(spellschool.get_cloned()?.into_iter().map(Attribute::SpellFocus).collect())
     )
     SpellPoints(spellpoint: SpellPoint) => (spellpoint.to_string(), "", None, None)
     HitPoints(hitpoint: HitPoint) => (hitpoint.to_string(), "", None, None)
@@ -167,7 +204,7 @@ attributes!(
         None
     )
     UnconsciousRange() => (String::from("Unconscious Range"), "", None, None)
-    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), "", None, Some(healamp.get_cloned_attributes()?.into_iter().map(Attribute::HealAmp).collect()))
+    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), "", None, Some(healamp.get_cloned()?.into_iter().map(Attribute::HealAmp).collect()))
     ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), "", lore.get_attribute_bonuses(val), None)
     ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), "", player_class.get_attribute_bonuses(val), None)
     MovementSpeed() => (String::from("Movement Speed"), "", None, None)
@@ -182,7 +219,7 @@ attributes!(
     MaxDodge() => (String::from("Maximum Dodge"), "", None, None)
     Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), "", None, None)
     BonusActionBoosts() => (String::from("Bonus Action Boosts"), "", None, None)
-    CasterLevel(casterlevel: CasterLevel) => (casterlevel.to_string(), "", None, Some(casterlevel.get_cloned_attributes()?.into_iter().map(Attribute::CasterLevel).collect()))
+    CasterLevel(casterlevel: CasterLevel) => (casterlevel.to_string(), "", None, Some(casterlevel.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect()))
 );
 
 impl Default for Attribute {

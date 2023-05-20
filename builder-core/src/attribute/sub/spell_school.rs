@@ -1,9 +1,9 @@
-use crate::simple_enum;
+use crate::{simple_enum, attribute::GetCloned};
 
 simple_enum!(SpellSchool, "", (Abjuration "Abjuration", Conjuration "Conjuration", Divination "Divintation", Enchantment "Enchantment", Evocation "Evocation", Illusion "Illusion", Necromancy "Necromancy", Transmutation "Transmutation", All "All"));
 
-impl SpellSchool {
-    pub fn get_cloned_schools(&self) -> Option<Vec<SpellSchool>> {
+impl GetCloned<SpellSchool> for SpellSchool {
+    fn get_cloned(&self) -> Option<Vec<SpellSchool>> {
         if let Self::All = self {
             Some(vec![
                 Self::Abjuration,
