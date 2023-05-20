@@ -1,4 +1,4 @@
-use builder_core::{bonus::{BonusSource, BonusType}, attribute::{Attribute, Ability, CasterLevel}, feat::Tome, compiler::AttributeCompiler};
+use builder_core::{bonus::BonusSource, feat::Tome, compiler::AttributeCompiler};
 use enum_map::Enum;
 
 fn main() {

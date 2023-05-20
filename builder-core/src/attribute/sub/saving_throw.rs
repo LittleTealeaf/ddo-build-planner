@@ -1,4 +1,4 @@
-use crate::{bonus::Bonus, simple_enum, attribute::{GetCloned, Attribute}};
+use crate::{simple_enum, attribute::{GetCloned, Attribute}};
 
 simple_enum!(
     SavingThrow, "", (
