@@ -70,7 +70,7 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     }
 
     #[inline]
-    pub fn into_iter(mut self) -> impl Iterator<Item = (K, V)> {
+    pub fn into_iter(self) -> impl Iterator<Item = (K, V)> {
         self.array.into_iter()
     }
 }
