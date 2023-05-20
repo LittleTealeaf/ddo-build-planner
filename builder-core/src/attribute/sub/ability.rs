@@ -11,7 +11,7 @@ use super::Flag;
 //     (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All")
 // );
 /// Describes the six main stats for a character.
-#[derive(Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug)]
+#[derive(Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
 pub enum Ability {
     /// Describes how strong the person is.
     Strength,

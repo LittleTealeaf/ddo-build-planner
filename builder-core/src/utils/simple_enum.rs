@@ -53,7 +53,7 @@
 macro_rules! simple_enum {
     ($enum_name: ident, $documentation: expr, ($($id: ident $name: expr),*)) => {
         #[doc = $documentation]
-        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
+        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
         pub enum $enum_name {
             $(
                 #[doc = $name]
@@ -71,7 +71,7 @@ macro_rules! simple_enum {
     };
     ($enum_name: ident, $documentation: expr, ($($id: ident($($param_name: ident: $param_type: ty),*) $name: expr),*)) => {
         #[doc = $documentation]
-        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
+        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
         pub enum $enum_name {
             $($id($($param_type),*)),*
         }

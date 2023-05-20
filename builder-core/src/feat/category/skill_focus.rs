@@ -6,7 +6,7 @@ use crate::{
     feat::{Feat, FeatTrait},
 };
 
-#[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug)]
+#[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug, enum_map::Enum)]
 pub enum SkillFocus {
     Acrobatic,
     Alertness,

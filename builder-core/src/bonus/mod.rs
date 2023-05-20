@@ -47,7 +47,9 @@ impl ToString for Bonus {
     }
 }
 
+
 impl Bonus {
+    #[inline(always)]
     pub fn new(
         attribute: Attribute,
         bonus_type: BonusType,
@@ -63,7 +65,7 @@ impl Bonus {
             conditions,
         }
     }
-
+    #[inline(always)]
     pub fn dummy(source: BonusSource) -> Bonus {
         Self {
             attribute: Attribute::Dummy(),
@@ -74,6 +76,7 @@ impl Bonus {
         }
     }
 
+    #[inline(always)]
     pub fn flag(flag: Flag, source: BonusSource) -> Bonus {
         Self {
             attribute: Attribute::Flag(flag),
@@ -84,6 +87,7 @@ impl Bonus {
         }
     }
 
+    #[inline(always)]
     pub fn toggle(toggle: Toggle, source: BonusSource) -> Bonus {
         Self {
             attribute: Attribute::Toggle(toggle),
@@ -94,22 +98,27 @@ impl Bonus {
         }
     }
 
+    #[inline(always)]
     pub fn get_attribute(&self) -> Attribute {
         self.attribute
     }
 
+    #[inline(always)]
     pub fn get_value(&self) -> f32 {
         self.value
     }
 
+    #[inline(always)]
     pub fn get_bonus_type(&self) -> BonusType {
         self.bonus_type
     }
 
+    #[inline(always)]
     pub fn get_source(&self) -> BonusSource {
         self.source
     }
 
+    #[inline(always)]
     pub fn get_conditions(&self) -> Option<Vec<Condition>> {
         self.conditions.clone()
     }
