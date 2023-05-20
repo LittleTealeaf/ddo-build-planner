@@ -1,5 +1,7 @@
 // An enum Hash Map using binary search
 
+use std::vec;
+
 use enum_map::Enum;
 
 /// An Enum-based Hash Map that utilises binary search instead of Hashing or an extensive array.
@@ -69,8 +71,14 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         self.array.iter()
     }
 
-    #[inline]
-    pub fn into_iter(self) -> impl Iterator<Item = (K, V)> {
+}
+
+impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
+    type Item = (K, V);
+
+    type IntoIter = vec::IntoIter<(K, V)>;
+
+    fn into_iter(self) -> Self::IntoIter {
         self.array.into_iter()
     }
 }
