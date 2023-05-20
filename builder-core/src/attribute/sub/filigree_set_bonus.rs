@@ -11,7 +11,7 @@ use super::{
 macro_rules! filigree_set_bonuses {
     ($value: ident, $($set_name: ident $set_string: expr => ($($count: expr => $bonuses: expr)*))*) => {
 
-        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
+        #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
         pub enum FiligreeSet {
             $(
                 #[doc = $set_string]

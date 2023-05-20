@@ -13,11 +13,9 @@ mod attribute_queue;
 mod bonus_set;
 mod partial_bonus;
 
-#[derive(serde::Serialize, serde::Deserialize)]
 pub struct AttributeCompiler {
     bonuses: BonusSet,
     children: HashMap<BonusSource, Vec<Attribute>>,
-    #[serde(skip)]
     cache: HashMap<Attribute, f32>,
 }
 
