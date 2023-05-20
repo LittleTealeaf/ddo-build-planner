@@ -53,7 +53,7 @@ impl BonusSet {
     pub fn remove_source_from(&mut self, source: BonusSource, children: Vec<Attribute>) {
         let Self(map) = self;
         children.into_iter().for_each(|child| {
-            let mut set = map.get_mut_or_default(&child);
+            let set = map.get_mut_or_default(&child);
             set.iter()
                 .enumerate()
                 .filter(|(_, item)| item.source.eq(&source))
