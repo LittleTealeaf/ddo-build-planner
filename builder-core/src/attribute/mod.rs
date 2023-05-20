@@ -214,7 +214,7 @@ attributes!(
     SpellResistance() => (String::from("Spell Resistance"), "", None, None)
     SpellPenetration() => (String::from("Spell Penetation"), "", None, None)
     NaturalArmor() => (String::from("Natural Armor"), "", None, None)
-    FiligreeSet(set: FiligreeSet) => (set.to_string(), "", set.get_attribute_bonuses(val), None)
+    FiligreeSet(set: FiligreeSet) => (set.to_string(), "", set.get_bonuses(val), None)
     Dodge() => (String::from("Dodge"), "", None, None)
     MaxDodge() => (String::from("Maximum Dodge"), "", None, None)
     Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), "", None, None)
@@ -224,6 +224,12 @@ attributes!(
         "",
         None,
         Some(casterlevel.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect())
+    )
+    Immunity(immunity: Immunity) => (
+        format!("Immunity from {}", immunity.to_string()),
+        "Immunity from something",
+        None,
+        None
     )
 );
 

@@ -8,7 +8,7 @@ mod traits;
 use itertools::Itertools;
 pub use traits::*;
 
-use crate::attribute::{Flag, Toggle};
+use crate::attribute::{Flag, Toggle, Immunity};
 
 use super::attribute::Attribute;
 
@@ -95,6 +95,17 @@ impl Bonus {
             value: 1f32,
             source,
             conditions: None,
+        }
+    }
+
+    #[inline(always)]
+    pub fn immunity(immunity: Immunity, source: BonusSource) -> Bonus {
+        Self {
+            attribute: Attribute::Immunity(immunity),
+            bonus_type: BonusType::Stacking,
+            value: 1f32,
+            source,
+            conditions: None
         }
     }
 

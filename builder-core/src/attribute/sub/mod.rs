@@ -36,3 +36,5 @@ mod filigree_set_bonus;
 pub use filigree_set_bonus::*;
 mod caster_level;
 pub use caster_level::*;
+mod immunity;
+pub use immunity::*;

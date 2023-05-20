@@ -5,12 +5,14 @@ use crate::{
 
 use super::{
     Ability, CasterLevel, ElementalType, Flag, HealAmp, HitPoint, SavingThrow, Skill, SpellPoint,
-    SpellPower, SpellSchool, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,
+    SpellPower, SpellSchool, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,Immunity,SpellType
 };
 
 macro_rules! filigree_set_bonuses {
     ($value: ident, $($set_name: ident $set_string: expr => ($($count: expr => $bonuses: expr)*))*) => {
-
+        /// Represents the number of filigrees a player has towards each FiligreeSet.
+        ///
+        /// Fetching bonuses from this set will return a list of bonuses based on how many items the user is wearing of the set.
         #[derive(Copy, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
         pub enum FiligreeSet {
             $(
@@ -28,8 +30,8 @@ macro_rules! filigree_set_bonuses {
             }
         }
 
-        impl FiligreeSet {
-            pub fn get_attribute_bonuses(&self, $value: f32) -> Option<Vec<$crate::bonus::Bonus>> {
+        impl $crate::attribute::GetBonuses for FiligreeSet {
+            fn get_bonuses(&self, $value: f32) -> Option<Vec<$crate::bonus::Bonus>> {
                 let mut bonuses = Vec::new();
 
                 match self {
@@ -83,7 +85,7 @@ macro_rules! filigree_set_bonuses {
             #[test]
             fn zero_value_returns_no_bonuses() {
                 $(
-                    assert_eq!(None, FiligreeSet::$set_name.get_attribute_bonuses(0f32));
+                    assert_eq!(None, $crate::attribute::GetBonuses::get_bonuses(&FiligreeSet::$set_name, 0f32));
                 )*
             }
         }
@@ -321,10 +323,10 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::HealAmp(HealAmp::Positive), BonusType::Stacking, 5f32, source!(Purity), None)
         ]
         3f32 => vec![
-            // TODO: Immunity to Mummy Rot and Natural Diseases
-        ]
+            Bonus::immunity(Immunity::MummyRot(), source!(Purity)),
+            Bonus::immunity(Immunity::NaturalDisease(), source!(Purity))        ]
         4f32 => vec![
-            // TODO: Immunity to Energy Drain
+            Bonus::immunity(Immunity::EnergyDrain(), source!(Purity))
         ]
     )
     SnakeBite "Snake Bite" => (
@@ -435,8 +437,8 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MaxDodge(), BonusType::Stacking, 1f32, source!(Zephyr), None),
         ]
         4f32 => vec![
-            // TODO: Immunity to Slippery Surfaces
-            // TODO: Immunity to Knockdown
+            Bonus::immunity(Immunity::SlipperySurfaces(), source!(Zephyr)),
+            Bonus::immunity(Immunity::Knockdown(), source!(Zephyr))
         ]
     )
     BraveryThroughout "Bravery Throughout" => (
@@ -458,7 +460,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Universal), BonusType::Stacking, 4f32, source!(CoalescedMagic), None)
         ]
         4f32 => vec![
-            // TODO: +1 Caster Levels with Arcane
+            Bonus::new(Attribute::CasterLevel(CasterLevel::SpellType(SpellType::Arcane)), BonusType::Stacking, 1f32, source!(CoalescedMagic), None)
         ]
         5f32 => vec![
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 30f32, source!(CoalescedMagic), None)
@@ -524,7 +526,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(RadiantShield), None)
         ]
         4f32 => vec![
-            // TODO: Immunity to Quell
+            Bonus::immunity(Immunity::Quell(), source!(RadiantShield))
         ]
     )
     Reverberation "Reverberation" => (
@@ -756,7 +758,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellFocus(SpellSchool::Conjuration), BonusType::Stacking, 2f32, source!(TheSerpent), None),
         ]
         5f32 => vec![
-            // TODO: Immunity to Petrification
+            Bonus::immunity(Immunity::Petrification(), source!(TheSerpent))
         ]
     )
     Shadowstrike "Shadowstrike" => (
@@ -828,7 +830,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 10f32, source!(SnowpeaksGifts), None)
         ]
         4f32 => vec![
-            // TODO: Immune to most slow forms
+            Bonus::immunity(Immunity::MostSlowForms(), source!(SnowpeaksGifts))
         ]
     )
 );
