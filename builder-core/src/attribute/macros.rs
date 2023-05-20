@@ -19,7 +19,7 @@ macro_rules! attributes {
 
         impl $enum_name {
             /// Gets any subsidary bonuses that an attribute might have.
-            pub fn get_attribute_bonuses(&self, $value: f32) -> Option<Vec<$crate::bonus::Bonus>> {
+            pub fn get_attribute_bonuses(&self, $value: f32) -> Option<Vec<Bonus>> {
                 match self {
                     $($enum_name::$name($($param_name),*) => $bonuses),*
                 }

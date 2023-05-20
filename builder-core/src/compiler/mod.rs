@@ -130,7 +130,7 @@ impl AttributeCompiler {
 
         // Creates and initially sets queue
         let mut attribute_queue = AttributeQueue::new();
-        attribute_queue.insert_attributes(
+        attribute_queue.insert_attriubtes(
             bonuses.iter().map(Bonus::get_attribute).unique().collect(),
             false,
         );
@@ -178,7 +178,7 @@ impl AttributeCompiler {
             if force_update || initial_value != self.get_attribute(&attribute) {
                 // Push any bonus attributes that reference the attribute to the queue
                 attribute_queue
-                    .insert_attributes(self.bonuses.get_all_references(&attribute), true);
+                    .insert_attriubtes(self.bonuses.get_all_references(&attribute), true);
 
                 //Builds the source for any children bonuses
                 let source = attribute.into();
@@ -217,23 +217,13 @@ impl AttributeCompiler {
                             .collect_vec(),
                     );
 
-                    // Inserts the set of affected attributes into the children queue
-                    self.children.insert(
-                        source,
-                        bonuses
-                            .iter()
-                            .map(|bonus| bonus.get_attribute())
-                            .unique()
-                            .collect(),
-                    );
-
-                    // Inserts bonuses into the update_bonuses map
+                    // Inserts updated attributes and returns iterator of unique attriubtes
                     let updated_attributes = bonuses
                         .into_iter()
-                        .map(|bonus| (bonus.get_attribute(), bonus))
-                        .into_group_map()
+                        .into_group_map_by(|bonus| bonus.get_attribute())
                         .into_iter()
                         .map(|(attribute, mut set)| {
+                            // Inserts bonuses into update_bonuses
                             if let Some(update_set) = update_bonuses.get_mut(&attribute) {
                                 update_set.append(&mut set);
                             } else {
@@ -241,10 +231,14 @@ impl AttributeCompiler {
                             }
                             attribute
                         })
-                        .collect();
+                        .unique()
+                        .collect_vec();
 
-                    // Add updated attributes to the attribute queue
-                    attribute_queue.insert_attributes(updated_attributes, false);
+                    // Updates children entry
+                    self.children.insert(source, updated_attributes.clone());
+
+                    // Update attribute queue 
+                    attribute_queue.insert_attriubtes(updated_attributes, false);
                 }
             }
         }
@@ -273,7 +267,13 @@ mod tests {
     fn inserting_attribute_overwrites_children() {
         let mut compiler = AttributeCompiler::new();
 
-        compiler.insert_bonus(Bonus::new(Attribute::Dodge(), BonusType::Stacking, 1f32, BonusSource::Unique(1), None));
+        compiler.insert_bonus(Bonus::new(
+            Attribute::Dodge(),
+            BonusType::Stacking,
+            1f32,
+            BonusSource::Unique(1),
+            None,
+        ));
         compiler.insert_bonus(Bonus::dummy(BonusSource::Unique(1)));
 
         assert_eq!(
