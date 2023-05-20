@@ -1,4 +1,4 @@
-use crate::{player_class::PlayerClass, simple_enum, attribute::GetCloned};
+use crate::{player_class::PlayerClass, simple_enum, attribute::{GetCloned, Attribute}};
 
 use super::{SpellPower, SpellSchool};
 
@@ -14,29 +14,6 @@ simple_enum!(
 );
 
 // TODO: Add Per Spell
-
-simple_enum!(
-    SpellType,
-    "",
-    (
-        Arcane "Arcane", Divine "Divine"
-    )
-);
-
-impl SpellType {
-    /// Converts the spell type to each of the player classes represented by that type.
-    pub fn to_player_classes(&self) -> Option<Vec<PlayerClass>> {
-        match self {
-            Self::Arcane => Some(vec![
-                PlayerClass::Wizard,
-                PlayerClass::Sorcerer,
-                PlayerClass::Ranger,
-                PlayerClass::DarkHunter,
-            ]),
-            _ => None,
-        }
-    }
-}
 
 impl GetCloned<CasterLevel> for CasterLevel {
     fn get_cloned(&self) -> Option<Vec<CasterLevel>> {
@@ -62,6 +39,35 @@ impl GetCloned<CasterLevel> for CasterLevel {
                     .map(Self::SpellSchool)
                     .collect(),
             ),
+            _ => None,
+        }
+    }
+}
+
+impl From<CasterLevel> for Attribute {
+    fn from(value: CasterLevel) -> Self {
+        Attribute::CasterLevel(value)
+    }
+}
+
+simple_enum!(
+    SpellType,
+    "",
+    (
+        Arcane "Arcane", Divine "Divine"
+    )
+);
+
+impl SpellType {
+    /// Converts the spell type to each of the player classes represented by that type.
+    pub fn to_player_classes(&self) -> Option<Vec<PlayerClass>> {
+        match self {
+            Self::Arcane => Some(vec![
+                PlayerClass::Wizard,
+                PlayerClass::Sorcerer,
+                PlayerClass::Ranger,
+                PlayerClass::DarkHunter,
+            ]),
             _ => None,
         }
     }

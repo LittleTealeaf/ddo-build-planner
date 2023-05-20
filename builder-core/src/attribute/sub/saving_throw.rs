@@ -1,4 +1,4 @@
-use crate::{bonus::Bonus, simple_enum, attribute::GetCloned};
+use crate::{bonus::Bonus, simple_enum, attribute::{GetCloned, Attribute}};
 
 simple_enum!(
     SavingThrow, "", (
@@ -32,5 +32,11 @@ impl GetCloned<SavingThrow> for SavingThrow {
         } else {
             None
         }
+    }
+}
+
+impl From<SavingThrow> for Attribute {
+    fn from(value: SavingThrow) -> Self {
+        Self::SavingThrow(value)
     }
 }

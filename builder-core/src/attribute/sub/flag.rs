@@ -1,4 +1,4 @@
-use crate::{attribute::{GetCloned}, bonus::Bonus, simple_enum};
+use crate::{attribute::{GetCloned, Attribute}, bonus::Bonus, simple_enum};
 
 use super::{Ability, SavingThrow, Toggle, WeaponHand};
 
@@ -37,5 +37,11 @@ impl GetCloned<Flag> for Flag {
             ]),
             _ => None,
         }
+    }
+}
+
+impl From<Flag> for Attribute {
+    fn from(value: Flag) -> Attribute {
+        Attribute::Flag(value)
     }
 }

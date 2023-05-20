@@ -48,6 +48,12 @@ macro_rules! filigree_set_bonuses {
             }
         }
 
+        impl From<FiligreeSet> for Attribute {
+            fn from(value: FiligreeSet) -> Self {
+                Attribute::FiligreeSet(value)
+            }
+        }
+
         #[cfg(test)]
         mod gen_tests {
             use super::*;

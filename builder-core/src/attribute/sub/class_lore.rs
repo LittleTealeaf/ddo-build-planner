@@ -33,3 +33,9 @@ impl ClassLore {
         }
     }
 }
+
+impl From<ClassLore> for Attribute {
+    fn from(value: ClassLore) -> Self {
+        Attribute::ClassLore(value)
+    }
+}
