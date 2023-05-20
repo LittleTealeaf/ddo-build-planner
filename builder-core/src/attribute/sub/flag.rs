@@ -25,6 +25,7 @@ impl Flag {
 }
 
 impl GetCloned<Flag> for Flag {
+    #[inline]
     fn get_cloned(&self) -> Option<Vec<Flag>> {
         match self {
             Flag::AbilityToAttack(ability, WeaponHand::Both) => Some(vec![

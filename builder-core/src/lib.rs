@@ -12,3 +12,4 @@ pub mod character;
 pub mod feat;
 pub mod player_class;
 pub mod utils;
+pub mod compiler;
