@@ -1,3 +1,6 @@
+use builder_core::{bonus::{BonusSource, BonusType}, attribute::Attribute};
+
 fn main() {
-    println!("Hello, world!");
+    let size = std::mem::size_of::<BonusSource>();
+    println!("{}", size);
 }

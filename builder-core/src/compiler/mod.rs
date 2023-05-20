@@ -140,7 +140,7 @@ impl AttributeCompiler {
             .map(|bonus| (bonus.get_source(), bonus.get_attribute()))
             .into_group_map()
             .into_iter()
-            .for_each(|(source, set)| {
+            .for_each(|(source, set): (BonusSource, Vec<Attribute>)| {
                 // Inserts new set
                 if let Some(children) = self.children.insert(source, set) {
                     // If there was an old set, remove the sources from that
@@ -237,7 +237,7 @@ impl AttributeCompiler {
                     // Updates children entry
                     self.children.insert(source, updated_attributes.clone());
 
-                    // Update attribute queue 
+                    // Update attribute queue
                     attribute_queue.insert_attriubtes(updated_attributes, false);
                 }
             }
