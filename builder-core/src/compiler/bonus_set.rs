@@ -34,12 +34,6 @@ impl BonusSet {
         let partial = bonus.into();
 
         map[attribute].push(partial);
-
-        // if let Some(set) = map.get_mut(&attribute) {
-        //     set.push(partial);
-        // } else {
-        //     map.insert(attribute, vec![partial]);
-        // }
     }
 
     pub fn insert(&mut self, attribute: Attribute, bonuses: Vec<Bonus>) {
@@ -120,228 +114,118 @@ impl BonusSet {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-//     mod remove_source_from {
-//         use crate::bonus::BonusType;
+    mod remove_source_from {
+        use crate::bonus::BonusType;
 
-//         use super::*;
+        use super::*;
 
-//         #[test]
-//         fn remove_sources_from_children() {
-//             let mut bonuses = BonusSet::new();
+        mod returns_reference {
+            use super::*;
 
-//             bonuses.add(Bonus::dummy(BonusSource::Unique(0)));
-//             bonuses.add(Bonus::new(
-//                 Attribute::Dodge(),
-//                 BonusType::Stacking,
-//                 1f32,
-//                 BonusSource::Unique(0),
-//                 None,
-//             ));
+            #[test]
+            fn has() {
+                let mut bonuses = BonusSet::new();
+                bonuses.add(Bonus::new(
+                    Attribute::Dummy(),
+                    BonusType::Stacking,
+                    1f32,
+                    BonusSource::Unique(0),
+                    Some(vec![Condition::Has(Attribute::Dodge())]),
+                ));
 
-//             bonuses.remove_source_from(
-//                 BonusSource::Unique(0),
-//                 vec![Attribute::Dummy(), Attribute::Dodge()],
-//             );
+                assert_eq!(
+                    vec![Attribute::Dummy()],
+                    bonuses.get_all_references(&Attribute::Dodge())
+                );
+            }
 
-//             assert_eq!(
-//                 0,
-//                 bonuses
-//                     .0
-//                     .get(&Attribute::Dummy())
-//                     .unwrap_or(&Vec::new())
-//                     .len()
-//             );
-//             assert_eq!(
-//                 0,
-//                 bonuses
-//                     .0
-//                     .get(&Attribute::Dodge())
-//                     .unwrap_or(&Vec::new())
-//                     .len()
-//             );
-//         }
+            #[test]
+            fn not_have() {
+                let mut bonuses = BonusSet::new();
+                bonuses.add(Bonus::new(
+                    Attribute::Dummy(),
+                    BonusType::Stacking,
+                    1f32,
+                    BonusSource::Unique(0),
+                    Some(vec![Condition::NotHave(Attribute::Dodge())]),
+                ));
 
-//         #[test]
-//         fn does_not_remove_from_non_children() {
-//             let mut bonuses = BonusSet::new();
+                assert_eq!(
+                    vec![Attribute::Dummy()],
+                    bonuses.get_all_references(&Attribute::Dodge())
+                );
+            }
 
-//             bonuses.add(Bonus::dummy(BonusSource::Unique(0)));
-//             bonuses.add(Bonus::new(
-//                 Attribute::Dodge(),
-//                 BonusType::Stacking,
-//                 1f32,
-//                 BonusSource::Unique(0),
-//                 None,
-//             ));
+            #[test]
+            fn max() {
+                let mut bonuses = BonusSet::new();
+                bonuses.add(Bonus::new(
+                    Attribute::Dummy(),
+                    BonusType::Stacking,
+                    1f32,
+                    BonusSource::Unique(0),
+                    Some(vec![Condition::Max(Attribute::Dodge(), 1f32)]),
+                ));
 
-//             bonuses.remove_source_from(BonusSource::Unique(0), vec![Attribute::Dummy()]);
+                assert_eq!(
+                    vec![Attribute::Dummy()],
+                    bonuses.get_all_references(&Attribute::Dodge())
+                );
+            }
 
-//             assert_eq!(
-//                 0,
-//                 bonuses
-//                     .0
-//                     .get(&Attribute::Dummy())
-//                     .unwrap_or(&Vec::new())
-//                     .len()
-//             );
-//             assert_eq!(
-//                 1,
-//                 bonuses
-//                     .0
-//                     .get(&Attribute::Dodge())
-//                     .unwrap_or(&Vec::new())
-//                     .len()
-//             );
-//         }
+            #[test]
+            fn min() {
+                let mut bonuses = BonusSet::new();
+                bonuses.add(Bonus::new(
+                    Attribute::Dummy(),
+                    BonusType::Stacking,
+                    1f32,
+                    BonusSource::Unique(0),
+                    Some(vec![Condition::Min(Attribute::Dodge(), 1f32)]),
+                ));
 
-//         #[test]
-//         fn does_not_remove_non_sources() {
-//             let mut bonuses = BonusSet::new();
+                assert_eq!(
+                    vec![Attribute::Dummy()],
+                    bonuses.get_all_references(&Attribute::Dodge())
+                );
+            }
 
-//             bonuses.add(Bonus::dummy(BonusSource::Unique(1)));
+            #[test]
+            fn eq() {
+                let mut bonuses = BonusSet::new();
+                bonuses.add(Bonus::new(
+                    Attribute::Dummy(),
+                    BonusType::Stacking,
+                    1f32,
+                    BonusSource::Unique(0),
+                    Some(vec![Condition::Eq(Attribute::Dodge(), 1f32)]),
+                ));
 
-//             bonuses.remove_source_from(BonusSource::Unique(0), vec![Attribute::Dummy()]);
+                assert_eq!(
+                    vec![Attribute::Dummy()],
+                    bonuses.get_all_references(&Attribute::Dodge())
+                );
+            }
+            #[test]
+            fn not_eq() {
+                let mut bonuses = BonusSet::new();
+                bonuses.add(Bonus::new(
+                    Attribute::Dummy(),
+                    BonusType::Stacking,
+                    1f32,
+                    BonusSource::Unique(0),
+                    Some(vec![Condition::NotEq(Attribute::Dodge(), 1f32)]),
+                ));
 
-//             assert_eq!(
-//                 1,
-//                 bonuses
-//                     .0
-//                     .get(&Attribute::Dummy())
-//                     .unwrap_or(&Vec::new())
-//                     .len()
-//             );
-//         }
-//     }
-
-//     mod get_all_references {
-//         use crate::bonus::BonusType;
-
-//         use super::*;
-
-//         #[test]
-//         fn does_not_return_non_references() {
-//             let mut bonuses = BonusSet::new();
-//             bonuses.add(Bonus::new(
-//                 Attribute::Dummy(),
-//                 BonusType::Stacking,
-//                 1f32,
-//                 BonusSource::Unique(0),
-//                 None,
-//             ));
-
-//             assert_eq!(
-//                 Vec::<Attribute>::new(),
-//                 bonuses.get_all_references(&Attribute::Dodge())
-//             );
-//         }
-
-//         mod returns_reference {
-//             use super::*;
-
-//             #[test]
-//             fn has() {
-//                 let mut bonuses = BonusSet::new();
-//                 bonuses.add(Bonus::new(
-//                     Attribute::Dummy(),
-//                     BonusType::Stacking,
-//                     1f32,
-//                     BonusSource::Unique(0),
-//                     Some(vec![Condition::Has(Attribute::Dodge())]),
-//                 ));
-
-//                 assert_eq!(
-//                     vec![Attribute::Dummy()],
-//                     bonuses.get_all_references(&Attribute::Dodge())
-//                 );
-//             }
-
-//             #[test]
-//             fn not_have() {
-//                 let mut bonuses = BonusSet::new();
-//                 bonuses.add(Bonus::new(
-//                     Attribute::Dummy(),
-//                     BonusType::Stacking,
-//                     1f32,
-//                     BonusSource::Unique(0),
-//                     Some(vec![Condition::NotHave(Attribute::Dodge())]),
-//                 ));
-
-//                 assert_eq!(
-//                     vec![Attribute::Dummy()],
-//                     bonuses.get_all_references(&Attribute::Dodge())
-//                 );
-//             }
-
-//             #[test]
-//             fn max() {
-//                 let mut bonuses = BonusSet::new();
-//                 bonuses.add(Bonus::new(
-//                     Attribute::Dummy(),
-//                     BonusType::Stacking,
-//                     1f32,
-//                     BonusSource::Unique(0),
-//                     Some(vec![Condition::Max(Attribute::Dodge(), 1f32)]),
-//                 ));
-
-//                 assert_eq!(
-//                     vec![Attribute::Dummy()],
-//                     bonuses.get_all_references(&Attribute::Dodge())
-//                 );
-//             }
-
-//             #[test]
-//             fn min() {
-//                 let mut bonuses = BonusSet::new();
-//                 bonuses.add(Bonus::new(
-//                     Attribute::Dummy(),
-//                     BonusType::Stacking,
-//                     1f32,
-//                     BonusSource::Unique(0),
-//                     Some(vec![Condition::Min(Attribute::Dodge(), 1f32)]),
-//                 ));
-
-//                 assert_eq!(
-//                     vec![Attribute::Dummy()],
-//                     bonuses.get_all_references(&Attribute::Dodge())
-//                 );
-//             }
-
-//             #[test]
-//             fn eq() {
-//                 let mut bonuses = BonusSet::new();
-//                 bonuses.add(Bonus::new(
-//                     Attribute::Dummy(),
-//                     BonusType::Stacking,
-//                     1f32,
-//                     BonusSource::Unique(0),
-//                     Some(vec![Condition::Eq(Attribute::Dodge(), 1f32)]),
-//                 ));
-
-//                 assert_eq!(
-//                     vec![Attribute::Dummy()],
-//                     bonuses.get_all_references(&Attribute::Dodge())
-//                 );
-//             }
-//             #[test]
-//             fn not_eq() {
-//                 let mut bonuses = BonusSet::new();
-//                 bonuses.add(Bonus::new(
-//                     Attribute::Dummy(),
-//                     BonusType::Stacking,
-//                     1f32,
-//                     BonusSource::Unique(0),
-//                     Some(vec![Condition::NotEq(Attribute::Dodge(), 1f32)]),
-//                 ));
-
-//                 assert_eq!(
-//                     vec![Attribute::Dummy()],
-//                     bonuses.get_all_references(&Attribute::Dodge())
-//                 );
-//             }
-//         }
-//     }
-// }
+                assert_eq!(
+                    vec![Attribute::Dummy()],
+                    bonuses.get_all_references(&Attribute::Dodge())
+                );
+            }
+        }
+    }
+}

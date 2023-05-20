@@ -1,6 +1,7 @@
-use builder_core::{bonus::{BonusSource, BonusType}, attribute::Attribute};
+use builder_core::{bonus::{BonusSource, BonusType}, attribute::{Attribute, Ability, CasterLevel}, feat::Tome};
+use enum_map::Enum;
 
 fn main() {
-    let size = std::mem::size_of::<BonusSource>();
-    println!("{}", size);
+    let value = BonusSource::Feat(builder_core::feat::Feat::Tome(Tome::SpellPower));
+    println!("{}", value.into_usize());
 }

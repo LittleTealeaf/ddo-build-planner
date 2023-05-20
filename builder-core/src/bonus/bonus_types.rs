@@ -98,12 +98,14 @@ impl BonusType {
     /// Returns `true` if the bonus type is [`Stacking`].
     ///
     /// [`Stacking`]: BonusType::Stacking
+    #[inline(always)]
     pub fn is_stacking(&self) -> bool {
         matches!(self, Self::Stacking)
     }
 }
 
 impl Default for BonusType {
+    #[inline(always)]
     fn default() -> Self {
         Self::Stacking
     }

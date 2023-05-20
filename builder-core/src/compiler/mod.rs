@@ -20,6 +20,7 @@ pub struct AttributeCompiler {
 }
 
 impl Default for AttributeCompiler {
+    #[inline]
     fn default() -> Self {
         Self {
             bonuses: BonusSet::new(),
@@ -30,6 +31,7 @@ impl Default for AttributeCompiler {
 }
 
 impl AttributeCompiler {
+    #[inline]
     pub fn new() -> Self {
         Self::default()
     }
@@ -96,6 +98,7 @@ impl AttributeCompiler {
         value
     }
 
+    #[inline(always)]
     pub fn insert_bonus(&mut self, bonus: Bonus) {
         self.insert_bonuses(vec![bonus]);
     }

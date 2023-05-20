@@ -1,11 +1,13 @@
+use enum_map::Enum;
+
 use crate::{attribute::Attribute, feat::Feat};
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, Enum)]
 pub enum BonusSource {
     Attribute(Attribute),
     Feat(Feat),
     /// Indicates some unique identifier, indicated with a usize
-    Unique(usize),
+    Unique(u8),
 }
 
 impl ToString for BonusSource {
