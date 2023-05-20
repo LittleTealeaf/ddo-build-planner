@@ -1,4 +1,7 @@
-use crate::{attribute::Attribute, simple_enum};
+use crate::{
+    attribute::{Attribute, GetCloned},
+    simple_enum,
+};
 
 use super::DamageReduction;
 
@@ -37,3 +40,21 @@ impl WeaponStat {
 }
 
 simple_enum!(WeaponHand, "", (Main "Main Hand", Off "Off Hand", Both "Both Hand"));
+
+impl GetCloned<(WeaponHand, WeaponStat)> for (WeaponHand, WeaponStat) {
+    fn get_cloned(&self) -> Option<Vec<(WeaponHand, WeaponStat)>> {
+        let (hand, stat) = self;
+        if let WeaponHand::Both = hand {
+            Some(vec![(WeaponHand::Main, *stat), (WeaponHand::Off, *stat)])
+        } else {
+            None
+        }
+    }
+}
+
+impl From<(WeaponHand, WeaponStat)> for Attribute {
+    fn from(value: (WeaponHand, WeaponStat)) -> Self {
+        let (hand, stat) = value;
+        Self::WeaponStat(hand, stat)
+    }
+}

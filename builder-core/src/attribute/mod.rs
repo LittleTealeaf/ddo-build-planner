@@ -112,7 +112,7 @@ attributes!(
         weapon_stat.custom_to_string(weapon_hand),
         "Any specific stats that might only pertain to a specific weapon. Using [WeaponHand::Both] can be used for overall bonuses",
         None,
-        weapon_stat.get_cloned_attributes(weapon_hand)
+        Some((*weapon_hand, *weapon_stat).get_cloned()?.into_iter().map(Attribute::from).collect())
     )
     OffHandAttackChance() => (
         String::from("Off Hand Attack Chance"),
@@ -219,7 +219,12 @@ attributes!(
     MaxDodge() => (String::from("Maximum Dodge"), "", None, None)
     Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), "", None, None)
     BonusActionBoosts() => (String::from("Bonus Action Boosts"), "", None, None)
-    CasterLevel(casterlevel: CasterLevel) => (casterlevel.to_string(), "", None, Some(casterlevel.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect()))
+    CasterLevel(casterlevel: CasterLevel) => (
+        casterlevel.to_string(),
+        "",
+        None,
+        Some(casterlevel.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect())
+    )
 );
 
 impl Default for Attribute {
