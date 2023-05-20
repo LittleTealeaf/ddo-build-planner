@@ -54,6 +54,7 @@ impl Default for Breakdowns {
 }
 
 impl Breakdowns {
+    /// Creates a new instance of Breakdowns
     pub fn new() -> Breakdowns {
         Self {
             bonuses: Vec::new(),
