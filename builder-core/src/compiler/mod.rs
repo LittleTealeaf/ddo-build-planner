@@ -13,6 +13,9 @@ mod attribute_queue;
 mod bonus_set;
 mod partial_bonus;
 
+/// Compiles multiple bonuses and calculates resulting attribute values based on bonus rules.
+///
+/// The struct handles the core calculations of attribute bonuses.
 pub struct AttributeCompiler {
     bonuses: BonusSet,
     children: HashMap<BonusSource, Vec<Attribute>>,
@@ -31,6 +34,7 @@ impl Default for AttributeCompiler {
 }
 
 impl AttributeCompiler {
+    /// Creates a new [AttributeCompiler] with no bonuses.
     #[inline]
     pub fn new() -> Self {
         Self::default()
@@ -86,6 +90,7 @@ impl AttributeCompiler {
         )
     }
 
+    /// Gets the calculated value of an attribute
     pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
         if let Some(value) = self.cache.get(attribute) {
             return *value;
@@ -98,11 +103,13 @@ impl AttributeCompiler {
         value
     }
 
+    /// Inserts a single attribute into the compiler.
     #[inline(always)]
     pub fn insert_bonus(&mut self, bonus: Bonus) {
         self.insert_bonuses(vec![bonus]);
     }
 
+    /// Inserts a list of attributes into the compiler.
     pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
         // Adds additional attribute clones
         bonuses.append(
