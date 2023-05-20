@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use itertools::Itertools;
-use serde_test::Configure;
 
 use crate::{
     attribute::Attribute,
