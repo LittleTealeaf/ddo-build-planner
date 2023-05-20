@@ -5,27 +5,31 @@ use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, Condition},
+    bonus::{Bonus, BonusSource, Condition}, utils::EnumBinaryMap,
 };
 
 use super::partial_bonus::PartialBonus;
 
-pub struct BonusSet(EnumMap<Attribute, Vec<PartialBonus>>);
+pub struct BonusSet(EnumBinaryMap<Attribute, Vec<PartialBonus>>);
 
 impl BonusSet {
     pub fn new() -> Self {
-        Self(EnumMap::default())
+        Self(EnumBinaryMap::default())
     }
 
     pub fn get(&self, attribute: &Attribute) -> Option<&Vec<PartialBonus>> {
         let Self(map) = self;
-        // None
-        let bonuses = &map[*attribute];
-        if bonuses.len() > 0 {
-            Some(bonuses)
-        } else {
-            None
-        }
+
+        map.get(attribute)
+
+        // let Self(map) = self;
+        // // None
+        // let bonuses = &map[*attribute];
+        // if bonuses.len() > 0 {
+        //     Some(bonuses)
+        // } else {
+        //     None
+        // }
     }
 
     pub fn add(&mut self, bonus: Bonus) {
@@ -33,7 +37,8 @@ impl BonusSet {
         let attribute = bonus.get_attribute();
         let partial = bonus.into();
 
-        map[attribute].push(partial);
+        // map[attribute].push(partial);
+        map.get_mut_or_default(&attribute).push(partial);
     }
 
     pub fn insert(&mut self, attribute: Attribute, bonuses: Vec<Bonus>) {
@@ -44,38 +49,14 @@ impl BonusSet {
             .filter(|bonus| bonus.get_value() != 0f32)
             .map(PartialBonus::from);
 
-        map[attribute].extend(&mut partial_bonuses);
+        map.get_mut_or_default(&attribute).extend(&mut partial_bonuses);
 
-        // if let Some(set) = map.get_mut(&attribute) {
-        //     set.append(&mut partial_bonuses);
-        // } else {
-        //     map.insert(attribute, partial_bonuses);
-        // }
-    }
-
-    #[deprecated = "Try to use remove_sources_from"]
-    pub fn remove_sources(&mut self, sources: Vec<BonusSource>) {
-        let Self(map) = self;
-
-        // let entries = map
-        //     .drain()
-        //     .map(|(key, set)| {
-        //         (
-        //             key,
-        //             set.into_iter()
-        //                 .filter(|bonus| !sources.contains(&bonus.source))
-        //                 .collect_vec(),
-        //         )
-        //     })
-        //     .collect_vec();
-
-        // map.extend(entries.into_iter());
     }
 
     pub fn remove_source_from(&mut self, source: BonusSource, children: Vec<Attribute>) {
         let Self(map) = self;
         children.into_iter().for_each(|child| {
-            let mut set = &mut map[child];
+            let mut set = map.get_mut_or_default(&child);
             set.iter()
                 .enumerate()
                 .filter(|(_, item)| item.source.eq(&source))
@@ -109,7 +90,7 @@ impl BonusSet {
                     }
                 })
             })
-            .map(|(key, _)| key)
+            .map(|(key, _)| *key)
             .collect()
     }
 }

@@ -2,8 +2,18 @@
 
 use enum_map::Enum;
 
+/// An Enum-based Hash Map that utilises binary search instead of Hashing or an extensive array.
+///
+/// While [EnumMap](enum_map::EnumMap) does a good job at avoiding the complexity overhead of hashing enums, it doesn't do a good job at storage size for large enums. In this crate, some of the enums can be, and many times are, hundreds to thousands of possible states long. If [EnumMap](enum_map::EnumMap) is used directly, it would result in an array of hundreds to thousands of values that sometimes will be untouched. This structure is similar to an [EnumMap](enum_map::EnumMap), except it uses a [Vec] to store data, adding only values that are inserted to preserve space.
 pub struct EnumBinaryMap<K: Enum + Copy, V> {
     array: Vec<(K, V)>,
+}
+
+impl<K: Enum + Copy, V> Default for EnumBinaryMap<K, V> {
+    #[inline]
+    fn default() -> Self {
+        Self { array: Vec::new() }
+    }
 }
 
 impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
@@ -50,6 +60,41 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
             Err(index) => {
                 self.array.insert(index, (key, value));
                 None
+            }
+        }
+    }
+
+    #[inline]
+    pub fn iter(&self) -> impl Iterator<Item = &(K, V)> {
+        self.array.iter()
+    }
+
+    #[inline]
+    pub fn into_iter(mut self) -> impl Iterator<Item = (K, V)> {
+        self.array.into_iter()
+    }
+}
+
+impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
+    fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
+        let mut array = Vec::new();
+        for item in iter {
+            array.push(item);
+        }
+        Self { array }
+    }
+}
+
+impl<K: Enum + Copy, V: Default> EnumBinaryMap<K, V> {
+    pub fn get_mut_or_default(&mut self, key: &K) -> &mut V {
+        let binary_result = self
+            .array
+            .binary_search_by_key(&key.into_usize(), |(k, _)| k.into_usize());
+        match binary_result {
+            Ok(index) => &mut self.array[index].1,
+            Err(index) => {
+                self.array.insert(index, (*key, V::default()));
+                &mut self.array[index].1
             }
         }
     }
