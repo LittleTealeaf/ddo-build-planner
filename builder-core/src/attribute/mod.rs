@@ -45,25 +45,25 @@ attributes!(
     Ability(ability: Ability) => (
         ability.to_string(),
         "The score for each of the character's 6 abilities.",
-        Some(vec![Bonus::new(Attribute::AbilityModifier(*ability), BonusType::Stacking, ((val - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*ability)), None)]),
+        GetBonuses::<_AbilityScore>::get_bonuses(ability, val),
         Some(ability.get_cloned()?.into_iter().map(Attribute::Ability).collect())
     )
     AbilityModifier(ability: Ability) => (
         format!("{} Modifier", ability.to_string()),
         "The modifier, derived from the Ability Score, for each of the 6 abilities.",
-        ability.get_modifier_bonuses(val),
+        GetBonuses::<_AbilityModifier>::get_bonuses(ability, val),
         Some(ability.get_cloned()?.into_iter().map(Attribute::AbilityModifier).collect())
     )
     Skill(skill: Skill) => (
         skill.to_string(),
         "Skills that provide additional attributes and abilities for the character.",
-        skill.get_attribute_bonuses(val),
+        skill.get_bonuses(val),
         Some(skill.get_cloned()?.into_iter().map(Attribute::Skill).collect())
     )
     SavingThrow(savingthrow: SavingThrow) => (
         savingthrow.to_string(),
         "Represents the three main saving throws: [Reflex](SavingThrow::Reflex) ([Dexterity](Ability::Dexterity)), [Fortitude](SavingThrow::Fortitude) ([Constitution](Ability::Constitution)), and [Will](SavingThrow::Will) ([Wisdom](Ability::Wisdom)). Also represents additional specific saving throws.",
-        savingthrow.get_attribute_bonuses(val),
+        None,
         Some(savingthrow.get_cloned()?.into_iter().map(Attribute::SavingThrow).collect())
     )
     SpellPower(spell_power: SpellPower) => (
@@ -205,8 +205,8 @@ attributes!(
     )
     UnconsciousRange() => (String::from("Unconscious Range"), "", None, None)
     HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), "", None, Some(healamp.get_cloned()?.into_iter().map(Attribute::HealAmp).collect()))
-    ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), "", lore.get_attribute_bonuses(val), None)
-    ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), "", player_class.get_attribute_bonuses(val), None)
+    ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), "", lore.get_bonuses(val), None)
+    ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), "", player_class.get_bonuses(val), None)
     MovementSpeed() => (String::from("Movement Speed"), "", None, None)
     PactDice() => (String::from("Pact Dice"), "", None, None)
     EldritchBlastDice() => (String::from("Eldritch Blast Dice"), "", None, None)

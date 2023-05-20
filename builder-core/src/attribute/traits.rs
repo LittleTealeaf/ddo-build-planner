@@ -1,3 +1,5 @@
+use crate::bonus::Bonus;
+
 
 
 /// Implements the ability for one value to a list of other values.
@@ -13,4 +15,8 @@ pub trait GetCloned<T> {
     ///
     /// [`Breakdowns`]: crate::breakdown::Breakdowns
     fn get_cloned(&self) -> Option<Vec<T>>;
+}
+
+pub trait GetBonuses<T = ()> {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>>;
 }

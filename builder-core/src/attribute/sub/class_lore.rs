@@ -1,13 +1,13 @@
 use crate::{
-    attribute::{Attribute, Flag},
+    attribute::{Attribute, Flag, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType, Condition},
     simple_enum,
 };
 
 simple_enum!(ClassLore, "", (Religious "Religious", Arcane "Arcane", Wilderness "Wilderness"));
 
-impl ClassLore {
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+impl GetBonuses for ClassLore {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Religious => Some(vec![
                 Bonus::new(

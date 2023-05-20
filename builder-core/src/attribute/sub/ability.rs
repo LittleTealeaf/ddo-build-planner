@@ -1,6 +1,6 @@
 use crate::{
-    attribute::{Attribute, GetCloned},
-    bonus::{Bonus, BonusType, Condition},
+    attribute::{Attribute, GetCloned, GetBonuses},
+    bonus::{Bonus, BonusType, Condition, BonusSource},
 };
 
 use super::Flag;
@@ -45,6 +45,11 @@ impl ToString for Ability {
     }
 }
 
+/// Dummy Struct to differentiate bonuses for [Ability]
+pub struct _AbilityScore;
+/// Dummy Struct to differentiate bonuses for [Ability]
+pub struct _AbilityModifier;
+
 macro_rules! modifier_skill {
     ($modifier: ident, $skill: ident, $value: expr) => {
         Bonus::new(
@@ -86,7 +91,17 @@ macro_rules! modifier_saving_throw {
     };
 }
 
-impl Ability {
+impl GetBonuses<_AbilityScore> for Ability {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        if let Ability::All = self {
+            None
+        } else {
+            Some(vec![Bonus::new(Attribute::AbilityModifier(*self), BonusType::Stacking, ((value - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*self)), None)])
+        }
+    }
+}
+
+impl GetBonuses<_AbilityModifier> for Ability {
     /// Returns a list of modifier bonuses when provided the current modifier value
     ///
     /// The goal of this function is to link each ability to other attirbutes. This includes, but is not limited to, skills, saving throws, and attack/damage modifiers.
@@ -94,13 +109,13 @@ impl Ability {
     /// This function returns an [Option] because of the case of [`Self::All`], where there should not be any modifier bonuses. Therefore, if you try to get the modifier bonuses of [`Self::All`], you will get [None]
     ///
     /// ```
-    /// use builder_core::attribute::Ability;
+    /// use builder_core::attribute::{Ability, GetBonuses, _AbilityModifier};
     ///
-    /// assert_eq!(None, Ability::All.get_modifier_bonuses(30f32));
+    /// assert_eq!(None, GetBonuses::<_AbilityModifier>::get_bonuses(&Ability::All, 32f32));
     /// ```
     ///
     /// However, for each other ability, a list of bonuses will be returned that should be added to the [Breakdowns](crate::breakdown::Breakdowns). Note that this function is used by [Breakdowns](crate::breakdown::Breakdowns) and should not be manually used.
-    pub fn get_modifier_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         let mut values = vec![];
 
         values.append(&mut match self {

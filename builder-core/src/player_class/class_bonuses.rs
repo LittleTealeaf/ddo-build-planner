@@ -1,32 +1,11 @@
 use crate::{
-    attribute::{Attribute, ClassLore},
+    attribute::{Attribute, ClassLore, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType},
 };
 
 use super::PlayerClass;
 
 impl PlayerClass {
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        if value == 0f32 {
-            return None;
-        }
-
-        let mut vec = Vec::new();
-
-        // Class Lores
-        vec.append(
-            &mut [
-                self.get_arcane_lore(value),
-                self.get_religious_lore(value),
-                self.get_wilderness_lore(value),
-            ]
-            .into_iter()
-            .flatten()
-            .collect(),
-        );
-
-        Some(vec)
-    }
 
     fn get_arcane_lore(&self, value: f32) -> Option<Bonus> {
         match self {
@@ -88,5 +67,29 @@ impl PlayerClass {
             )),
             _ => None,
         }
+    }
+}
+
+impl GetBonuses for PlayerClass {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        if value == 0f32 {
+            return None;
+        }
+
+        let mut vec = Vec::new();
+
+        // Class Lores
+        vec.append(
+            &mut [
+                self.get_arcane_lore(value),
+                self.get_religious_lore(value),
+                self.get_wilderness_lore(value),
+            ]
+            .into_iter()
+            .flatten()
+            .collect(),
+        );
+
+        Some(vec)
     }
 }

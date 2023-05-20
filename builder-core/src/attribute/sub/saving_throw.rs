@@ -18,13 +18,6 @@ simple_enum!(
     )
 );
 
-impl SavingThrow {
-
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        None
-    }
-}
-
 impl GetCloned<SavingThrow> for SavingThrow {
     fn get_cloned(&self) -> Option<Vec<SavingThrow>> {
         if let Self::All = self {

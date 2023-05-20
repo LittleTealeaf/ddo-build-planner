@@ -1,4 +1,4 @@
-use crate::{bonus::Bonus, simple_enum, attribute::{GetCloned, Attribute}};
+use crate::{bonus::Bonus, simple_enum, attribute::{GetCloned, Attribute, GetBonuses}};
 
 simple_enum!(Skill, "", (Balance "Balance", Bluff "Bluff", Concentration "Concentration", Diplomacy "Diplomacy", DisableDevice "DisableDevice", Haggle "Haggle", Heal "Heal", Hide "Hide", Intimidate "Intimidate", Jump "Jump", Listen "Listen", MoveSilently "Move Silently", OpenLock "Open Lock", Perform "Perform", Repair "Repair", Search "Search", SpellCraft "Spell Craft", Spot "Spot", Swim "Swim", Tumble "Tumble", UseMagicalDevice "Use Magical Device", All "All"));
 
@@ -16,8 +16,8 @@ macro_rules! spell_power {
     };
 }
 
-impl Skill {
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+impl GetBonuses for Skill {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Skill::Heal => Some(vec![
                 spell_power!(Heal, Positive, value),
