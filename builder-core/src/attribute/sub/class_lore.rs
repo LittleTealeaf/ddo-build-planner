@@ -1,6 +1,6 @@
 use crate::{
     attribute::{Attribute, Flag, GetBonuses},
-    bonus::{Bonus, BonusSource, BonusType, Condition},
+    bonus::{Bonus, BonusType, Condition},
     simple_enum,
 };
 
@@ -14,19 +14,19 @@ impl GetBonuses for ClassLore {
                     Attribute::MagicalSheltering(),
                     BonusType::Quality,
                     value,
-                    BonusSource::Attribute(Attribute::ClassLore(ClassLore::Religious)),
-                    Some(vec![Condition::Has(Attribute::Flag(
-                        Flag::ReligiousLoreToQualityMagicalSheltering(),
-                    ))]),
+                    Attribute::to_source(ClassLore::Religious),
+                    Some(vec![Condition::Has(
+                        Flag::ReligiousLoreToQualityMagicalSheltering().into(),
+                    )]),
                 ),
                 Bonus::new(
                     Attribute::PhysicalSheltering(),
                     BonusType::Quality,
                     value,
-                    BonusSource::Attribute(Attribute::ClassLore(ClassLore::Religious)),
-                    Some(vec![Condition::Has(Attribute::Flag(
-                        Flag::ReligiousLoreToQualityPhysicalSheltering(),
-                    ))]),
+                    Attribute::to_source(ClassLore::Religious),
+                    Some(vec![Condition::Has(
+                        Flag::ReligiousLoreToQualityPhysicalSheltering().into(),
+                    )]),
                 ),
             ]),
             _ => None,

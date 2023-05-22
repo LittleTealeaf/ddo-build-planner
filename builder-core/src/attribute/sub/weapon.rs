@@ -41,6 +41,11 @@ impl WeaponStat {
 
 simple_enum!(WeaponHand, "", (Main "Main Hand", Off "Off Hand", Both "Both Hand"));
 
+impl WeaponHand {
+    /// All weapon hands except for [`WeaponHand::Both`]
+    pub const VALUES: [WeaponHand; 2] = [WeaponHand::Main, WeaponHand::Off];
+}
+
 impl GetCloned<(WeaponHand, WeaponStat)> for (WeaponHand, WeaponStat) {
     fn get_cloned(&self) -> Option<Vec<(WeaponHand, WeaponStat)>> {
         let (hand, stat) = self;

@@ -1,5 +1,5 @@
 use crate::{
-    attribute::{Attribute, GetCloned},
+    attribute::{Attribute, GetBonuses, GetCloned},
     bonus::Bonus,
     simple_enum,
 };
@@ -19,8 +19,8 @@ simple_enum!(
     )
 );
 
-impl Flag {
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+impl GetBonuses for Flag {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Toggle(toggle) => toggle.get_toggled_bonuses(value),
             _ => None,
@@ -32,14 +32,26 @@ impl GetCloned<Flag> for Flag {
     #[inline(always)]
     fn get_cloned(&self) -> Option<Vec<Flag>> {
         match self {
-            Flag::AbilityToAttack(ability, WeaponHand::Both) => Some(vec![
-                Flag::AbilityToAttack(*ability, WeaponHand::Main),
-                Flag::AbilityToAttack(*ability, WeaponHand::Off),
-            ]),
-            Flag::AbilityToDamage(ability, WeaponHand::Both) => Some(vec![
-                Flag::AbilityToDamage(*ability, WeaponHand::Main),
-                Flag::AbilityToDamage(*ability, WeaponHand::Off),
-            ]),
+            Flag::AbilityToAttack(Ability::All, hand) => Some(
+                Ability::VALUES
+                    .map(|ability| Flag::AbilityToAttack(ability, *hand))
+                    .to_vec(),
+            ),
+            Flag::AbilityToAttack(ability, WeaponHand::Both) => Some(
+                WeaponHand::VALUES
+                    .map(|hand| Flag::AbilityToAttack(*ability, hand))
+                    .to_vec(),
+            ),
+            Flag::AbilityToDamage(Ability::All, hand) => Some(
+                Ability::VALUES
+                    .map(|ability| Flag::AbilityToDamage(ability, *hand))
+                    .to_vec(),
+            ),
+            Flag::AbilityToDamage(ability, WeaponHand::Both) => Some(
+                WeaponHand::VALUES
+                    .map(|hand| Flag::AbilityToDamage(*ability, hand))
+                    .to_vec(),
+            ),
             _ => None,
         }
     }

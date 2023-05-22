@@ -1,9 +1,10 @@
 use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
-    bonus::{Bonus, BonusSource, BonusType, Condition},
+    bonus::{Bonus, BonusType, Condition},
 };
 
-use super::Flag;
+
+use super::{Flag, WeaponHand, WeaponStat};
 
 /// Describes the six main stats for a character.
 #[derive(
@@ -43,14 +44,20 @@ impl ToString for Ability {
 }
 
 impl Ability {
-    #[inline(always)]
-    pub fn to_score_attribute(self) -> Attribute {
-        Attribute::Ability(self)
-    }
+    /// All ability values except for [`Ability::All`]
+    pub const VALUES: [Ability; 6] = [Ability::Strength, Ability::Dexterity, Ability::Constitution, Ability::Intelligence, Ability::Wisdom, Ability::Charisma];
 
+    /// Converts an ability to the [`Attribute::AbilityModifier`] value
     #[inline(always)]
-    pub fn to_modifier_attribute(self) -> Attribute {
+    pub fn into_modifier_attribute(self) -> Attribute {
         Attribute::AbilityModifier(self)
+    }
+}
+
+impl From<Ability> for Attribute {
+    #[inline(always)]
+    fn from(value: Ability) -> Attribute {
+        Attribute::Ability(value)
     }
 }
 
@@ -109,7 +116,7 @@ impl GetBonuses<_AbilityScore> for Ability {
                 Attribute::AbilityModifier(*self),
                 BonusType::Stacking,
                 ((value - 10f32) / 2f32).floor(),
-                BonusSource::Attribute(Attribute::Ability(*self)),
+                Attribute::to_source(*self),
                 None,
             )])
         }
@@ -190,40 +197,40 @@ impl GetBonuses<_AbilityModifier> for Ability {
 
         values.append(&mut vec![
             Bonus::new(
-                Attribute::WeaponStat(super::WeaponHand::Main, super::WeaponStat::Attack()),
+                (WeaponHand::Main, WeaponStat::Attack()).into(),
                 BonusType::AbilityModifier,
                 value,
-                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
-                Some(vec![Condition::Has(Attribute::Flag(
-                    Flag::AbilityToAttack(*self, super::WeaponHand::Main),
-                ))]),
+                self.into_modifier_attribute().into(),
+                Some(vec![Condition::Has(
+                    Flag::AbilityToAttack(*self, super::WeaponHand::Main).into(),
+                )]),
             ),
             Bonus::new(
-                Attribute::WeaponStat(super::WeaponHand::Off, super::WeaponStat::Attack()),
+                (WeaponHand::Off, WeaponStat::Attack()).into(),
                 BonusType::AbilityModifier,
                 value,
-                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
-                Some(vec![Condition::Has(Attribute::Flag(
-                    Flag::AbilityToAttack(*self, super::WeaponHand::Off),
-                ))]),
+                self.into_modifier_attribute().into(),
+                Some(vec![Condition::Has(
+                    Flag::AbilityToAttack(*self, super::WeaponHand::Off).into(),
+                )]),
             ),
             Bonus::new(
-                Attribute::WeaponStat(super::WeaponHand::Main, super::WeaponStat::Damage()),
+                (WeaponHand::Main, WeaponStat::Damage()).into(),
                 BonusType::AbilityModifier,
                 value,
-                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
-                Some(vec![Condition::Has(Attribute::Flag(
-                    Flag::AbilityToDamage(*self, super::WeaponHand::Main),
-                ))]),
+                self.into_modifier_attribute().into(),
+                Some(vec![Condition::Has(
+                    Flag::AbilityToDamage(*self, super::WeaponHand::Main).into(),
+                )]),
             ),
             Bonus::new(
-                Attribute::WeaponStat(super::WeaponHand::Off, super::WeaponStat::Damage()),
+                (WeaponHand::Off, WeaponStat::Damage()).into(),
                 BonusType::AbilityModifier,
                 value,
-                crate::bonus::BonusSource::Attribute(Attribute::AbilityModifier(*self)),
-                Some(vec![Condition::Has(Attribute::Flag(
-                    Flag::AbilityToDamage(*self, super::WeaponHand::Off),
-                ))]),
+                self.into_modifier_attribute().into(),
+                Some(vec![Condition::Has(
+                    Flag::AbilityToDamage(*self, super::WeaponHand::Off).into(),
+                )]),
             ),
         ]);
 
@@ -234,14 +241,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
 impl GetCloned<Ability> for Ability {
     fn get_cloned(&self) -> Option<Vec<Ability>> {
         if let Self::All = self {
-            Some(vec![
-                Self::Strength,
-                Self::Dexterity,
-                Self::Constitution,
-                Self::Intelligence,
-                Self::Wisdom,
-                Self::Charisma,
-            ])
+            Some(Vec::from(Ability::VALUES))
         } else {
             None
         }

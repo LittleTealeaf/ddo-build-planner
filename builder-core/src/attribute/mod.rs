@@ -34,7 +34,7 @@ attributes!(
     Flag(flag: Flag) => (
         format!("Flag: {}", flag.to_string()),
         "Represents any flags that the character has.",
-        flag.get_attribute_bonuses(val),
+        flag.get_bonuses(val),
         Some(flag.get_cloned()?.into_iter().map(Attribute::Flag).collect())
     )
     Toggle(toggle: Toggle) => (
@@ -233,6 +233,13 @@ attributes!(
         None
     )
 );
+
+impl Attribute {
+    /// Converts any type that implements [`Into<Attribute>`] to a [`BonusSource`]
+    pub fn to_source<T: Into<Attribute>>(source: T) -> BonusSource {
+        BonusSource::Attribute(source.into())
+    }
+}
 
 impl Default for Attribute {
     #[inline]
