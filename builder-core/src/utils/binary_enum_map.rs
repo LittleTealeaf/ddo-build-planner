@@ -27,11 +27,16 @@ impl<K: Enum + Copy, V> Default for EnumBinaryMap<K, V> {
 
 impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     /// Creates a new instance of the [`EnumBinaryMap`]
+    ///
+    /// This uses [`Self::default()`] to create a new instance.
     #[inline]
     pub fn new() -> Self {
         Self::default()
     }
 
+    /// Creates a new instance of [`EnumBinaryMap`] with a set initial capacity
+    ///
+    /// This internally uses the [`Vec::with_capacity()`] method to initialize the map with a set capacity. 
     #[inline]
     pub fn with_capacity(size: usize) -> Self {
         Self {
@@ -40,6 +45,9 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         }
     }
 
+    /// Gets the value in the map from a key.
+    ///
+    /// If the key is present will return a [`Some`] object with a reference to the value. If the key is not present, it will return a [`None`]
     pub fn get(&self, key: &K) -> Option<&V> {
         let index = self
             .array
@@ -51,6 +59,9 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         Some(value)
     }
 
+    /// Gets a mutable reference to the value stored with the key.
+    ///
+    /// If the key is present, this will return a [`Some`] object with a mutable reference to the value. Otherwise [`None`] is returned.
     pub fn get_mut(&mut self, key: &K) -> Option<&mut V> {
         let index = self
             .array
@@ -62,6 +73,9 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         Some(value)
     }
 
+    /// Inserts the value into the map with its associated key.
+    ///
+    /// If there is already an entry with the given key, this will return [`Some`] with the previous value. If there is no key present, a [`None`] will be returned. 
     pub fn insert(&mut self, key: K, value: V) -> Option<V> {
         let key_usize = key.into_usize();
 
@@ -80,8 +94,9 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         }
     }
 
+    /// Returns an iterator over the keys and values of the map
     #[inline]
-    pub fn iter(&self) -> impl Iterator<Item = (K, &V)> {
+    pub fn iter(&self) -> impl Iterator<Item=(K, &V)> {
         self.array
             .iter()
             .map(|(key, value)| (K::from_usize(*key), value))
@@ -101,7 +116,7 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
 }
 
 impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
-    fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item=(K, V)>>(iter: T) -> Self {
         let mut array = Vec::new();
         for (key, value) in iter {
             array.push((key.into_usize(), value));
@@ -114,6 +129,9 @@ impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
 }
 
 impl<K: Enum + Copy, V: Default> EnumBinaryMap<K, V> {
+    /// Returns a mutable reference to a value associated with the key.
+    ///
+    /// If there is no value associated with the key in the map, then a new entry will be created using [`Default::default()`] to initialize the value.
     pub fn get_mut_or_default(&mut self, key: &K) -> &mut V {
         let binary_result = self
             .array
