@@ -82,6 +82,7 @@ jobs:
         run: cargo install clippy-sarif sarif-fmt
       - name: Run rust-clippy
         run: cargo clippy
+          --no-deps
           --all-targets
           --all-features
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
