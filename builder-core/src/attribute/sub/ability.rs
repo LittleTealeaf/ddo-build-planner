@@ -115,7 +115,7 @@ macro_rules! modifier_saving_throw {
 
 impl GetBonuses<_AbilityScore> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        if let Ability::All = self {
+        if matches!(self, Self::All) {
             None
         } else {
             Some(vec![Bonus::new(
@@ -246,7 +246,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
 
 impl GetCloned<Ability> for Ability {
     fn get_cloned(&self) -> Option<Vec<Ability>> {
-        if let Self::All = self {
+        if matches!(self, Self::All) {
             Some(Vec::from(Ability::VALUES))
         } else {
             None

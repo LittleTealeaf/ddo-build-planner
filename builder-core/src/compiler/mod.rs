@@ -73,7 +73,7 @@ impl AttributeCompiler {
                 .into_group_map()
                 .into_iter()
                 .map(|(bonus_type, mut items)| {
-                    let mut value = items.pop().unwrap();
+                    let mut value = items.pop().unwrap_or(0f32);
                     if bonus_type.is_stacking() {
                         for item in items {
                             value += item;

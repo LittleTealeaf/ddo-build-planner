@@ -72,7 +72,7 @@ impl BonusSet {
                             | Condition::NotEq(attr, _)
                             | Condition::Eq(attr, _)
                             | Condition::Max(attr, _)
-                            | Condition::Min(attr, _) => attribute.eq(&attr),
+                            | Condition::Min(attr, _) => attribute.eq(attr),
                         })
                     } else {
                         false
