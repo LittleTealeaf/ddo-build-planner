@@ -29,6 +29,14 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         Self::default()
     }
     
+    #[inline]
+    pub fn with_capacity(size: usize) -> Self {
+        Self {
+            array: Vec::with_capacity(size),
+            enum_type: PhantomData
+        }
+    }
+    
     pub fn get(&self, key: &K) -> Option<&V> {
         let index = self
             .array
@@ -172,5 +180,11 @@ mod tests {
         for (key, value) in ITEMS {
             assert_eq!(Some(&value), map.get(&key));
         }
+    }
+    
+    #[test]
+    fn with_capacity_sets_capacity() {
+        let map = EnumBinaryMap::<Test, ()>::with_capacity(50);
+        assert_eq!(50, map.array.capacity())
     }
 }
