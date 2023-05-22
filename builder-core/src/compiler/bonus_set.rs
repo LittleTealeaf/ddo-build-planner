@@ -18,15 +18,6 @@ impl BonusSet {
         let Self(map) = self;
 
         map.get(attribute)
-
-        // let Self(map) = self;
-        // // None
-        // let bonuses = &map[*attribute];
-        // if bonuses.len() > 0 {
-        //     Some(bonuses)
-        // } else {
-        //     None
-        // }
     }
 
     pub fn add(&mut self, bonus: Bonus) {
@@ -87,7 +78,7 @@ impl BonusSet {
                     }
                 })
             })
-            .map(|(key, _)| *key)
+            .map(|(key, _)| key)
             .collect()
     }
 }

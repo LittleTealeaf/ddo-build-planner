@@ -1,6 +1,9 @@
 // An enum Hash Map using binary search
 
+use std::iter::Map;
+use std::marker::PhantomData;
 use std::vec;
+use std::vec::IntoIter;
 
 use enum_map::Enum;
 
@@ -8,28 +11,28 @@ use enum_map::Enum;
 ///
 /// While [EnumMap](enum_map::EnumMap) does a good job at avoiding the complexity overhead of hashing enums, it doesn't do a good job at storage size for large enums. In this crate, some of the enums can be, and many times are, hundreds to thousands of possible states long. If [EnumMap](enum_map::EnumMap) is used directly, it would result in an array of hundreds to thousands of values that sometimes will be untouched. This structure is similar to an [EnumMap](enum_map::EnumMap), except it uses a [Vec] to store data, adding only values that are inserted to preserve space.
 pub struct EnumBinaryMap<K: Enum + Copy, V> {
-    array: Vec<(K, V)>,
+    array: Vec<(usize, V)>,
+    enum_type: PhantomData<K>,
 }
 
 impl<K: Enum + Copy, V> Default for EnumBinaryMap<K, V> {
     #[inline]
     fn default() -> Self {
-        Self { array: Vec::new() }
+        Self { array: Vec::new(), enum_type: PhantomData }
     }
 }
 
 impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
+    /// Creates a new instance of the [`EnumBinaryMap`]
     #[inline]
     pub fn new() -> Self {
-        Self {
-            array: Vec::default(),
-        }
+        Self::default()
     }
-
+    
     pub fn get(&self, key: &K) -> Option<&V> {
         let index = self
             .array
-            .binary_search_by_key(&key.into_usize(), |(k, _)| k.into_usize())
+            .binary_search_by_key(&key.into_usize(), |(k, _)| *k)
             .ok()?;
 
         let (_, value) = self.array.get(index)?;
@@ -40,7 +43,7 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     pub fn get_mut(&mut self, key: &K) -> Option<&mut V> {
         let index = self
             .array
-            .binary_search_by_key(&key.into_usize(), |(k, _)| k.into_usize())
+            .binary_search_by_key(&key.into_usize(), |(k, _)| *k)
             .ok()?;
 
         let (_, value) = self.array.get_mut(index)?;
@@ -49,47 +52,46 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     }
 
     pub fn insert(&mut self, key: K, value: V) -> Option<V> {
-        let index = self
-            .array
-            .binary_search_by_key(&key.into_usize(), |(k, _)| k.into_usize());
+        let key_usize = key.into_usize();
+
+        let index = self.array.binary_search_by_key(&key_usize, |(k, _)| *k);
 
         match index {
             Ok(index) => {
-                let item = self.array.remove(index);
-                self.array.insert(index, (key, value));
-                Some(item.1)
+                let (_, item) = self.array.remove(index);
+                self.array.insert(index, (key_usize, value));
+                Some(item)
             }
             Err(index) => {
-                self.array.insert(index, (key, value));
+                self.array.insert(index, (key_usize, value));
                 None
             }
         }
     }
 
     #[inline]
-    pub fn iter(&self) -> impl Iterator<Item = &(K, V)> {
-        self.array.iter()
+    pub fn iter(&self) -> impl Iterator<Item=(K, &V)> {
+        self.array.iter().map(|(key, value)| (K::from_usize(*key), value))
     }
-
 }
 
 impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
     type Item = (K, V);
 
-    type IntoIter = vec::IntoIter<(K, V)>;
+    type IntoIter = Map<IntoIter<(usize, V)>, fn((usize, V)) -> (K, V)>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.array.into_iter()
+        self.array.into_iter().map(|(key, value)| (K::from_usize(key), value))
     }
 }
 
 impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
-    fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item=(K, V)>>(iter: T) -> Self {
         let mut array = Vec::new();
-        for item in iter {
-            array.push(item);
+        for (key, value) in iter {
+            array.push((key.into_usize(), value));
         }
-        Self { array }
+        Self { array, enum_type: PhantomData }
     }
 }
 
@@ -97,11 +99,11 @@ impl<K: Enum + Copy, V: Default> EnumBinaryMap<K, V> {
     pub fn get_mut_or_default(&mut self, key: &K) -> &mut V {
         let binary_result = self
             .array
-            .binary_search_by_key(&key.into_usize(), |(k, _)| k.into_usize());
+            .binary_search_by_key(&key.into_usize(), |(k, _)| *k);
         match binary_result {
             Ok(index) => &mut self.array[index].1,
             Err(index) => {
-                self.array.insert(index, (*key, V::default()));
+                self.array.insert(index, (key.into_usize(), V::default()));
                 &mut self.array[index].1
             }
         }

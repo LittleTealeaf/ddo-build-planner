@@ -182,7 +182,7 @@ impl AttributeCompiler {
             }
 
             // If it's forced update, or if the initial value is not equal to the current value.
-            // This will coincidentially cache the attribute (if we're not forcing updates)
+            // This will coincidentally cache the attribute (if we're not forcing updates)
             if force_update || initial_value != self.get_attribute(&attribute) {
                 // Push any bonus attributes that reference the attribute to the queue
                 attribute_queue
