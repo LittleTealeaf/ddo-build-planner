@@ -1,12 +1,10 @@
 use std::collections::HashMap;
 
-use enum_map::Enum;
 use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, Condition},
-    utils::EnumBinaryMap,
+    bonus::{Bonus, BonusSource, Condition}
 };
 
 use self::{attribute_queue::AttributeQueue, bonus_set::BonusSet, clone_bonuses::clone_bonuses};
