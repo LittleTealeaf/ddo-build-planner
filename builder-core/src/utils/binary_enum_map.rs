@@ -94,7 +94,7 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     }
 
     /// Returns an iterator over the keys and values of the map
-    #[inline]
+    #[inline(always)]
     pub fn iter(&self) -> impl Iterator<Item=(K, &V)> {
         self.array
             .iter()
@@ -107,6 +107,7 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
 
     type IntoIter = Map<IntoIter<(usize, V)>, fn((usize, V)) -> (K, V)>;
 
+    #[inline(always)]
     fn into_iter(self) -> Self::IntoIter {
         self.array
             .into_iter()
@@ -115,6 +116,7 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
 }
 
 impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
+    #[inline]
     fn from_iter<T: IntoIterator<Item=(K, V)>>(iter: T) -> Self {
         let mut array = Vec::new();
         for (key, value) in iter {
