@@ -4,15 +4,15 @@ use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, Condition}
+    bonus::{Bonus, BonusSource, Condition},
 };
 
 use self::{attribute_queue::AttributeQueue, bonus_set::BonusSet, clone_bonuses::clone_bonuses};
 
 mod attribute_queue;
 mod bonus_set;
-mod partial_bonus;
 mod clone_bonuses;
+mod partial_bonus;
 
 /// Compiles multiple bonuses and calculates resulting attribute values based on bonus rules.
 ///

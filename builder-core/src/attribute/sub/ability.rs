@@ -3,7 +3,6 @@ use crate::{
     bonus::{Bonus, BonusType, Condition},
 };
 
-
 use super::{Flag, WeaponHand, WeaponStat};
 
 /// Describes the six main stats for a character.
@@ -45,7 +44,14 @@ impl ToString for Ability {
 
 impl Ability {
     /// All ability values except for [`Ability::All`]
-    pub const VALUES: [Ability; 6] = [Ability::Strength, Ability::Dexterity, Ability::Constitution, Ability::Intelligence, Ability::Wisdom, Ability::Charisma];
+    pub const VALUES: [Ability; 6] = [
+        Ability::Strength,
+        Ability::Dexterity,
+        Ability::Constitution,
+        Ability::Intelligence,
+        Ability::Wisdom,
+        Ability::Charisma,
+    ];
 
     /// Converts an ability to the [`Attribute::AbilityModifier`] value
     #[inline(always)]

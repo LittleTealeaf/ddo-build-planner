@@ -32,24 +32,32 @@ pub fn clone_bonuses(bonuses: &mut Vec<Bonus>) {
 mod tests {
     use itertools::Itertools;
 
-    use crate::{attribute::{sub::Skill, Attribute}, bonus::BonusType};
+    use crate::{
+        attribute::{sub::Skill, Attribute},
+        bonus::BonusType,
+    };
 
     use super::*;
 
     #[test]
     fn clones_cloned_bonuses() {
         let attributes: Vec<Attribute> = vec![Skill::All.into()];
-        let mut bonuses = attributes.into_iter().map(|attribute| Bonus::new(attribute, BonusType::Stacking, 1f32, 5.into(), None)).collect_vec();
+        let mut bonuses = attributes
+            .into_iter()
+            .map(|attribute| Bonus::new(attribute, BonusType::Stacking, 1f32, 5.into(), None))
+            .collect_vec();
 
         clone_bonuses(&mut bonuses);
 
-        let attributes = bonuses.into_iter().map(|bonus| bonus.get_attribute()).collect_vec();
+        let attributes = bonuses
+            .into_iter()
+            .map(|bonus| bonus.get_attribute())
+            .collect_vec();
 
         for skill in Skill::VALUES {
             assert!(attributes.contains(&skill.into()));
         }
 
         assert!(attributes.contains(&Skill::All.into()));
-
     }
 }
