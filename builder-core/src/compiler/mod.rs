@@ -4,14 +4,15 @@ use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, Condition},
+    bonus::{Bonus, BonusSource, Condition}
 };
 
-use self::{attribute_queue::AttributeQueue, bonus_set::BonusSet};
+use self::{attribute_queue::AttributeQueue, bonus_set::BonusSet, clone_bonuses::clone_bonuses};
 
 mod attribute_queue;
 mod bonus_set;
 mod partial_bonus;
+mod clone_bonuses;
 
 /// Compiles multiple bonuses and calculates resulting attribute values based on bonus rules.
 ///
@@ -112,29 +113,7 @@ impl AttributeCompiler {
     /// Inserts a list of attributes into the compiler.
     pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
         // Adds additional attribute clones
-        bonuses.append(
-            &mut bonuses
-                .iter()
-                .filter_map(|bonus| {
-                    Some(
-                        bonus
-                            .get_attribute()
-                            .get_attribute_clones()?
-                            .into_iter()
-                            .map(|attribute| {
-                                Bonus::new(
-                                    attribute,
-                                    bonus.get_bonus_type(),
-                                    bonus.get_value(),
-                                    bonus.get_source(),
-                                    bonus.get_conditions(),
-                                )
-                            }),
-                    )
-                })
-                .flatten()
-                .collect_vec(),
-        );
+        clone_bonuses(&mut bonuses);
 
         // Creates and initially sets queue
         let mut attribute_queue = AttributeQueue::new();
@@ -201,29 +180,7 @@ impl AttributeCompiler {
                 // Checks if there are any child bonuses
                 if let Some(mut bonuses) = attribute.get_attribute_bonuses(value) {
                     // Includes child bonuses
-                    bonuses.append(
-                        &mut bonuses
-                            .iter()
-                            .filter_map(|bonus| {
-                                Some(
-                                    bonus
-                                        .get_attribute()
-                                        .get_attribute_clones()?
-                                        .into_iter()
-                                        .map(|attribute| {
-                                            Bonus::new(
-                                                attribute,
-                                                bonus.get_bonus_type(),
-                                                bonus.get_value(),
-                                                bonus.get_source(),
-                                                bonus.get_conditions(),
-                                            )
-                                        }),
-                                )
-                            })
-                            .flatten()
-                            .collect_vec(),
-                    );
+                    clone_bonuses(&mut bonuses);
 
                     // Inserts updated attributes and returns iterator of unique attriubtes
                     let updated_attributes = bonuses
