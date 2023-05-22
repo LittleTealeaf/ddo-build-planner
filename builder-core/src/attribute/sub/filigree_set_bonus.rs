@@ -4,8 +4,9 @@ use crate::{
 };
 
 use super::{
-    Ability, CasterLevel, ElementalType, Flag, HealAmp, HitPoint, SavingThrow, Skill, SpellPoint,
-    SpellPower, SpellSchool, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,Immunity,SpellType
+    Ability, CasterLevel, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill,
+    SpellPoint, SpellPower, SpellSchool, SpellType, Tactics, ThreatType, Toggle, WeaponHand,
+    WeaponStat,
 };
 
 macro_rules! filigree_set_bonuses {

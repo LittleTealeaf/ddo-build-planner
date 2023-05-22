@@ -11,7 +11,9 @@ pub use category::*;
 // TODO: Make macros to build the feats list. Each sub-feat list will be a list of different
 // "custom" feats (grouped by their source)
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
+#[derive(
+    Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum,
+)]
 pub enum Feat {
     SkillFocus(SkillFocus),
     Tome(Tome),

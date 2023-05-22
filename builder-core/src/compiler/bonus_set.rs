@@ -2,7 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, Condition}, utils::EnumBinaryMap,
+    bonus::{Bonus, BonusSource, Condition},
+    utils::EnumBinaryMap,
 };
 
 use super::partial_bonus::PartialBonus;
@@ -37,8 +38,8 @@ impl BonusSet {
             .filter(|bonus| bonus.get_value() != 0f32)
             .map(PartialBonus::from);
 
-        map.get_mut_or_default(&attribute).extend(&mut partial_bonuses);
-
+        map.get_mut_or_default(&attribute)
+            .extend(&mut partial_bonuses);
     }
 
     pub fn remove_source_from(&mut self, source: BonusSource, children: Vec<Attribute>) {

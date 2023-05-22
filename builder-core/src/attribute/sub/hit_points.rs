@@ -1,4 +1,4 @@
-use crate::{simple_enum, attribute::Attribute};
+use crate::{attribute::Attribute, simple_enum};
 
 simple_enum!(HitPoint, "", (Base "Base Hit Points", BaseScalar "Base Scalar Hit Points", Bonus "Hit Points", Scalar "Scalar Hit Points"));
 

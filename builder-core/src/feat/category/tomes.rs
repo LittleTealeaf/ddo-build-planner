@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Ability, Attribute, SpellPower},
+    attribute::{
+        sub::{Ability, SpellPower},
+        Attribute,
+    },
     bonus::{Bonus, BonusSource, BonusType},
     feat::{Feat, FeatTrait},
 };

@@ -8,7 +8,7 @@ mod traits;
 use itertools::Itertools;
 pub use traits::*;
 
-use crate::attribute::{Flag, Toggle, Immunity};
+use crate::attribute::sub::{Flag, Immunity, Toggle};
 
 use super::attribute::Attribute;
 
@@ -46,7 +46,6 @@ impl ToString for Bonus {
         }
     }
 }
-
 
 impl Bonus {
     #[inline(always)]
@@ -105,7 +104,7 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 1f32,
             source,
-            conditions: None
+            conditions: None,
         }
     }
 

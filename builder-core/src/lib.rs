@@ -8,7 +8,7 @@
 pub mod attribute;
 pub mod bonus;
 pub mod character;
+pub mod compiler;
 pub mod feat;
 pub mod player_class;
 pub mod utils;
-pub mod compiler;

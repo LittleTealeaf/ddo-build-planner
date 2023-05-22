@@ -1,4 +1,4 @@
-use crate::{simple_enum, attribute::Attribute};
+use crate::{attribute::Attribute, simple_enum};
 
 simple_enum!(SpellPoint, "", (Base "Base Spell Points", BaseScalar "Base Spell Point Scalar", Bonus "Bonus Spell Points", Scalar "Spell Points Scalar"));
 

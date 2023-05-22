@@ -1,4 +1,8 @@
-use builder_core::{compiler::AttributeCompiler, bonus::{Bonus, BonusType, BonusSource, Condition}, attribute::Attribute};
+use builder_core::{
+    attribute::Attribute,
+    bonus::{Bonus, BonusSource, BonusType, Condition},
+    compiler::AttributeCompiler,
+};
 
 mod conditions {
 

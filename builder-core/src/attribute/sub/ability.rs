@@ -1,17 +1,14 @@
 use crate::{
-    attribute::{Attribute, GetCloned, GetBonuses},
-    bonus::{Bonus, BonusType, Condition, BonusSource},
+    attribute::{Attribute, GetBonuses, GetCloned},
+    bonus::{Bonus, BonusSource, BonusType, Condition},
 };
 
 use super::Flag;
 
-// simple_enum!(
-//     Ability,
-//     "Documentation",
-//     (Strength "Strength", Dexterity "Dexterity", Constitution "Constitution", Intelligence "Intelligence", Wisdom "Wisdom", Charisma "Charisma", All "All")
-// );
 /// Describes the six main stats for a character.
-#[derive(Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum)]
+#[derive(
+    Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum,
+)]
 pub enum Ability {
     /// Describes how strong the person is.
     Strength,
@@ -50,7 +47,7 @@ impl Ability {
     pub fn to_score_attribute(self) -> Attribute {
         Attribute::Ability(self)
     }
-    
+
     #[inline(always)]
     pub fn to_modifier_attribute(self) -> Attribute {
         Attribute::AbilityModifier(self)
@@ -108,7 +105,13 @@ impl GetBonuses<_AbilityScore> for Ability {
         if let Ability::All = self {
             None
         } else {
-            Some(vec![Bonus::new(Attribute::AbilityModifier(*self), BonusType::Stacking, ((value - 10f32) / 2f32).floor(), BonusSource::Attribute(Attribute::Ability(*self)), None)])
+            Some(vec![Bonus::new(
+                Attribute::AbilityModifier(*self),
+                BonusType::Stacking,
+                ((value - 10f32) / 2f32).floor(),
+                BonusSource::Attribute(Attribute::Ability(*self)),
+                None,
+            )])
         }
     }
 }

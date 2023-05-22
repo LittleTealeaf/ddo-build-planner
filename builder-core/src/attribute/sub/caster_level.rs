@@ -1,4 +1,8 @@
-use crate::{player_class::PlayerClass, simple_enum, attribute::{GetCloned, Attribute}};
+use crate::{
+    attribute::{Attribute, GetCloned},
+    player_class::PlayerClass,
+    simple_enum,
+};
 
 use super::{SpellPower, SpellSchool};
 

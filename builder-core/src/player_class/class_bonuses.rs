@@ -1,12 +1,11 @@
 use crate::{
-    attribute::{Attribute, ClassLore, GetBonuses},
+    attribute::{sub::ClassLore, Attribute, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType},
 };
 
 use super::PlayerClass;
 
 impl PlayerClass {
-
     fn get_arcane_lore(&self, value: f32) -> Option<Bonus> {
         match self {
             Self::Artificer

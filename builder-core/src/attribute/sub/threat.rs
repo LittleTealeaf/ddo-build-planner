@@ -1,7 +1,6 @@
-use crate::{simple_enum, attribute::GetCloned};
+use crate::{attribute::GetCloned, simple_enum};
 
 simple_enum!(ThreatType, "", (Ranged "Ranged", Melee "Melee", Spell "Spell", All "All"));
-
 
 impl GetCloned<ThreatType> for ThreatType {
     fn get_cloned(&self) -> Option<Vec<ThreatType>> {

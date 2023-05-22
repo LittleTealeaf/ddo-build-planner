@@ -1,4 +1,8 @@
-use crate::{attribute::{GetCloned, Attribute}, bonus::Bonus, simple_enum};
+use crate::{
+    attribute::{Attribute, GetCloned},
+    bonus::Bonus,
+    simple_enum,
+};
 
 use super::{Ability, SavingThrow, Toggle, WeaponHand};
 

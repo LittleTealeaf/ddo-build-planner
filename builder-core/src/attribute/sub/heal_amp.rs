@@ -1,4 +1,7 @@
-use crate::{simple_enum, attribute::{GetCloned, Attribute}};
+use crate::{
+    attribute::{Attribute, GetCloned},
+    simple_enum,
+};
 
 simple_enum!(HealAmp, "", (Positive "Positive", Negative "Negative", Repair "Repair", All "All"));
 

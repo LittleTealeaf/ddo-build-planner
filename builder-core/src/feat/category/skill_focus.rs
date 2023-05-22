@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, SavingThrow, Skill},
+    attribute::{
+        sub::{SavingThrow, Skill},
+        Attribute,
+    },
     bonus::{Bonus, BonusSource, BonusType},
     feat::{Feat, FeatTrait},
 };

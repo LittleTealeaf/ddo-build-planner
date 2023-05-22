@@ -8,10 +8,11 @@ use super::{bonus::BonusSource, feat::Feat};
 
 #[macro_use]
 mod macros;
-mod sub;
+/// Contains lists of sub-attributes that allow attributes to be generally expressed.
+pub mod sub;
 pub use macros::*;
 use serde::{Deserialize, Serialize};
-pub use sub::*;
+use sub::*;
 mod traits;
 pub use traits::*;
 

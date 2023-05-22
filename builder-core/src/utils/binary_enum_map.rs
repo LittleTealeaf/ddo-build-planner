@@ -18,7 +18,10 @@ pub struct EnumBinaryMap<K: Enum + Copy, V> {
 impl<K: Enum + Copy, V> Default for EnumBinaryMap<K, V> {
     #[inline]
     fn default() -> Self {
-        Self { array: Vec::new(), enum_type: PhantomData }
+        Self {
+            array: Vec::new(),
+            enum_type: PhantomData,
+        }
     }
 }
 
@@ -28,15 +31,15 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     #[inline]
     pub fn with_capacity(size: usize) -> Self {
         Self {
             array: Vec::with_capacity(size),
-            enum_type: PhantomData
+            enum_type: PhantomData,
         }
     }
-    
+
     pub fn get(&self, key: &K) -> Option<&V> {
         let index = self
             .array
@@ -78,8 +81,10 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     }
 
     #[inline]
-    pub fn iter(&self) -> impl Iterator<Item=(K, &V)> {
-        self.array.iter().map(|(key, value)| (K::from_usize(*key), value))
+    pub fn iter(&self) -> impl Iterator<Item = (K, &V)> {
+        self.array
+            .iter()
+            .map(|(key, value)| (K::from_usize(*key), value))
     }
 }
 
@@ -89,17 +94,22 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
     type IntoIter = Map<IntoIter<(usize, V)>, fn((usize, V)) -> (K, V)>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.array.into_iter().map(|(key, value)| (K::from_usize(key), value))
+        self.array
+            .into_iter()
+            .map(|(key, value)| (K::from_usize(key), value))
     }
 }
 
 impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
-    fn from_iter<T: IntoIterator<Item=(K, V)>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
         let mut array = Vec::new();
         for (key, value) in iter {
             array.push((key.into_usize(), value));
         }
-        Self { array, enum_type: PhantomData }
+        Self {
+            array,
+            enum_type: PhantomData,
+        }
     }
 }
 
@@ -181,7 +191,7 @@ mod tests {
             assert_eq!(Some(&value), map.get(&key));
         }
     }
-    
+
     #[test]
     fn with_capacity_sets_capacity() {
         let map = EnumBinaryMap::<Test, ()>::with_capacity(50);
