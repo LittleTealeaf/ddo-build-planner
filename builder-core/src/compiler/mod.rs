@@ -35,7 +35,7 @@ impl Default for AttributeCompiler {
 
 impl AttributeCompiler {
     /// Creates a new [AttributeCompiler] with no bonuses.
-    #[inline]
+    #[inline(always)]
     pub fn new() -> Self {
         Self::default()
     }
