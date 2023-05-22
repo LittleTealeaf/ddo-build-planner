@@ -45,6 +45,7 @@ impl GetCloned<CasterLevel> for CasterLevel {
 }
 
 impl From<CasterLevel> for Attribute {
+    #[inline(always)]
     fn from(value: CasterLevel) -> Self {
         Attribute::CasterLevel(value)
     }

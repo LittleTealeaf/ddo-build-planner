@@ -35,6 +35,7 @@ impl GetBonuses for ClassLore {
 }
 
 impl From<ClassLore> for Attribute {
+    #[inline(always)]
     fn from(value: ClassLore) -> Self {
         Attribute::ClassLore(value)
     }

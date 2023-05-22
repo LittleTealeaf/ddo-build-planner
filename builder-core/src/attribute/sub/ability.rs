@@ -45,6 +45,18 @@ impl ToString for Ability {
     }
 }
 
+impl Ability {
+    #[inline(always)]
+    pub fn to_score_attribute(self) -> Attribute {
+        Attribute::Ability(self)
+    }
+    
+    #[inline(always)]
+    pub fn to_modifier_attribute(self) -> Attribute {
+        Attribute::AbilityModifier(self)
+    }
+}
+
 /// Dummy Struct to differentiate bonuses for [Ability]
 pub struct _AbilityScore;
 /// Dummy Struct to differentiate bonuses for [Ability]

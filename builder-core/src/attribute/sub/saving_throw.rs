@@ -29,6 +29,7 @@ impl GetCloned<SavingThrow> for SavingThrow {
 }
 
 impl From<SavingThrow> for Attribute {
+    #[inline(always)]
     fn from(value: SavingThrow) -> Self {
         Self::SavingThrow(value)
     }

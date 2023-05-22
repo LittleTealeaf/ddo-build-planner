@@ -19,6 +19,7 @@ simple_enum!(
 );
 
 impl From<Immunity> for Attribute {
+    #[inline(always)]
     fn from(value: Immunity) -> Self {
         Attribute::Immunity(value)
     }

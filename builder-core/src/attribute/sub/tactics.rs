@@ -11,6 +11,7 @@ simple_enum!(
 );
 
 impl From<Tactics> for Attribute {
+    #[inline(always)]
     fn from(value: Tactics) -> Self {
         Attribute::Tactics(value)
     }

@@ -53,6 +53,7 @@ impl GetCloned<(WeaponHand, WeaponStat)> for (WeaponHand, WeaponStat) {
 }
 
 impl From<(WeaponHand, WeaponStat)> for Attribute {
+    #[inline(always)]
     fn from(value: (WeaponHand, WeaponStat)) -> Self {
         let (hand, stat) = value;
         Self::WeaponStat(hand, stat)

@@ -234,12 +234,14 @@ attributes!(
 );
 
 impl Default for Attribute {
+    #[inline]
     fn default() -> Self {
         Self::Dummy()
     }
 }
 
 impl From<Attribute> for BonusSource {
+    #[inline]
     fn from(value: Attribute) -> Self {
         BonusSource::Attribute(value)
     }

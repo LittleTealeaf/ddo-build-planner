@@ -70,6 +70,7 @@ impl GetCloned<Skill> for Skill {
 }
 
 impl From<Skill> for Attribute {
+    #[inline(always)]
     fn from(value: Skill) -> Attribute {
         Attribute::Skill(value)
     }

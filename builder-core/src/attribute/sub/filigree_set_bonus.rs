@@ -51,6 +51,7 @@ macro_rules! filigree_set_bonuses {
         }
 
         impl From<FiligreeSet> for Attribute {
+            #[inline(always)]
             fn from(value: FiligreeSet) -> Self {
                 Attribute::FiligreeSet(value)
             }

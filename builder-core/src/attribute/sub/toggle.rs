@@ -15,6 +15,7 @@ impl Toggle {
 }
 
 impl From<Toggle> for Attribute {
+    #[inline(always)]
     fn from(value: Toggle) -> Attribute {
         Attribute::Toggle(value)
     }

@@ -12,6 +12,7 @@ impl GetCloned<HealAmp> for HealAmp {
 }
 
 impl From<HealAmp> for Attribute {
+    #[inline(always)]
     fn from(value: HealAmp) -> Self {
         Attribute::HealAmp(value)
     }
