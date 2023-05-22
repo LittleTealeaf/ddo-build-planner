@@ -1,9 +1,10 @@
 use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
     bonus::{Bonus, BonusType, Condition},
+    player_class::PlayerClass,
 };
 
-use super::{Flag, WeaponHand, WeaponStat};
+use super::{Flag, SpellSelector, WeaponHand, WeaponStat};
 
 /// Describes the six main stats for a character.
 #[derive(
@@ -113,6 +114,20 @@ macro_rules! modifier_saving_throw {
     };
 }
 
+macro_rules! modifier_spell_dc {
+    ($ability: ident, $spelltype: expr, $value: expr) => {
+        Bonus::new(
+            $crate::attribute::Attribute::SpellDC($spelltype.into()),
+            $crate::bonus::BonusType::Stacking,
+            $value,
+            $crate::bonus::BonusSource::Attribute($crate::attribute::Attribute::AbilityModifier(
+                Ability::$ability,
+            )),
+            None,
+        )
+    };
+}
+
 impl GetBonuses<_AbilityScore> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         if matches!(self, Self::All) {
@@ -178,6 +193,9 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 modifier_saving_throw!(Intelligence, Reflex, value, false),
                 modifier_saving_throw!(Intelligence, Fortitude, value, false),
                 modifier_saving_throw!(Intelligence, Will, value, false),
+                modifier_spell_dc!(Intelligence, PlayerClass::Alchemist, value),
+                modifier_spell_dc!(Intelligence, PlayerClass::Artificer, value),
+                modifier_spell_dc!(Intelligence, PlayerClass::Wizard, value),
             ]),
             Self::Wisdom => Some(vec![
                 modifier_skill!(Wisdom, Heal, value),
@@ -186,6 +204,13 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 modifier_saving_throw!(Wisdom, Reflex, value, false),
                 modifier_saving_throw!(Wisdom, Fortitude, value, false),
                 modifier_saving_throw!(Wisdom, Will, value, true),
+                modifier_spell_dc!(Wisdom, PlayerClass::FavoredSoul, value),
+                modifier_spell_dc!(Wisdom, PlayerClass::Cleric, value),
+                modifier_spell_dc!(Wisdom, PlayerClass::DarkApostate, value),
+                modifier_spell_dc!(Wisdom, PlayerClass::Ranger, value),
+                modifier_spell_dc!(Wisdom, PlayerClass::DarkHunter, value),
+                modifier_spell_dc!(Wisdom, PlayerClass::Druid, value),
+                modifier_spell_dc!(Wisdom, PlayerClass::Blightcaster, value),
             ]),
             Self::Charisma => Some(vec![
                 modifier_skill!(Charisma, Bluff, value),
@@ -197,6 +222,12 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 modifier_saving_throw!(Charisma, Reflex, value, false),
                 modifier_saving_throw!(Charisma, Fortitude, value, false),
                 modifier_saving_throw!(Charisma, Will, value, false),
+                modifier_spell_dc!(Charisma, PlayerClass::FavoredSoul, value),
+                modifier_spell_dc!(Charisma, PlayerClass::Sorcerer, value),
+                modifier_spell_dc!(Charisma, PlayerClass::Warlock, value),
+                modifier_spell_dc!(Charisma, PlayerClass::AcolyteOfTheSkin, value),
+                modifier_spell_dc!(Charisma, PlayerClass::Bard, value),
+                modifier_spell_dc!(Charisma, PlayerClass::Stormsinger, value),
             ]),
             Self::All => None,
         }?);

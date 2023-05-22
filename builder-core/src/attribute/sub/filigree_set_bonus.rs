@@ -4,9 +4,8 @@ use crate::{
 };
 
 use super::{
-    Ability, CasterLevel, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill,
-    SpellPoint, SpellPower, SpellSchool, SpellType, Tactics, ThreatType, Toggle, WeaponHand,
-    WeaponStat,
+    Ability, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill, SpellPoint,
+    SpellPower, SpellSchool, SpellType, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,
 };
 
 macro_rules! filigree_set_bonuses {
@@ -176,7 +175,7 @@ filigree_set_bonuses!(
             Bonus::new(SavingThrow::All.into(), BonusType::Stacking, 1f32, source!(EmbracedByLight), None),
         ]
         5f32 => vec![
-            Bonus::new(CasterLevel::SpellPower(SpellPower::Positive).into(), BonusType::Stacking, 2f32, source!(EmbracedByLight), None)
+            Bonus::new(Attribute::CasterLevel(SpellPower::Positive.into()), BonusType::Stacking, 2f32, source!(EmbracedByLight), None)
         ]
     )
     EnlightenedStep "Enlightened Step" => (
@@ -203,7 +202,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPenetration(), BonusType::Stacking, 1f32, source!(EyeOfTheBeholder), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 2f32, source!(EyeOfTheBeholder), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 2f32, source!(EyeOfTheBeholder), None)
         ]
     )
     FrozenWanderer "Frozen Wanderer" => (
@@ -237,7 +236,7 @@ filigree_set_bonuses!(
             Bonus::new(SavingThrow::Will.into(), BonusType::Stacking, 2f32, source!(TheInevitableGrave), None),
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::Necromancy), BonusType::Stacking, 2f32, source!(TheInevitableGrave), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::Necromancy.into()), BonusType::Stacking, 2f32, source!(TheInevitableGrave), None)
         ]
     )
     TheLongShadow "The Long Shadow" => (
@@ -264,7 +263,7 @@ filigree_set_bonuses!(
             Bonus::new(Ability::Charisma.into(), BonusType::Stacking, 1f32, source!(MelonysMelody), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::Enchantment), BonusType::Stacking, 2f32, source!(MelonysMelody), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::Enchantment.into()), BonusType::Stacking, 2f32, source!(MelonysMelody), None)
         ]
     )
     NystulsMysticalDefense "Nystul's Mystical Defense" => (
@@ -300,7 +299,7 @@ filigree_set_bonuses!(
             Bonus::new(SpellPoint::Bonus.into(), BonusType::Stacking, 200f32, source!(OttosIrrevocablePower), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 2f32, source!(OttosIrrevocablePower), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 2f32, source!(OttosIrrevocablePower), None)
         ]
         5f32 => vec![
             // TODO: Wellspring / Arcane Insight bonus
@@ -462,7 +461,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Universal), BonusType::Stacking, 4f32, source!(CoalescedMagic), None)
         ]
         4f32 => vec![
-            Bonus::new(CasterLevel::SpellType(SpellType::Arcane).into(), BonusType::Stacking, 1f32, source!(CoalescedMagic), None)
+            Bonus::new(Attribute::CasterLevel(SpellType::Arcane.into()).into(), BonusType::Stacking, 1f32, source!(CoalescedMagic), None)
         ]
         5f32 => vec![
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 30f32, source!(CoalescedMagic), None)
@@ -643,7 +642,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPower(SpellPower::Force), BonusType::Stacking, 20f32, source!(ZarigansArcaneEnlightenment), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(ZarigansArcaneEnlightenment), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 1f32, source!(ZarigansArcaneEnlightenment), None)
         ]
     )
     TheAbidingPath "The Abiding Path" => (
@@ -684,10 +683,10 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPenetration(), BonusType::Stacking, 1f32, source!(BendFate), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::Enchantment), BonusType::Stacking, 2f32, source!(BendFate), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::Enchantment.into()), BonusType::Stacking, 2f32, source!(BendFate), None)
         ]
         5f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(BendFate), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 1f32, source!(BendFate), None)
         ]
     )
     Divinity "Divinity" => (
@@ -731,7 +730,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(KeeperOfTheCurse), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, 1f32, source!(KeeperOfTheCurse), None)
+            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 1f32, source!(KeeperOfTheCurse), None)
         ]
         5f32 => vec![
             // TODO: Pact Dice
@@ -742,7 +741,7 @@ filigree_set_bonuses!(
             Bonus::new(SpellPoint::Bonus.into(), BonusType::Stacking, 100f32, source!(LunarMagic), None)
         ]
         3f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::All), BonusType::Stacking, if value >= 5f32 {2f32} else {1f32}, source!(LunarMagic), None),
+            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, if value >= 5f32 {2f32} else {1f32}, source!(LunarMagic), None),
         ]
         4f32 => vec![
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 20f32, source!(LunarMagic), None),
@@ -756,8 +755,8 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Poison), BonusType::Stacking, 5f32, source!(TheSerpent), None),
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellFocus(SpellSchool::Transmutation), BonusType::Stacking, 2f32, source!(TheSerpent), None),
-            Bonus::new(Attribute::SpellFocus(SpellSchool::Conjuration), BonusType::Stacking, 2f32, source!(TheSerpent), None),
+            Bonus::new(Attribute::SpellDC(SpellSchool::Transmutation.into()), BonusType::Stacking, 2f32, source!(TheSerpent), None),
+            Bonus::new(Attribute::SpellDC(SpellSchool::Conjuration.into()), BonusType::Stacking, 2f32, source!(TheSerpent), None),
         ]
         5f32 => vec![
             Bonus::immunity(Immunity::Petrification(), source!(TheSerpent))

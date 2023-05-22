@@ -191,12 +191,6 @@ attributes!(
         None,
         None
     )
-    SpellFocus(spellschool: SpellSchool) => (
-        format!("{} Spell Focus", spellschool.to_string()),
-        "",
-        None,
-        Some(spellschool.get_cloned()?.into_iter().map(Attribute::SpellFocus).collect())
-    )
     SpellPoints(spellpoint: SpellPoint) => (spellpoint.to_string(), "", None, None)
     HitPoints(hitpoint: HitPoint) => (hitpoint.to_string(), "", None, None)
     Vitality() => (
@@ -221,11 +215,17 @@ attributes!(
     MaxDodge() => (String::from("Maximum Dodge"), "", None, None)
     Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), "", None, None)
     BonusActionBoosts() => (String::from("Bonus Action Boosts"), "", None, None)
-    CasterLevel(casterlevel: CasterLevel) => (
-        casterlevel.to_string(),
+    CasterLevel(selector: SpellSelector) => (
+        format!("{} Caster Level", selector.to_string()),
         "",
         None,
-        Some(casterlevel.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect())
+        Some(selector.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect())
+    )
+    MaxCasterLevel(selector: SpellSelector) => (
+        format!("{} Max Caster Level", selector.to_string()),
+        "",
+        None,
+        Some(selector.get_cloned()?.into_iter().map(Attribute::MaxCasterLevel).collect())
     )
     Immunity(immunity: Immunity) => (
         format!("Immunity from {}", immunity.to_string()),
@@ -233,7 +233,15 @@ attributes!(
         None,
         None
     )
+    SpellDC(selector: SpellSelector) => (
+        format!("{} DC", selector.to_string()),
+        "Bonus to Spell DCs",
+        None,
+        Some(selector.get_cloned()?.into_iter().map(Attribute::SpellDC).collect())
+    )
 );
+
+// TODO: Merge SpellDC and Tactics into "Difficulty Check"
 
 impl Attribute {
     /// Converts any type that implements [`Into<Attribute>`] to a [`BonusSource`]
