@@ -2,7 +2,6 @@
 
 use std::iter::Map;
 use std::marker::PhantomData;
-use std::vec;
 use std::vec::IntoIter;
 
 use enum_map::Enum;
