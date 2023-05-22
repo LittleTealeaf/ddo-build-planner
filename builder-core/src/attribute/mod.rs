@@ -2,6 +2,7 @@
 use crate::{
     bonus::{Bonus, BonusType},
     player_class::PlayerClass,
+    utils::AsString,
 };
 
 use super::{bonus::BonusSource, feat::Feat};
@@ -110,7 +111,7 @@ attributes!(
         Some(vec![Attribute::PhysicalSheltering(), Attribute::MagicalSheltering()])
     )
     WeaponStat(weapon_hand: WeaponHand, weapon_stat: WeaponStat) => (
-        weapon_stat.custom_to_string(weapon_hand),
+        (weapon_hand, weapon_stat).as_string(),
         "Any specific stats that might only pertain to a specific weapon. Using [WeaponHand::Both] can be used for overall bonuses",
         None,
         Some((*weapon_hand, *weapon_stat).get_cloned()?.into_iter().map(Attribute::from).collect())

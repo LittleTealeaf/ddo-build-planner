@@ -145,7 +145,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::Doubleshot(), BonusType::Stacking, 2f32, source!(DeadlyRain), None),
         ]
         3f32 => vec![
-            Bonus::new((WeaponHand::Both, WeaponStat::Damage()).into(), BonusType::Stacking, 2f32, source!(DeadlyRain), None)
+            Bonus::new((WeaponHand::Both, WeaponStat::Damage).into(), BonusType::Stacking, 2f32, source!(DeadlyRain), None)
         ]
         4f32 => vec![
             Bonus::new(Attribute::MissileDeflection(), BonusType::Stacking, 3f32, source!(DeadlyRain), None),
@@ -341,7 +341,7 @@ filigree_set_bonuses!(
     )
     SpinesOfTheManticore "Spines of the Manticore" => (
         2f32 => vec![
-            Bonus::new((WeaponHand::Both, WeaponStat::Damage()).into(), BonusType::Stacking, 2f32, source!(SpinesOfTheManticore), None)
+            Bonus::new((WeaponHand::Both, WeaponStat::Damage).into(), BonusType::Stacking, 2f32, source!(SpinesOfTheManticore), None)
         ]
         3f32 => vec![
             Bonus::new(Attribute::MissileDeflection(), BonusType::Stacking, 3f32, source!(SpinesOfTheManticore), None),
@@ -504,18 +504,18 @@ filigree_set_bonuses!(
     // TODO: Final Burial
     NextFall "Next Fall" => (
         2f32 => vec![
-            Bonus::new((WeaponHand::Both, WeaponStat::Attack()).into(), BonusType::Stacking, 2f32, source!(NextFall), None),
-            Bonus::new((WeaponHand::Both, WeaponStat::Damage()).into(), BonusType::Stacking, 2f32, source!(NextFall), None),
+            Bonus::new((WeaponHand::Both, WeaponStat::Attack).into(), BonusType::Stacking, 2f32, source!(NextFall), None),
+            Bonus::new((WeaponHand::Both, WeaponStat::Damage).into(), BonusType::Stacking, 2f32, source!(NextFall), None),
         ]
         3f32 => vec![
             Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(NextFall), None),
         ]
         4f32 => vec![
             Bonus::toggle(Toggle::AttackingTrippedTarget(), source!(NextFall)),
-            Bonus::new((WeaponHand::Both, WeaponStat::Attack()).into(), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
+            Bonus::new((WeaponHand::Both, WeaponStat::Attack).into(), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
                 Condition::Has(Attribute::Flag(Flag::Toggle(Toggle::AttackingTrippedTarget())))
             ])),
-            Bonus::new((WeaponHand::Both, WeaponStat::Damage()).into(), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
+            Bonus::new((WeaponHand::Both, WeaponStat::Damage).into(), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
                 Condition::Has(Attribute::Flag(Flag::Toggle(Toggle::AttackingTrippedTarget())))
             ])),
         ]
@@ -571,8 +571,8 @@ filigree_set_bonuses!(
     )
     ShatteredDevice "Shattered Device" => (
         2f32 => vec![
-            Bonus::new((WeaponHand::Both, WeaponStat::Attack()).into(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
-            Bonus::new((WeaponHand::Both, WeaponStat::Damage()).into(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
+            Bonus::new((WeaponHand::Both, WeaponStat::Attack).into(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
+            Bonus::new((WeaponHand::Both, WeaponStat::Damage).into(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),
         ]
         3f32 => vec![
             Bonus::new(Attribute::Doublestrike(), BonusType::Stacking, 3f32, source!(ShatteredDevice), None),

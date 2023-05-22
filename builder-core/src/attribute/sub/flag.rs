@@ -22,7 +22,7 @@ simple_enum!(
 impl GetBonuses for Flag {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Self::Toggle(toggle) => toggle.get_toggled_bonuses(value),
+            Self::Toggle(toggle) => toggle.get_bonuses(value),
             _ => None,
         }
     }

@@ -1,4 +1,4 @@
-use crate::{attribute::Attribute, bonus::Bonus, simple_enum};
+use crate::{attribute::{Attribute, GetBonuses}, bonus::Bonus, simple_enum};
 
 simple_enum!(
     Toggle, "", (
@@ -8,8 +8,8 @@ simple_enum!(
     )
 );
 
-impl Toggle {
-    pub fn get_toggled_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+impl GetBonuses for Toggle {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         None
     }
 }

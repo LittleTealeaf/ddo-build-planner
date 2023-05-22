@@ -203,7 +203,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
 
         values.append(&mut vec![
             Bonus::new(
-                (WeaponHand::Main, WeaponStat::Attack()).into(),
+                (WeaponHand::Main, WeaponStat::Attack).into(),
                 BonusType::AbilityModifier,
                 value,
                 self.into_modifier_attribute().into(),
@@ -212,7 +212,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 )]),
             ),
             Bonus::new(
-                (WeaponHand::Off, WeaponStat::Attack()).into(),
+                (WeaponHand::Off, WeaponStat::Attack).into(),
                 BonusType::AbilityModifier,
                 value,
                 self.into_modifier_attribute().into(),
@@ -221,7 +221,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 )]),
             ),
             Bonus::new(
-                (WeaponHand::Main, WeaponStat::Damage()).into(),
+                (WeaponHand::Main, WeaponStat::Damage).into(),
                 BonusType::AbilityModifier,
                 value,
                 self.into_modifier_attribute().into(),
@@ -230,7 +230,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 )]),
             ),
             Bonus::new(
-                (WeaponHand::Off, WeaponStat::Damage()).into(),
+                (WeaponHand::Off, WeaponStat::Damage).into(),
                 BonusType::AbilityModifier,
                 value,
                 self.into_modifier_attribute().into(),

@@ -14,9 +14,18 @@
 ///
 /// [Attribute]: crate::attribute::Attribute
 pub mod attribute;
+/// Represents bonuses, including the bonus type, source, and conditions associated.
 pub mod bonus;
+/// I don't know what quite yet..
 pub mod character;
+/// Performs calculations for breakdowns.
+/// 
+/// This is what takes in [`Bonus`] objects and calculates the resulting value for an
+/// [`Attribute`].
 pub mod compiler;
+/// Represents Feats within the game
 pub mod feat;
+/// Represents Player Classes within the game
 pub mod player_class;
+/// Misc. Utility functions and Macros.
 pub mod utils;
