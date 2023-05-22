@@ -67,7 +67,7 @@ mod tests {
 
         queue.insert_attriubtes(vec![Attribute::Dummy()], false);
 
-        let (attribute, _) = queue.get_next_attribute().unwrap();
+        let (attribute, _) = queue.get_next_attribute().expect("get_next_attribute returned None");
 
         assert_eq!(Attribute::Dummy(), attribute);
     }
