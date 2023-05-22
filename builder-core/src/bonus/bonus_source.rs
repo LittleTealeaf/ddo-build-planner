@@ -2,6 +2,8 @@ use enum_map::Enum;
 
 use crate::{attribute::Attribute, feat::Feat};
 
+type UNIQUE = u8;
+
 /// Describes the source that a bonus is from.
 ///
 /// Sources can be either from an [Attribute](crate::bonus::BonusSource::Attribute(crate::attribute::Attribute)), [Feat](crate::bonus::BonusSource::Feat(crate::feat::Feat)), many others to come, and lastly [Unique](crate::bonus::BonusSource::Unique(u8))
@@ -14,7 +16,7 @@ pub enum BonusSource {
     /// Represents sources from a [Feat]
     Feat(Feat),
     /// Indicates some unique identifier, indicated with a [u8]
-    Unique(u8),
+    Unique(UNIQUE),
 }
 
 impl ToString for BonusSource {
@@ -24,5 +26,11 @@ impl ToString for BonusSource {
             BonusSource::Feat(feat) => format!("Feat: {}", feat.to_string()),
             BonusSource::Unique(i) => format!("Unique: {}", i),
         }
+    }
+}
+
+impl From<UNIQUE> for BonusSource {
+    fn from(value: UNIQUE) -> Self {
+        Self::Unique(value)
     }
 }

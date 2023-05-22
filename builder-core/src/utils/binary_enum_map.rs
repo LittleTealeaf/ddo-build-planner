@@ -35,7 +35,7 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
 
     /// Creates a new instance of [`EnumBinaryMap`] with a set initial capacity
     ///
-    /// This internally uses the [`Vec::with_capacity()`] method to initialize the map with a set capacity. 
+    /// This internally uses the [`Vec::with_capacity()`] method to initialize the map with a set capacity.
     #[inline]
     pub fn with_capacity(size: usize) -> Self {
         Self {
@@ -74,7 +74,7 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
 
     /// Inserts the value into the map with its associated key.
     ///
-    /// If there is already an entry with the given key, this will return [`Some`] with the previous value. If there is no key present, a [`None`] will be returned. 
+    /// If there is already an entry with the given key, this will return [`Some`] with the previous value. If there is no key present, a [`None`] will be returned.
     pub fn insert(&mut self, key: K, value: V) -> Option<V> {
         let key_usize = key.into_usize();
 
@@ -93,9 +93,17 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         }
     }
 
+    ///Pops a key and value pair from the map
+    ///
+    /// This is used when the EnumMap is utilised as a "queue".
+    pub fn pop(&mut self) -> Option<(K, V)> {
+        let (key, value) = self.array.pop()?;
+        Some((K::from_usize(key), value))
+    }
+
     /// Returns an iterator over the keys and values of the map
     #[inline(always)]
-    pub fn iter(&self) -> impl Iterator<Item=(K, &V)> {
+    pub fn iter(&self) -> impl Iterator<Item = (K, &V)> {
         self.array
             .iter()
             .map(|(key, value)| (K::from_usize(*key), value))
@@ -117,7 +125,7 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
 
 impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
     #[inline]
-    fn from_iter<T: IntoIterator<Item=(K, V)>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
         let mut array = Vec::new();
         for (key, value) in iter {
             array.push((key.into_usize(), value));
@@ -144,6 +152,22 @@ impl<K: Enum + Copy, V: Default> EnumBinaryMap<K, V> {
                 &mut self.array[index].1
             }
         }
+    }
+}
+
+impl<K: Enum + Copy, V, I: Iterator<Item = (K, V)> + Sized> From<I> for EnumBinaryMap<K, Vec<V>> {
+    fn from(value: I) -> Self {
+        let mut map: EnumBinaryMap<K, Vec<V>> = EnumBinaryMap::default();
+        for (key, value) in value {
+            map.get_mut_or_default(&key).push(value);
+        }
+        map
+    }
+}
+
+impl<K: Enum + Copy, V> From<EnumBinaryMap<K, V>> for Vec<(K, V)> {
+    fn from(value: EnumBinaryMap<K, V>) -> Self {
+        value.into_iter().collect()
     }
 }
 
