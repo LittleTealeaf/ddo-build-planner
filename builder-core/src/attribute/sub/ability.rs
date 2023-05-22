@@ -124,7 +124,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
     /// This function returns an [Option] because of the case of [`Self::All`], where there should not be any modifier bonuses. Therefore, if you try to get the modifier bonuses of [`Self::All`], you will get [None]
     ///
     /// ```
-    /// use builder_core::attribute::{Ability, GetBonuses, _AbilityModifier};
+    /// use builder_core::attribute::{GetBonuses, sub::{Ability, _AbilityModifier}};
     ///
     /// assert_eq!(None, GetBonuses::<_AbilityModifier>::get_bonuses(&Ability::All, 32f32));
     /// ```
