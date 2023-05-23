@@ -1,3 +1,6 @@
+use enum_map::Enum;
+use serde::{Deserialize, Serialize};
+
 use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
     bonus::{Bonus, BonusType, Condition},
@@ -7,9 +10,7 @@ use crate::{
 use super::{Flag, WeaponHand, WeaponStat};
 
 /// Describes the six main stats for a character.
-#[derive(
-    Clone, Copy, Hash, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum,
-)]
+#[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug, Enum)]
 pub enum Ability {
     /// Describes how strong the person is.
     Strength,
