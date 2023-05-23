@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, GetBonuses, GetCloned};
 
-use super::{SpellSelector, Tactics};
+use super::{tactics, SpellSelector, Tactics};
 
 /// Describes bonuses to difficulty checks of any spell, feat, or ability.
 #[derive(PartialEq, Eq, Clone, Copy, Serialize, Deserialize, Enum, Debug, Hash)]
@@ -16,19 +16,31 @@ pub enum DifficultyCheck {
 
 impl ToString for DifficultyCheck {
     fn to_string(&self) -> String {
-        todo!()
+        match self {
+            DifficultyCheck::Tactics(tactics) => format!("{} DC", tactics.to_string()),
+            DifficultyCheck::Spell(spell_selector) => format!("{} DC", spell_selector.to_string()),
+        }
     }
 }
 
 impl GetBonuses for DifficultyCheck {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        todo!()
+        None
     }
 }
 
 impl GetCloned<DifficultyCheck> for DifficultyCheck {
     fn get_cloned(&self) -> Option<Vec<DifficultyCheck>> {
-        todo!()
+        match self {
+            DifficultyCheck::Tactics(_) => None,
+            DifficultyCheck::Spell(selector) => Some(
+                selector
+                    .get_cloned()?
+                    .into_iter()
+                    .map(Self::Spell)
+                    .collect(),
+            ),
+        }
     }
 }
 
