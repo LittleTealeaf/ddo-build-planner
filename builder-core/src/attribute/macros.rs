@@ -1,6 +1,6 @@
 macro_rules! attributes {
     ($enum_name: ident, $value: ident, $($name: ident($($param_name: ident: $param_type: ty),*) => ($string: expr, $description: expr, $bonuses: expr, $clones: expr))*) => {
-        /// Describes different attributes that a character can have.  Each bonus may give one or morre of these attributes.
+        /// Describes different attributes that a character can have.  Each bonus may give one or more of these attributes.
         #[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, enum_map::Enum)]
         pub enum $enum_name {
             $(
