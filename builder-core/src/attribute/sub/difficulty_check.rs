@@ -5,9 +5,12 @@ use crate::attribute::{Attribute, GetBonuses, GetCloned};
 
 use super::{SpellSelector, Tactics};
 
+/// Describes bonuses to difficulty checks of any spell, feat, or ability.
 #[derive(PartialEq, Eq, Clone, Copy, Serialize, Deserialize, Enum, Debug, Hash)]
 pub enum DifficultyCheck {
+    /// Describes basic tactics-based DCs
     Tactics(Tactics),
+    /// Describes spell DCs based on any valid spell selector
     Spell(SpellSelector),
 }
 
