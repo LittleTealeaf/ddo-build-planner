@@ -23,11 +23,7 @@ simple_enum!(
 
 impl GetCloned<SavingThrow> for SavingThrow {
     fn get_cloned(&self) -> Option<Vec<SavingThrow>> {
-        if matches!(self, Self::All) {
-            Some(vec![Self::Fortitude, Self::Reflex, Self::Will])
-        } else {
-            None
-        }
+        matches!(self, Self::All).then(|| vec![Self::Fortitude, Self::Reflex, Self::Will])
     }
 }
 

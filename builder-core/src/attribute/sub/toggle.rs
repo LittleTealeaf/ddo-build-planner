@@ -1,4 +1,8 @@
-use crate::{attribute::{Attribute, GetBonuses}, bonus::Bonus, simple_enum};
+use crate::{
+    attribute::{Attribute, GetBonuses},
+    bonus::Bonus,
+    simple_enum,
+};
 
 simple_enum!(
     Toggle, "", (

@@ -4,10 +4,6 @@ simple_enum!(ThreatType, "", (Ranged "Ranged", Melee "Melee", Spell "Spell", All
 
 impl GetCloned<ThreatType> for ThreatType {
     fn get_cloned(&self) -> Option<Vec<ThreatType>> {
-        if matches!(self, Self::All) {
-            Some(vec![Self::Ranged, Self::Melee, Self::Spell])
-        } else {
-            None
-        }
+        matches!(self, Self::All).then(|| vec![Self::Ranged, Self::Melee, Self::Spell])
     }
 }

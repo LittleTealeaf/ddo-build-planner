@@ -130,17 +130,15 @@ macro_rules! modifier_spell_dc {
 
 impl GetBonuses<_AbilityScore> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        if matches!(self, Self::All) {
-            None
-        } else {
-            Some(vec![Bonus::new(
+        (!matches!(self, Self::All)).then(|| {
+            vec![Bonus::new(
                 Attribute::AbilityModifier(*self),
                 BonusType::Stacking,
                 ((value - 10f32) / 2f32).floor(),
                 Attribute::to_source(*self),
                 None,
-            )])
-        }
+            )]
+        })
     }
 }
 
@@ -277,10 +275,42 @@ impl GetBonuses<_AbilityModifier> for Ability {
 
 impl GetCloned<Ability> for Ability {
     fn get_cloned(&self) -> Option<Vec<Ability>> {
-        if matches!(self, Self::All) {
-            Some(Vec::from(Ability::VALUES))
-        } else {
-            None
+        matches!(self, Self::All).then(|| Vec::from(Ability::VALUES))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn values_does_not_contain_all() {
+        for value in Ability::VALUES {
+            assert_ne!(value, Ability::All);
         }
+    }
+
+    #[test]
+    fn values_do_not_return_cloned() {
+        for value in Ability::VALUES {
+            assert_eq!(None, value.get_cloned());
+        }
+    }
+
+    #[test]
+    fn all_returns_clones() {
+        let clones = Ability::All.get_cloned();
+        assert!(clones.is_some());
+        if let Some(clones) = clones {
+            for value in Ability::VALUES {
+                assert!(clones.contains(&value));
+            }
+        }
+    }
+
+    #[test]
+    fn all_does_not_return_modifier() {
+        let modifiers = GetBonuses::<_AbilityScore>::get_bonuses(&Ability::All, 10f32);
+        assert_eq!(None, modifiers);
     }
 }

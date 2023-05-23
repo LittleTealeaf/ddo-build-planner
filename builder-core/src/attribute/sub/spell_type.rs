@@ -1,4 +1,4 @@
-use crate::{simple_enum, player_class::PlayerClass};
+use crate::{player_class::PlayerClass, simple_enum};
 
 simple_enum!(
     SpellType,

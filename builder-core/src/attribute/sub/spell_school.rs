@@ -56,10 +56,6 @@ impl SpellSchool {
 
 impl GetCloned<SpellSchool> for SpellSchool {
     fn get_cloned(&self) -> Option<Vec<SpellSchool>> {
-        if matches!(self, Self::All) {
-            Some(Self::VALUES.to_vec())
-        } else {
-            None
-        }
+        matches!(self, Self::All).then(|| Self::VALUES.to_vec())
     }
 }
