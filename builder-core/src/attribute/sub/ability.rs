@@ -4,7 +4,7 @@ use crate::{
     player_class::PlayerClass,
 };
 
-use super::{Flag, SpellSelector, WeaponHand, WeaponStat};
+use super::{Flag, WeaponHand, WeaponStat};
 
 /// Describes the six main stats for a character.
 #[derive(

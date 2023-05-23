@@ -457,7 +457,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Universal), BonusType::Stacking, 4f32, source!(CoalescedMagic), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::CasterLevel(SpellType::Arcane.into()).into(), BonusType::Stacking, 1f32, source!(CoalescedMagic), None)
+            Bonus::new(Attribute::CasterLevel(SpellType::Arcane.into()), BonusType::Stacking, 1f32, source!(CoalescedMagic), None)
         ]
         5f32 => vec![
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 30f32, source!(CoalescedMagic), None)
