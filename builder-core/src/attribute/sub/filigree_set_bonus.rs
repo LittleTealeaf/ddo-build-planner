@@ -42,11 +42,7 @@ macro_rules! filigree_set_bonuses {
                     }),*
                 }
 
-                if bonuses.len() > 0 {
-                    Some(bonuses)
-                } else {
-                    None
-                }
+                (bonuses.len() > 0).then(|| bonuses)
             }
         }
 
