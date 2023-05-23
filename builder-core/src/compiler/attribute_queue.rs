@@ -41,7 +41,7 @@ impl AttributeQueue {
 
     pub fn insert_attriubtes(&mut self, mut attributes: Vec<Attribute>, forced: bool) {
         if forced {
-            for attribute in attributes.iter() {
+            for attribute in &attributes {
                 self.forced.insert(*attribute);
             }
         }
