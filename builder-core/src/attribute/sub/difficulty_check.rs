@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, GetBonuses, GetCloned};
 
-use super::{tactics, SpellSelector, Tactics};
+use super::{SpellSelector, Tactics};
 
 /// Describes bonuses to difficulty checks of any spell, feat, or ability.
 #[derive(PartialEq, Eq, Clone, Copy, Serialize, Deserialize, Enum, Debug, Hash)]
