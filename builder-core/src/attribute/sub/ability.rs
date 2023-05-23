@@ -156,7 +156,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
     /// assert_eq!(None, GetBonuses::<_AbilityModifier>::get_bonuses(&Ability::All, 32f32));
     /// ```
     ///
-    /// However, for each other ability, a list of bonuses will be returned that should be added to the [Breakdowns](crate::breakdown::Breakdowns). Note that this function is used by [Breakdowns](crate::breakdown::Breakdowns) and should not be manually used.
+    /// However, for each other ability, a list of bonuses will be returned that should be added to the [Compiler](crate::compiler::Compiler). Note that this function is used by [Compiler](crate::compiler::Compiler) and should not be manually used.
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         let mut values = vec![];
 
