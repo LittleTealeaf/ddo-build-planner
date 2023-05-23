@@ -3,7 +3,7 @@ use crate::bonus::Bonus;
 /// Implements the ability for one value to a list of other values.
 ///
 /// This is specifically used when implementing attributes with the `All` type, instead of adding every single attribute individually.
-pub trait GetCloned<T> {
+pub trait GetCloned<T = Self> {
     /// Can return a list of values that the value splits into.
     ///
     /// Returns `None` if the attribute does not split into other attributes.

@@ -16,7 +16,7 @@ impl GetBonuses for ClassLore {
                     value,
                     Attribute::to_source(ClassLore::Religious),
                     Some(vec![Condition::Has(
-                        Flag::ReligiousLoreToQualityMagicalSheltering().into(),
+                        Flag::ReligiousLoreToQualityMagicalSheltering.into(),
                     )]),
                 ),
                 Bonus::new(
@@ -25,7 +25,7 @@ impl GetBonuses for ClassLore {
                     value,
                     Attribute::to_source(ClassLore::Religious),
                     Some(vec![Condition::Has(
-                        Flag::ReligiousLoreToQualityPhysicalSheltering().into(),
+                        Flag::ReligiousLoreToQualityPhysicalSheltering.into(),
                     )]),
                 ),
             ]),

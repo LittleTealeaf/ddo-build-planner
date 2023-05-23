@@ -1,10 +1,7 @@
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    attribute::GetCloned,
-    player_class::PlayerClass,
-};
+use crate::{attribute::GetCloned, player_class::PlayerClass};
 
 use super::{SpellPower, SpellSchool, SpellType};
 

@@ -609,7 +609,7 @@ filigree_set_bonuses!(
     )
     ThroughTheMists "Through the Mists" => (
         2f32 => vec![
-            Bonus::flag(Flag::TrueSeeing(), source!(ThroughTheMists))
+            Bonus::flag(Flag::TrueSeeing, source!(ThroughTheMists))
         ]
         3f32 => vec![
             Bonus::new(Attribute::Dodge(), BonusType::Stacking, 1f32, source!(ThroughTheMists), None),
