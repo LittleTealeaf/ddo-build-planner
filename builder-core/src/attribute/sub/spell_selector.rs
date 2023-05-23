@@ -2,7 +2,7 @@ use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, GetCloned},
+    attribute::GetCloned,
     player_class::PlayerClass,
 };
 
@@ -21,13 +21,6 @@ pub enum SpellSelector {
     Type(SpellType),
     /// All spells of a certain element
     SpellPower(SpellPower),
-}
-
-impl SpellSelector {
-    /// Converts into [`Attribute::SpellDC`]
-    pub fn into_spell_dc(self) -> Attribute {
-        Attribute::SpellDC(self)
-    }
 }
 
 impl ToString for SpellSelector {

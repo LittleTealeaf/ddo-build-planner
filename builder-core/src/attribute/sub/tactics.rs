@@ -1,4 +1,4 @@
-use crate::{attribute::Attribute, simple_enum};
+use crate::simple_enum;
 
 simple_enum!(
     Tactics, "", (
@@ -9,10 +9,3 @@ simple_enum!(
         RuneArm "Rune Arm"
     )
 );
-
-impl From<Tactics> for Attribute {
-    #[inline(always)]
-    fn from(value: Tactics) -> Self {
-        Attribute::Tactics(value)
-    }
-}

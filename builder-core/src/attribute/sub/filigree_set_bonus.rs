@@ -4,8 +4,9 @@ use crate::{
 };
 
 use super::{
-    Ability, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill, SpellPoint,
-    SpellPower, SpellSchool, SpellType, Tactics, ThreatType, Toggle, WeaponHand, WeaponStat,
+    Ability, DifficultyCheck, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill,
+    SpellPoint, SpellPower, SpellSchool, SpellType, Tactics, ThreatType, Toggle, WeaponHand,
+    WeaponStat,
 };
 
 macro_rules! filigree_set_bonuses {
@@ -198,7 +199,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPenetration(), BonusType::Stacking, 1f32, source!(EyeOfTheBeholder), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 2f32, source!(EyeOfTheBeholder), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::All.into()).into(), BonusType::Stacking, 2f32, source!(EyeOfTheBeholder), None)
         ]
     )
     FrozenWanderer "Frozen Wanderer" => (
@@ -232,7 +233,7 @@ filigree_set_bonuses!(
             Bonus::new(SavingThrow::Will.into(), BonusType::Stacking, 2f32, source!(TheInevitableGrave), None),
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::Necromancy.into()), BonusType::Stacking, 2f32, source!(TheInevitableGrave), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::Necromancy.into()).into(), BonusType::Stacking, 2f32, source!(TheInevitableGrave), None)
         ]
     )
     TheLongShadow "The Long Shadow" => (
@@ -248,7 +249,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MaxDodge(), BonusType::Stacking, 1f32, source!(TheLongShadow), None),
         ]
         5f32 => vec![
-            Bonus::new(Attribute::Tactics(Tactics::Assassinate), BonusType::Stacking, 2f32, source!(TheLongShadow), None)
+            Bonus::new(DifficultyCheck::Tactics(Tactics::Assassinate).into(), BonusType::Stacking, 2f32, source!(TheLongShadow), None)
         ]
     )
     MelonysMelody "Melody's Melony" => (
@@ -259,7 +260,7 @@ filigree_set_bonuses!(
             Bonus::new(Ability::Charisma.into(), BonusType::Stacking, 1f32, source!(MelonysMelody), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::Enchantment.into()), BonusType::Stacking, 2f32, source!(MelonysMelody), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::Enchantment.into()).into(), BonusType::Stacking, 2f32, source!(MelonysMelody), None)
         ]
     )
     NystulsMysticalDefense "Nystul's Mystical Defense" => (
@@ -295,7 +296,7 @@ filigree_set_bonuses!(
             Bonus::new(SpellPoint::Bonus.into(), BonusType::Stacking, 200f32, source!(OttosIrrevocablePower), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 2f32, source!(OttosIrrevocablePower), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::All.into()).into(), BonusType::Stacking, 2f32, source!(OttosIrrevocablePower), None)
         ]
         5f32 => vec![
             // TODO: Wellspring / Arcane Insight bonus
@@ -390,7 +391,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SneakAttackDice(), BonusType::Stacking, 1f32, source!(Treachery), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::Tactics(Tactics::Assassinate), BonusType::Stacking, 2f32, source!(Treachery), None)
+            Bonus::new(DifficultyCheck::Tactics(Tactics::Assassinate).into(), BonusType::Stacking, 2f32, source!(Treachery), None)
         ]
     )
     TwilightsCloak "Twilight's Cloak" => (
@@ -638,7 +639,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPower(SpellPower::Force), BonusType::Stacking, 20f32, source!(ZarigansArcaneEnlightenment), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 1f32, source!(ZarigansArcaneEnlightenment), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::All.into()).into(), BonusType::Stacking, 1f32, source!(ZarigansArcaneEnlightenment), None)
         ]
     )
     TheAbidingPath "The Abiding Path" => (
@@ -646,7 +647,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MagicalShelteringCap(), BonusType::Stacking, 10f32, source!(TheAbidingPath), None)
         ]
         3f32 => vec![
-            Bonus::new(Tactics::Stun.into(), BonusType::Stacking, 2f32, source!(TheAbidingPath), None),
+            Bonus::new(DifficultyCheck::Tactics(Tactics::Stun).into(), BonusType::Stacking, 2f32, source!(TheAbidingPath), None),
         ]
         4f32 => vec![
             Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(TheAbidingPath), None),
@@ -679,10 +680,10 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPenetration(), BonusType::Stacking, 1f32, source!(BendFate), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::Enchantment.into()), BonusType::Stacking, 2f32, source!(BendFate), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::Enchantment.into()).into(), BonusType::Stacking, 2f32, source!(BendFate), None)
         ]
         5f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 1f32, source!(BendFate), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::All.into()).into(), BonusType::Stacking, 1f32, source!(BendFate), None)
         ]
     )
     Divinity "Divinity" => (
@@ -726,7 +727,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(KeeperOfTheCurse), None)
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, 1f32, source!(KeeperOfTheCurse), None)
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::All.into()).into(), BonusType::Stacking, 1f32, source!(KeeperOfTheCurse), None)
         ]
         5f32 => vec![
             // TODO: Pact Dice
@@ -737,7 +738,7 @@ filigree_set_bonuses!(
             Bonus::new(SpellPoint::Bonus.into(), BonusType::Stacking, 100f32, source!(LunarMagic), None)
         ]
         3f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::All.into()), BonusType::Stacking, if value >= 5f32 {2f32} else {1f32}, source!(LunarMagic), None),
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::All.into()).into(), BonusType::Stacking, if value >= 5f32 {2f32} else {1f32}, source!(LunarMagic), None),
         ]
         4f32 => vec![
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 20f32, source!(LunarMagic), None),
@@ -751,8 +752,8 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellCriticalDamage(SpellPower::Poison), BonusType::Stacking, 5f32, source!(TheSerpent), None),
         ]
         4f32 => vec![
-            Bonus::new(Attribute::SpellDC(SpellSchool::Transmutation.into()), BonusType::Stacking, 2f32, source!(TheSerpent), None),
-            Bonus::new(Attribute::SpellDC(SpellSchool::Conjuration.into()), BonusType::Stacking, 2f32, source!(TheSerpent), None),
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::Transmutation.into()).into(), BonusType::Stacking, 2f32, source!(TheSerpent), None),
+            Bonus::new(DifficultyCheck::Spell(SpellSchool::Conjuration.into()).into(), BonusType::Stacking, 2f32, source!(TheSerpent), None),
         ]
         5f32 => vec![
             Bonus::immunity(Immunity::Petrification(), source!(TheSerpent))
@@ -760,7 +761,7 @@ filigree_set_bonuses!(
     )
     Shadowstrike "Shadowstrike" => (
         2f32 => vec![
-            Bonus::new(Tactics::Assassinate.into(), BonusType::Stacking, 2f32, source!(Shadowstrike), None),
+            Bonus::new(DifficultyCheck::Tactics(Tactics::Assassinate).into(), BonusType::Stacking, 2f32, source!(Shadowstrike), None),
         ]
         3f32 => vec![
             Bonus::new(Attribute::Dodge(), BonusType::Stacking, 1f32, source!(Shadowstrike), None),
@@ -774,7 +775,7 @@ filigree_set_bonuses!(
     )
     Technomage "Technomage" => (
         2f32 => vec![
-            Bonus::new(Tactics::RuneArm.into(), BonusType::Stacking, 2f32, source!(Technomage), None),
+            Bonus::new(DifficultyCheck::Tactics(Tactics::RuneArm).into(), BonusType::Stacking, 2f32, source!(Technomage), None),
         ]
         3f32 => vec![
             Bonus::new(Attribute::Sheltering(), BonusType::Stacking, 10f32, source!(Technomage), None),
