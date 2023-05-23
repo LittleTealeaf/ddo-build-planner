@@ -40,3 +40,5 @@ mod spell_selector;
 pub use spell_selector::*;
 mod spell_type;
 pub use spell_type::*;
+mod difficulty_check;
+pub use difficulty_check::*;

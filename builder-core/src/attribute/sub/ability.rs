@@ -117,7 +117,7 @@ macro_rules! modifier_saving_throw {
 macro_rules! modifier_spell_dc {
     ($ability: ident, $spelltype: expr, $value: expr) => {
         Bonus::new(
-            $crate::attribute::Attribute::SpellDC($spelltype.into()),
+            $crate::attribute::DifficultyCheck::Spell($spelltype.into()).into(),
             $crate::bonus::BonusType::Stacking,
             $value,
             $crate::bonus::BonusSource::Attribute($crate::attribute::Attribute::AbilityModifier(

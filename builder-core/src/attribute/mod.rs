@@ -213,7 +213,6 @@ attributes!(
     FiligreeSet(set: FiligreeSet) => (set.to_string(), "", set.get_bonuses(val), None)
     Dodge() => (String::from("Dodge"), "", None, None)
     MaxDodge() => (String::from("Maximum Dodge"), "", None, None)
-    Tactics(tactics: Tactics) => (format!("{} DC", tactics.to_string()), "", None, None)
     BonusActionBoosts() => (String::from("Bonus Action Boosts"), "", None, None)
     CasterLevel(selector: SpellSelector) => (
         format!("{} Caster Level", selector.to_string()),
@@ -233,12 +232,13 @@ attributes!(
         None,
         None
     )
-    SpellDC(selector: SpellSelector) => (
-        format!("{} DC", selector.to_string()),
-        "Bonus to Spell DCs",
-        None,
-        Some(selector.get_cloned()?.into_iter().map(Attribute::SpellDC).collect())
+    DifficultyCheck(check: DifficultyCheck) => (
+        check.to_string(),
+        "Player Difficulty Check",
+        check.get_bonuses(val),
+        Some(check.get_cloned()?.into_iter().map(Attribute::DifficultyCheck).collect())
     )
+
 );
 
 // TODO: Merge SpellDC and Tactics into "Difficulty Check"
