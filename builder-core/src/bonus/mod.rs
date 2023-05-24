@@ -104,7 +104,7 @@ impl Bonus {
     }
     /// Creates a dummy bonus.
     ///
-    /// The bonus will be for the [Attribute::Dummy()] attribute, have a stacking value of `0f32`, no conditions, and the provided source.
+    /// The bonus will be for the [Attribute::Dummy] attribute, have a stacking value of `0f32`, no conditions, and the provided source.
     #[inline(always)]
     pub fn dummy(source: BonusSource) -> Bonus {
         Self {
