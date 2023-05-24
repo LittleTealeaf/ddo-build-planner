@@ -226,12 +226,6 @@ attributes!(
         None,
         Some(selector.get_cloned()?.into_iter().map(Attribute::MaxCasterLevel).collect())
     )
-    Immunity(immunity: Immunity) => (
-        format!("Immunity from {}", immunity.to_string()),
-        "Immunity from something",
-        None,
-        None
-    )
     DifficultyCheck(check: DifficultyCheck) => (
         check.to_string(),
         "Player Difficulty Check",

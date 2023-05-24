@@ -8,7 +8,7 @@ mod traits;
 use itertools::Itertools;
 pub use traits::*;
 
-use crate::attribute::sub::{Flag, Immunity, Toggle};
+use crate::attribute::sub::{Flag, Toggle};
 
 use super::attribute::Attribute;
 
@@ -133,21 +133,6 @@ impl Bonus {
     pub fn toggle(toggle: Toggle, source: BonusSource) -> Bonus {
         Self {
             attribute: Attribute::Toggle(toggle),
-            bonus_type: BonusType::Stacking,
-            value: 1f32,
-            source,
-            conditions: None,
-        }
-    }
-
-    // TODO: Convert Immunities to a flag.
-
-    /// Creates a simple immunity bonus
-    #[deprecated = "Soon to be converted to a flag"]
-    #[inline(always)]
-    pub fn immunity(immunity: Immunity, source: BonusSource) -> Bonus {
-        Self {
-            attribute: Attribute::Immunity(immunity),
             bonus_type: BonusType::Stacking,
             value: 1f32,
             source,

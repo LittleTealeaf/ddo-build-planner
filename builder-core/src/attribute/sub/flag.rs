@@ -6,7 +6,7 @@ use crate::{
     bonus::Bonus,
 };
 
-use super::{Ability, SavingThrow, Toggle, WeaponHand};
+use super::{Ability, Immunity, SavingThrow, Toggle, WeaponHand};
 
 /// Defines any flags that the user can have.
 ///
@@ -33,6 +33,8 @@ pub enum Flag {
     ReligiousLoreToQualityPhysicalSheltering,
     /// If the user has true seeing.
     TrueSeeing,
+    /// If the user is immune to something
+    Immunity(Immunity),
 }
 
 impl ToString for Flag {
@@ -58,6 +60,7 @@ impl ToString for Flag {
                 String::from("Religious Lore to Quality Physical Sheltering")
             }
             Flag::TrueSeeing => String::from("True Seeing"),
+            Flag::Immunity(immunity) => format!("Immunity to {}", immunity.to_string()),
         }
     }
 }
@@ -97,6 +100,12 @@ impl GetCloned<Flag> for Flag {
             ),
             _ => None,
         }
+    }
+}
+
+impl From<Immunity> for Flag {
+    fn from(value: Immunity) -> Flag {
+        Flag::Immunity(value)
     }
 }
 
