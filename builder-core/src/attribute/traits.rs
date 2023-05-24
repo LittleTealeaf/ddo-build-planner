@@ -1,5 +1,7 @@
 use crate::bonus::Bonus;
 
+// TODO: new names for these traits? Also perhaps move GetBonuses to the bonus crate.
+
 /// Implements the ability for one value to a list of other values.
 ///
 /// This is specifically used when implementing attributes with the `All` type, instead of adding every single attribute individually.
