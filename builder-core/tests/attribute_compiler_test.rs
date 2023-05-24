@@ -37,6 +37,19 @@ mod conditions {
             10f32,
             breakdowns.get_attribute(&Attribute::PhysicalSheltering())
         );
+
+        breakdowns.insert_bonuses(vec![Bonus::new(
+            Attribute::MagicalSheltering(),
+            BonusType::Stacking,
+            -1f32,
+            1.into(),
+            None,
+        )]);
+
+        assert_eq!(
+            0f32,
+            breakdowns.get_attribute(&Attribute::PhysicalSheltering())
+        );
     }
 
     #[test]

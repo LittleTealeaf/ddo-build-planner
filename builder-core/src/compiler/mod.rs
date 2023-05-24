@@ -50,7 +50,7 @@ impl AttributeCompiler {
                     None => true,
                     Some(conditions) => conditions.iter().all(|condition| match condition {
                         Condition::Has(attr) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) != 0f32
+                            self.calculate_attribute(attr).unwrap_or(0f32) > 0f32
                         }
                         Condition::NotHave(attr) => {
                             self.calculate_attribute(attr).unwrap_or(0f32) == 0f32
