@@ -1,3 +1,8 @@
+mod attribute_queue;
+mod bonus_set;
+mod clone_bonuses;
+mod partial_bonus;
+
 use std::collections::HashMap;
 
 use itertools::Itertools;
@@ -8,11 +13,6 @@ use crate::{
 };
 
 use self::{attribute_queue::AttributeQueue, bonus_set::BonusSet, clone_bonuses::clone_bonuses};
-
-mod attribute_queue;
-mod bonus_set;
-mod clone_bonuses;
-mod partial_bonus;
 
 /// Compiles multiple bonuses and calculates resulting attribute values based on bonus rules.
 ///
