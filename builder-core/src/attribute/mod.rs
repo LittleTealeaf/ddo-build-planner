@@ -1,4 +1,9 @@
 #![allow(unused_variables)]
+mod traits;
+#[macro_use]
+mod macros;
+pub mod sub;
+
 use crate::{
     bonus::{Bonus, BonusType},
     player_class::PlayerClass,
@@ -7,14 +12,9 @@ use crate::{
 
 use super::{bonus::BonusSource, feat::Feat};
 
-#[macro_use]
-mod macros;
-/// Contains lists of sub-attributes that allow attributes to be generally expressed.
-pub mod sub;
-pub use macros::*;
 use serde::{Deserialize, Serialize};
+
 use sub::*;
-mod traits;
 pub use traits::*;
 
 attributes!(
@@ -240,8 +240,6 @@ attributes!(
     )
 
 );
-
-// TODO: Merge SpellDC and Tactics into "Difficulty Check"
 
 impl Attribute {
     /// Converts any type that implements [`Into<Attribute>`] to a [`BonusSource`]

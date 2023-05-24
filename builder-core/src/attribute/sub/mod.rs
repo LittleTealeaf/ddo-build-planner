@@ -1,3 +1,4 @@
+//! Contains lists of sub-attributes that allow attributes to be generally expressed.
 mod ability;
 pub use ability::*;
 mod skill;
