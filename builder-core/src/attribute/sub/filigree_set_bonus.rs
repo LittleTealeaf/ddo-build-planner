@@ -321,10 +321,10 @@ filigree_set_bonuses!(
             Bonus::new(HealAmp::Positive.into(), BonusType::Stacking, 5f32, source!(Purity), None)
         ]
         3f32 => vec![
-            Bonus::flag(Immunity::MummyRot().into(), source!(Purity)),
-            Bonus::flag(Immunity::NaturalDisease().into(), source!(Purity))        ]
+            Bonus::flag(Immunity::MummyRot.into(), source!(Purity)),
+            Bonus::flag(Immunity::NaturalDisease.into(), source!(Purity))        ]
         4f32 => vec![
-            Bonus::flag(Immunity::EnergyDrain().into(), source!(Purity))
+            Bonus::flag(Immunity::EnergyDrain.into(), source!(Purity))
         ]
     )
     SnakeBite "Snake Bite" => (
@@ -435,8 +435,8 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MaxDodge(), BonusType::Stacking, 1f32, source!(Zephyr), None),
         ]
         4f32 => vec![
-            Bonus::flag(Immunity::SlipperySurfaces().into(), source!(Zephyr)),
-            Bonus::flag(Immunity::Knockdown().into(), source!(Zephyr))
+            Bonus::flag(Immunity::SlipperySurfaces.into(), source!(Zephyr)),
+            Bonus::flag(Immunity::Knockdown.into(), source!(Zephyr))
         ]
     )
     BraveryThroughout "Bravery Throughout" => (
@@ -524,7 +524,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MagicalSheltering(), BonusType::Stacking, 10f32, source!(RadiantShield), None)
         ]
         4f32 => vec![
-            Bonus::flag(Immunity::Quell().into(), source!(RadiantShield))
+            Bonus::flag(Immunity::Quell.into(), source!(RadiantShield))
         ]
     )
     Reverberation "Reverberation" => (
@@ -756,7 +756,7 @@ filigree_set_bonuses!(
             Bonus::new(DifficultyCheck::Spell(SpellSchool::Conjuration.into()).into(), BonusType::Stacking, 2f32, source!(TheSerpent), None),
         ]
         5f32 => vec![
-            Bonus::flag(Immunity::Petrification().into(), source!(TheSerpent))
+            Bonus::flag(Immunity::Petrification.into(), source!(TheSerpent))
         ]
     )
     Shadowstrike "Shadowstrike" => (
@@ -828,7 +828,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPower(SpellPower::Universal), BonusType::Stacking, 10f32, source!(SnowpeaksGifts), None)
         ]
         4f32 => vec![
-            Bonus::flag(Immunity::MostSlowForms().into(), source!(SnowpeaksGifts))
+            Bonus::flag(Immunity::Slow.into(), source!(SnowpeaksGifts))
         ]
     )
 );
