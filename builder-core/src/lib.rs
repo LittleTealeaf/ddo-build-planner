@@ -17,7 +17,9 @@
     clippy::explicit_into_iter_loop,
     clippy::get_unwrap,
     clippy::large_types_passed_by_value,
-    clippy::manual_ok_or
+    clippy::manual_ok_or,
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc,
 )]
 
 //! The goal of this crate is to implement all of the build logic, including attributes, breakdowns, enhancements, feats, items, and more
