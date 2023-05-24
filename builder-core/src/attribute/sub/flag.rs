@@ -67,10 +67,7 @@ impl ToString for Flag {
 
 impl GetBonuses for Flag {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            Self::Toggle(toggle) => toggle.get_bonuses(value),
-            _ => None,
-        }
+        None
     }
 }
 
@@ -106,6 +103,12 @@ impl GetCloned<Flag> for Flag {
 impl From<Immunity> for Flag {
     fn from(value: Immunity) -> Flag {
         Flag::Immunity(value)
+    }
+}
+
+impl From<Toggle> for Flag {
+    fn from(value: Toggle) -> Flag {
+        Flag::Toggle(value)
     }
 }
 

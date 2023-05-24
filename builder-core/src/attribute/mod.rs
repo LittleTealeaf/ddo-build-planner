@@ -41,8 +41,8 @@ attributes!(
     Toggle(toggle: Toggle) => (
         format!("Toggle: {}", toggle.to_string()),
         "Represents any toggles that should be visible to the user.",
-        None,
-        None
+        toggle.get_bonuses(val),
+        Some(toggle.get_cloned()?.into_iter().map(Attribute::Toggle).collect())
     )
     Ability(ability: Ability) => (
         ability.to_string(),

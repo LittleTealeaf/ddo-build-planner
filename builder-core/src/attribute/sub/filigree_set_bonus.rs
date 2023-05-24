@@ -507,12 +507,12 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::MeleePower(), BonusType::Stacking, 5f32, source!(NextFall), None),
         ]
         4f32 => vec![
-            Bonus::toggle(Toggle::AttackingTrippedTarget(), source!(NextFall)),
+            Bonus::toggle(Toggle::AttackingTrippedTarget, source!(NextFall)),
             Bonus::new((WeaponHand::Both, WeaponStat::Attack).into(), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
-                Condition::Has(Attribute::Flag(Flag::Toggle(Toggle::AttackingTrippedTarget())))
+                Condition::Has(Attribute::Flag(Toggle::AttackingTrippedTarget.into()))
             ])),
             Bonus::new((WeaponHand::Both, WeaponStat::Damage).into(), BonusType::Stacking, 5f32, source!(NextFall), Some(vec![
-                Condition::Has(Attribute::Flag(Flag::Toggle(Toggle::AttackingTrippedTarget())))
+                Condition::Has(Attribute::Flag(Toggle::AttackingTrippedTarget.into()))
             ])),
         ]
     )
