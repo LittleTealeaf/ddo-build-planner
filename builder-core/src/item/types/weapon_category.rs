@@ -2,12 +2,18 @@ use crate::item::types::WeaponType;
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
+/// Indicates the category that a weapon belongs to
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug, Enum)]
 pub enum WeaponCategory {
+    /// Weapons that deal Bludgeoning damage
     Bludgeoning,
+    /// Weapons that deal Piercing Damage
     Piercing,
+    /// Ranged Weapons
     Ranged,
+    /// Weapons that deal Slashing damage
     Slashing,
+    /// Thrown Weapons
     Thrown,
 }
 
