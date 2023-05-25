@@ -20,6 +20,7 @@ use self::category::SkillFeat;
 pub enum Feat {
     /// Any feat that gives bonuses to skills.
     SkillFeat(SkillFeat),
+    /// Provides the character with proficiency of something
     Proficiency(ProficiencyFeat),
 }
 
