@@ -10,7 +10,7 @@ use crate::{
     utils::AsString,
 };
 
-use super::{bonus::BonusSource, feat::Feat};
+use super::{bonus::BonusSource};
 
 use serde::{Deserialize, Serialize};
 
@@ -24,12 +24,6 @@ attributes!(
         String::from("Dummy"),
         "A dummy attrirbute.\n\nOften used to indicate that a data source should be removed from the Brerakdowns.",
         None,
-        None
-    )
-    Feat(feat: Feat) => (
-        feat.to_string(),
-        "Indicates that the character has a certain feat, and should receive its bonuses.",
-        feat.get_attribute_bonuses(val),
         None
     )
     Flag(flag: Flag) => (

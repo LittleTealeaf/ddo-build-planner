@@ -37,8 +37,6 @@ pub mod character;
 /// This is what takes in [`Bonus`] objects and calculates the resulting value for an
 /// [`Attribute`].
 pub mod compiler;
-/// Represents Feats within the game
-pub mod feat;
 /// Represents Player Classes within the game
 pub mod player_class;
 /// Misc. Utility functions and Macros.
