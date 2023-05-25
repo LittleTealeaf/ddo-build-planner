@@ -1,12 +1,18 @@
 ﻿use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
+/// Represents the types of shields.
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug, Enum)]
 pub enum ShieldType {
+    /// Buckler shields
     Buckler,
+    /// Small Shields
     Small,
+    /// Large Shields
     Large,
+    /// Tower Shields
     Tower,
+    /// Rune Arms
     RuneArm
 }
 
