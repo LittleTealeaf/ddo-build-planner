@@ -6,6 +6,7 @@ pub mod sub;
 
 use crate::{
     bonus::{Bonus, BonusType, GetBonuses},
+    feat::Feat,
     player_class::PlayerClass,
     utils::AsString,
 };
@@ -37,6 +38,12 @@ attributes!(
         "Represents any toggles that should be visible to the user.",
         toggle.get_bonuses(val),
         Some(toggle.get_cloned()?.into_iter().map(Attribute::Toggle).collect())
+    )
+    Feat(feat: Feat) => (
+        format!("Feat: {}", feat.to_string()),
+        "Represents that the character has a given feat",
+        feat.get_bonuses(val),
+        None
     )
     Ability(ability: Ability) => (
         ability.to_string(),
