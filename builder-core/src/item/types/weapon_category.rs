@@ -1,4 +1,3 @@
-use crate::item::types::WeaponType;
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
