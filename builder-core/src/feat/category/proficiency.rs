@@ -1,10 +1,8 @@
-﻿use enum_map::Enum;
-use serde::{Deserialize, Serialize};
 use crate::bonus::{Bonus, GetBonuses};
 use crate::feat::{Feat, FeatTrait};
 use crate::item::types::{ArmorType, ShieldType, WeaponType};
-
-
+use enum_map::Enum;
+use serde::{Deserialize, Serialize};
 
 /// Indicates that the character has some proficiency
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug, Enum)]
@@ -14,7 +12,7 @@ pub enum ProficiencyFeat {
     /// Proficiency with a certain armor type
     Armor(ArmorType),
     /// Proficiency with a certain shield type, or rune arm.
-    Shield(ShieldType)
+    Shield(ShieldType),
 }
 
 impl GetBonuses for ProficiencyFeat {
@@ -43,7 +41,6 @@ impl ToString for ProficiencyFeat {
         }
     }
 }
-
 
 impl From<WeaponType> for ProficiencyFeat {
     fn from(value: WeaponType) -> Self {

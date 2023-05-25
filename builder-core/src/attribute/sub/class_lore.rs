@@ -1,3 +1,4 @@
+use crate::attribute::sub::ClassLoreFlag;
 use crate::{
     attribute::{Attribute, Flag, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
@@ -16,7 +17,7 @@ impl GetBonuses for ClassLore {
                     value,
                     Attribute::to_source(ClassLore::Religious),
                     Some(vec![Condition::Has(
-                        Flag::ReligiousLoreToQualityMagicalSheltering.into(),
+                        Flag::from(ClassLoreFlag::ReligiousLoreToQualityMagicalSheltering).into(),
                     )]),
                 ),
                 Bonus::new(
@@ -25,7 +26,7 @@ impl GetBonuses for ClassLore {
                     value,
                     Attribute::to_source(ClassLore::Religious),
                     Some(vec![Condition::Has(
-                        Flag::ReligiousLoreToQualityPhysicalSheltering.into(),
+                        Flag::from(ClassLoreFlag::ReligiousLoreToQualityPhysicalSheltering).into(),
                     )]),
                 ),
             ]),

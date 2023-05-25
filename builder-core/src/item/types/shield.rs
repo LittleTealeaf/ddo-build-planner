@@ -1,4 +1,4 @@
-﻿use enum_map::Enum;
+use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
 /// Represents the types of shields.
@@ -13,7 +13,7 @@ pub enum ShieldType {
     /// Tower Shields
     Tower,
     /// Rune Arms
-    RuneArm
+    RuneArm,
 }
 
 impl ToString for ShieldType {
