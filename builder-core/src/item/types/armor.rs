@@ -1,11 +1,16 @@
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
+/// The different types of armor that a character can wear
 #[derive(Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, Debug, Enum)]
 pub enum ArmorType {
+    /// Cloth or Robe armor
     Cloth,
+    /// Light Armor
     Light,
+    /// Medium Armor
     Medium,
+    /// Heavy Armor
     Heavy,
 }
 
