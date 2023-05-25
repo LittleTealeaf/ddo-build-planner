@@ -11,9 +11,9 @@ use crate::item::types::{ArmorType, ShieldType, WeaponType};
 pub enum ProficiencyFeat {
     /// Proficiency with a certain weapon
     Weapon(WeaponType),
-    /// Proficinecy with a certain armor type
+    /// Proficiency with a certain armor type
     Armor(ArmorType),
-    /// Proficinecy with a certain shield type, or rune arm.
+    /// Proficiency with a certain shield type, or rune arm.
     Shield(ShieldType)
 }
 
