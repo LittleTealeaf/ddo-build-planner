@@ -1,6 +1,6 @@
 use crate::{
-    attribute::{sub::ClassLore, Attribute, GetBonuses},
-    bonus::{Bonus, BonusSource, BonusType},
+    attribute::{sub::ClassLore, Attribute},
+    bonus::{Bonus, BonusSource, BonusType, GetBonuses},
 };
 
 use super::PlayerClass;

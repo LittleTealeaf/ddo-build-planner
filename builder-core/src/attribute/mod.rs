@@ -5,12 +5,13 @@ mod macros;
 pub mod sub;
 
 use crate::{
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, GetBonuses},
+    feat::Feat,
     player_class::PlayerClass,
     utils::AsString,
 };
 
-use super::{bonus::BonusSource, feat::Feat};
+use super::bonus::BonusSource;
 
 use serde::{Deserialize, Serialize};
 
@@ -26,12 +27,6 @@ attributes!(
         None,
         None
     )
-    Feat(feat: Feat) => (
-        feat.to_string(),
-        "Indicates that the character has a certain feat, and should receive its bonuses.",
-        feat.get_attribute_bonuses(val),
-        None
-    )
     Flag(flag: Flag) => (
         format!("Flag: {}", flag.to_string()),
         "Represents any flags that the character has.",
@@ -43,6 +38,12 @@ attributes!(
         "Represents any toggles that should be visible to the user.",
         toggle.get_bonuses(val),
         Some(toggle.get_cloned()?.into_iter().map(Attribute::Toggle).collect())
+    )
+    Feat(feat: Feat) => (
+        format!("Feat: {}", feat.to_string()),
+        "Represents that the character has a given feat",
+        feat.get_bonuses(val),
+        None
     )
     Ability(ability: Ability) => (
         ability.to_string(),

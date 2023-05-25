@@ -19,7 +19,7 @@
     clippy::large_types_passed_by_value,
     clippy::manual_ok_or,
     clippy::missing_errors_doc,
-    clippy::missing_panics_doc,
+    clippy::missing_panics_doc
 )]
 
 //! The goal of this crate is to implement all of the build logic, including attributes, breakdowns, enhancements, feats, items, and more
@@ -37,7 +37,7 @@ pub mod character;
 /// This is what takes in [`Bonus`] objects and calculates the resulting value for an
 /// [`Attribute`].
 pub mod compiler;
-/// Represents Feats within the game
+/// Handles representation of player feats.
 pub mod feat;
 /// Represents Player Classes within the game
 pub mod player_class;

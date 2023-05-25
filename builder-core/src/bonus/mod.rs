@@ -8,7 +8,10 @@ mod traits;
 use itertools::Itertools;
 pub use traits::*;
 
-use crate::attribute::sub::{Flag, Toggle};
+use crate::{
+    attribute::sub::{Flag, Toggle},
+    feat::Feat,
+};
 
 use super::attribute::Attribute;
 
@@ -133,6 +136,17 @@ impl Bonus {
     pub fn toggle(toggle: Toggle, source: BonusSource) -> Bonus {
         Self {
             attribute: Attribute::Toggle(toggle),
+            bonus_type: BonusType::Stacking,
+            value: 1f32,
+            source,
+            conditions: None,
+        }
+    }
+
+    /// Creates a bonus that gives the user a certain feat.
+    pub fn feat(feat: Feat, source: BonusSource) -> Bonus {
+        Self {
+            attribute: Attribute::Feat(feat),
             bonus_type: BonusType::Stacking,
             value: 1f32,
             source,

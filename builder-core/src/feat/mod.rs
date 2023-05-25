@@ -1,65 +1,52 @@
-use super::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType, Bonuses},
-};
+pub mod category;
+mod traits;
 
-mod feat_trait;
-pub use feat_trait::*;
-mod category;
-pub use category::*;
+pub use traits::*;
 
-// TODO: Make macros to build the feats list. Each sub-feat list will be a list of different
-// "custom" feats (grouped by their source)
+use enum_map::Enum;
+use serde::{Deserialize, Serialize};
 
-#[derive(
-    Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, Debug, enum_map::Enum,
-)]
+use crate::{attribute::Attribute, bonus::GetBonuses};
+
+use self::category::SkillFeat;
+
+// TODO: Add Prerequisites
+
+/// Represents any feat that the player can have in the game
+///
+/// Feats as attributes are like flags, if they are present (value greater than `0`), then the character has the feat.
+#[derive(Debug, Hash, Clone, Copy, PartialEq, Eq, Enum, Serialize, Deserialize)]
 pub enum Feat {
-    SkillFocus(SkillFocus),
-    Tome(Tome),
-}
-
-impl Feat {
-    pub fn get_attribute_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            Feat::SkillFocus(skill_focus) => Some(skill_focus.get_feat_bonuses(value)),
-            Feat::Tome(tome) => Some(tome.get_feat_bonuses(value)),
-        }
-    }
+    /// Any feat that gives bonuses to skills.
+    SkillFeat(SkillFeat),
 }
 
 impl ToString for Feat {
     fn to_string(&self) -> String {
         match self {
-            Feat::SkillFocus(skill_focus) => skill_focus.to_string(),
-            Feat::Tome(tome) => tome.to_string(),
+            Feat::SkillFeat(feat) => feat.to_string(),
         }
     }
 }
 
-impl Bonuses for Feat {
-    fn get_bonuses(&self) -> Vec<super::bonus::Bonus> {
-        vec![Bonus::new(
-            Attribute::Feat(*self),
-            BonusType::Stacking,
-            1f32,
-            BonusSource::Feat(*self),
-            None,
-        )]
+impl GetBonuses for Feat {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
+        match self {
+            Feat::SkillFeat(feat) => feat.get_bonuses(value),
+        }
     }
-    fn remove_bonuses(&self) -> Vec<Bonus> {
-        vec![Bonus::dummy(BonusSource::Feat(*self))]
+}
+
+impl FeatTrait for Feat {
+    fn get_description(&self) -> String {
+        match self {
+            Feat::SkillFeat(feat) => feat.get_description(),
+        }
     }
 }
 
 impl From<Feat> for Attribute {
     fn from(value: Feat) -> Self {
-        Attribute::Feat(value)
-    }
-}
-
-impl From<Feat> for BonusSource {
-    fn from(value: Feat) -> Self {
-        BonusSource::Feat(value)
+        Self::Feat(value)
     }
 }
