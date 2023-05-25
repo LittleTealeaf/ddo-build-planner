@@ -2,7 +2,6 @@ use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusType, Condition},
 };
-use crate::attribute::sub::SpellSelector;
 
 use super::{
     Ability, DifficultyCheck, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill,
