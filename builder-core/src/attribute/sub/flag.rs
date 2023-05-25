@@ -5,7 +5,6 @@ use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
     bonus::Bonus,
 };
-use crate::attribute::sub::Proficiency;
 use crate::item::types::{ArmorType, WeaponCategory, WeaponType};
 
 use super::{Ability, Immunity, SavingThrow, Toggle, WeaponHand};
@@ -37,8 +36,6 @@ pub enum Flag {
     TrueSeeing,
     /// If the user is immune to something
     Immunity(Immunity),
-    /// If the user has a proficiency
-    Proficiency(Proficiency),
     /// If the character is wearing a certain type of armor
     WearingArmor(ArmorType),
     /// Indicates if the character is wielding a weapon in a given hand
@@ -71,7 +68,6 @@ impl ToString for Flag {
             }
             Flag::TrueSeeing => String::from("True Seeing"),
             Flag::Immunity(immunity) => format!("Immunity to {}", immunity.to_string()),
-            Flag::Proficiency(proficiency) => proficiency.to_string(),
             Flag::WearingArmor(armor) => format!("Wearing {} Armor", armor.to_string()),
             Flag::WeaponEquipped(hand, weapon_type) => format!("{} in {} hand", weapon_type.to_string(), hand.to_string()),
             Flag::WeaponCategoryEquipped(hand, weapon_category) => format!("{} in {} hand", weapon_category.to_string(), hand.to_string()),
@@ -128,12 +124,6 @@ impl From<Immunity> for Flag {
 impl From<Toggle> for Flag {
     fn from(value: Toggle) -> Flag {
         Flag::Toggle(value)
-    }
-}
-
-impl From<Proficiency> for Flag {
-    fn from(value: Proficiency) -> Self {
-        Self::Proficiency(value)
     }
 }
 
