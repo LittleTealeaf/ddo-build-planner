@@ -5,12 +5,12 @@ mod macros;
 pub mod sub;
 
 use crate::{
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, GetBonuses},
     player_class::PlayerClass,
     utils::AsString,
 };
 
-use super::{bonus::BonusSource};
+use super::bonus::BonusSource;
 
 use serde::{Deserialize, Serialize};
 

@@ -1,6 +1,6 @@
 use enum_map::Enum;
 
-use crate::{attribute::Attribute};
+use crate::attribute::Attribute;
 
 type UniqueIdentifier = u8;
 
