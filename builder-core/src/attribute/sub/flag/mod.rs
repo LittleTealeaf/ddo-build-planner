@@ -10,7 +10,7 @@ use crate::{
     bonus::Bonus,
 };
 
-use super::{Ability, Immunity, SavingThrow, Toggle, WeaponHand};
+use super::{Immunity, Toggle, WeaponHand};
 
 /// Defines any flags that the user can have.
 ///
