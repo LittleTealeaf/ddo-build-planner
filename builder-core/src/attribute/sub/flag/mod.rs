@@ -1,5 +1,7 @@
 mod ability_flags;
 pub use ability_flags::*;
+mod class_lore_flags;
+pub use class_lore_flags::*;
 
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
@@ -23,13 +25,10 @@ pub enum Flag {
     Toggle(Toggle),
     /// If the user is centered
     Centered,
-    /// If the user has some ability to a saving throw.
-    ///
+    /// Flags that interact with Class Lore
+    ClassLoreFlag(ClassLoreFlag),
+    /// Flags that allow bonuses from an ability
     AbilityFlag(AbilityFlag),
-    /// Provides bonuses to magical sheltering equal to their religious lore
-    ReligiousLoreToQualityMagicalSheltering,
-    /// Provides bonuses to physical sheltering equal to their religious lore
-    ReligiousLoreToQualityPhysicalSheltering,
     /// If the user has true seeing.
     TrueSeeing,
     /// If the user is immune to something
@@ -47,13 +46,7 @@ impl ToString for Flag {
         match self {
             Flag::Centered => String::from("Centered"),
             Flag::Toggle(toggle) => format!("Toggled: {}", toggle.to_string()),
-
-            Flag::ReligiousLoreToQualityMagicalSheltering => {
-                String::from("Religious Lore to Quality Magical Sheltering")
-            }
-            Flag::ReligiousLoreToQualityPhysicalSheltering => {
-                String::from("Religious Lore to Quality Physical Sheltering")
-            }
+            Flag::ClassLoreFlag(flag) => flag.to_string(),
             Flag::TrueSeeing => String::from("True Seeing"),
             Flag::Immunity(immunity) => format!("Immunity to {}", immunity.to_string()),
             Flag::WearingArmor(armor) => format!("Wearing {} Armor", armor.to_string()),
@@ -92,6 +85,12 @@ impl GetCloned<Flag> for Flag {
 impl From<AbilityFlag> for Flag {
     fn from(value: AbilityFlag) -> Self {
         Self::AbilityFlag(value)
+    }
+}
+
+impl From<ClassLoreFlag> for Flag {
+    fn from(value: ClassLoreFlag) -> Self {
+        Self::ClassLoreFlag(value)
     }
 }
 

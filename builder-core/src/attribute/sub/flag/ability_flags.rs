@@ -55,7 +55,7 @@ impl GetCloned<Flag> for AbilityFlag {
                     .map(|hand| Self::AbilityToDamage(*ability, hand).into())
                     .to_vec(),
             ),
-            _ => None
+            _ => None,
         }
     }
 }
