@@ -2,6 +2,7 @@ use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusType, Condition},
 };
+use crate::attribute::sub::SpellSelector;
 
 use super::{
     Ability, DifficultyCheck, ElementalType, Flag, HealAmp, HitPoint, Immunity, SavingThrow, Skill,
@@ -586,7 +587,7 @@ filigree_set_bonuses!(
             Bonus::new(Attribute::SpellPower(SpellPower::Positive), BonusType::Stacking, 10f32, source!(Soulweaver), None),
         ]
         3f32 => vec![
-            // TODO: Caster Level with Positive Spells
+            Bonus::new(Attribute::CasterLevel(SpellPower::Positive.into()), BonusType::Stacking, 1f32, source!(Soulweaver), None),
         ]
         4f32 => vec![
             Bonus::new(SavingThrow::All.into(), BonusType::Stacking, 2f32, source!(Soulweaver), None),
