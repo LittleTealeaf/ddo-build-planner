@@ -1,4 +1,4 @@
-use enum_map::Enum;
+﻿use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
 use crate::{
