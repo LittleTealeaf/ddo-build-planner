@@ -1,6 +1,7 @@
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
+use crate::attribute::sub::AbilityFlag;
 use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
     bonus::{Bonus, BonusType, Condition},
@@ -71,6 +72,7 @@ impl From<Ability> for Attribute {
 
 /// Dummy Struct to differentiate bonuses for [Ability]
 pub struct _AbilityScore;
+
 /// Dummy Struct to differentiate bonuses for [Ability]
 pub struct _AbilityModifier;
 
@@ -104,10 +106,11 @@ macro_rules! modifier_saving_throw {
             } else {
                 Some(vec![$crate::bonus::Condition::Has(
                     $crate::attribute::Attribute::Flag(
-                        $crate::attribute::Flag::AbilityToSavingThrow(
+                        $crate::attribute::AbilityFlag::AbilityToSavingThrow(
                             Ability::$modifier,
                             $crate::attribute::SavingThrow::$saving_throw,
-                        ),
+                        )
+                        .into(),
                     ),
                 )])
             },
@@ -241,7 +244,8 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 value,
                 self.into_modifier_attribute().into(),
                 Some(vec![Condition::Has(
-                    Flag::AbilityToAttack(*self, super::WeaponHand::Main).into(),
+                    Flag::AbilityFlag(AbilityFlag::AbilityToAttack(*self, super::WeaponHand::Main))
+                        .into(),
                 )]),
             ),
             Bonus::new(
@@ -250,7 +254,8 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 value,
                 self.into_modifier_attribute().into(),
                 Some(vec![Condition::Has(
-                    Flag::AbilityToAttack(*self, super::WeaponHand::Off).into(),
+                    Flag::AbilityFlag(AbilityFlag::AbilityToAttack(*self, super::WeaponHand::Off))
+                        .into(),
                 )]),
             ),
             Bonus::new(
@@ -259,7 +264,8 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 value,
                 self.into_modifier_attribute().into(),
                 Some(vec![Condition::Has(
-                    Flag::AbilityToDamage(*self, super::WeaponHand::Main).into(),
+                    Flag::AbilityFlag(AbilityFlag::AbilityToDamage(*self, super::WeaponHand::Main))
+                        .into(),
                 )]),
             ),
             Bonus::new(
@@ -268,7 +274,8 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 value,
                 self.into_modifier_attribute().into(),
                 Some(vec![Condition::Has(
-                    Flag::AbilityToDamage(*self, super::WeaponHand::Off).into(),
+                    Flag::AbilityFlag(AbilityFlag::AbilityToDamage(*self, super::WeaponHand::Off))
+                        .into(),
                 )]),
             ),
         ]);

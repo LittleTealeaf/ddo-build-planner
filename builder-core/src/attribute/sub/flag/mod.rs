@@ -1,11 +1,14 @@
-﻿use enum_map::Enum;
+mod ability_flags;
+pub use ability_flags::*;
+
+use enum_map::Enum;
 use serde::{Deserialize, Serialize};
 
+use crate::item::types::{ArmorType, WeaponCategory, WeaponType};
 use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
     bonus::Bonus,
 };
-use crate::item::types::{ArmorType, WeaponCategory, WeaponType};
 
 use super::{Ability, Immunity, SavingThrow, Toggle, WeaponHand};
 
@@ -22,12 +25,7 @@ pub enum Flag {
     Centered,
     /// If the user has some ability to a saving throw.
     ///
-    /// This flag is useless if the user already has that ability to that saving throw.
-    AbilityToSavingThrow(Ability, SavingThrow),
-    /// If the user has some ability to attack for a given hand.
-    AbilityToAttack(Ability, WeaponHand),
-    /// If the user has some ability to damage for a given hand
-    AbilityToDamage(Ability, WeaponHand),
+    AbilityFlag(AbilityFlag),
     /// Provides bonuses to magical sheltering equal to their religious lore
     ReligiousLoreToQualityMagicalSheltering,
     /// Provides bonuses to physical sheltering equal to their religious lore
@@ -49,17 +47,7 @@ impl ToString for Flag {
         match self {
             Flag::Centered => String::from("Centered"),
             Flag::Toggle(toggle) => format!("Toggled: {}", toggle.to_string()),
-            Flag::AbilityToSavingThrow(ability, savingthrow) => format!(
-                "{} to {} saving throw",
-                ability.to_string(),
-                savingthrow.to_string()
-            ),
-            Flag::AbilityToAttack(ability, hand) => {
-                format!("{} to {} Attack", ability.to_string(), hand.to_string())
-            }
-            Flag::AbilityToDamage(ability, hand) => {
-                format!("{} to {} Damage", ability.to_string(), hand.to_string())
-            }
+
             Flag::ReligiousLoreToQualityMagicalSheltering => {
                 String::from("Religious Lore to Quality Magical Sheltering")
             }
@@ -69,8 +57,15 @@ impl ToString for Flag {
             Flag::TrueSeeing => String::from("True Seeing"),
             Flag::Immunity(immunity) => format!("Immunity to {}", immunity.to_string()),
             Flag::WearingArmor(armor) => format!("Wearing {} Armor", armor.to_string()),
-            Flag::WeaponEquipped(hand, weapon_type) => format!("{} in {} hand", weapon_type.to_string(), hand.to_string()),
-            Flag::WeaponCategoryEquipped(hand, weapon_category) => format!("{} in {} hand", weapon_category.to_string(), hand.to_string()),
+            Flag::WeaponEquipped(hand, weapon_type) => {
+                format!("{} in {} hand", weapon_type.to_string(), hand.to_string())
+            }
+            Flag::WeaponCategoryEquipped(hand, weapon_category) => format!(
+                "{} in {} hand",
+                weapon_category.to_string(),
+                hand.to_string()
+            ),
+            Flag::AbilityFlag(ability_flag) => ability_flag.to_string(),
         }
     }
 }
@@ -85,33 +80,18 @@ impl GetCloned<Flag> for Flag {
     #[inline(always)]
     fn get_cloned(&self) -> Option<Vec<Flag>> {
         match self {
-            Flag::AbilityToAttack(Ability::All, hand) => Some(
-                Ability::VALUES
-                    .map(|ability| Flag::AbilityToAttack(ability, *hand))
-                    .to_vec(),
-            ),
-            Flag::AbilityToAttack(ability, WeaponHand::Both) => Some(
-                WeaponHand::VALUES
-                    .map(|hand| Flag::AbilityToAttack(*ability, hand))
-                    .to_vec(),
-            ),
-            Flag::AbilityToDamage(Ability::All, hand) => Some(
-                Ability::VALUES
-                    .map(|ability| Flag::AbilityToDamage(ability, *hand))
-                    .to_vec(),
-            ),
-            Flag::AbilityToDamage(ability, WeaponHand::Both) => Some(
-                WeaponHand::VALUES
-                    .map(|hand| Flag::AbilityToDamage(*ability, hand))
-                    .to_vec(),
-            ),
-            Flag::WeaponEquipped(hand, weapon_type) => Some(
-                vec![
-                    (*hand, WeaponCategory::from(*weapon_type)).into()
-                ]
-            ),
+            Self::AbilityFlag(flag) => flag.get_cloned(),
+            Flag::WeaponEquipped(hand, weapon_type) => {
+                Some(vec![(*hand, WeaponCategory::from(*weapon_type)).into()])
+            }
             _ => None,
         }
+    }
+}
+
+impl From<AbilityFlag> for Flag {
+    fn from(value: AbilityFlag) -> Self {
+        Self::AbilityFlag(value)
     }
 }
 
@@ -151,5 +131,3 @@ impl From<Flag> for Attribute {
         Attribute::Flag(value)
     }
 }
-
-
