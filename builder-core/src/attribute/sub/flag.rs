@@ -5,6 +5,7 @@ use crate::{
     attribute::{Attribute, GetBonuses, GetCloned},
     bonus::Bonus,
 };
+use crate::item::types::{ArmorType, WeaponCategory, WeaponType};
 
 use super::{Ability, Immunity, SavingThrow, Toggle, WeaponHand};
 
@@ -35,6 +36,12 @@ pub enum Flag {
     TrueSeeing,
     /// If the user is immune to something
     Immunity(Immunity),
+    /// If the character is wearing a certain type of armor
+    WearingArmor(ArmorType),
+    /// Indicates if the character is wielding a weapon in a given hand
+    WeaponEquipped(WeaponHand, WeaponType),
+    /// Indicates if a certain weapon category is equipped
+    WeaponCategoryEquipped(WeaponHand, WeaponCategory),
 }
 
 impl ToString for Flag {
@@ -61,6 +68,9 @@ impl ToString for Flag {
             }
             Flag::TrueSeeing => String::from("True Seeing"),
             Flag::Immunity(immunity) => format!("Immunity to {}", immunity.to_string()),
+            Flag::WearingArmor(armor) => format!("Wearing {} Armor", armor.to_string()),
+            Flag::WeaponEquipped(hand, weapon_type) => format!("{} in {} hand", weapon_type.to_string(), hand.to_string()),
+            Flag::WeaponCategoryEquipped(hand, weapon_category) => format!("{} in {} hand", weapon_category.to_string(), hand.to_string()),
         }
     }
 }
@@ -95,6 +105,11 @@ impl GetCloned<Flag> for Flag {
                     .map(|hand| Flag::AbilityToDamage(*ability, hand))
                     .to_vec(),
             ),
+            Flag::WeaponEquipped(hand, weapon_type) => Some(
+                vec![
+                    (*hand, WeaponCategory::from(*weapon_type)).into()
+                ]
+            ),
             _ => None,
         }
     }
@@ -112,9 +127,29 @@ impl From<Toggle> for Flag {
     }
 }
 
+impl From<ArmorType> for Flag {
+    fn from(value: ArmorType) -> Self {
+        Self::WearingArmor(value)
+    }
+}
+
+impl From<(WeaponHand, WeaponType)> for Flag {
+    fn from((hand, weapon_type): (WeaponHand, WeaponType)) -> Self {
+        Self::WeaponEquipped(hand, weapon_type)
+    }
+}
+
+impl From<(WeaponHand, WeaponCategory)> for Flag {
+    fn from((hand, weapon_category): (WeaponHand, WeaponCategory)) -> Self {
+        Self::WeaponCategoryEquipped(hand, weapon_category)
+    }
+}
+
 impl From<Flag> for Attribute {
     #[inline(always)]
     fn from(value: Flag) -> Attribute {
         Attribute::Flag(value)
     }
 }
+
+
