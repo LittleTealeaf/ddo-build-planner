@@ -43,3 +43,5 @@ mod spell_type;
 pub use spell_type::*;
 mod difficulty_check;
 pub use difficulty_check::*;
+mod proficiency;
+pub use proficiency::*;

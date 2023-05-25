@@ -39,6 +39,7 @@ pub mod character;
 pub mod compiler;
 /// Handles representation of player feats.
 pub mod feat;
+pub mod item;
 /// Represents Player Classes within the game
 pub mod player_class;
 /// Misc. Utility functions and Macros.
