@@ -7,6 +7,8 @@ use crate::{
     bonus::{Bonus, BonusType},
 };
 
+use super::Skill;
+
 #[derive(Enum, PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Ability {
     Strength,
@@ -38,8 +40,56 @@ impl Ability {
     }
 
     pub fn get_modifier_bonuses(&self, value: f32) -> Vec<Bonus> {
-        vec![]
+        let mut vec = match self {
+            Ability::Strength => vec![
+                modifier_skill_bonus(Ability::Strength, Skill::Jump, value),
+                modifier_skill_bonus(Ability::Strength, Skill::Swim, value),
+            ],
+            Ability::Dexterity => vec![
+                modifier_skill_bonus(Ability::Dexterity, Skill::Balance, value),
+                modifier_skill_bonus(Ability::Dexterity, Skill::Hide, value),
+                modifier_skill_bonus(Ability::Dexterity, Skill::MoveSilently, value),
+                modifier_skill_bonus(Ability::Dexterity, Skill::OpenLock, value),
+                modifier_skill_bonus(Ability::Dexterity, Skill::Tumble, value),
+            ],
+            Ability::Constitution => vec![modifier_skill_bonus(
+                Ability::Constitution,
+                Skill::Concentration,
+                value,
+            )],
+            Ability::Intelligence => vec![
+                modifier_skill_bonus(Ability::Intelligence, Skill::DisableDevice, value),
+                modifier_skill_bonus(Ability::Intelligence, Skill::Repair, value),
+                modifier_skill_bonus(Ability::Intelligence, Skill::Search, value),
+                modifier_skill_bonus(Ability::Intelligence, Skill::Spellcraft, value),
+            ],
+            Ability::Wisdom => vec![
+                modifier_skill_bonus(Ability::Wisdom, Skill::Heal, value),
+                modifier_skill_bonus(Ability::Wisdom, Skill::Listen, value),
+                modifier_skill_bonus(Ability::Wisdom, Skill::Spot, value),
+            ],
+            Ability::Charisma => vec![
+                modifier_skill_bonus(Ability::Charisma, Skill::Bluff, value),
+                modifier_skill_bonus(Ability::Charisma, Skill::Diplomacy, value),
+                modifier_skill_bonus(Ability::Charisma, Skill::Haggle, value),
+                modifier_skill_bonus(Ability::Charisma, Skill::Intimidate, value),
+                modifier_skill_bonus(Ability::Charisma, Skill::Perform, value),
+                modifier_skill_bonus(Ability::Charisma, Skill::UseMagicalDevice, value),
+            ],
+        };
+
+        return vec;
     }
+}
+
+fn modifier_skill_bonus(ability: Ability, skill: Skill, value: f32) -> Bonus {
+    Bonus::new(
+        skill.into(),
+        BonusType::AbilityModifier,
+        value.into(),
+        Attribute::AbilityModifier(ability).into(),
+        None,
+    )
 }
 
 impl Display for Ability {
@@ -56,5 +106,11 @@ impl Display for Ability {
                 Ability::Charisma => "Charisma",
             }
         )
+    }
+}
+
+impl From<Skill> for Attribute {
+    fn from(value: Skill) -> Self {
+        Attribute::Skill(value)
     }
 }

@@ -14,6 +14,7 @@ pub enum Attribute {
     Dummy,
     Ability(Ability),
     AbilityModifier(Ability),
+    Skill(Skill),
 }
 
 impl Display for Attribute {
@@ -22,6 +23,7 @@ impl Display for Attribute {
             Attribute::Dummy => write!(f, "Dummy"),
             Attribute::Ability(ability) => write!(f, "{} Score", ability),
             Attribute::AbilityModifier(ability) => write!(f, "{} Modifier", ability),
+            Attribute::Skill(skill) => skill.fmt(f),
         }
     }
 }
@@ -31,6 +33,7 @@ impl Attribute {
         match self {
             Attribute::AbilityModifier(ability) => Some(ability.get_modifier_bonuses(value)),
             Attribute::Ability(ability) => Some(ability.get_score_bonuses(value)),
+            Attribute::Skill(skill) => skill.get_bonuses(value),
             _ => None,
         }
     }
