@@ -4,7 +4,7 @@ use enum_map::Enum;
 
 use crate::bonus::Bonus;
 
-#[derive(Clone, Copy, PartialEq, Eq, Enum)]
+#[derive(Clone, Copy, PartialEq, Eq, Enum, Debug)]
 pub enum Skill {
     Balance,
     Bluff,
