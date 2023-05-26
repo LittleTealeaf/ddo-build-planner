@@ -15,7 +15,6 @@ pub struct EnumBinaryMap<K: Enum + Copy, V> {
 }
 
 impl<K: Enum + Copy, V> Default for EnumBinaryMap<K, V> {
-    #[inline]
     fn default() -> Self {
         Self {
             array: Vec::new(),
@@ -28,7 +27,6 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     /// Creates a new instance of the [`EnumBinaryMap`]
     ///
     /// This uses [`Self::default()`] to create a new instance.
-    #[inline]
     pub fn new() -> Self {
         Self::default()
     }
@@ -36,7 +34,6 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     /// Creates a new instance of [`EnumBinaryMap`] with a set initial capacity
     ///
     /// This internally uses the [`Vec::with_capacity()`] method to initialize the map with a set capacity.
-    #[inline]
     pub fn with_capacity(size: usize) -> Self {
         Self {
             array: Vec::with_capacity(size),
@@ -102,7 +99,6 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
     }
 
     /// Returns an iterator over the keys and values of the map
-    #[inline(always)]
     pub fn iter(&self) -> impl Iterator<Item = (K, &V)> {
         self.array
             .iter()
@@ -114,8 +110,7 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
     type Item = (K, V);
 
     type IntoIter = Map<IntoIter<(usize, V)>, fn((usize, V)) -> (K, V)>;
-
-    #[inline(always)]
+    
     fn into_iter(self) -> Self::IntoIter {
         self.array
             .into_iter()
@@ -124,7 +119,6 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
 }
 
 impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
-    #[inline]
     fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
         let mut array = Vec::new();
         for (key, value) in iter {

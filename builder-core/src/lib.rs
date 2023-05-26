@@ -24,6 +24,6 @@
 
 //! The goal of this crate is to implement all of the build logic, including attributes, breakdowns, enhancements, feats, items, and more
 
-pub mod utils;
-
 pub mod attribute;
+pub mod bonus;
+pub mod utils;

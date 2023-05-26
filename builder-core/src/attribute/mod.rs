@@ -1,1 +1,1 @@
-﻿//! Represents each attribute that a character can have
+//! Represents each attribute that a character can have
