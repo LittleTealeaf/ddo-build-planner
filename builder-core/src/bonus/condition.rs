@@ -9,5 +9,5 @@ pub enum Condition {
     Eq(Attribute, f32),
     NotEq(Attribute, f32),
     Any(Vec<Condition>),
-    All(Vec<Condition>)
+    All(Vec<Condition>),
 }

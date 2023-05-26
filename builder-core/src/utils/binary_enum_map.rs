@@ -110,7 +110,7 @@ impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
     type Item = (K, V);
 
     type IntoIter = Map<IntoIter<(usize, V)>, fn((usize, V)) -> (K, V)>;
-    
+
     fn into_iter(self) -> Self::IntoIter {
         self.array
             .into_iter()
