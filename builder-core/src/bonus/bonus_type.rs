@@ -6,7 +6,7 @@ use enum_map::Enum;
 /// added. However, bonuses of different [`BonusType`] will stack.
 ///
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
-#[derive(Clone, Copy, PartialEq, Eq, Enum)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum BonusType {
     // TODO: Documentation
     AbilityModifier,
