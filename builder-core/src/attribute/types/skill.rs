@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::bonus::Bonus;
+use crate::{bonus::Bonus, attribute::GetBonuses};
 
 #[derive(Clone, Copy, PartialEq, Eq, Enum, Debug)]
 pub enum Skill {
@@ -54,7 +54,10 @@ impl Skill {
         Skill::UseMagicalDevice,
     ];
 
-    pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+}
+
+impl GetBonuses for Skill {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         todo!()
     }
 }

@@ -1,8 +1,8 @@
 //! Represents each attribute that a character can have
+pub mod flags;
+pub mod toggles;
 mod traits;
 pub mod types;
-pub mod toggles;
-pub mod flags;
 
 pub use traits::*;
 
@@ -20,6 +20,9 @@ pub enum Attribute {
     Ability(Ability),
     AbilityModifier(Ability),
     Skill(Skill),
+    SpellPower(SpellPower),
+    SpellCriticalChance(SpellPower),
+    SpellCriticalDamage(SpellPower),
 }
 
 impl Display for Attribute {
@@ -30,6 +33,9 @@ impl Display for Attribute {
             Attribute::AbilityModifier(ability) => write!(f, "{} Modifier", ability),
             Attribute::Skill(skill) => skill.fmt(f),
             Attribute::Toggle(toggle) => toggle.fmt(f),
+            Attribute::SpellPower(sp) => write!(f, "{} Spell Power", sp),
+            Attribute::SpellCriticalChance(sp) => write!(f, "{} Spell Critical Chance", sp),
+            Attribute::SpellCriticalDamage(sp) => write!(f, "{} Spell Critical Damage", sp),
         }
     }
 }
@@ -37,10 +43,19 @@ impl Display for Attribute {
 impl Attribute {
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Attribute::AbilityModifier(ability) => Some(ability.get_modifier_bonuses(value)),
-            Attribute::Ability(ability) => Some(ability.get_score_bonuses(value)),
+            Attribute::AbilityModifier(ability) => {
+                GetBonuses::<_AbilityModifier>::get_bonuses(ability, value)
+            }
+            Attribute::Ability(ability) => GetBonuses::<_AbilityScore>::get_bonuses(ability, value),
             Attribute::Skill(skill) => skill.get_bonuses(value),
             Attribute::Toggle(toggle) => toggle.get_bonuses(value),
+            Attribute::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
+            Attribute::SpellCriticalChance(sp) => {
+                GetBonuses::<_SpellCriticalChance>::get_bonuses(sp, value)
+            }
+            Attribute::SpellCriticalDamage(sp) => {
+                GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
+            }
             _ => None,
         }
     }

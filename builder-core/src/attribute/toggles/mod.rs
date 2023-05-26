@@ -4,6 +4,8 @@ use enum_map::Enum;
 
 use crate::bonus::Bonus;
 
+use super::GetBonuses;
+
 #[derive(Clone, Copy, PartialEq, Eq, Enum, Debug)]
 pub enum Toggle {
     Blocking,
@@ -21,8 +23,8 @@ impl Display for Toggle {
     }
 }
 
-impl Toggle {
-    pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+impl GetBonuses for Toggle {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         None
     }
 }

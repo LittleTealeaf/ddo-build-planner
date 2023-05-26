@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::Attribute,
+    attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
 };
 
@@ -28,19 +28,27 @@ impl Ability {
         Ability::Wisdom,
         Ability::Charisma,
     ];
+}
 
-    pub fn get_score_bonuses(&self, value: f32) -> Vec<Bonus> {
-        vec![Bonus::new(
+pub struct _AbilityScore;
+
+impl GetBonuses<_AbilityScore> for Ability {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        Some(vec![Bonus::new(
             Attribute::AbilityModifier(*self),
             BonusType::AbilityModifier,
             ((value - 10f32) / 2f32).floor().into(),
             Attribute::Ability(*self).into(),
             None,
-        )]
+        )])
     }
+}
 
-    pub fn get_modifier_bonuses(&self, value: f32) -> Vec<Bonus> {
-        match self {
+pub struct _AbilityModifier;
+
+impl GetBonuses<_AbilityModifier> for Ability {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        Some(match self {
             Ability::Strength => vec![
                 modifier_skill_bonus(Ability::Strength, Skill::Jump, value),
                 modifier_skill_bonus(Ability::Strength, Skill::Swim, value),
@@ -76,7 +84,7 @@ impl Ability {
                 modifier_skill_bonus(Ability::Charisma, Skill::Perform, value),
                 modifier_skill_bonus(Ability::Charisma, Skill::UseMagicalDevice, value),
             ],
-        }
+        })
     }
 }
 
