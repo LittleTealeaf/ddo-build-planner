@@ -4,7 +4,7 @@ use enum_map::Enum;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusSource, BonusType},
+    bonus::{Bonus, BonusType},
 };
 
 use super::Skill;
