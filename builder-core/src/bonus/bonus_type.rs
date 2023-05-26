@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use enum_map::Enum;
 
 /// Describes the stacking-type of a bonus.
@@ -17,7 +19,7 @@ pub enum BonusType {
     /// Alchemical bonuses
     Alchemical,
     /// Artifact bonuses
-    /// 
+    ///
     /// These are typically bonuses from named item sets
     Artifact,
     /// Competence bonuses
@@ -73,35 +75,46 @@ pub enum BonusType {
     Spooky,
 }
 
-impl ToString for BonusType {
-    fn to_string(&self) -> String {
-        match self {
-            BonusType::AbilityModifier => String::from("Ability Modifier"),
-            BonusType::ActionBoost => String::from("Action Boost"),
-            BonusType::Alchemical => String::from("Alchemical"),
-            BonusType::Artifact => String::from("Artifact"),
-            BonusType::Competence => String::from("Competence"),
-            BonusType::Deflection => String::from("Deflection"),
-            BonusType::Enhancement => String::from("Enhancement"),
-            BonusType::Epic => String::from("Epic"),
-            BonusType::Exceptional => String::from("Exceptional"),
-            BonusType::Feat => String::from("Feat"),
-            BonusType::Festive => String::from("Festive"),
-            BonusType::Insightful => String::from("Insightful"),
-            BonusType::Legendary => String::from("Legendary"),
-            BonusType::Morale => String::from("Morale"),
-            BonusType::Music => String::from("Music"),
-            BonusType::Primal => String::from("Primal"),
-            BonusType::Profane => String::from("Profane"),
-            BonusType::Quality => String::from("Quality"),
-            BonusType::Sacred => String::from("Sacred"),
-            BonusType::Shield => String::from("Shield"),
-            BonusType::Size => String::from("Size"),
-            BonusType::Stacking => String::from("Stacking"),
-            BonusType::Spooky => String::from("Spooky"),
-        }
+impl Display for BonusType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                BonusType::AbilityModifier => "Ability Modifier",
+                BonusType::ActionBoost => "Action Boost",
+                BonusType::Alchemical => "Alchemical",
+                BonusType::Artifact => "Artifact",
+                BonusType::Competence => "Competence",
+                BonusType::Deflection => "Deflection",
+                BonusType::Enhancement => "Enhancement",
+                BonusType::Epic => "Epic",
+                BonusType::Exceptional => "Exceptional",
+                BonusType::Feat => "Feat",
+                BonusType::Festive => "Festive",
+                BonusType::Insightful => "Insightful",
+                BonusType::Legendary => "Legendary",
+                BonusType::Morale => "Morale",
+                BonusType::Music => "Music",
+                BonusType::Primal => "Primal",
+                BonusType::Profane => "Profane",
+                BonusType::Quality => "Quality",
+                BonusType::Sacred => "Sacred",
+                BonusType::Shield => "Shield",
+                BonusType::Size => "Size",
+                BonusType::Stacking => "Stacking",
+                BonusType::Spooky => "Spooky",
+            }
+        )
     }
 }
+
+// impl ToString for BonusType {
+//     fn to_string(&self) -> String {
+//         match self {
+//         }
+//     }
+// }
 
 impl Default for BonusType {
     fn default() -> Self {
@@ -117,7 +130,7 @@ impl BonusType {
     ///
     /// ```
     /// use builder_core::bonus::BonusType;
-    /// 
+    ///
     /// assert!(BonusType::Stacking.is_stacking());
     /// assert!(!BonusType::Enhancement.is_stacking());
     /// ```
