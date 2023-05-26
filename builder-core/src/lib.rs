@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 #![warn(
-    missing_docs,
     clippy::inefficient_to_string,
     clippy::unwrap_used,
     clippy::useless_let_if_seq,

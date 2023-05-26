@@ -1,6 +1,6 @@
 use crate::attribute::Attribute;
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub enum Condition {
     Has(Attribute),
     NotHave(Attribute),
@@ -8,4 +8,6 @@ pub enum Condition {
     Min(Attribute, f32),
     Eq(Attribute, f32),
     NotEq(Attribute, f32),
+    Any(Vec<Condition>),
+    All(Vec<Condition>)
 }
