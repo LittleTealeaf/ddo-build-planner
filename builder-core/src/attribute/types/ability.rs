@@ -40,7 +40,7 @@ impl Ability {
     }
 
     pub fn get_modifier_bonuses(&self, value: f32) -> Vec<Bonus> {
-        let mut vec = match self {
+        match self {
             Ability::Strength => vec![
                 modifier_skill_bonus(Ability::Strength, Skill::Jump, value),
                 modifier_skill_bonus(Ability::Strength, Skill::Swim, value),
@@ -76,9 +76,7 @@ impl Ability {
                 modifier_skill_bonus(Ability::Charisma, Skill::Perform, value),
                 modifier_skill_bonus(Ability::Charisma, Skill::UseMagicalDevice, value),
             ],
-        };
-
-        return vec;
+        }
     }
 }
 
