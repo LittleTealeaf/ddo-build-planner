@@ -2,6 +2,7 @@
 mod traits;
 pub mod types;
 pub mod toggles;
+pub mod flags;
 
 pub use traits::*;
 
