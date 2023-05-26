@@ -7,7 +7,7 @@ use crate::{
     bonus::{Bonus, BonusType},
 };
 
-use super::Skill;
+use super::{SavingThrow, Skill};
 
 #[derive(Enum, PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Ability {
@@ -29,10 +29,13 @@ impl Ability {
         Ability::Charisma,
     ];
 
-    fn modifier_skill_bonus(&self, skill: Skill, value: f32) -> Bonus {
+    fn modifier_bonus<T>(&self, attribute: T, value: f32) -> Bonus
+    where
+        Attribute: From<T>,
+    {
         Bonus::new(
-            skill.into(),
-            BonusType::Stacking,
+            attribute.into(),
+            BonusType::AbilityModifier,
             value.into(),
             Attribute::AbilityModifier(*self).into(),
             None,
@@ -46,7 +49,7 @@ impl GetBonuses<_AbilityScore> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         Some(vec![Bonus::new(
             Attribute::AbilityModifier(*self),
-            BonusType::AbilityModifier,
+            BonusType::Stacking,
             ((value - 10f32) / 2f32).floor().into(),
             Attribute::Ability(*self).into(),
             None,
@@ -60,35 +63,40 @@ impl GetBonuses<_AbilityModifier> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         Some(match self {
             Ability::Strength => vec![
-                self.modifier_skill_bonus(Skill::Jump, value),
-                self.modifier_skill_bonus(Skill::Swim, value),
+                self.modifier_bonus(Skill::Jump, value),
+                self.modifier_bonus(Skill::Swim, value),
             ],
             Ability::Dexterity => vec![
-                self.modifier_skill_bonus(Skill::Balance, value),
-                self.modifier_skill_bonus(Skill::Hide, value),
-                self.modifier_skill_bonus(Skill::MoveSilently, value),
-                self.modifier_skill_bonus(Skill::OpenLock, value),
-                self.modifier_skill_bonus(Skill::Tumble, value),
+                self.modifier_bonus(Skill::Balance, value),
+                self.modifier_bonus(Skill::Hide, value),
+                self.modifier_bonus(Skill::MoveSilently, value),
+                self.modifier_bonus(Skill::OpenLock, value),
+                self.modifier_bonus(Skill::Tumble, value),
+                self.modifier_bonus(SavingThrow::Reflex, value),
             ],
-            Ability::Constitution => vec![self.modifier_skill_bonus(Skill::Concentration, value)],
+            Ability::Constitution => vec![
+                self.modifier_bonus(Skill::Concentration, value),
+                self.modifier_bonus(SavingThrow::Fortitude, value),
+            ],
             Ability::Intelligence => vec![
-                self.modifier_skill_bonus(Skill::DisableDevice, value),
-                self.modifier_skill_bonus(Skill::Repair, value),
-                self.modifier_skill_bonus(Skill::Search, value),
-                self.modifier_skill_bonus(Skill::Spellcraft, value),
+                self.modifier_bonus(Skill::DisableDevice, value),
+                self.modifier_bonus(Skill::Repair, value),
+                self.modifier_bonus(Skill::Search, value),
+                self.modifier_bonus(Skill::Spellcraft, value),
             ],
             Ability::Wisdom => vec![
-                self.modifier_skill_bonus(Skill::Heal, value),
-                self.modifier_skill_bonus(Skill::Listen, value),
-                self.modifier_skill_bonus(Skill::Spot, value),
+                self.modifier_bonus(Skill::Heal, value),
+                self.modifier_bonus(Skill::Listen, value),
+                self.modifier_bonus(Skill::Spot, value),
+                self.modifier_bonus(SavingThrow::Will, value),
             ],
             Ability::Charisma => vec![
-                self.modifier_skill_bonus(Skill::Bluff, value),
-                self.modifier_skill_bonus(Skill::Diplomacy, value),
-                self.modifier_skill_bonus(Skill::Haggle, value),
-                self.modifier_skill_bonus(Skill::Intimidate, value),
-                self.modifier_skill_bonus(Skill::Perform, value),
-                self.modifier_skill_bonus(Skill::UseMagicalDevice, value),
+                self.modifier_bonus(Skill::Bluff, value),
+                self.modifier_bonus(Skill::Diplomacy, value),
+                self.modifier_bonus(Skill::Haggle, value),
+                self.modifier_bonus(Skill::Intimidate, value),
+                self.modifier_bonus(Skill::Perform, value),
+                self.modifier_bonus(Skill::UseMagicalDevice, value),
             ],
         })
     }

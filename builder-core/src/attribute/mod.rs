@@ -1,5 +1,6 @@
 //! Represents each attribute that a character can have
 pub mod flags;
+pub mod selectors;
 pub mod toggles;
 mod traits;
 pub mod types;
@@ -9,9 +10,15 @@ pub use traits::*;
 use crate::bonus::Bonus;
 use enum_map::Enum;
 use std::fmt::Display;
-use types::*;
 
-use self::toggles::Toggle;
+use self::{
+    selectors::SpellSelector,
+    toggles::Toggle,
+    types::{
+        Ability, SavingThrow, Skill, SpellPower, _AbilityModifier, _AbilityScore,
+        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
+    },
+};
 
 #[derive(Copy, Clone, Enum, Eq, PartialEq, Debug)]
 pub enum Attribute {
@@ -20,9 +27,12 @@ pub enum Attribute {
     Ability(Ability),
     AbilityModifier(Ability),
     Skill(Skill),
+    SavingThrow(SavingThrow),
     SpellPower(SpellPower),
     SpellCriticalChance(SpellPower),
     SpellCriticalDamage(SpellPower),
+    CasterLevel(SpellSelector),
+    MaxCasterLevel(SpellSelector),
 }
 
 impl Display for Attribute {
@@ -36,6 +46,9 @@ impl Display for Attribute {
             Attribute::SpellPower(sp) => write!(f, "{} Spell Power", sp),
             Attribute::SpellCriticalChance(sp) => write!(f, "{} Spell Critical Chance", sp),
             Attribute::SpellCriticalDamage(sp) => write!(f, "{} Spell Critical Damage", sp),
+            Attribute::SavingThrow(saving_throw) => write!(f, "{} Saving Throw", saving_throw),
+            Attribute::CasterLevel(selector) => write!(f, "{} Caster Level", selector),
+            Attribute::MaxCasterLevel(selector) => write!(f, "{} Max Caster Level", selector),
         }
     }
 }
