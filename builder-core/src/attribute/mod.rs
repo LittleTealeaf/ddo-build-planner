@@ -23,7 +23,7 @@ attributes!(
     val,
     Dummy() => (
         String::from("Dummy"),
-        "A dummy attrirbute.\n\nOften used to indicate that a data source should be removed from the Brerakdowns.",
+        "A dummy attribute.\n\nOften used to indicate that a data source should be removed from the Compilations.",
         None,
         None
     )
