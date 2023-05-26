@@ -78,6 +78,12 @@ impl GetCloned<Skill> for Skill {
     }
 }
 
+impl GetCloned<Attribute> for Skill {
+    fn get_cloned(&self) -> Option<Vec<Attribute>> {
+        matches!(self, Self::All).then(|| Skill::VALUES.map(Attribute::from).to_vec())
+    }
+}
+
 impl From<Skill> for Attribute {
     #[inline(always)]
     fn from(value: Skill) -> Attribute {

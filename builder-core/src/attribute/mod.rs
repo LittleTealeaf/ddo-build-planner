@@ -61,13 +61,13 @@ attributes!(
         skill.to_string(),
         "Skills that provide additional attributes and abilities for the character.",
         skill.get_bonuses(val),
-        Some(skill.get_cloned()?.into_iter().map(Attribute::Skill).collect())
+        skill.get_cloned()
     )
     SavingThrow(savingthrow: SavingThrow) => (
         savingthrow.to_string(),
         "Represents the three main saving throws: [Reflex](SavingThrow::Reflex) ([Dexterity](Ability::Dexterity)), [Fortitude](SavingThrow::Fortitude) ([Constitution](Ability::Constitution)), and [Will](SavingThrow::Will) ([Wisdom](Ability::Wisdom)). Also represents additional specific saving throws.",
         None,
-        Some(savingthrow.get_cloned()?.into_iter().map(Attribute::SavingThrow).collect())
+        savingthrow.get_cloned()
     )
     SpellPower(spell_power: SpellPower) => (
         format!("{} Spell Power", spell_power.to_string()),
