@@ -33,6 +33,7 @@ pub enum Attribute {
     SpellCriticalDamage(SpellPower),
     CasterLevel(SpellSelector),
     MaxCasterLevel(SpellSelector),
+    SpellDC(SpellSelector),
 }
 
 impl Display for Attribute {
@@ -49,6 +50,7 @@ impl Display for Attribute {
             Attribute::SavingThrow(saving_throw) => write!(f, "{} Saving Throw", saving_throw),
             Attribute::CasterLevel(selector) => write!(f, "{} Caster Level", selector),
             Attribute::MaxCasterLevel(selector) => write!(f, "{} Max Caster Level", selector),
+            Attribute::SpellDC(selector) => write!(f, "{} Spell DC", selector),
         }
     }
 }
