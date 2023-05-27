@@ -4,30 +4,21 @@
 
 mod attribute_queue;
 
-use enum_map::IntoIter;
 use itertools::Itertools;
 
 use crate::{
-    attribute::{self, Attribute},
+    attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusValue, Condition},
     utils::EnumBinaryMap,
 };
 
 use self::attribute_queue::AttributeQueue;
+
+#[derive(Default)]
 pub struct Compiler {
     bonuses: EnumBinaryMap<Attribute, Vec<Bonus>>,
     cache: EnumBinaryMap<Attribute, f32>,
     children: EnumBinaryMap<BonusSource, Vec<Attribute>>,
-}
-
-impl Default for Compiler {
-    fn default() -> Self {
-        Self {
-            bonuses: Default::default(),
-            cache: Default::default(),
-            children: Default::default(),
-        }
-    }
 }
 
 // Public Interface

@@ -180,7 +180,6 @@ impl<K: Enum + Copy, V, I: Iterator<Item = (K, V)> + Sized> From<I> for EnumBina
 }
 
 impl<K: Enum + Copy, I: Iterator<Item = K> + Sized> From<I> for EnumBinaryMap<K, ()> {
-
     fn from(value: I) -> Self {
         let mut map = EnumBinaryMap::default();
         for key in value {

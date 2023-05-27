@@ -67,7 +67,7 @@ pub enum BonusType {
     /// This is also the default bonus, so it can be obtained via
     /// ```
     /// use builder_core::bonus::BonusType;
-    /// let bonus_type: BonusType = Default::default();
+    /// let bonus_type: BonusType = BonusType::default();
     /// assert_eq!(BonusType::Stacking, bonus_type);
     /// ```
     Stacking,

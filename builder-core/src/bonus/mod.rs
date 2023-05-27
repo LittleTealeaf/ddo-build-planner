@@ -43,7 +43,7 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 0f32.into(),
             source,
-            condition: None
+            condition: None,
         }
     }
 

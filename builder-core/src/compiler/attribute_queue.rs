@@ -2,20 +2,11 @@ use std::collections::VecDeque;
 
 use crate::{attribute::Attribute, utils::EnumBinaryMap};
 
+#[derive(Default)]
 pub struct AttributeQueue {
     forced: EnumBinaryMap<Attribute, ()>,
     queue: VecDeque<Attribute>,
     buffer: Vec<Attribute>,
-}
-
-impl Default for AttributeQueue {
-    fn default() -> Self {
-        Self {
-            forced: Default::default(),
-            queue: Default::default(),
-            buffer: Default::default(),
-        }
-    }
 }
 
 impl AttributeQueue {
@@ -76,7 +67,6 @@ mod tests {
 
     #[test]
     fn duplcate_entries_update_forced() {
-
         let mut queue = AttributeQueue::default();
 
         queue.insert(vec![Attribute::Dummy], false);
@@ -95,11 +85,10 @@ mod tests {
         assert_eq!(Some((Attribute::Dummy, true)), queue.get_next_attribute());
     }
 
-
     #[test]
     fn forced_attributes_lose_force_after_fetching() {
         let mut queue = AttributeQueue::default();
-        
+
         queue.insert(vec![Attribute::Dummy], true);
 
         assert_eq!(Some((Attribute::Dummy, true)), queue.get_next_attribute());
