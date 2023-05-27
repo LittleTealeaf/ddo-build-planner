@@ -32,19 +32,16 @@ impl Compiler {
     pub fn get_attribute(&self, attribute: &Attribute) -> f32 {
         self.cache
             .get(attribute)
-            .map(|value| *value)
+            .cloned()
             .unwrap_or_else(|| self.calculate_attribute(attribute).unwrap_or(0f32))
     }
 
     pub fn get_attribute_cached(&mut self, attribute: &Attribute) -> f32 {
-        self.cache
-            .get(attribute)
-            .map(|value| *value)
-            .unwrap_or_else(|| {
-                let value = self.calculate_attribute_mut(attribute).unwrap_or(0f32);
-                self.cache.insert(*attribute, value);
-                value
-            })
+        self.cache.get(attribute).cloned().unwrap_or_else(|| {
+            let value = self.calculate_attribute_mut(attribute).unwrap_or(0f32);
+            self.cache.insert(*attribute, value);
+            value
+        })
     }
 }
 
