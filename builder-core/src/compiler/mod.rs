@@ -3,6 +3,7 @@
 //! [`Bonuses`]: crate::bonus::Bonus
 
 mod attribute_queue;
+mod default_bonuses;
 
 use itertools::Itertools;
 
@@ -12,13 +13,28 @@ use crate::{
     utils::EnumBinaryMap,
 };
 
-use self::attribute_queue::AttributeQueue;
+use self::{attribute_queue::AttributeQueue, default_bonuses::build_default_values};
 
-#[derive(Default)]
 pub struct Compiler {
     bonuses: EnumBinaryMap<Attribute, Vec<Bonus>>,
     cache: EnumBinaryMap<Attribute, f32>,
     children: EnumBinaryMap<BonusSource, Vec<Attribute>>,
+}
+
+impl Default for Compiler {
+    fn default() -> Self {
+        let mut new = Self {
+            bonuses: EnumBinaryMap::default(),
+            cache: EnumBinaryMap::default(),
+            children: EnumBinaryMap::default()
+        };
+
+        new.insert_bonuses(build_default_values());
+
+
+        new
+
+    }
 }
 
 // Public Interface

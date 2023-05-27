@@ -119,6 +119,12 @@ impl Display for Ability {
     }
 }
 
+impl From<Ability> for Attribute {
+    fn from(value: Ability) -> Self {
+        Attribute::Ability(value)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
