@@ -161,7 +161,7 @@ impl Compiler {
 // Helper functions for inserting bonuses
 impl Compiler {
     fn remove_by_source(&mut self, source: BonusSource, children: Vec<Attribute>) {
-        for child in children.into_iter() {
+        for child in children {
             if let Some(set) = self.bonuses.get_mut(&child) {
                 set.iter()
                     .enumerate()
