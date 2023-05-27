@@ -86,6 +86,7 @@ impl CloneBonus for Attribute {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         match self {
             Self::Ability(ability) => ability.clone_bonus(bonus),
+            Self::Skill(skill) => skill.clone_bonus(bonus),
             _ => None,
         }
     }

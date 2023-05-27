@@ -4,7 +4,7 @@ use enum_map::Enum;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, CloneBonus},
 };
 
 use super::SpellPower;
@@ -32,10 +32,11 @@ pub enum Skill {
     Swim,
     Tumble,
     UseMagicalDevice,
+    All,
 }
 
 impl Skill {
-    pub const ALL: [Skill; 21] = [
+    pub const VALUES: [Skill; 21] = [
         Skill::Balance,
         Skill::Bluff,
         Skill::Concentration,
@@ -92,35 +93,50 @@ impl GetBonuses for Skill {
     }
 }
 
+impl CloneBonus for Skill {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::VALUES
+                .map(|skill| {
+                    Bonus::new(
+                        skill.into(),
+                        bonus.get_type(),
+                        bonus.get_value(),
+                        bonus.get_source(),
+                        bonus.get_condition(),
+                    )
+                })
+                .to_vec()
+        })
+    }
+}
+
 impl Display for Skill {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Skill::Balance => "Balance",
-                Skill::Bluff => "Bluff",
-                Skill::Concentration => "Concentration",
-                Skill::Diplomacy => "Diplomacy",
-                Skill::DisableDevice => "Disable Device",
-                Skill::Haggle => "Haggle",
-                Skill::Heal => "Heal",
-                Skill::Hide => "Hide",
-                Skill::Intimidate => "Intimidate",
-                Skill::Jump => "Jump",
-                Skill::Listen => "Listen",
-                Skill::MoveSilently => "Move Silently",
-                Skill::OpenLock => "Open Lock",
-                Skill::Perform => "Perform",
-                Skill::Repair => "Repair",
-                Skill::Search => "Search",
-                Skill::Spellcraft => "Spellcraft",
-                Skill::Spot => "Spot",
-                Skill::Swim => "Swim",
-                Skill::Tumble => "Tumble",
-                Skill::UseMagicalDevice => "Use Magical Device",
-            }
-        )
+        match self {
+            Skill::Balance => write!(f, "Balance"),
+            Skill::Bluff => write!(f, "Bluff"),
+            Skill::Concentration => write!(f, "Concentration"),
+            Skill::Diplomacy => write!(f, "Diplomacy"),
+            Skill::DisableDevice => write!(f, "Disable Device"),
+            Skill::Haggle => write!(f, "Haggle"),
+            Skill::Heal => write!(f, "Heal"),
+            Skill::Hide => write!(f, "Hide"),
+            Skill::Intimidate => write!(f, "Intimidate"),
+            Skill::Jump => write!(f, "Jump"),
+            Skill::Listen => write!(f, "Listen"),
+            Skill::MoveSilently => write!(f, "Move Silently"),
+            Skill::OpenLock => write!(f, "Open Lock"),
+            Skill::Perform => write!(f, "Perform"),
+            Skill::Repair => write!(f, "Repair"),
+            Skill::Search => write!(f, "Search"),
+            Skill::Spellcraft => write!(f, "Spellcraft"),
+            Skill::Spot => write!(f, "Spot"),
+            Skill::Swim => write!(f, "Swim"),
+            Skill::Tumble => write!(f, "Tumble"),
+            Skill::UseMagicalDevice => write!(f, "Use Magical Device"),
+            Skill::All => write!(f, "All Skills"),
+        }
     }
 }
 
