@@ -49,13 +49,15 @@ pub struct _AbilityScore;
 
 impl GetBonuses<_AbilityScore> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        Some(vec![Bonus::new(
-            Attribute::AbilityModifier(*self),
-            BonusType::Stacking,
-            ((value - 10f32) / 2f32).floor().into(),
-            Attribute::Ability(*self).into(),
-            None,
-        )])
+        (!matches!(self, Self::All)).then(|| {
+            vec![Bonus::new(
+                Attribute::AbilityModifier(*self),
+                BonusType::Stacking,
+                ((value - 10f32) / 2f32).floor().into(),
+                Attribute::Ability(*self).into(),
+                None,
+            )]
+        })
     }
 }
 
