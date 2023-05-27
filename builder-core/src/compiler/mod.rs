@@ -208,7 +208,7 @@ impl Compiler {
                             }
                     })
                 }
-                .then(|| key)
+                .then_some(key)
             })
             .collect()
     }
