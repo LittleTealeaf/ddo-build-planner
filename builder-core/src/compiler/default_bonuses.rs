@@ -15,7 +15,7 @@ pub fn build_default_values() -> Vec<Bonus> {
             BASE,
             None,
         )],
-        Ability::ALL
+        Ability::VALUES
             .map(|ability| Bonus::new(ability.into(), STACKING, 8f32.into(), BASE, None))
             .to_vec(),
     ]
@@ -34,7 +34,7 @@ mod tests {
     fn default_abilities() {
         let compiler = Compiler::default();
 
-        for ability in Ability::ALL {
+        for ability in Ability::VALUES {
             assert_eq!(compiler.get_attribute(&ability.into()), 8f32);
         }
     }

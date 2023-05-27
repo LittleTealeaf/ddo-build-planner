@@ -4,7 +4,7 @@ use enum_map::Enum;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, CloneBonus},
 };
 
 use super::{SavingThrow, Skill};
@@ -17,10 +17,12 @@ pub enum Ability {
     Intelligence,
     Wisdom,
     Charisma,
+    /// All values
+    All,
 }
 
 impl Ability {
-    pub const ALL: [Ability; 6] = [
+    pub const VALUES: [Ability; 6] = [
         Ability::Strength,
         Ability::Dexterity,
         Ability::Constitution,
@@ -61,61 +63,77 @@ pub struct _AbilityModifier;
 
 impl GetBonuses<_AbilityModifier> for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        Some(match self {
-            Ability::Strength => vec![
+        match self {
+            Ability::Strength => Some(vec![
                 self.modifier_bonus(Skill::Jump, value),
                 self.modifier_bonus(Skill::Swim, value),
-            ],
-            Ability::Dexterity => vec![
+            ]),
+            Ability::Dexterity => Some(vec![
                 self.modifier_bonus(Skill::Balance, value),
                 self.modifier_bonus(Skill::Hide, value),
                 self.modifier_bonus(Skill::MoveSilently, value),
                 self.modifier_bonus(Skill::OpenLock, value),
                 self.modifier_bonus(Skill::Tumble, value),
                 self.modifier_bonus(SavingThrow::Reflex, value),
-            ],
-            Ability::Constitution => vec![
+            ]),
+            Ability::Constitution => Some(vec![
                 self.modifier_bonus(Skill::Concentration, value),
                 self.modifier_bonus(SavingThrow::Fortitude, value),
-            ],
-            Ability::Intelligence => vec![
+            ]),
+            Ability::Intelligence => Some(vec![
                 self.modifier_bonus(Skill::DisableDevice, value),
                 self.modifier_bonus(Skill::Repair, value),
                 self.modifier_bonus(Skill::Search, value),
                 self.modifier_bonus(Skill::Spellcraft, value),
-            ],
-            Ability::Wisdom => vec![
+            ]),
+            Ability::Wisdom => Some(vec![
                 self.modifier_bonus(Skill::Heal, value),
                 self.modifier_bonus(Skill::Listen, value),
                 self.modifier_bonus(Skill::Spot, value),
                 self.modifier_bonus(SavingThrow::Will, value),
-            ],
-            Ability::Charisma => vec![
+            ]),
+            Ability::Charisma => Some(vec![
                 self.modifier_bonus(Skill::Bluff, value),
                 self.modifier_bonus(Skill::Diplomacy, value),
                 self.modifier_bonus(Skill::Haggle, value),
                 self.modifier_bonus(Skill::Intimidate, value),
                 self.modifier_bonus(Skill::Perform, value),
                 self.modifier_bonus(Skill::UseMagicalDevice, value),
-            ],
+            ]),
+            Ability::All => None,
+        }
+    }
+}
+
+impl CloneBonus for Ability {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::VALUES
+                .map(|ability| {
+                    Bonus::new(
+                        ability.into(),
+                        bonus.get_type(),
+                        bonus.get_value(),
+                        bonus.get_source(),
+                        bonus.get_condition(),
+                    )
+                })
+                .to_vec()
         })
     }
 }
 
 impl Display for Ability {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Ability::Strength => "Strength",
-                Ability::Dexterity => "Dexterity",
-                Ability::Constitution => "Constitution",
-                Ability::Intelligence => "Intelligence",
-                Ability::Wisdom => "Wisdom",
-                Ability::Charisma => "Charisma",
-            }
-        )
+        match self {
+            Ability::Strength => write!(f, "Strength"),
+            Ability::Dexterity => write!(f, "Dexterity"),
+            Ability::Constitution => write!(f, "Constitution"),
+            Ability::Intelligence => write!(f, "Intelligence"),
+            Ability::Wisdom => write!(f, "Wisdom"),
+            Ability::Charisma => write!(f, "Charisma"),
+            Ability::All => write!(f, "All"),
+        }
     }
 }
 
@@ -131,7 +149,7 @@ mod tests {
 
     #[test]
     fn score_attribute_bonuses() {
-        for ability in Ability::ALL {
+        for ability in Ability::VALUES {
             let bonuses = Attribute::Ability(ability)
                 .get_bonuses(20f32)
                 .expect("Expected Bonuses to be returned for an Ability Score");
@@ -142,7 +160,7 @@ mod tests {
 
     #[test]
     fn modifier_attribute_gets_bonuses() {
-        for ability in Ability::ALL {
+        for ability in Ability::VALUES {
             let bonuses = Attribute::AbilityModifier(ability).get_bonuses(20f32);
 
             assert!(

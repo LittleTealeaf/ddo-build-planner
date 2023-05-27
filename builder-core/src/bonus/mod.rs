@@ -53,11 +53,11 @@ impl Bonus {
         self.attribute
     }
 
-    pub fn get_bous_type(&self) -> BonusType {
+    pub fn get_type(&self) -> BonusType {
         self.bonus_type
     }
 
-    pub fn get_bonus_value(&self) -> BonusValue {
+    pub fn get_value(&self) -> BonusValue {
         self.value
     }
 

@@ -82,8 +82,8 @@ impl Compiler {
                     .unwrap_or(true)
                     .then(|| {
                         (
-                            bonus.get_bous_type(),
-                            match bonus.get_bonus_value() {
+                            bonus.get_type(),
+                            match bonus.get_value() {
                                 BonusValue::Value(val) => val,
                                 BonusValue::Indirect(attribute) => self.get_attribute(&attribute),
                                 BonusValue::IndirectScaled(attribute, scale) => {
@@ -136,8 +136,8 @@ impl Compiler {
                         .unwrap_or(true)
                         .then(|| {
                             (
-                                bonus.get_bous_type(),
-                                match bonus.get_bonus_value() {
+                                bonus.get_type(),
+                                match bonus.get_value() {
                                     BonusValue::Value(val) => val,
                                     BonusValue::Indirect(attribute) => {
                                         self.get_attribute_cached(&attribute)
@@ -214,7 +214,7 @@ impl Compiler {
                             .get_condition()
                             .map(|condition| Compiler::condition_has_source(&condition, *attribute))
                             .unwrap_or(false)
-                            || match bonus.get_bonus_value() {
+                            || match bonus.get_value() {
                                 BonusValue::Value(_) => false,
                                 BonusValue::Indirect(attr)
                                 | BonusValue::IndirectScaled(attr, _) => attribute.eq(&attr),
