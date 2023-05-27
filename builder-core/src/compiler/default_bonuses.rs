@@ -8,20 +8,9 @@ const STACKING: BonusType = BonusType::Stacking;
 
 pub fn build_default_values() -> Vec<Bonus> {
     vec![
-        vec![Bonus::new(
-            ArmorClass::ArmorScalar.into(),
-            STACKING,
-            1f32.into(),
-            BASE,
-            None,
-        )],
-        Ability::VALUES
-            .map(|ability| Bonus::new(ability.into(), STACKING, 8f32.into(), BASE, None))
-            .to_vec(),
+        Bonus::new(ArmorClass::ArmorScalar.into(), STACKING, 1f32.into(), BASE, None),
+        Bonus::new(Ability::All.into(), STACKING, 8f32.into(), BASE, None),
     ]
-    .into_iter()
-    .flatten()
-    .collect()
 }
 
 #[cfg(test)]
