@@ -16,7 +16,7 @@ use self::{
     toggles::Toggle,
     types::{
         Ability, SavingThrow, Skill, SpellPower, _AbilityModifier, _AbilityScore,
-        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, WeaponHandStat,
+        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, WeaponHandStat, ArmorClass,
     },
 };
 
@@ -35,6 +35,7 @@ pub enum Attribute {
     MaxCasterLevel(SpellSelector),
     SpellDC(SpellSelector),
     Weapon(WeaponHandStat),
+    ArmorClass(ArmorClass),
 }
 
 impl Display for Attribute {
@@ -53,6 +54,7 @@ impl Display for Attribute {
             Attribute::MaxCasterLevel(selector) => write!(f, "{} Max Caster Level", selector),
             Attribute::SpellDC(selector) => write!(f, "{} Spell DC", selector),
             Attribute::Weapon(weapon) => weapon.fmt(f),
+            Attribute::ArmorClass(ac) => ac.fmt(f),
         }
     }
 }
@@ -74,6 +76,7 @@ impl Attribute {
                 GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
             }
             Attribute::Weapon(stat) => stat.get_bonuses(value),
+            Attribute::ArmorClass(ac) => ac.get_bonuses(value),
             _ => None,
         }
     }

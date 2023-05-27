@@ -7,6 +7,7 @@ mod spell_school;
 mod weapon_hand;
 mod weapon_hand_stat;
 mod weapon_stat;
+mod armor_class;
 
 pub use ability::*;
 pub use damage_reduction::*;
@@ -17,3 +18,4 @@ pub use spell_school::*;
 pub use weapon_hand::*;
 pub use weapon_hand_stat::*;
 pub use weapon_stat::*;
+pub use armor_class::*;
