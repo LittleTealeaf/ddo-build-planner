@@ -1,8 +1,5 @@
 use crate::{
-    attribute::{
-        types::{Ability, ArmorClass},
-        Attribute,
-    },
+    attribute::types::{Ability, ArmorClass},
     bonus::{Bonus, BonusSource, BonusType},
 };
 
@@ -19,15 +16,7 @@ pub fn build_default_values() -> Vec<Bonus> {
             None,
         )],
         Ability::ALL
-            .map(|ability| {
-                Bonus::new(
-                    ability.into(),
-                    STACKING,
-                    8f32.into(),
-                    BASE,
-                    None,
-                )
-            })
+            .map(|ability| Bonus::new(ability.into(), STACKING, 8f32.into(), BASE, None))
             .to_vec(),
     ]
     .into_iter()
