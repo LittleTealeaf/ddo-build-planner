@@ -11,6 +11,7 @@ pub use condition::*;
 pub use source::*;
 pub use value::*;
 
+#[derive(Debug, Clone)]
 pub struct Bonus {
     attribute: Attribute,
     bonus_type: BonusType,
@@ -34,5 +35,35 @@ impl Bonus {
             source,
             condition,
         }
+    }
+
+    pub fn dummy(source: BonusSource) -> Bonus {
+        Self {
+            attribute: Attribute::Dummy,
+            bonus_type: BonusType::Stacking,
+            value: 0f32.into(),
+            source,
+            condition: None
+        }
+    }
+
+    pub fn get_attribute(&self) -> Attribute {
+        self.attribute
+    }
+
+    pub fn get_bous_type(&self) -> BonusType {
+        self.bonus_type
+    }
+
+    pub fn get_bonus_value(&self) -> BonusValue {
+        self.value
+    }
+
+    pub fn get_source(&self) -> BonusSource {
+        self.source
+    }
+
+    pub fn get_condition(&self) -> Option<Condition> {
+        self.condition.clone()
     }
 }

@@ -104,6 +104,26 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
             .iter()
             .map(|(key, value)| (K::from_usize(*key), value))
     }
+
+    /// Shrinks the capacity down to just fit the array.
+    pub fn shrink_to_fit(&mut self) {
+        self.array.shrink_to_fit()
+    }
+
+    pub fn contains(&self, key: &K) -> bool {
+        self.get(key).is_some()
+    }
+
+    pub fn remove(&mut self, key: &K) -> Option<V> {
+        let key_usize = key.into_usize();
+
+        let index = self
+            .array
+            .binary_search_by_key(&key_usize, |(k, _)| *k)
+            .ok()?;
+
+        Some(self.array.remove(index).1)
+    }
 }
 
 impl<K: Enum + Copy, V> IntoIterator for EnumBinaryMap<K, V> {
@@ -154,6 +174,17 @@ impl<K: Enum + Copy, V, I: Iterator<Item = (K, V)> + Sized> From<I> for EnumBina
         let mut map: EnumBinaryMap<K, Vec<V>> = EnumBinaryMap::default();
         for (key, value) in value {
             map.get_mut_or_default(&key).push(value);
+        }
+        map
+    }
+}
+
+impl<K: Enum + Copy, I: Iterator<Item = K> + Sized> From<I> for EnumBinaryMap<K, ()> {
+
+    fn from(value: I) -> Self {
+        let mut map = EnumBinaryMap::default();
+        for key in value {
+            map.get_mut_or_default(&key);
         }
         map
     }

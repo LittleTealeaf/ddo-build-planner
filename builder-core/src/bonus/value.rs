@@ -1,5 +1,6 @@
 use crate::attribute::Attribute;
 
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum BonusValue {
     Value(f32),
     Indirect(Attribute),

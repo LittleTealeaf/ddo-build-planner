@@ -1,6 +1,8 @@
+use enum_map::Enum;
+
 use crate::attribute::Attribute;
 
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum)]
 pub enum BonusSource {
     Attribute(Attribute),
     Custom(u8),

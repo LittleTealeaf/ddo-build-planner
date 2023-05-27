@@ -1,6 +1,6 @@
 use crate::attribute::Attribute;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Condition {
     Has(Attribute),
     NotHave(Attribute),
