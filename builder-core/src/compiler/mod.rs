@@ -94,7 +94,7 @@ impl Compiler {
                         }
                     }
                 }
-                return value;
+                value
             })
             .sum(),
         )
@@ -151,7 +151,7 @@ impl Compiler {
                         }
                     }
                 }
-                return value;
+                value
             })
             .sum(),
         )
