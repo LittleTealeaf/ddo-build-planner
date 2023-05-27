@@ -16,7 +16,7 @@ use self::{
     toggles::Toggle,
     types::{
         Ability, ArmorClass, SavingThrow, Skill, SpellPower, WeaponHandStat, _AbilityModifier,
-        _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
+        _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, Sheltering,
     },
 };
 
@@ -36,6 +36,7 @@ pub enum Attribute {
     SpellDC(SpellSelector),
     Weapon(WeaponHandStat),
     ArmorClass(ArmorClass),
+    Sheltering(Sheltering),
 }
 
 impl Display for Attribute {
@@ -55,6 +56,7 @@ impl Display for Attribute {
             Attribute::SpellDC(selector) => write!(f, "{} Spell DC", selector),
             Attribute::Weapon(weapon) => weapon.fmt(f),
             Attribute::ArmorClass(ac) => ac.fmt(f),
+            Attribute::Sheltering(sheltering) => sheltering.fmt(f),
         }
     }
 }
@@ -87,6 +89,7 @@ impl CloneBonus for Attribute {
         match self {
             Self::Ability(ability) => ability.clone_bonus(bonus),
             Self::Skill(skill) => skill.clone_bonus(bonus),
+            Self::Sheltering(sheltering) => sheltering.clone_bonus(bonus),
             _ => None,
         }
     }
