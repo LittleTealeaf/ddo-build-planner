@@ -73,7 +73,7 @@ impl Attribute {
             Attribute::SpellCriticalDamage(sp) => {
                 GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
             }
-            Attribute::Weapon(stat) => stat.get_bonuses(value)
+            Attribute::Weapon(stat) => stat.get_bonuses(value),
             _ => None,
         }
     }
