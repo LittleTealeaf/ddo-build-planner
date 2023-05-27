@@ -7,7 +7,7 @@ pub mod types;
 
 pub use traits::*;
 
-use crate::bonus::Bonus;
+use crate::bonus::{Bonus, CloneBonus};
 use enum_map::Enum;
 use std::fmt::Display;
 
@@ -15,8 +15,8 @@ use self::{
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
-        Ability, SavingThrow, Skill, SpellPower, _AbilityModifier, _AbilityScore,
-        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, WeaponHandStat, ArmorClass,
+        Ability, ArmorClass, SavingThrow, Skill, SpellPower, WeaponHandStat, _AbilityModifier,
+        _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },
 };
 
@@ -77,6 +77,14 @@ impl Attribute {
             }
             Attribute::Weapon(stat) => stat.get_bonuses(value),
             Attribute::ArmorClass(ac) => ac.get_bonuses(value),
+            _ => None,
+        }
+    }
+}
+
+impl CloneBonus for Attribute {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        match self {
             _ => None,
         }
     }

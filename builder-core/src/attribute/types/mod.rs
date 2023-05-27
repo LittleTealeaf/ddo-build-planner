@@ -1,4 +1,5 @@
 mod ability;
+mod armor_class;
 mod damage_reduction;
 mod saving_throw;
 mod skill;
@@ -7,9 +8,9 @@ mod spell_school;
 mod weapon_hand;
 mod weapon_hand_stat;
 mod weapon_stat;
-mod armor_class;
 
 pub use ability::*;
+pub use armor_class::*;
 pub use damage_reduction::*;
 pub use saving_throw::*;
 pub use skill::*;
@@ -18,4 +19,3 @@ pub use spell_school::*;
 pub use weapon_hand::*;
 pub use weapon_hand_stat::*;
 pub use weapon_stat::*;
-pub use armor_class::*;

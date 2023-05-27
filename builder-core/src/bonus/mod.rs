@@ -2,6 +2,7 @@
 mod bonus_type;
 mod condition;
 mod source;
+mod traits;
 mod value;
 
 use crate::attribute::Attribute;
@@ -9,6 +10,7 @@ use crate::attribute::Attribute;
 pub use bonus_type::*;
 pub use condition::*;
 pub use source::*;
+pub use traits::*;
 pub use value::*;
 
 #[derive(Debug, Clone)]

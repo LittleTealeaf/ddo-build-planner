@@ -71,12 +71,15 @@ pub enum BonusType {
     /// assert_eq!(BonusType::Stacking, bonus_type);
     /// ```
     Stacking,
+    /// Used when things don't stack, but they don't really have a bonus type.
+    Standard,
     /// Spooky type
     Spooky,
 }
 
 impl Display for BonusType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // TODO: Refactor this
         write!(
             f,
             "{}",
@@ -104,17 +107,11 @@ impl Display for BonusType {
                 BonusType::Size => "Size",
                 BonusType::Stacking => "Stacking",
                 BonusType::Spooky => "Spooky",
+                BonusType::Standard => "Standard",
             }
         )
     }
 }
-
-// impl ToString for BonusType {
-//     fn to_string(&self) -> String {
-//         match self {
-//         }
-//     }
-// }
 
 impl Default for BonusType {
     fn default() -> Self {

@@ -9,7 +9,7 @@ use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusValue, Condition},
+    bonus::{Bonus, BonusSource, BonusValue, CloneBonus, Condition},
     utils::EnumBinaryMap,
 };
 
@@ -26,14 +26,11 @@ impl Default for Compiler {
         let mut new = Self {
             bonuses: EnumBinaryMap::default(),
             cache: EnumBinaryMap::default(),
-            children: EnumBinaryMap::default()
+            children: EnumBinaryMap::default(),
         };
 
         new.insert_bonuses(build_default_values());
-
-
         new
-
     }
 }
 
@@ -230,13 +227,26 @@ impl Compiler {
     }
 }
 
+fn clone_bonuses(bonuses: &mut Vec<Bonus>) {
+    bonuses.append(
+        &mut bonuses
+            .iter()
+            .filter_map(|bonus| bonus.get_attribute().clone_bonus(bonus))
+            .flatten()
+            .collect(),
+    )
+}
+
 // Inserting Attributes
 impl Compiler {
     pub fn insert_bonus(&mut self, bonus: Bonus) {
         self.insert_bonuses(vec![bonus])
     }
 
-    pub fn insert_bonuses(&mut self, bonuses: Vec<Bonus>) {
+    pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
+        // Clone Bonuses
+        clone_bonuses(&mut bonuses);
+
         // Create attribute queue
         let mut attribute_queue = AttributeQueue::default();
 
@@ -293,7 +303,9 @@ impl Compiler {
 
                 let value = self.get_attribute_cached(&attribute);
 
-                if let Some(bonuses) = attribute.get_bonuses(value) {
+                if let Some(mut bonuses) = attribute.get_bonuses(value) {
+                    clone_bonuses(&mut bonuses);
+
                     let updated_attributes = EnumBinaryMap::from(
                         EnumBinaryMap::from(
                             bonuses

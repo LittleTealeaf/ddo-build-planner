@@ -7,7 +7,7 @@ pub enum BonusSource {
     Attribute(Attribute),
     Custom(u8),
     /// Only used for initial values
-    Base
+    Base,
 }
 
 impl From<Attribute> for BonusSource {
