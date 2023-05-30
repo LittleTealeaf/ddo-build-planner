@@ -32,9 +32,8 @@ impl Condition {
             | Condition::Eq(attr, _)
             | Condition::NotEq(attr, _) => vec![*attr],
             Condition::Any(conds) | Condition::All(conds) => conds
-                .into_iter()
-                .map(Condition::get_dependencies)
-                .flatten()
+                .iter()
+                .flat_map(Condition::get_dependencies)
                 .collect(),
         }
     }
