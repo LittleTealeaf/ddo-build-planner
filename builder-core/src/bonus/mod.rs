@@ -83,7 +83,7 @@ impl Bonus {
         let condition_deps = self
             .condition
             .as_ref()
-            .and_then(|condition| Some(condition.get_dependencies()));
+            .map(Condition::get_dependencies);
 
         let value_deps = self.value.get_dependencies();
 
@@ -92,10 +92,8 @@ impl Bonus {
                 cond_deps.append(&mut val_deps);
             }
             Some(cond_deps)
-        } else if let Some(val_deps) = value_deps {
-            Some(val_deps)
         } else {
-            None
+            value_deps
         }
     }
 }

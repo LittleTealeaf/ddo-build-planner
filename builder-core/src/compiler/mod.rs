@@ -165,8 +165,7 @@ impl Compiler {
     fn get_bonus_iter(&self) -> impl Iterator<Item = &Bonus> {
         self.bonuses
             .iter()
-            .map(|(_, bonus_set)| bonus_set.iter())
-            .flatten()
+            .flat_map(|(_, bonus_set)| bonus_set.iter())
     }
 
     fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
