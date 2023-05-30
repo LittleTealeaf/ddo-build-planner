@@ -68,4 +68,14 @@ impl Bonus {
     pub fn get_condition(&self) -> Option<Condition> {
         self.condition.clone()
     }
+
+    pub fn clone_into_attribute(&self, attribute: Attribute) -> Bonus {
+        Bonus {
+            attribute,
+            bonus_type: self.bonus_type,
+            value: self.value,
+            source: self.source,
+            condition: self.condition.clone(),
+        }
+    }
 }

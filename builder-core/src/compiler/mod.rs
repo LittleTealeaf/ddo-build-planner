@@ -52,9 +52,28 @@ impl Compiler {
     pub fn get_attribute_cached(&mut self, attribute: &Attribute) -> f32 {
         self.cache.get(attribute).cloned().unwrap_or_else(|| {
             let value = self.calculate_attribute_mut(attribute).unwrap_or(0f32);
+            println!("Saving Cache for {}", attribute);
             self.cache.insert(*attribute, value);
             value
         })
+    }
+
+    pub fn get_all_attributes(&mut self) -> Vec<(Attribute, f32)> {
+        let attributes = self.bonuses.iter().map(|(attr, _)| attr).collect_vec();
+
+        attributes
+            .into_iter()
+            .map(|attribute| (attribute, self.get_attribute(&attribute)))
+            .collect()
+    }
+
+    pub fn get_all_attributes_cached(&mut self) -> Vec<(Attribute, f32)> {
+        let attributes = self.bonuses.iter().map(|(attr, _)| attr).collect_vec();
+
+        attributes
+            .into_iter()
+            .map(|attribute| (attribute, self.get_attribute_cached(&attribute)))
+            .collect()
     }
 }
 

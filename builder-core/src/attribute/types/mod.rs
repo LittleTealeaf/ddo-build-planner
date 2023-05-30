@@ -9,6 +9,7 @@ mod weapon_hand;
 mod weapon_hand_stat;
 mod weapon_stat;
 mod sheltering;
+mod player_class;
 
 pub use ability::*;
 pub use armor_class::*;
@@ -21,3 +22,4 @@ pub use weapon_hand::*;
 pub use weapon_hand_stat::*;
 pub use weapon_stat::*;
 pub use sheltering::*;
+pub use player_class::*;

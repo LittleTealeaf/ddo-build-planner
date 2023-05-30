@@ -7,7 +7,7 @@ pub mod types;
 
 pub use traits::*;
 
-use crate::bonus::{Bonus, CloneBonus};
+use crate::{bonus::{Bonus, CloneBonus}, player_class::PlayerClass};
 use enum_map::Enum;
 use std::fmt::Display;
 
@@ -26,6 +26,7 @@ pub enum Attribute {
     Toggle(Toggle),
     Ability(Ability),
     AbilityModifier(Ability),
+    ClassLevel(PlayerClass),
     Skill(Skill),
     SavingThrow(SavingThrow),
     SpellPower(SpellPower),
@@ -57,6 +58,7 @@ impl Display for Attribute {
             Attribute::Weapon(weapon) => weapon.fmt(f),
             Attribute::ArmorClass(ac) => ac.fmt(f),
             Attribute::Sheltering(sheltering) => sheltering.fmt(f),
+            Attribute::ClassLevel(cl) => write!(f, "{} Level", cl),
         }
     }
 }
@@ -79,6 +81,7 @@ impl Attribute {
             }
             Attribute::Weapon(stat) => stat.get_bonuses(value),
             Attribute::ArmorClass(ac) => ac.get_bonuses(value),
+            Attribute::ClassLevel(cl) => cl.get_bonuses(value),
             _ => None,
         }
     }
