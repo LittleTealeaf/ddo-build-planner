@@ -4,7 +4,7 @@ use enum_map::Enum;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, CloneBonus},
 };
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
@@ -21,6 +21,7 @@ pub enum SpellPower {
     Repair,
     Rust,
     Sonic,
+    Potency,
     Universal,
 }
 
@@ -57,6 +58,7 @@ impl Display for SpellPower {
             SpellPower::Rust => write!(f, "Rust"),
             SpellPower::Sonic => write!(f, "Sonic"),
             SpellPower::Universal => write!(f, "Universal"),
+            SpellPower::Potency => write!(f, "Potency"),
         }
     }
 }
@@ -118,5 +120,34 @@ impl GetBonuses<_SpellCriticalDamage> for SpellPower {
                 })
                 .into()
         })
+    }
+}
+
+impl CloneBonus for SpellPower {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        Some(
+            match bonus.get_attribute() {
+                Attribute::SpellPower(SpellPower::Potency) => {
+                    Some(Self::ALL.map(Attribute::SpellPower))
+                }
+                Attribute::SpellCriticalChance(SpellPower::Potency) => {
+                    Some(Self::ALL.map(Attribute::SpellCriticalChance))
+                }
+                Attribute::SpellCriticalDamage(SpellPower::Potency) => {
+                    Some(Self::ALL.map(Attribute::SpellCriticalDamage))
+                }
+                _ => None,
+            }?
+            .map(|attribute| {
+                Bonus::new(
+                    attribute,
+                    bonus.get_type(),
+                    bonus.get_value(),
+                    bonus.get_source(),
+                    bonus.get_condition(),
+                )
+            })
+            .to_vec(),
+        )
     }
 }

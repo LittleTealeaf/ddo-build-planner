@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::attribute::Attribute;
+use crate::{attribute::Attribute, bonus::{CloneBonus, Bonus}};
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum SavingThrow {
@@ -18,10 +18,11 @@ pub enum SavingThrow {
     Illusion,
     Fear,
     Curse,
+    All,
 }
 
 impl SavingThrow {
-    pub const ALL: [Self; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
+    pub const VALUES: [Self; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
 }
 
 impl Display for SavingThrow {
@@ -39,6 +40,7 @@ impl Display for SavingThrow {
             SavingThrow::Illusion => write!(f, "Illusion"),
             SavingThrow::Fear => write!(f, "Fear"),
             SavingThrow::Curse => write!(f, "Curse"),
+            SavingThrow::All => write!(f, "All"),
         }
     }
 }
@@ -46,5 +48,23 @@ impl Display for SavingThrow {
 impl From<SavingThrow> for Attribute {
     fn from(value: SavingThrow) -> Self {
         Attribute::SavingThrow(value)
+    }
+}
+
+impl CloneBonus for SavingThrow {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::VALUES
+                .map(|st| {
+                    Bonus::new(
+                        st.into(),
+                        bonus.get_type(),
+                        bonus.get_value(),
+                        bonus.get_source(),
+                        bonus.get_condition(),
+                    )
+                })
+                .to_vec()
+        })
     }
 }

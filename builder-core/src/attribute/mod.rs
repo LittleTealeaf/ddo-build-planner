@@ -15,8 +15,8 @@ use self::{
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
-        Ability, ArmorClass, SavingThrow, Skill, SpellPower, WeaponHandStat, _AbilityModifier,
-        _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, Sheltering,
+        Ability, ArmorClass, SavingThrow, Sheltering, Skill, SpellPower, WeaponHandStat,
+        _AbilityModifier, _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },
 };
 
@@ -90,6 +90,10 @@ impl CloneBonus for Attribute {
             Self::Ability(ability) => ability.clone_bonus(bonus),
             Self::Skill(skill) => skill.clone_bonus(bonus),
             Self::Sheltering(sheltering) => sheltering.clone_bonus(bonus),
+            Self::SpellPower(sp)
+            | Self::SpellCriticalChance(sp)
+            | Self::SpellCriticalDamage(sp) => sp.clone_bonus(bonus),
+            Self::SavingThrow(st) => st.clone_bonus(bonus),
             _ => None,
         }
     }
