@@ -20,3 +20,22 @@ pub enum Condition {
     /// Requires all of the provided conditions
     All(Vec<Condition>),
 }
+
+impl Condition {
+    // Returns any dependant condition
+    pub fn get_dependencies(&self) -> Vec<Attribute> {
+        match self {
+            Condition::Has(attr)
+            | Condition::NotHave(attr)
+            | Condition::Max(attr, _)
+            | Condition::Min(attr, _)
+            | Condition::Eq(attr, _)
+            | Condition::NotEq(attr, _) => vec![*attr],
+            Condition::Any(conds) | Condition::All(conds) => conds
+                .into_iter()
+                .map(Condition::get_dependencies)
+                .flatten()
+                .collect(),
+        }
+    }
+}

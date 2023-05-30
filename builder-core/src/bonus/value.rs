@@ -7,6 +7,15 @@ pub enum BonusValue {
     IndirectScaled(Attribute, f32),
 }
 
+impl BonusValue {
+    pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
+        match self {
+            Self::IndirectScaled(attr, _) | Self::Indirect(attr) => Some(vec![*attr]),
+            _ => None,
+        }
+    }
+}
+
 impl From<f32> for BonusValue {
     fn from(value: f32) -> BonusValue {
         BonusValue::Value(value)

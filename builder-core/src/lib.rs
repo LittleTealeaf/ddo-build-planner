@@ -26,5 +26,5 @@
 pub mod attribute;
 pub mod bonus;
 pub mod compiler;
-pub mod utils;
 pub mod player_class;
+pub mod utils;

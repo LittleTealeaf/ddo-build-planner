@@ -78,4 +78,24 @@ impl Bonus {
             condition: self.condition.clone(),
         }
     }
+
+    pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
+        let condition_deps = self
+            .condition
+            .as_ref()
+            .and_then(|condition| Some(condition.get_dependencies()));
+
+        let value_deps = self.value.get_dependencies();
+
+        if let Some(mut cond_deps) = condition_deps {
+            if let Some(mut val_deps) = value_deps {
+                cond_deps.append(&mut val_deps);
+            }
+            Some(cond_deps)
+        } else if let Some(val_deps) = value_deps {
+            Some(val_deps)
+        } else {
+            None
+        }
+    }
 }

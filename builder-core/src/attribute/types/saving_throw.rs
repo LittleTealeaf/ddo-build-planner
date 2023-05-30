@@ -2,7 +2,10 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::{attribute::Attribute, bonus::{CloneBonus, Bonus}};
+use crate::{
+    attribute::Attribute,
+    bonus::{Bonus, CloneBonus},
+};
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum SavingThrow {

@@ -2,7 +2,10 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::{attribute::types::{SpellPower, SpellSchool}, player_class::PlayerClass};
+use crate::{
+    attribute::types::{SpellPower, SpellSchool},
+    player_class::PlayerClass,
+};
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum SpellSelector {

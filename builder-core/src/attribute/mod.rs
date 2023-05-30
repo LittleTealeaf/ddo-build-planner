@@ -7,7 +7,10 @@ pub mod types;
 
 pub use traits::*;
 
-use crate::{bonus::{Bonus, CloneBonus}, player_class::PlayerClass};
+use crate::{
+    bonus::{Bonus, CloneBonus},
+    player_class::PlayerClass,
+};
 use enum_map::Enum;
 use std::fmt::Display;
 

@@ -4,15 +4,21 @@ use builder_core::{
         Attribute,
     },
     bonus::{Bonus, BonusType},
-    compiler::Compiler, player_class::PlayerClass,
+    compiler::Compiler,
+    player_class::PlayerClass,
 };
 
 fn main() {
     let mut compiler = Compiler::default();
 
-
-    compiler.insert_bonuses(vec![
-        Bonus::new(PlayerClass::FavoredSoul.into(), BonusType::Stacking, 10f32.into(), 0.into(), None),
+    compiler.add_bonuses(vec![
+        Bonus::new(
+            PlayerClass::FavoredSoul.into(),
+            BonusType::Stacking,
+            10f32.into(),
+            0.into(),
+            None,
+        ),
         Bonus::new(
             Ability::Intelligence.into(),
             BonusType::Stacking,
@@ -43,7 +49,7 @@ fn main() {
         ),
     ]);
 
-    for (attr, val) in compiler.get_all_attributes_cached() {
+    for (attr, val) in compiler.get_all_attributes() {
         println!("{}: {}", attr, val);
     }
 }
