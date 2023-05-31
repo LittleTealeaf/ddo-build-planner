@@ -27,6 +27,7 @@ use self::{
 #[derive(Copy, Clone, Enum, Eq, PartialEq, Debug)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
+    #[cfg(test)]
     Debug,
     /// Behaves as a dummy variable
     /// 
@@ -78,6 +79,7 @@ pub enum Attribute {
 impl Display for Attribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            #[cfg(test)]
             Attribute::Debug => write!(f, "Debug"),
             Attribute::Dummy => write!(f, "Dummy"),
             Attribute::Ability(ability) => write!(f, "{} Score", ability),

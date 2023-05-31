@@ -41,7 +41,7 @@ impl Bonus {
 
     pub fn dummy(source: BonusSource) -> Bonus {
         Self {
-            attribute: Attribute::Debug,
+            attribute: Attribute::Dummy,
             bonus_type: BonusType::Stacking,
             value: 0f32.into(),
             source,
