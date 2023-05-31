@@ -1,3 +1,6 @@
+//! Subsidary types used to specify [`Attribute`] values.
+//!
+//! [`Attribute`]: crate::attribute::Attribute
 mod ability;
 mod armor_class;
 mod damage_reduction;
