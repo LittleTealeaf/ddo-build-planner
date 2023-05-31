@@ -144,7 +144,6 @@ impl CloneBonus for Attribute {
 impl TrackAttribute for Attribute {
     fn is_tracked(&self) -> bool {
         match self {
-            Self::Dummy => false,
             Self::Ability(ability) | Self::AbilityModifier(ability) => ability.is_tracked(),
             Self::Skill(skill) => skill.is_tracked(),
             Self::SavingThrow(st) => st.is_tracked(),
