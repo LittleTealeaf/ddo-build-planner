@@ -5,7 +5,10 @@ use crate::attribute::Attribute;
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Enum)]
 pub enum BonusSource {
     Attribute(Attribute),
+    /// Only for debug(?)
     Custom(u8),
+    /// Only for debug
+    Debug(u8),
     /// Only used for initial values
     Base,
 }
