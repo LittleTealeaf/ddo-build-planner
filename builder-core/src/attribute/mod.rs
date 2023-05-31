@@ -23,23 +23,53 @@ use self::{
     },
 };
 
+/// Describes various traits of a character, ranging from having feats, stats, and much more.
 #[derive(Copy, Clone, Enum, Eq, PartialEq, Debug)]
 pub enum Attribute {
+    /// Behaves as a dummy variable
+    /// 
+    /// The use of `Dummy` is for the [`Compiler`], where a `Dummy` bonus can be added to remove
+    /// all current [`Bonus`] entries for a given [`BonusSource`].
+    ///
+    /// [`Compiler`]: crate::compiler::Compiler
+    /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
+    /// Results from the user interacting with toggles / sliders.
+    ///
+    /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
+    /// associated bonuses can react.
     Toggle(Toggle),
+    /// The ability score of the character.
     Ability(Ability),
+    /// The modifier, calculated from [`Attribute::Ability`].
     AbilityModifier(Ability),
+    /// Indicates how many levels the character has of a given class.
     ClassLevel(PlayerClass),
+    /// The different skills available in the game.
     Skill(Skill),
+    /// Both simple and complex saving throws.
     SavingThrow(SavingThrow),
+    /// Character Spell Power.
+    ///
+    /// For every spell power unit, the character gains `1%` more damage with spells of that given
+    /// [`SpellPower`]. For example, having `102` spell power gives a `+102%` spell damage boost,
+    /// which results in an overall damage scale of `202%`.
     SpellPower(SpellPower),
+    /// The chance that the user has to critically hit with spells.
     SpellCriticalChance(SpellPower),
+    /// The bonus to damage that the user has with critical hits on spells.
     SpellCriticalDamage(SpellPower),
+    /// Bonuses to caster levels of certain spells.
     CasterLevel(SpellSelector),
+    /// Bonsues to maximum caster level of certain spells.
     MaxCasterLevel(SpellSelector),
+    /// Bonuses to the DCs of certain spells.
     SpellDC(SpellSelector),
+    /// Bonuses to stats to either the main hand or off hand.
     Weapon(WeaponHandStat),
+    /// Armor class values
     ArmorClass(ArmorClass),
+    /// Physical or Magical Sheltering
     Sheltering(Sheltering),
 }
 
