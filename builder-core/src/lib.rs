@@ -29,3 +29,4 @@ pub mod bonus;
 pub mod compiler;
 pub mod player_class;
 pub mod utils;
+pub mod race;

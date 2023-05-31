@@ -6,10 +6,11 @@ use enum_map::Enum;
 pub enum WeaponHand {
     Main,
     Off,
+    Both,
 }
 
 impl WeaponHand {
-    const BOTH: [Self; 2] = [Self::Main, Self::Off];
+    pub const VALUES: [Self; 2] = [Self::Main, Self::Off];
 }
 
 impl Display for WeaponHand {
@@ -17,6 +18,7 @@ impl Display for WeaponHand {
         match self {
             WeaponHand::Main => write!(f, "Main"),
             WeaponHand::Off => write!(f, "Off"),
+            WeaponHand::Both => write!(f, "Both"),
         }
     }
 }

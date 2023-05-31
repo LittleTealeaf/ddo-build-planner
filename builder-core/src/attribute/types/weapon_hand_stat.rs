@@ -3,8 +3,8 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    attribute::{Attribute, GetBonuses, TrackAttribute},
+    bonus::{Bonus, BonusType, CloneBonus},
 };
 
 use super::{WeaponHand, WeaponStat};
@@ -49,5 +49,49 @@ impl GetBonuses for WeaponHandStat {
             )]),
             _ => None,
         }
+    }
+}
+
+impl TrackAttribute for WeaponHandStat {
+    fn is_tracked(&self) -> bool {
+        let WeaponHandStat(hand, _) = self;
+        !matches!(hand, WeaponHand::Both)
+    }
+}
+
+impl CloneBonus for WeaponHandStat {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        let WeaponHandStat(hand, stat) = self;
+        matches!(hand, WeaponHand::Both).then(|| {
+            match stat {
+                WeaponStat::Attack => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Attack)),
+                WeaponStat::Damage => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Damage)),
+                WeaponStat::CriticalAttack => {
+                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalAttack))
+                }
+                WeaponStat::CriticalDamage => {
+                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalDamage))
+                }
+                WeaponStat::CriticalMultiplier => {
+                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalMultiplier))
+                }
+                WeaponStat::CriticalMultiplier1920 => {
+                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalMultiplier1920))
+                }
+                WeaponStat::DamageReductionBypass(dr) => {
+                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::DamageReductionBypass(*dr)))
+                }
+            }
+            .map(|stat| {
+                Bonus::new(
+                    stat.into(),
+                    bonus.get_type(),
+                    bonus.get_value(),
+                    bonus.get_source(),
+                    bonus.get_condition(),
+                )
+            })
+            .to_vec()
+        })
     }
 }

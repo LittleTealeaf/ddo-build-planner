@@ -26,6 +26,8 @@ pub enum BonusType {
     Competence,
     /// Deflection bonus
     Deflection,
+    // Dodge
+    Dodge,
     /// Enhancement bonus
     Enhancement,
     /// Epic bonus
@@ -53,6 +55,8 @@ pub enum BonusType {
     Profane,
     /// Quality bonus
     Quality,
+    /// Racial bonus
+    Racial,
     /// Sacred bonus
     Sacred,
     /// Size bonus
@@ -108,6 +112,8 @@ impl Display for BonusType {
                 BonusType::Stacking => "Stacking",
                 BonusType::Spooky => "Spooky",
                 BonusType::Standard => "Standard",
+                BonusType::Racial => "Racial",
+                BonusType::Dodge => "Dodge",
             }
         )
     }

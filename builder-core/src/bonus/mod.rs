@@ -5,7 +5,7 @@ mod source;
 mod traits;
 mod value;
 
-use crate::attribute::Attribute;
+use crate::attribute::{Attribute, flags::Flag};
 
 pub use bonus_type::*;
 pub use condition::*;
@@ -82,6 +82,17 @@ impl Bonus {
             condition: None,
         }
     }
+
+    pub fn flag(flag: Flag, source: BonusSource) -> Bonus {
+        Self {
+            attribute: flag.into(),
+            bonus_type: BonusType::Stacking,
+            value: 1f32.into(),
+            source,
+            condition: None
+        }
+    }
+
 
     /// Returns the attribute that the bonus applies to.
     ///

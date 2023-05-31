@@ -15,6 +15,7 @@ use enum_map::Enum;
 use std::fmt::Display;
 
 use self::{
+    flags::Flag,
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
@@ -37,6 +38,8 @@ pub enum Attribute {
     /// [`Compiler`]: crate::compiler::Compiler
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
+    /// Indicates that the user has some flag
+    Flag(Flag),
     /// Results from the user interacting with toggles / sliders.
     ///
     /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
@@ -97,6 +100,7 @@ impl Display for Attribute {
             Attribute::ArmorClass(ac) => ac.fmt(f),
             Attribute::Sheltering(sheltering) => sheltering.fmt(f),
             Attribute::ClassLevel(cl) => write!(f, "{} Level", cl),
+            Attribute::Flag(fl) => fl.fmt(f),
         }
     }
 }
@@ -126,6 +130,7 @@ impl Attribute {
             Attribute::Weapon(stat) => stat.get_bonuses(value),
             Attribute::ArmorClass(ac) => ac.get_bonuses(value),
             Attribute::ClassLevel(cl) => cl.get_bonuses(value),
+            Attribute::Flag(flag) => flag.get_bonuses(value),
             _ => None,
         }
     }
@@ -141,6 +146,7 @@ impl CloneBonus for Attribute {
             | Self::SpellCriticalChance(sp)
             | Self::SpellCriticalDamage(sp) => sp.clone_bonus(bonus),
             Self::SavingThrow(st) => st.clone_bonus(bonus),
+            Self::Weapon(stat) => stat.clone_bonus(bonus),
             _ => None,
         }
     }
@@ -153,6 +159,8 @@ impl TrackAttribute for Attribute {
             Self::Ability(ability) | Self::AbilityModifier(ability) => ability.is_tracked(),
             Self::Skill(skill) => skill.is_tracked(),
             Self::SavingThrow(st) => st.is_tracked(),
+            Self::Weapon(stat) => stat.is_tracked(),
+            Self::Sheltering(sheltering) => sheltering.is_tracked(),
             _ => true,
         }
     }

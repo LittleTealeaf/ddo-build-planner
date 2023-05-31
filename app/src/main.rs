@@ -5,7 +5,7 @@ use builder_core::{
     },
     bonus::{Bonus, BonusType},
     compiler::Compiler,
-    player_class::PlayerClass,
+    player_class::PlayerClass, race::Race,
 };
 use enum_map::Enum;
 
@@ -20,6 +20,7 @@ fn main() {
             0.into(),
             None,
         ),
+        Bonus::flag(Race::Gnome.into(), 0.into()),
         Bonus::new(
             Ability::All.into(),
             BonusType::Stacking,

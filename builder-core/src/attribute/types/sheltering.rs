@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::Attribute,
+    attribute::{Attribute, TrackAttribute},
     bonus::{Bonus, CloneBonus},
 };
 
@@ -41,6 +41,12 @@ impl Display for Sheltering {
             Sheltering::MagicalCap => write!(f, "Magical Sheltering Cap"),
             Sheltering::Both => write!(f, "Sheltering"),
         }
+    }
+}
+
+impl TrackAttribute for Sheltering {
+    fn is_tracked(&self) -> bool {
+        !matches!(self, Self::Both)
     }
 }
 

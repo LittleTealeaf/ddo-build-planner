@@ -13,6 +13,9 @@ mod spell_school;
 mod weapon_hand;
 mod weapon_hand_stat;
 mod weapon_stat;
+mod race;
+mod immunity;
+mod monster_type;
 
 pub use ability::*;
 pub use armor_class::*;
@@ -26,3 +29,6 @@ pub use spell_school::*;
 pub use weapon_hand::*;
 pub use weapon_hand_stat::*;
 pub use weapon_stat::*;
+pub use race::*;
+pub use immunity::*;
+pub use monster_type::*;
