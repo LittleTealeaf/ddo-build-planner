@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
+    attribute::{Attribute, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
@@ -45,6 +45,8 @@ impl Ability {
     }
 }
 
+/// 0-size struct used to differentiat [`GetBonuses`] for [`Ability`] from the
+/// [`Attribute::Ability`] attribute.
 pub struct _AbilityScore;
 
 impl GetBonuses<_AbilityScore> for Ability {
@@ -61,6 +63,8 @@ impl GetBonuses<_AbilityScore> for Ability {
     }
 }
 
+/// 0-size struct used to differentiate [`GetBonuses`] for [`Ability`] from the
+/// [`Attribute::AbilityModifier`] attribute.
 pub struct _AbilityModifier;
 
 impl GetBonuses<_AbilityModifier> for Ability {
@@ -139,6 +143,12 @@ impl Display for Ability {
     }
 }
 
+impl TrackAttribute for Ability {
+    fn is_tracked(&self) -> bool {
+        !matches!(self, Self::All)
+    }
+}
+
 impl From<Ability> for Attribute {
     fn from(value: Ability) -> Self {
         Attribute::Ability(value)
@@ -170,6 +180,22 @@ mod tests {
                 "No bonuses returned for {} ability modifier",
                 ability
             );
+        }
+    }
+
+    #[test]
+    fn all_is_not_tracked() {
+        assert!(!Ability::All.is_tracked());
+        assert!(!Attribute::Ability(Ability::All).is_tracked());
+        assert!(!Attribute::AbilityModifier(Ability::All).is_tracked());
+    }
+
+    #[test]
+    fn abilities_are_tracked() {
+        for ability in Ability::VALUES {
+            assert!(ability.is_tracked());
+            assert!(Attribute::Ability(ability).is_tracked());
+            assert!(Attribute::AbilityModifier(ability).is_tracked());
         }
     }
 }

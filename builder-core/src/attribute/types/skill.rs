@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
+    attribute::{Attribute, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
@@ -140,8 +140,33 @@ impl Display for Skill {
     }
 }
 
+impl TrackAttribute for Skill {
+    fn is_tracked(&self) -> bool {
+        !matches!(self, Self::All)
+    }
+}
+
 impl From<Skill> for Attribute {
     fn from(value: Skill) -> Self {
         Attribute::Skill(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn all_is_not_tracked() {
+        assert!(!Skill::All.is_tracked());
+        assert!(!Attribute::from(Skill::All).is_tracked());
+    }
+
+    #[test]
+    fn skills_are_tracked() {
+        for skill in Skill::VALUES {
+            assert!(skill.is_tracked());
+            assert!(Attribute::from(skill).is_tracked());
+        }
     }
 }

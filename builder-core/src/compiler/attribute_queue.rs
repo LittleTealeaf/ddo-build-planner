@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{attribute::Attribute, utils::EnumBinaryMap};
+use crate::{attribute::{Attribute, TrackAttribute}, utils::EnumBinaryMap};
 
 #[derive(Default)]
 pub struct AttributeQueue {
@@ -12,7 +12,7 @@ pub struct AttributeQueue {
 impl AttributeQueue {
     pub fn get_next_attribute(&mut self) -> Option<(Attribute, bool)> {
         while let Some(attribute) = self.buffer.pop() {
-            if !self.queue.contains(&attribute) {
+            if attribute.is_tracked() && !self.queue.contains(&attribute) {
                 self.queue.push_back(attribute);
             }
         }
