@@ -95,3 +95,29 @@ impl CloneBonus for WeaponHandStat {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn both_hands_is_not_tracked() {
+        for i in 0..WeaponStat::LENGTH {
+            let stat = WeaponStat::from_usize(i);
+            let hand_stat = WeaponHandStat::from((WeaponHand::Both, stat));
+            assert!(!hand_stat.is_tracked());
+            assert!(!Attribute::from(hand_stat).is_tracked());
+        }
+    }
+
+    #[test]
+    fn either_hand_is_tracked() {
+        for i in 0..WeaponHand::LENGTH {
+            for hand in [WeaponHand::Off, WeaponHand::Main] {
+                let hand_stat = WeaponHandStat::from((hand, WeaponStat::from_usize(i)));
+                assert!(hand_stat.is_tracked());
+                assert!(Attribute::from(hand_stat).is_tracked());
+            }
+        }
+    }
+}

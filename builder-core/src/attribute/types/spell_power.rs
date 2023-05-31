@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
+    attribute::{Attribute, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
@@ -149,5 +149,34 @@ impl CloneBonus for SpellPower {
             })
             .to_vec(),
         )
+    }
+}
+
+impl TrackAttribute for SpellPower {
+    fn is_tracked(&self) -> bool {
+        !matches!(self, Self::Potency)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn potency_is_not_tracked() {
+        assert!(!SpellPower::Potency.is_tracked());
+        assert!(!Attribute::SpellPower(SpellPower::Potency).is_tracked());
+        assert!(!Attribute::SpellCriticalChance(SpellPower::Potency).is_tracked());
+        assert!(!Attribute::SpellCriticalDamage(SpellPower::Potency).is_tracked());
+    }
+
+    #[test]
+    fn spell_powers_are_tracked() {
+        for sp in SpellPower::ALL {
+            assert!(sp.is_tracked());
+            assert!(Attribute::SpellPower(sp).is_tracked());
+            assert!(Attribute::SpellCriticalChance(sp).is_tracked());
+            assert!(Attribute::SpellCriticalDamage(sp).is_tracked());
+        }
     }
 }

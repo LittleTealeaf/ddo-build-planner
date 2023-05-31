@@ -161,6 +161,9 @@ impl TrackAttribute for Attribute {
             Self::SavingThrow(st) => st.is_tracked(),
             Self::Weapon(stat) => stat.is_tracked(),
             Self::Sheltering(sheltering) => sheltering.is_tracked(),
+            Self::SpellPower(sp)
+            | Self::SpellCriticalChance(sp)
+            | Self::SpellCriticalDamage(sp) => sp.is_tracked(),
             _ => true,
         }
     }
