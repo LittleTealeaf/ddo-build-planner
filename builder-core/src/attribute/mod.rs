@@ -97,6 +97,12 @@ impl Display for Attribute {
 }
 
 impl Attribute {
+    /// Gets any subsidary bonuses from a given attribute.
+    ///
+    /// This allows for bonuses like [`Attribute::Ability`] to automatically add bonuses to
+    /// [`Attribute::AbilityModifier`] using some formula.
+    ///
+    /// If an attribute has no bonuses associated with it, then `None` is returned.
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Attribute::AbilityModifier(ability) => {
