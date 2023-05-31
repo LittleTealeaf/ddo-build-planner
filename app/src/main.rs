@@ -20,6 +20,13 @@ fn main() {
             None,
         ),
         Bonus::new(
+            Ability::All.into(),
+            BonusType::Stacking,
+            8f32.into(),
+            1.into(),
+            None,
+        ),
+        Bonus::new(
             Ability::Intelligence.into(),
             BonusType::Stacking,
             20f32.into(),
