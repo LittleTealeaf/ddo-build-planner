@@ -193,7 +193,7 @@ impl Bonus {
     /// attribute::{types::Ability, Attribute}};
     ///
     /// let bonus = Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking,
-    /// BonusValue::Indirect(Attribute::Ability(Ability::Constitution)),
+    /// BonusValue::FromAttribute(Attribute::Ability(Ability::Constitution)),
     /// BonusSource::Attribute(Attribute::Ability(Ability::Wisdom)),
     /// Some(Condition::Has(Attribute::Ability(Ability::Dexterity))));
     ///

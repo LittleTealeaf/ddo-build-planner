@@ -97,8 +97,8 @@ impl Compiler {
     fn calculate_value(&mut self, value: BonusValue) -> f32 {
         match value {
             BonusValue::Value(val) => val,
-            BonusValue::Indirect(attribute) => self.get_attribute(&attribute),
-            BonusValue::IndirectScaled(attribute, scale) => self.get_attribute(&attribute) * scale,
+            BonusValue::FromAttribute(attribute) => self.get_attribute(&attribute),
+            BonusValue::ScaleAttribute(attribute, scale) => self.get_attribute(&attribute) * scale,
         }
     }
 

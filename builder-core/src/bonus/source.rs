@@ -8,7 +8,8 @@ pub enum BonusSource {
     /// Only for debug(?)
     Custom(u8),
     /// Only for debug
-    Debug(u8),
+    #[cfg(test)]
+    Test(u8),
     /// Only used for initial values
     Base,
 }
