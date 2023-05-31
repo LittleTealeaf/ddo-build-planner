@@ -28,7 +28,7 @@ use self::{
 pub enum Attribute {
     /// Behaves as a debuggable attribute
     #[cfg(test)]
-    Debug,
+    Debug(u8),
     /// Behaves as a dummy variable
     /// 
     /// The use of `Dummy` is for the [`Compiler`], where a `Dummy` bonus can be added to remove
@@ -80,7 +80,7 @@ impl Display for Attribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             #[cfg(test)]
-            Attribute::Debug => write!(f, "Debug"),
+            Attribute::Debug(val) => write!(f, "Debug {}", val),
             Attribute::Dummy => write!(f, "Dummy"),
             Attribute::Ability(ability) => write!(f, "{} Score", ability),
             Attribute::AbilityModifier(ability) => write!(f, "{} Modifier", ability),

@@ -48,20 +48,20 @@ mod tests {
     fn inserted_attributes_are_returned() {
         let mut queue = AttributeQueue::default();
 
-        queue.insert(vec![Attribute::Debug], false);
+        queue.insert(vec![Attribute::Debug(0)], false);
 
         let (attribute, _) = queue.get_next_attribute().expect("Expected Attribute");
 
-        assert_eq!(attribute, Attribute::Debug);
+        assert_eq!(attribute, Attribute::Debug(0));
     }
 
     #[test]
     fn duplicate_entries_do_not_stack() {
         let mut queue = AttributeQueue::default();
 
-        queue.insert(vec![Attribute::Debug, Attribute::Debug], false);
+        queue.insert(vec![Attribute::Debug(0), Attribute::Debug(0)], false);
 
-        assert_eq!(Some((Attribute::Debug, false)), queue.get_next_attribute());
+        assert_eq!(Some((Attribute::Debug(0), false)), queue.get_next_attribute());
         assert_eq!(None, queue.get_next_attribute());
     }
 
@@ -69,10 +69,10 @@ mod tests {
     fn duplcate_entries_update_forced() {
         let mut queue = AttributeQueue::default();
 
-        queue.insert(vec![Attribute::Debug], false);
-        queue.insert(vec![Attribute::Debug], true);
+        queue.insert(vec![Attribute::Debug(0)], false);
+        queue.insert(vec![Attribute::Debug(0)], true);
 
-        assert_eq!(Some((Attribute::Debug, true)), queue.get_next_attribute());
+        assert_eq!(Some((Attribute::Debug(0), true)), queue.get_next_attribute());
         assert_eq!(None, queue.get_next_attribute());
     }
 
@@ -80,21 +80,21 @@ mod tests {
     fn forced_attributes_set_forced() {
         let mut queue = AttributeQueue::default();
 
-        queue.insert(vec![Attribute::Debug], true);
+        queue.insert(vec![Attribute::Debug(0)], true);
 
-        assert_eq!(Some((Attribute::Debug, true)), queue.get_next_attribute());
+        assert_eq!(Some((Attribute::Debug(0), true)), queue.get_next_attribute());
     }
 
     #[test]
     fn forced_attributes_lose_force_after_fetching() {
         let mut queue = AttributeQueue::default();
 
-        queue.insert(vec![Attribute::Debug], true);
+        queue.insert(vec![Attribute::Debug(0)], true);
 
-        assert_eq!(Some((Attribute::Debug, true)), queue.get_next_attribute());
+        assert_eq!(Some((Attribute::Debug(0), true)), queue.get_next_attribute());
 
-        queue.insert(vec![Attribute::Debug], false);
+        queue.insert(vec![Attribute::Debug(0)], false);
 
-        assert_eq!(Some((Attribute::Debug, false)), queue.get_next_attribute());
+        assert_eq!(Some((Attribute::Debug(0), false)), queue.get_next_attribute());
     }
 }
