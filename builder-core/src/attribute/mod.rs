@@ -26,6 +26,8 @@ use self::{
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
 #[derive(Copy, Clone, Enum, Eq, PartialEq, Debug)]
 pub enum Attribute {
+    /// Behaves as a debuggable attribute
+    Debug,
     /// Behaves as a dummy variable
     /// 
     /// The use of `Dummy` is for the [`Compiler`], where a `Dummy` bonus can be added to remove
@@ -76,6 +78,7 @@ pub enum Attribute {
 impl Display for Attribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Attribute::Debug => write!(f, "Debug"),
             Attribute::Dummy => write!(f, "Dummy"),
             Attribute::Ability(ability) => write!(f, "{} Score", ability),
             Attribute::AbilityModifier(ability) => write!(f, "{} Modifier", ability),
@@ -144,6 +147,7 @@ impl CloneBonus for Attribute {
 impl TrackAttribute for Attribute {
     fn is_tracked(&self) -> bool {
         match self {
+            Self::Dummy => false,
             Self::Ability(ability) | Self::AbilityModifier(ability) => ability.is_tracked(),
             Self::Skill(skill) => skill.is_tracked(),
             Self::SavingThrow(st) => st.is_tracked(),
