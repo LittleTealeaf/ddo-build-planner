@@ -31,10 +31,17 @@ impl Condition {
             | Condition::Min(attr, _)
             | Condition::Eq(attr, _)
             | Condition::NotEq(attr, _) => vec![*attr],
-            Condition::Any(conds) | Condition::All(conds) => conds
-                .iter()
-                .flat_map(Condition::get_dependencies)
-                .collect(),
+            Condition::Any(conds) | Condition::All(conds) => {
+                conds.iter().flat_map(Condition::get_dependencies).collect()
+            }
         }
+    }
+
+    pub fn has_any(&self, attributes: Vec<Attribute>) -> Condition {
+        Condition::Any(attributes.into_iter().map(Condition::Has).collect())
+    }
+
+    pub fn has_all(&self, attributes: Vec<Attribute>) -> Condition {
+        Condition::All(attributes.into_iter().map(Condition::Has).collect())
     }
 }

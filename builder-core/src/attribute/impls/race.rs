@@ -2,20 +2,64 @@ use crate::{
     attribute::{
         flags::Flag,
         toggles::{AttackingTarget, Toggle},
+        types::{
+            Ability, ArmorClass, EnergyResistance, Immunity, MonsterType, SavingThrow, Skill,
+            WeaponHand, WeaponStat,
+        },
         Attribute, GetBonuses,
     },
-    bonus::{Bonus, BonusSource, BonusType, Condition},
+    bonus::{Bonus, BonusType, Condition},
     race::Race,
-};
-
-use super::{
-    Ability, ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat,
 };
 
 impl GetBonuses for Race {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         (value > 0f32).then(|| match self {
-            Race::Aasimar => Some(vec![ability_modifier(Race::Aasimar, Ability::Wisdom, 2f32)]),
+            Race::Aasimar => Some(vec![
+                ability_modifier(Race::Aasimar, Ability::Wisdom, 2f32),
+                Bonus::new(
+                    Skill::Heal.into(),
+                    BonusType::Racial,
+                    2f32.into(),
+                    Attribute::from(Race::Aasimar).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Skill::Listen.into(),
+                    BonusType::Racial,
+                    2f32.into(),
+                    Attribute::from(Race::Aasimar).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Skill::Spot.into(),
+                    BonusType::Racial,
+                    2f32.into(),
+                    Attribute::from(Race::Aasimar).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::EnergyResistance(EnergyResistance::Cold),
+                    BonusType::Stacking,
+                    5f32.into(),
+                    Attribute::from(Race::Aasimar).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::EnergyResistance(EnergyResistance::Acid),
+                    BonusType::Stacking,
+                    5f32.into(),
+                    Attribute::from(Race::Aasimar).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::EnergyResistance(EnergyResistance::Electric),
+                    BonusType::Stacking,
+                    5f32.into(),
+                    Attribute::from(Race::Aasimar).into(),
+                    None,
+                ),
+            ]),
             Race::Scourge => Some(vec![ability_modifier(Race::Scourge, Ability::Wisdom, 2f32)]),
             Race::Bladeforged => Some(vec![
                 ability_modifier(Race::Bladeforged, Ability::Constitution, 2f32),
@@ -27,6 +71,14 @@ impl GetBonuses for Race {
                 ability_modifier(Race::DeepGnome, Ability::Wisdom, 2f32),
                 ability_modifier(Race::DeepGnome, Ability::Strength, -2f32),
                 ability_modifier(Race::DeepGnome, Ability::Charisma, -2f32),
+                Bonus::new(ArmorClass::Bonus.into(), BonusType::Size, 1f32.into(), Attribute::from(Race::DeepGnome).into(), None),
+                Bonus::new((WeaponHand::Both, WeaponStat::Attack).into(), BonusType::Size, 1f32.into(), Attribute::from(Race::DeepGnome).into(), None),
+                Bonus::new(Skill::Hide.into(), BonusType::Size, 4f32.into(), Attribute::from(Race::DeepGnome).into(), None),
+                Bonus::new(Skill::Intimidate.into(), BonusType::Stacking, (-4f32).into(), Attribute::from(Race::DeepGnome).into(), None),
+                Bonus::new(Skill::Haggle.into(), BonusType::Racial, 2f32.into(), Attribute::from(Race::DeepGnome).into(), None),
+                Bonus::new(Skill::UseMagicalDevice.into(), BonusType::Racial, 2f32.into(), Attribute::from(Race::DeepGnome).into(), None),
+                // TODO: +6 Spell Resistance
+                // TODO: Proficiencies: Light Hammer, Throwing Hammer, War Hammer
             ]),
             Race::Dragonborn => Some(vec![
                 ability_modifier(Race::Dragonborn, Ability::Strength, 2f32),

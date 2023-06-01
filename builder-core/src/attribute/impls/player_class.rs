@@ -1,10 +1,8 @@
 use crate::{
-    attribute::{Attribute, GetBonuses},
+    attribute::{Attribute, GetBonuses, types::Ability},
     bonus::{Bonus, BonusType},
     player_class::PlayerClass,
 };
-
-use super::Ability;
 
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
