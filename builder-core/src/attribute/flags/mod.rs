@@ -4,7 +4,7 @@ use enum_map::Enum;
 
 use crate::{race::Race, bonus::Bonus};
 
-use super::{toggles::Toggle, Attribute, types::Immunity, GetBonuses};
+use super::{toggles::Toggle, Attribute, types::{Immunity, Alignment}, GetBonuses};
 
 /// Indicates that the character possesses some flag.
 ///
@@ -17,6 +17,8 @@ pub enum Flag {
     Race(Race),
     /// Has an immunity to something
     Immunity(Immunity),
+    /// The alignment that the character is
+    Alignment(Alignment),
 }
 
 impl Display for Flag {
@@ -25,6 +27,7 @@ impl Display for Flag {
             Flag::HasToggle(toggle) => write!(f, "Has {} Toggle", toggle),
             Flag::Race(race) => write!(f, "{} Race", race),
             Flag::Immunity(immunity) => write!(f, "{} Immunity", immunity),
+            Flag::Alignment(alignment) => write!(f, "Is {}", alignment),
         }
     }
 }
@@ -61,4 +64,3 @@ impl From<Flag> for Attribute {
         Self::Flag(value)
     }
 }
-

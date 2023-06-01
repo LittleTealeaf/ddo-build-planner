@@ -20,7 +20,7 @@ use self::{
     toggles::Toggle,
     types::{
         Ability, ArmorClass, SavingThrow, Sheltering, Skill, SpellPower, WeaponHandStat,
-        _AbilityModifier, _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
+        _AbilityModifier, _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, EnergyResistance,
     },
 };
 
@@ -77,6 +77,10 @@ pub enum Attribute {
     ArmorClass(ArmorClass),
     /// Physical or Magical Sheltering
     Sheltering(Sheltering),
+    /// Damage reduced from energy sources
+    EnergyResistance(EnergyResistance),
+    /// % Damage reduced from energy sources
+    EnergyAbsorption(EnergyResistance)
 }
 
 impl Display for Attribute {
@@ -101,6 +105,8 @@ impl Display for Attribute {
             Attribute::Sheltering(sheltering) => sheltering.fmt(f),
             Attribute::ClassLevel(cl) => write!(f, "{} Level", cl),
             Attribute::Flag(fl) => fl.fmt(f),
+            Attribute::EnergyResistance(energy) => write!(f, "{} Resistance", energy),
+            Attribute::EnergyAbsorption(energy) => write!(f, "{} Absorption", energy),
         }
     }
 }

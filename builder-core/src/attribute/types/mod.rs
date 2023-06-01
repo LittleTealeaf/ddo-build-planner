@@ -16,6 +16,8 @@ mod weapon_stat;
 mod race;
 mod immunity;
 mod monster_type;
+mod energy_resistance;
+mod alignment;
 
 pub use ability::*;
 pub use armor_class::*;
@@ -32,3 +34,5 @@ pub use weapon_stat::*;
 pub use race::*;
 pub use immunity::*;
 pub use monster_type::*;
+pub use energy_resistance::*;
+pub use alignment::*;
