@@ -7,24 +7,54 @@ use crate::{
     bonus::{Bonus, CloneBonus},
 };
 
+/// The different saving throws that a character can have bonuses to
+///
+/// The three main saving throws are [`Fortitude`], [`Reflex`], and [`Will`]. There is a [`SavingThrow::All`] entry that will clone bonuses to the three main bonuses. Additionally, there are subsidary bonuses like bonuses against [`Traps`]
+///
+/// [`Fortitude`]: SavingThrow::Fortitude
+/// [`Reflex`]: SavingThrow::Reflex
+/// [`Will`]: SavingThrow::Will
+/// [`Traps`]: SavingThrow::Traps
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum SavingThrow {
+    /// Fortitude Saving Throw
     Fortitude,
+    /// Bonus to Saving Throws against Poison
     Poison,
+    /// Bonus to Saving Throws against Diseases
     Disease,
+    /// Reflex Saving Throws
     Reflex,
+    /// Bonus to Saving Throws agaisnt Traps
     Traps,
+    /// Bonus to Saving Throws against Spells
     Spell,
+    /// Bonus to Saving Throws against Magic
     Magic,
+    /// Will Saving Throw
     Will,
+    /// Bonus to Saving Throws against Enchantments
     Enchantment,
+    /// Bonus to Saving Throws against Illusion
     Illusion,
+    /// Bonus to Saving Throws against Fear
     Fear,
+    /// Bonus to Saving Throws against Curses
     Curse,
+    /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.
+    ///
+    /// [`Fortitude`]: SavingThrow::Fortitude
+    /// [`Reflex`]: SavingThrow::Reflex
+    /// [`Will`]: SavingThrow::Will
     All,
 }
 
 impl SavingThrow {
+    /// Lists the three main bonuses: [`Fortitude`], [`Reflex`], and [`Will`]
+    /// 
+    /// [`Fortitude`]: SavingThrow::Fortitude
+    /// [`Reflex`]: SavingThrow::Reflex
+    /// [`Will`]: SavingThrow::Will
     pub const VALUES: [Self; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
 }
 

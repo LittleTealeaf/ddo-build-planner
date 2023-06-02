@@ -15,11 +15,39 @@ use crate::{
 
 use self::{attribute_queue::AttributeQueue, default_bonuses::build_default_values};
 
-/// Compiles and calculates attribute values from a set of bonuses.
+/// Compiles and calculates attribut values from a set of [`Bonus`] entries.
 ///
-/// Utilises [`EnumBinaryMaps`] to efficiently store bonuses, and associated caches to optimize performance.
+/// Internally, this uses [`EnumBinaryMaps`] to efficiently store bonuses in a HashMap structure without the need of deriving [`Hash`].
+///
+/// This will handle any bonuses that different attributes may give (such as [`Attribute::Ability`] giving bonuses to [`Attribute::AbilityModifier`]), as well as cloned bonuses (such as [`Ability::All`] being split off into each of the abilities)
+///
+/// Note that the compiler must be mutable for most of it's publicly-facing functions
+///
+/// # Examples
+///
+/// ```
+/// use builder_core::{
+///     attribute::{
+///         Attribute,
+///         types::{
+///             Sheltering
+///         }
+///     },
+///     bonus::{Bonus, BonusSource, Condition, BonusType},
+///     compiler::Compiler
+/// };
+///
+/// let mut compiler = Compiler::default();
+///
+/// compiler.add_bonus(Bonus::new(Attribute::Sheltering(Sheltering::Magical), BonusType::Stacking, 5f32.into(), BonusSource::Custom(0), None));
+///
+/// assert_eq!(5f32, compiler.get_attribute(&Attribute::Sheltering(Sheltering::Magical)));
+/// ```
+///
 ///
 /// [`EnumBinaryMaps`]: crate::utils::EnumBinaryMap
+/// [`Bonus`]: crate::bonus::Bonus
+/// [`Ability::All`]: crate::attribute::types::Ability::All
 pub struct Compiler {
     bonuses: EnumBinaryMap<Attribute, Vec<Bonus>>,
     cache: EnumBinaryMap<Attribute, f32>,

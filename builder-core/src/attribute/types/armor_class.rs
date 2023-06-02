@@ -7,13 +7,20 @@ use crate::{
     bonus::{Bonus, BonusType},
 };
 
+/// Represents different attributes that relate to Armor Class
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum ArmorClass {
+    /// Flat bonuses to armor class
     Bonus,
+    /// Bonuses to armor class from armor
     ArmorBonus,
+    /// Bonuses to armor class from shields
     ShieldBonus,
+    /// Scaling for [`ArmorClass::ArmorBonus`]
     ArmorScalar,
+    /// Scaling for [`ArmorClass::ShieldBonus`]
     ShieldScalar,
+    /// Scaling for [`ArmorClass::Bonus`]
     Scalar,
 }
 

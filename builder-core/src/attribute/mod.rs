@@ -230,7 +230,7 @@ mod tests {
                             attr,
                             BonusType::Stacking,
                             10f32.into(),
-                            BonusSource::Test(0),
+                            BonusSource::Debug(0),
                             None,
                         ))?,
                     ))
@@ -252,7 +252,7 @@ mod tests {
                             attr,
                             BonusType::Stacking,
                             10f32.into(),
-                            BonusSource::Test(0),
+                            BonusSource::Debug(0),
                             None,
                         ))?,
                     ))

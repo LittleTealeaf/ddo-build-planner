@@ -2,11 +2,6 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::attribute::GetBonuses;
-
-
-
-
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum Alignment {
     Good,

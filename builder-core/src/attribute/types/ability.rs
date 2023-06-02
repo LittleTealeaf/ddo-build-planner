@@ -9,19 +9,27 @@ use crate::{
 
 use super::{SavingThrow, Skill};
 
+/// The different abilities that a character has
 #[derive(Enum, PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Ability {
+    /// Represents how strong the character is
     Strength,
+    /// Represents how flexible the character is
     Dexterity,
+    /// Determines the character's health
     Constitution,
+    /// Represents how smart the character is
     Intelligence,
+    /// Represents how wise the character is.
     Wisdom,
+    /// Represents how charismatic the character is.
     Charisma,
     /// All values
     All,
 }
 
 impl Ability {
+    /// Represents the 6 different values that [`Ability`] can be (without [`Ability::All`])
     pub const VALUES: [Ability; 6] = [
         Ability::Strength,
         Ability::Dexterity,
