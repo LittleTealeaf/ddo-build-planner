@@ -22,6 +22,16 @@ pub enum ArmorClass {
     ShieldScalar,
     /// Scaling for [`ArmorClass::Bonus`]
     Scalar,
+    /// Natural Armor
+    NaturalArmor,
+    /// Calcualted Dex Bonus used in calculations.
+    ///
+    /// If you are trying to add max dex bonuses, use [`ArmorClass::MaxDexBonus`]. This attribute is derived from that and [`ArmorClass::TowerShieldMaxDexBonus`].
+    CalculatedMaxDexBonus,
+    /// Max Dex Bonus
+    MaxDexBonus,
+    /// Max Dex Bonus for Tower Shields
+    TowerShieldMaxDexBonus,
 }
 
 impl Display for ArmorClass {
@@ -33,6 +43,10 @@ impl Display for ArmorClass {
             ArmorClass::ArmorScalar => write!(f, "% Armor AC"),
             ArmorClass::ShieldScalar => write!(f, "% Shield AC"),
             ArmorClass::Scalar => write!(f, "% Armor Class"),
+            ArmorClass::NaturalArmor => write!(f, "Natural Armor"),
+            ArmorClass::MaxDexBonus => write!(f, "Max Dexterity Bonus"),
+            ArmorClass::TowerShieldMaxDexBonus => write!(f, "Max Dexterity Bonus (Tower Shields)"),
+            ArmorClass::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus")
         }
     }
 }
@@ -54,6 +68,22 @@ impl GetBonuses for ArmorClass {
                 Attribute::from(ArmorClass::ShieldScalar).into(),
                 None,
             )]),
+            ArmorClass::NaturalArmor => Some(vec![Bonus::new(
+                ArmorClass::Bonus.into(),
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(ArmorClass::NaturalArmor).into(),
+                None,
+            )]),
+            ArmorClass::MaxDexBonus => Some(vec![
+                Bonus::new(
+                    ArmorClass::CalculatedMaxDexBonus.into(),
+                    BonusType::Stacking,
+                    value.into(),
+                    Attribute::from(ArmorClass::MaxDexBonus).into(),
+                    None // TODO: check if not weielding a tower shield and TowerShieldMaxDexBonus is less than the value
+                )
+            ]),
             _ => None,
         }
     }

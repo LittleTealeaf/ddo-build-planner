@@ -180,6 +180,7 @@ impl Compiler {
                 // Filter map to the indexes of bonuses with the same source, and collect into a vec
                 let indexes = items
                     .filter_map(|(index, item)| item.get_source().eq(&source).then_some(index))
+                    .rev()
                     .collect_vec();
 
                 // Swap-remove each index
