@@ -1,259 +1,178 @@
-#![allow(unused_variables)]
+//! Represents each attribute that a character can have
+pub mod flags;
+pub mod selectors;
+pub mod toggles;
+pub mod impls;
 mod traits;
-#[macro_use]
-mod macros;
-pub mod sub;
+pub mod types;
 
-use crate::{
-    bonus::{Bonus, BonusType, GetBonuses},
-    feat::Feat,
-    player_class::PlayerClass,
-    utils::AsString,
-};
-
-use super::bonus::BonusSource;
-
-use serde::{Deserialize, Serialize};
-
-use sub::*;
 pub use traits::*;
 
-attributes!(
-    Attribute,
-    val,
-    Dummy() => (
-        String::from("Dummy"),
-        "A dummy attribute.\n\nOften used to indicate that a data source should be removed from the Compilations.",
-        None,
-        None
-    )
-    Flag(flag: Flag) => (
-        format!("Flag: {}", flag.to_string()),
-        "Represents any flags that the character has.",
-        flag.get_bonuses(val),
-        Some(flag.get_cloned()?.into_iter().map(Attribute::Flag).collect())
-    )
-    Toggle(toggle: Toggle) => (
-        format!("Toggle: {}", toggle.to_string()),
-        "Represents any toggles that should be visible to the user.",
-        toggle.get_bonuses(val),
-        Some(toggle.get_cloned()?.into_iter().map(Attribute::Toggle).collect())
-    )
-    Feat(feat: Feat) => (
-        format!("Feat: {}", feat.to_string()),
-        "Represents that the character has a given feat",
-        feat.get_bonuses(val),
-        None
-    )
-    Ability(ability: Ability) => (
-        ability.to_string(),
-        "The score for each of the character's 6 abilities.",
-        GetBonuses::<_AbilityScore>::get_bonuses(ability, val),
-        Some(ability.get_cloned()?.into_iter().map(Attribute::Ability).collect())
-    )
-    AbilityModifier(ability: Ability) => (
-        format!("{} Modifier", ability.to_string()),
-        "The modifier, derived from the Ability Score, for each of the 6 abilities.",
-        GetBonuses::<_AbilityModifier>::get_bonuses(ability, val),
-        Some(ability.get_cloned()?.into_iter().map(Attribute::AbilityModifier).collect())
-    )
-    Skill(skill: Skill) => (
-        skill.to_string(),
-        "Skills that provide additional attributes and abilities for the character.",
-        skill.get_bonuses(val),
-        skill.get_cloned()
-    )
-    SavingThrow(savingthrow: SavingThrow) => (
-        savingthrow.to_string(),
-        "Represents the three main saving throws: [Reflex](SavingThrow::Reflex) ([Dexterity](Ability::Dexterity)), [Fortitude](SavingThrow::Fortitude) ([Constitution](Ability::Constitution)), and [Will](SavingThrow::Will) ([Wisdom](Ability::Wisdom)). Also represents additional specific saving throws.",
-        None,
-        savingthrow.get_cloned()
-    )
-    SpellPower(spell_power: SpellPower) => (
-        format!("{} Spell Power", spell_power.to_string()),
-        "For each point in a spell power, spells of that type gain 1% more damage. [SpellPower::All] will automatically split off to other spell powers.",
-        None,
-        Some(spell_power.get_cloned()?.into_iter().map(Attribute::SpellPower).collect())
-    )
-    SpellCriticalChance(spell_power: SpellPower) => (
-        format!("{} Spell Critical Chance", spell_power.to_string()),
-        "The chance that spells of a given type will critically hit. [SpellPower::All] will automatically split off to other spell powers.",
-        None,
-        Some(spell_power.get_cloned()?.into_iter().map(Attribute::SpellCriticalChance).collect())
-    )
-    SpellCriticalDamage(spell_power: SpellPower) => (
-        format!("{} Spell Critical Damage", spell_power.to_string()),
-        "The % bonus damage that critical hits deal with spells of a certain type. [SpellPower::All] will automatically split off to other spell powers.",
-        None,
-        Some(spell_power.get_cloned()?.into_iter().map(Attribute::SpellCriticalDamage).collect())
-    )
-    PhysicalSheltering() => (
-        String::from("Physical Sheltering"),
-        "Physical Resistance Rating, which decreases the amount of physical damage taken.",
-        None,
-        None
-    )
-    MagicalSheltering() => (
-        String::from("Magical Sheltering"),
-        "Magical Resistance Rating, which decreases the amount of magical damage taken",
-        None,
-        None
-    )
-    MagicalShelteringCap() => (
-        String::from("Magical Sheltering Cap"),
-        "Magical Resistance Rating Cap, which increases the maximum that you Magical Resistance Rating can be when wearing light or cloth armor",
-         None,
-         None
-    )
-    Sheltering() => (
-        String::from("Sheltering"),
-        "Adds bonuses to both [Magical Sheltering](Attribute::MagicalSheltering) and [Physical Sheltering](Self::PhysicalSheltering)",
-        None,
-        Some(vec![Attribute::PhysicalSheltering(), Attribute::MagicalSheltering()])
-    )
-    WeaponStat(weapon_hand: WeaponHand, weapon_stat: WeaponStat) => (
-        (weapon_hand, weapon_stat).as_string(),
-        "Any specific stats that might only pertain to a specific weapon. Using [WeaponHand::Both] can be used for overall bonuses",
-        None,
-        Some((*weapon_hand, *weapon_stat).get_cloned()?.into_iter().map(Attribute::from).collect())
-    )
-    OffHandAttackChance() => (
-        String::from("Off Hand Attack Chance"),
-        "The chance that the off-hand weapon will roll to attack",
-        None,
-        None
-    )
-    Doublestrike() => (
-        String::from("Doublestrike"),
-        "Chance that melee attacks will gain a x2 multiplier to implement hitting twice",
-        None,
-        None
-    )
-    Doubleshot() => (
-        String::from("Doubleshot"),
-        "Chance that ranged attacks will gain a x2 multiplier to implement shooting twice",
-        None,
-        None
-    )
-    ImbueDice() => (
-        String::from("Imbue Dice"),
-        "Bonus dice to imbue damage",
-        None,
-        None
-    )
-    SneakAttackDice() => (
-        String::from("Sneak Attack Dice"),
-        "Bonus dice for Sneak Attacks",
-        None,
-        None
-    )
-    SneakAttackDamage() => (
-        String::from("Sneak Attack Bonus"),
-        "Bonus to attack for sneak attacks",
-        None,
-        None
-    )
-    MeleePower() => (
-        String::from("Melee Power"),
-        "Bonus to melee power",
-        None,
-        None
-    )
-    RangedPower() => (String::from("Ranged Power"), "Bonus to ranged power", None, None)
-    SecondaryShieldBash() => (String::from("Secondary Shield Bash Chance"), "Chance for a secondary shield bash", None, None)
-    DodgeBypass() => (String::from("Dodge Bypass"), "Amount of dodge that attacks wil bypass", None, None)
-    FortificationBypass() => (String::from("Fortification Bypass"), "Amount of fortification that attacks will bypass", None, None)
-    Fortification() => (String::from("Fortification"), "% chance for negating critical hits", None, None)
-    MissileDeflection() => (String::from("Missile Deflection"), "% chance for deflecting incoming missiles", None, None)
-    MissileDeflectionBypass() => (String::from("Missile Deflection Bypass"), "% amount of missile deflection that is ignored on attacks", None, None)
-    Strikethrough() => (String::from("Strikethrough"), "% chance to strike another nearby enemy on swings", None, None)
-    HelplessDamage() => (String::from("Helpless Damage"), "bonus to damage against helpless damage", None, None)
-    ThreatGeneration(threat_type: ThreatType) => (
-        format!("{} Threat Generation", threat_type.to_string()),
-        "bonus to threat generated by attacks of a certain type",
-        None,
-        Some(threat_type.get_cloned()?.into_iter().map(Attribute::ThreatGeneration).collect())
-    )
-    ThreatReduction(threat_type: ThreatType) => (
-        format!("{} Threat Reduction", threat_type.to_string()),
-        "Reduction to threat generated by attacks of a certain type",
-        None,
-        Some(threat_type.get_cloned()?.into_iter().map(Attribute::ThreatGeneration).collect())
-    )
-    ElementalResistance(element: ElementalType) => (
-        format!("{} Resistance", element.to_string()),
-        "",
-        None,
-        None
-    )
-    ElementalAbsorption(element: ElementalType) => (
-        format!("{} Absorption", element.to_string()),
-        "",
-        None,
-        None
-    )
-    SpellPoints(spellpoint: SpellPoint) => (spellpoint.to_string(), "Bonus to spell points of some capacity", None, None)
-    HitPoints(hitpoint: HitPoint) => (hitpoint.to_string(), "Bonus to hit points of some capacity", None, None)
-    Vitality() => (
-        String::from("Vitality"),
-        "Custom bonus to vitality (collects bonuses back into [`Attribute::HitPoints(HitPoint::Bonus)`])",
-        Some(vec![Bonus::new(Attribute::HitPoints(HitPoint::Bonus), BonusType::Stacking, val, BonusSource::Attribute(Attribute::Vitality()), None)]),
-        None
-    )
-    UnconsciousRange() => (String::from("Unconscious Range"), "", None, None)
-    HealAmp(healamp: HealAmp) => (format!("{} Amplification", healamp.to_string()), "", None, Some(healamp.get_cloned()?.into_iter().map(Attribute::HealAmp).collect()))
-    ClassLore(lore: ClassLore) => (format!("{} Lore", lore.to_string()), "", lore.get_bonuses(val), None)
-    ClassLevel(player_class: PlayerClass) => (format!("{} Levels", player_class.to_string()), "", player_class.get_bonuses(val), None)
-    MovementSpeed() => (String::from("Movement Speed"), "", None, None)
-    PactDice() => (String::from("Pact Dice"), "", None, None)
-    EldritchBlastDice() => (String::from("Eldritch Blast Dice"), "", None, None)
-    SpellCostReduction() => (String::from("Spell Cost Reduction"), "", None, None)
-    SpellResistance() => (String::from("Spell Resistance"), "", None, None)
-    SpellPenetration() => (String::from("Spell Penetation"), "", None, None)
-    NaturalArmor() => (String::from("Natural Armor"), "", None, None)
-    FiligreeSet(set: FiligreeSet) => (set.to_string(), "", set.get_bonuses(val), None)
-    Dodge() => (String::from("Dodge"), "", None, None)
-    MaxDodge() => (String::from("Maximum Dodge"), "", None, None)
-    BonusActionBoosts() => (String::from("Bonus Action Boosts"), "", None, None)
-    CasterLevel(selector: SpellSelector) => (
-        format!("{} Caster Level", selector.to_string()),
-        "",
-        None,
-        Some(selector.get_cloned()?.into_iter().map(Attribute::CasterLevel).collect())
-    )
-    MaxCasterLevel(selector: SpellSelector) => (
-        format!("{} Max Caster Level", selector.to_string()),
-        "",
-        None,
-        Some(selector.get_cloned()?.into_iter().map(Attribute::MaxCasterLevel).collect())
-    )
-    DifficultyCheck(check: DifficultyCheck) => (
-        check.to_string(),
-        "Player Difficulty Check",
-        check.get_bonuses(val),
-        Some(check.get_cloned()?.into_iter().map(Attribute::DifficultyCheck).collect())
-    )
+use crate::{
+    bonus::{Bonus, CloneBonus},
+    player_class::PlayerClass,
+};
+use enum_map::Enum;
+use std::fmt::Display;
 
-);
+use self::{
+    flags::Flag,
+    selectors::SpellSelector,
+    toggles::Toggle,
+    types::{
+        Ability, ArmorClass, SavingThrow, Sheltering, Skill, SpellPower, WeaponAttribute,
+        _AbilityModifier, _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, EnergyResistance,
+    },
+};
+
+/// Describes various traits of a character, ranging from having feats, stats, and much more.
+#[derive(Copy, Clone, Enum, Eq, PartialEq, Debug)]
+pub enum Attribute {
+    /// Behaves as a debuggable attribute
+    #[cfg(test)]
+    Debug(u8),
+    /// Behaves as a dummy variable
+    ///
+    /// The use of `Dummy` is for the [`Compiler`], where a `Dummy` bonus can be added to remove
+    /// all current [`Bonus`] entries for a given [`BonusSource`].
+    ///
+    /// [`Compiler`]: crate::compiler::Compiler
+    /// [`BonusSource`]: crate::bonus::BonusSource
+    Dummy,
+    /// Indicates that the user has some flag
+    Flag(Flag),
+    /// Results from the user interacting with toggles / sliders.
+    ///
+    /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
+    /// associated bonuses can react.
+    Toggle(Toggle),
+    /// The ability score of the character.
+    Ability(Ability),
+    /// The modifier, calculated from [`Attribute::Ability`].
+    AbilityModifier(Ability),
+    /// Indicates how many levels the character has of a given class.
+    ClassLevel(PlayerClass),
+    /// The different skills available in the game.
+    Skill(Skill),
+    /// Both simple and complex saving throws.
+    SavingThrow(SavingThrow),
+    /// Character Spell Power.
+    ///
+    /// For every spell power unit, the character gains `1%` more damage with spells of that given
+    /// [`SpellPower`]. For example, having `102` spell power gives a `+102%` spell damage boost,
+    /// which results in an overall damage scale of `202%`.
+    SpellPower(SpellPower),
+    /// The chance that the user has to critically hit with spells.
+    SpellCriticalChance(SpellPower),
+    /// The bonus to damage that the user has with critical hits on spells.
+    SpellCriticalDamage(SpellPower),
+    /// Bonuses to caster levels of certain spells.
+    CasterLevel(SpellSelector),
+    /// Bonsues to maximum caster level of certain spells.
+    MaxCasterLevel(SpellSelector),
+    /// Bonuses to the DCs of certain spells.
+    SpellDC(SpellSelector),
+    /// Bonuses to stats to either the main hand or off hand.
+    Weapon(WeaponAttribute),
+    /// Armor class values
+    ArmorClass(ArmorClass),
+    /// Physical or Magical Sheltering
+    Sheltering(Sheltering),
+    /// Damage reduced from energy sources
+    EnergyResistance(EnergyResistance),
+    /// % Damage reduced from energy sources
+    EnergyAbsorption(EnergyResistance)
+}
+
+impl Display for Attribute {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            #[cfg(test)]
+            Attribute::Debug(val) => write!(f, "Debug {}", val),
+            Attribute::Dummy => write!(f, "Dummy"),
+            Attribute::Ability(ability) => write!(f, "{} Score", ability),
+            Attribute::AbilityModifier(ability) => write!(f, "{} Modifier", ability),
+            Attribute::Skill(skill) => skill.fmt(f),
+            Attribute::Toggle(toggle) => toggle.fmt(f),
+            Attribute::SpellPower(sp) => write!(f, "{} Spell Power", sp),
+            Attribute::SpellCriticalChance(sp) => write!(f, "{} Spell Critical Chance", sp),
+            Attribute::SpellCriticalDamage(sp) => write!(f, "{} Spell Critical Damage", sp),
+            Attribute::SavingThrow(saving_throw) => write!(f, "{} Saving Throw", saving_throw),
+            Attribute::CasterLevel(selector) => write!(f, "{} Caster Level", selector),
+            Attribute::MaxCasterLevel(selector) => write!(f, "{} Max Caster Level", selector),
+            Attribute::SpellDC(selector) => write!(f, "{} Spell DC", selector),
+            Attribute::Weapon(weapon) => weapon.fmt(f),
+            Attribute::ArmorClass(ac) => ac.fmt(f),
+            Attribute::Sheltering(sheltering) => sheltering.fmt(f),
+            Attribute::ClassLevel(cl) => write!(f, "{} Level", cl),
+            Attribute::Flag(fl) => fl.fmt(f),
+            Attribute::EnergyResistance(energy) => write!(f, "{} Resistance", energy),
+            Attribute::EnergyAbsorption(energy) => write!(f, "{} Absorption", energy),
+        }
+    }
+}
 
 impl Attribute {
-    /// Converts any type that implements [`Into<Attribute>`] to a [`BonusSource`]
-    pub fn to_source<T: Into<Attribute>>(source: T) -> BonusSource {
-        BonusSource::Attribute(source.into())
+    /// Gets any subsidary bonuses from a given attribute.
+    ///
+    /// This allows for bonuses like [`Attribute::Ability`] to automatically add bonuses to
+    /// [`Attribute::AbilityModifier`] using some formula.
+    ///
+    /// If an attribute has no bonuses associated with it, then `None` is returned.
+    pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        match self {
+            Attribute::AbilityModifier(ability) => {
+                GetBonuses::<_AbilityModifier>::get_bonuses(ability, value)
+            }
+            Attribute::Ability(ability) => GetBonuses::<_AbilityScore>::get_bonuses(ability, value),
+            Attribute::Skill(skill) => skill.get_bonuses(value),
+            Attribute::Toggle(toggle) => toggle.get_bonuses(value),
+            Attribute::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
+            Attribute::SpellCriticalChance(sp) => {
+                GetBonuses::<_SpellCriticalChance>::get_bonuses(sp, value)
+            }
+            Attribute::SpellCriticalDamage(sp) => {
+                GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
+            }
+            Attribute::Weapon(stat) => stat.get_bonuses(value),
+            Attribute::ArmorClass(ac) => ac.get_bonuses(value),
+            Attribute::ClassLevel(cl) => cl.get_bonuses(value),
+            Attribute::Flag(flag) => flag.get_bonuses(value),
+            _ => None,
+        }
     }
 }
 
-impl Default for Attribute {
-    #[inline]
-    fn default() -> Self {
-        Self::Dummy()
+impl CloneBonus for Attribute {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        match self {
+            Self::Ability(ability) => ability.clone_bonus(bonus),
+            Self::Skill(skill) => skill.clone_bonus(bonus),
+            Self::Sheltering(sheltering) => sheltering.clone_bonus(bonus),
+            Self::SpellPower(sp)
+            | Self::SpellCriticalChance(sp)
+            | Self::SpellCriticalDamage(sp) => sp.clone_bonus(bonus),
+            Self::SavingThrow(st) => st.clone_bonus(bonus),
+            Self::Weapon(stat) => stat.clone_bonus(bonus),
+            _ => None,
+        }
     }
 }
 
-impl From<Attribute> for BonusSource {
-    #[inline]
-    fn from(value: Attribute) -> Self {
-        BonusSource::Attribute(value)
+impl TrackAttribute for Attribute {
+    fn is_tracked(&self) -> bool {
+        match self {
+            Self::Dummy => false,
+            Self::Ability(ability) | Self::AbilityModifier(ability) => ability.is_tracked(),
+            Self::Skill(skill) => skill.is_tracked(),
+            Self::SavingThrow(st) => st.is_tracked(),
+            Self::Weapon(stat) => stat.is_tracked(),
+            Self::Sheltering(sheltering) => sheltering.is_tracked(),
+            Self::SpellPower(sp)
+            | Self::SpellCriticalChance(sp)
+            | Self::SpellCriticalDamage(sp) => sp.is_tracked(),
+            _ => true,
+        }
     }
 }
 
@@ -262,7 +181,92 @@ mod tests {
     use super::*;
 
     #[test]
-    fn default_is_dummy() {
-        assert_eq!(Attribute::Dummy(), Attribute::default());
+    fn dummy_is_not_tracked() {
+        assert!(!Attribute::Dummy.is_tracked());
+    }
+
+    mod all_attributes {
+        use std::collections::HashSet;
+
+        use crate::bonus::{BonusSource, BonusType};
+
+        use super::*;
+
+        fn get_all_attributes() -> impl Iterator<Item = Attribute> {
+            let max = Attribute::LENGTH;
+
+            (0..max).map(|item| Attribute::from_usize(item))
+        }
+
+        #[test]
+        fn returns_is_tracked() {
+            get_all_attributes().for_each(|attr| {
+                attr.is_tracked();
+            });
+        }
+
+        #[test]
+        fn has_unique_display() {
+            let mut unique_names = HashSet::new();
+
+            get_all_attributes().for_each(|attr| {
+                let name = attr.to_string();
+                assert!(
+                    !unique_names.contains(&name),
+                    "Duplicate Name Found: {}",
+                    attr
+                );
+                unique_names.insert(name);
+            });
+        }
+
+        #[test]
+        fn do_not_clone_to_themselves() {
+            get_all_attributes()
+                .filter_map(|attr| {
+                    Some((
+                        attr,
+                        attr.clone_bonus(&Bonus::new(
+                            attr,
+                            BonusType::Stacking,
+                            10f32.into(),
+                            BonusSource::Debug(0),
+                            None,
+                        ))?,
+                    ))
+                })
+                .for_each(|(attr, bonuses)| {
+                    for bonus in bonuses {
+                        assert_ne!(bonus.get_attribute(), attr);
+                    }
+                });
+        }
+
+        #[test]
+        fn do_not_clone_into_cloneable_bonuses() {
+            get_all_attributes()
+                .filter_map(|attr| {
+                    Some((
+                        attr,
+                        attr.clone_bonus(&Bonus::new(
+                            attr,
+                            BonusType::Stacking,
+                            10f32.into(),
+                            BonusSource::Debug(0),
+                            None,
+                        ))?,
+                    ))
+                })
+                .for_each(|(attr, bonuses)| {
+                    for bonus in bonuses {
+                        assert!(
+                            bonus.get_attribute().clone_bonus(&bonus).is_none(),
+                            "{} bonus cloned from {} clones into other bonuses",
+                            bonus.get_attribute(),
+                            attr
+                        );
+                    }
+                });
+        }
     }
 }

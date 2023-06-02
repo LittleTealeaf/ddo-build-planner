@@ -50,6 +50,7 @@
 /// assert_eq!(String::from("Complex B: Option B"), ComplexEnum::ComplexB(SimpleEnum::OptionB).to_string());
 /// ```
 #[macro_export]
+#[deprecated = "Implement enums manually with the Display trait instead"]
 macro_rules! simple_enum {
     ($enum_name: ident, $documentation: expr, ($($id: ident $name: expr),*)) => {
         #[doc = $documentation]

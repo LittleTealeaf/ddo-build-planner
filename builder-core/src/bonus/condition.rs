@@ -1,87 +1,71 @@
 use crate::attribute::Attribute;
 
-/// Describes a condition that must be met for a [Bonus](crate::bonus::Bonus) to be active.
-///
-/// Specifically asserts whether an attribute must be present, have a particular value, or fulfil some inequality.
-#[derive(Clone, Copy, serde::Serialize, serde::Deserialize, Debug)]
+/// Describes an attribute-based condition that must be met for a bonus to be included.
+#[derive(Clone, Debug)]
 pub enum Condition {
-    /// Asserts that an attribute must be non-zero
+    /// Requires that an attribute has an above 0 value
     Has(Attribute),
-    /// Asserts that an attribute must be zero
+    /// Requires that an attribute is either zero or below
     NotHave(Attribute),
-    /// Asserts that an attribute must be at most a particular value
+    /// Requires that an attribute has at most some value
     Max(Attribute, f32),
-    /// Asserts that an attribute must be at least a particular value
+    /// Requires that an attribute has at least some value
     Min(Attribute, f32),
-    /// Asserts that an attribute must be equal to a particular value
+    /// Requires that an attribute is exactly some value
     Eq(Attribute, f32),
-    /// Asserts that an attribute must not be equal to a particular value
+    /// Requires that an attribute is not equal to some value
     NotEq(Attribute, f32),
+    /// Requires any of the provided conditions
+    Any(Vec<Condition>),
+    /// Requires all of the provided conditions
+    All(Vec<Condition>),
 }
 
-impl ToString for Condition {
-    fn to_string(&self) -> String {
-        match self {
-            Condition::Has(attribute) => format!("Has {}", attribute.to_string()),
-            Condition::NotHave(attribute) => format!("Does not have {}", attribute.to_string()),
-            Condition::Max(attribute, value) => {
-                format!("{} is at most {}", attribute.to_string(), value)
-            }
-            Condition::Min(attribute, value) => {
-                format!("{} is at least {}", attribute.to_string(), value)
-            }
-            Condition::Eq(attribute, value) => format!("{} is {}", attribute.to_string(), value),
-            Condition::NotEq(attribute, value) => {
-                format!("{} is not {}", attribute.to_string(), value)
-            }
-        }
+/// Implements different constructors to make building conditions easier.
+impl Condition {
+    /// Creates a condition that checks that any of the provided attributes are present.
+    ///
+    ///
+    /// Returns a [`Condition::Any`] with a list of [`Condition::Has`] conditions for each of the provided attributes.
+    pub fn has_any(attributes: Vec<Attribute>) -> Condition {
+        Condition::Any(attributes.into_iter().map(Condition::Has).collect())
+    }
+
+    /// Creates a condition that checks that all of the provided attributes are present.
+    ///
+    /// Returns a [`Condition::All`] with a list of [`Condition::Has`] conditions for each of the provided attributes.
+    pub fn has_all(attributes: Vec<Attribute>) -> Condition {
+        Condition::All(attributes.into_iter().map(Condition::Has).collect())
+    }
+
+    /// Creates a condition that checks that none of the provided attributes are present.
+    ///
+    /// Returns a [`Condition::All`] with a list of [`Condition::NotHave`] conditions for each of the provided attributes.
+    pub fn not_have_any(attributes: Vec<Attribute>) -> Condition {
+        Condition::All(attributes.into_iter().map(Condition::NotHave).collect())
+    }
+
+    /// Creates a condition that checks that at least one of the provided arguments is not present.
+    ///
+    /// Returns a [`Condition::Any`] with a list of [`Condition::NotHave`] conditions for each of the provided attributes.
+    pub fn not_have_all(attributes: Vec<Attribute>) -> Condition {
+        Condition::Any(attributes.into_iter().map(Condition::NotHave).collect())
     }
 }
 
-impl PartialEq for Condition {
-    fn eq(&self, other: &Self) -> bool {
+/// Methods that can be called from a condition.
+impl Condition {
+    /// Returns any dependant condition
+    pub fn get_dependencies(&self) -> Vec<Attribute> {
         match self {
-            Condition::Has(attr) => {
-                if let Condition::Has(other_attr) = other {
-                    attr.eq(other_attr)
-                } else {
-                    false
-                }
-            }
-            Condition::NotHave(attr) => {
-                if let Condition::NotHave(other_attr) = other {
-                    attr.eq(other_attr)
-                } else {
-                    false
-                }
-            }
-            Condition::Max(attr, val) => {
-                if let Condition::Max(other_attr, other_val) = other {
-                    attr.eq(other_attr) && val == other_val
-                } else {
-                    false
-                }
-            }
-            Condition::Min(attr, val) => {
-                if let Condition::Min(other_attr, other_val) = other {
-                    attr.eq(other_attr) && val == other_val
-                } else {
-                    false
-                }
-            }
-            Condition::Eq(attr, val) => {
-                if let Condition::Eq(other_attr, other_val) = other {
-                    attr.eq(other_attr) && val == other_val
-                } else {
-                    false
-                }
-            }
-            Condition::NotEq(attr, val) => {
-                if let Condition::NotEq(other_attr, other_val) = other {
-                    attr.eq(other_attr) && val == other_val
-                } else {
-                    false
-                }
+            Condition::Has(attr)
+            | Condition::NotHave(attr)
+            | Condition::Max(attr, _)
+            | Condition::Min(attr, _)
+            | Condition::Eq(attr, _)
+            | Condition::NotEq(attr, _) => vec![*attr],
+            Condition::Any(conds) | Condition::All(conds) => {
+                conds.iter().flat_map(Condition::get_dependencies).collect()
             }
         }
     }

@@ -1,183 +1,245 @@
-mod bonus_source;
-pub use bonus_source::*;
-mod bonus_types;
-pub use bonus_types::*;
+//! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
+mod bonus_type;
 mod condition;
-pub use condition::*;
+mod source;
 mod traits;
-use itertools::Itertools;
+mod value;
+
+use crate::attribute::{Attribute, flags::Flag};
+
+pub use bonus_type::*;
+pub use condition::*;
+pub use source::*;
 pub use traits::*;
+pub use value::*;
 
-use crate::{
-    attribute::sub::{Flag, Toggle},
-    feat::Feat,
-};
-
-use super::attribute::Attribute;
-
-/// Describes a bonus for an attribute by it's type, value, source, and any conditions.
+/// Represents a given bonus to some [`Attribute`].
 ///
-/// A bonus that consists of the following features:
-///
-/// **Attribute**: The [Attribute] that the bonus applies to.
-///
-/// **Bonus Type**: The [BonusType] that the bonus is. Bonuses of the same [BonusType] will not stack (unless it is [BonusType::Stacking]), but bonuses of different types will.
-///
-/// **Value**: The value of the bonus. This is stored as a [f32].
-///
-/// **Source**: The original source of the bonus, represented with [BonusSource]. This is used to automatically remove / replace bonuses of the same source.
-///
-/// **Conditions**: Any [Conditions](Condition) that must be met for this bonus to apply. Stored as a `Vec<Condition>`.
-///
-/// # Examples
-///
-/// ```
-/// use builder_core::{
-///     bonus::{Bonus, BonusType, BonusSource},
-///     attribute::Attribute
-/// };
-///
-/// let bonus = Bonus::new(
-///     Attribute::Dodge(),
-///     BonusType::Stacking,
-///     5f32,
-///     BonusSource::Unique(0),
-///     None
-/// );
-///
-/// assert_eq!(Attribute::Dodge(), bonus.get_attribute());
-/// assert_eq!(BonusType::Stacking, bonus.get_bonus_type());
-/// assert!(5f32 == bonus.get_value());
-/// assert_eq!(BonusSource::Unique(0), bonus.get_source());
-/// assert_eq!(None, bonus.get_conditions());
-/// ```
-///
-#[derive(PartialEq, Clone, serde::Serialize, serde::Deserialize, Debug)]
+/// A bonus contains the [`Attribute`], a [`BonusType`], a [`BonusValue`], a [`BonusSource`], and
+/// an optional [`Condition`].
+#[derive(Debug, Clone)]
 pub struct Bonus {
-    #[serde(rename = "atr")]
     attribute: Attribute,
-    #[serde(rename = "ty")]
     bonus_type: BonusType,
-    #[serde(rename = "val")]
-    value: f32,
-    #[serde(rename = "src")]
+    value: BonusValue,
     source: BonusSource,
-    #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
-    conditions: Option<Vec<Condition>>,
-}
-
-impl ToString for Bonus {
-    fn to_string(&self) -> String {
-        if let Some(conditions) = &self.conditions {
-            format!(
-                "{} {} bonus to {} when {}",
-                self.value,
-                self.bonus_type.to_string(),
-                self.attribute.to_string(),
-                conditions.iter().map(Condition::to_string).join(", ")
-            )
-        } else {
-            format!(
-                "{} {} bonus to {}",
-                self.value,
-                self.bonus_type.to_string(),
-                self.attribute.to_string()
-            )
-        }
-    }
+    condition: Option<Condition>,
 }
 
 impl Bonus {
-    /// Creates a new [Bonus].
-    #[inline(always)]
+    /// Creates a new bonus with the provided values.
+    ///
+    /// Many of the custom parameters implement as many [`From`] traits as needed, so many times
+    /// the [`Into::into`] function can be used.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use builder_core::{bonus::{BonusType, Bonus}, attribute::Attribute};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy.into(), BonusType::Stacking, 1f32.into(),
+    /// Attribute::Dummy.into(), None);
+    /// ```
+    /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
     pub fn new(
         attribute: Attribute,
         bonus_type: BonusType,
-        value: f32,
+        value: BonusValue,
         source: BonusSource,
-        conditions: Option<Vec<Condition>>,
+        condition: Option<Condition>,
     ) -> Self {
         Self {
             attribute,
             bonus_type,
             value,
             source,
-            conditions,
+            condition,
         }
     }
-    /// Creates a dummy bonus.
+
+    /// Creates a [`Attribute::Dummy`] with a given [`BonusSource`].
     ///
-    /// The bonus will be for the [Attribute::Dummy] attribute, have a stacking value of `0f32`, no conditions, and the provided source.
-    #[inline(always)]
+    /// Most values are kept default, since this bonus is never actually tracked.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusSource, BonusType, BonusValue}, attribute::Attribute};
+    ///
+    /// let dummy = Bonus::dummy(BonusSource::Base);
+    /// assert_eq!(dummy.get_attribute(), Attribute::Dummy);
+    /// assert_eq!(dummy.get_type(), BonusType::Stacking);
+    /// assert_eq!(dummy.get_value(), BonusValue::Value(0f32));
+    /// assert_eq!(dummy.get_source(), BonusSource::Base);
+    /// assert!(dummy.get_condition().is_none());
+    /// ```
     pub fn dummy(source: BonusSource) -> Bonus {
         Self {
-            attribute: Attribute::Dummy(),
+            attribute: Attribute::Dummy,
             bonus_type: BonusType::Stacking,
-            value: 0f32,
+            value: 0f32.into(),
             source,
-            conditions: None,
+            condition: None,
         }
     }
 
-    /// Creates a simple flag bonus that gives the user that flag.
-    #[inline(always)]
+    /// Returns a bonus that gives the character some [`Flag`].
     pub fn flag(flag: Flag, source: BonusSource) -> Bonus {
         Self {
-            attribute: Attribute::Flag(flag),
+            attribute: flag.into(),
             bonus_type: BonusType::Stacking,
-            value: 1f32,
+            value: 1f32.into(),
             source,
-            conditions: None,
+            condition: None
         }
     }
 
-    /// Creates a simple toggle bonus that gives the user that toggle.
-    #[inline(always)]
-    pub fn toggle(toggle: Toggle, source: BonusSource) -> Bonus {
-        Self {
-            attribute: Attribute::Toggle(toggle),
-            bonus_type: BonusType::Stacking,
-            value: 1f32,
-            source,
-            conditions: None,
-        }
-    }
 
-    /// Creates a bonus that gives the user a certain feat.
-    pub fn feat(feat: Feat, source: BonusSource) -> Bonus {
-        Self {
-            attribute: Attribute::Feat(feat),
-            bonus_type: BonusType::Stacking,
-            value: 1f32,
-            source,
-            conditions: None,
-        }
-    }
-
-    /// Returns the attribute of the bonus
+    /// Returns the attribute that the bonus applies to.
+    ///
+    /// # Example
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, 10f32.into(),
+    /// BonusSource::Base, None);
+    /// assert_eq!(bonus.get_attribute(), Attribute::Dummy);
+    /// ```
     pub fn get_attribute(&self) -> Attribute {
         self.attribute
     }
 
-    /// Returns the value of the bonus
-    pub fn get_value(&self) -> f32 {
-        self.value
-    }
-
-    /// Returns the bonus type of the bonus
-    pub fn get_bonus_type(&self) -> BonusType {
+    /// Returns the type that the bonus is
+    ///
+    /// # Example
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, 10f32.into(),
+    /// BonusSource::Base, None);
+    /// assert_eq!(bonus.get_type(), BonusType::Enhancement);
+    /// ```
+    pub fn get_type(&self) -> BonusType {
         self.bonus_type
     }
 
+    /// Returns the value of the bonus
+    ///
+    /// # Example
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, BonusValue}, attribute::Attribute};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, BonusValue::Value(10f32),
+    /// BonusSource::Base, None);
+    /// assert_eq!(bonus.get_value(), BonusValue::Value(10f32));
+    /// ```
+    pub fn get_value(&self) -> BonusValue {
+        self.value
+    }
+
     /// Returns the source of the bonus
+    ///
+    /// # Example
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, 10f32.into(),
+    /// BonusSource::Base, None);
+    /// assert_eq!(bonus.get_source(), BonusSource::Base);
+    /// ```
     pub fn get_source(&self) -> BonusSource {
         self.source
     }
 
-    /// Returns the conditions of the bonus, if any.
+    /// Returns the condition of the bonus
     ///
-    /// If there are no conditions, [`None`] is returned.
-    pub fn get_conditions(&self) -> Option<Vec<Condition>> {
-        self.conditions.clone()
+    /// # Example
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, Condition},
+    /// attribute::Attribute};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
+    /// BonusSource::Base, Some(Condition::Has(Attribute::Dummy)));
+    /// assert!(matches!(bonus.get_condition(), Some(Condition::Has(Attribute::Dummy))));
+    ///
+    /// ```
+    pub fn get_condition(&self) -> Option<Condition> {
+        self.condition.clone()
+    }
+
+    /// Clones all of the bonuse's values, replacing the attribute.
+    ///
+    /// Returns a new [`Bonus`] instance.
+    ///
+    /// # Example
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
+    /// attribute::{types::Ability, Attribute}};
+    ///
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
+    /// BonusSource::Base, None);
+    ///
+    /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
+    /// assert_eq!(new_bonus.get_attribute(), Attribute::Ability(Ability::All));
+    /// assert_eq!(new_bonus.get_type(), BonusType::Quality);
+    /// assert_eq!(new_bonus.get_value(), BonusValue::Value(10f32));
+    /// assert_eq!(new_bonus.get_source(), BonusSource::Base);
+    /// assert!(new_bonus.get_condition().is_none());
+    /// ```
+    pub fn clone_into_attribute(&self, attribute: Attribute) -> Bonus {
+        Bonus {
+            attribute,
+            bonus_type: self.bonus_type,
+            value: self.value,
+            source: self.source,
+            condition: self.condition.clone(),
+        }
+    }
+
+    /// Returns all other [`Attributes`] that this bonus references
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
+    /// attribute::{types::Ability, Attribute}};
+    ///
+    /// let bonus = Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking,
+    /// BonusValue::FromAttribute(Attribute::Ability(Ability::Constitution)),
+    /// BonusSource::Attribute(Attribute::Ability(Ability::Wisdom)),
+    /// Some(Condition::Has(Attribute::Ability(Ability::Dexterity))));
+    ///
+    /// let deps = bonus.get_dependencies();
+    ///
+    /// assert!(deps.is_some());
+    /// let dependencies = deps.unwrap();
+    ///
+    /// assert!(dependencies.contains(&Attribute::Ability(Ability::Constitution)));
+    /// assert!(dependencies.contains(&Attribute::Ability(Ability::Dexterity)));
+    ///
+    /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Wisdom)));
+    /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Strength)));
+    /// ```
+    /// Attributes referenced in the [`BonusValue`] (see [`BonusValue::get_dependencies()`]) and
+    /// [`Condition`] (see [`Condition::get_dependencies()`]) are included. However, the bonus
+    /// [`Attribute`] and [`BonusSource`] are not included.
+    ///
+    ///
+    /// [`BonusValue::get_dependencies()`]: crate::bonus::BonusValue::get_dependencies
+    /// [`Condition::get_dependencies()`]: crate::bonus::Condition::get_dependencies
+    /// [`Attributes`]: crate::attribute::Attribute
+    pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
+        let condition_deps = self.condition.as_ref().map(Condition::get_dependencies);
+
+        let value_deps = self.value.get_dependencies();
+
+        if let Some(mut cond_deps) = condition_deps {
+            if let Some(mut val_deps) = value_deps {
+                cond_deps.append(&mut val_deps);
+            }
+            Some(cond_deps)
+        } else {
+            value_deps
+        }
     }
 }

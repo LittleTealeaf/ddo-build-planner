@@ -1,258 +1,324 @@
-mod attribute_queue;
-mod bonus_set;
-mod clone_bonuses;
-mod partial_bonus;
+//! Handles the compilation and calculations of [`Bonuses`].
+//!
+//! [`Bonuses`]: crate::bonus::Bonus
 
-use std::collections::HashMap;
+mod attribute_queue;
+mod default_bonuses;
 
 use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, Condition},
+    bonus::{Bonus, BonusSource, BonusValue, CloneBonus, Condition},
+    utils::EnumBinaryMap,
 };
 
-use self::{attribute_queue::AttributeQueue, bonus_set::BonusSet, clone_bonuses::clone_bonuses};
+use self::{attribute_queue::AttributeQueue, default_bonuses::build_default_values};
 
-/// Compiles multiple bonuses and calculates resulting attribute values based on bonus rules.
+/// Compiles and calculates attribut values from a set of [`Bonus`] entries.
 ///
-/// The struct handles the core calculations of attribute bonuses.
-pub struct AttributeCompiler {
-    bonuses: BonusSet,
-    children: HashMap<BonusSource, Vec<Attribute>>,
-    cache: HashMap<Attribute, f32>,
+/// Internally, this uses [`EnumBinaryMaps`] to efficiently store bonuses in a HashMap structure without the need of deriving [`Hash`].
+///
+/// This will handle any bonuses that different attributes may give (such as [`Attribute::Ability`] giving bonuses to [`Attribute::AbilityModifier`]), as well as cloned bonuses (such as [`Ability::All`] being split off into each of the abilities)
+///
+/// Note that the compiler must be mutable for most of it's publicly-facing functions
+///
+/// # Examples
+///
+/// ```
+/// use builder_core::{
+///     attribute::{
+///         Attribute,
+///         types::{
+///             Sheltering
+///         }
+///     },
+///     bonus::{Bonus, BonusSource, Condition, BonusType},
+///     compiler::Compiler
+/// };
+///
+/// let mut compiler = Compiler::default();
+///
+/// compiler.add_bonus(Bonus::new(Attribute::Sheltering(Sheltering::Magical), BonusType::Stacking, 5f32.into(), BonusSource::Custom(0), None));
+///
+/// assert_eq!(5f32, compiler.get_attribute(&Attribute::Sheltering(Sheltering::Magical)));
+/// ```
+///
+///
+/// [`EnumBinaryMaps`]: crate::utils::EnumBinaryMap
+/// [`Bonus`]: crate::bonus::Bonus
+/// [`Ability::All`]: crate::attribute::types::Ability::All
+pub struct Compiler {
+    bonuses: EnumBinaryMap<Attribute, Vec<Bonus>>,
+    cache: EnumBinaryMap<Attribute, f32>,
+    children: EnumBinaryMap<BonusSource, Vec<Attribute>>,
 }
 
-impl Default for AttributeCompiler {
-    #[inline]
+impl Default for Compiler {
     fn default() -> Self {
-        Self {
-            bonuses: BonusSet::new(),
-            children: HashMap::new(),
-            cache: HashMap::new(),
-        }
+        let mut new = Self {
+            bonuses: EnumBinaryMap::default(),
+            cache: EnumBinaryMap::default(),
+            children: EnumBinaryMap::default(),
+        };
+
+        new.insert_bonuses(build_default_values());
+        new
     }
 }
 
-impl AttributeCompiler {
-    /// Creates a new [AttributeCompiler] with no bonuses.
-    #[inline(always)]
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    fn calculate_attribute(&self, attribute: &Attribute) -> Option<f32> {
-        Some(
-            self.bonuses
-                .get(attribute)?
-                .iter()
-                .filter(|bonus| match &bonus.conditions {
-                    None => true,
-                    Some(conditions) => conditions.iter().all(|condition| match condition {
-                        Condition::Has(attr) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) > 0f32
-                        }
-                        Condition::NotHave(attr) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) == 0f32
-                        }
-                        Condition::Eq(attr, value) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) == *value
-                        }
-                        Condition::Max(attr, value) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) <= *value
-                        }
-                        Condition::Min(attr, value) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) >= *value
-                        }
-                        Condition::NotEq(attr, value) => {
-                            self.calculate_attribute(attr).unwrap_or(0f32) != *value
-                        }
-                    }),
-                })
-                .map(|bonus| (bonus.bonus_type, bonus.value))
-                .into_group_map()
-                .into_iter()
-                .map(|(bonus_type, mut items)| {
-                    let mut value = items.pop().unwrap_or(0f32);
-                    if bonus_type.is_stacking() {
-                        for item in items {
-                            value += item;
-                        }
-                    } else {
-                        for item in items {
-                            if value < item {
-                                value = item;
-                            }
-                        }
-                    }
-                    value
-                })
-                .sum(),
-        )
-    }
-
-    /// Gets the calculated value of an attribute
+// public functions
+impl Compiler {
+    /// Returns the value of an attribute.
+    ///
+    /// If the attribute has no bonuses, then it will return `0f32`
     pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
+        // First try the cache
         if let Some(value) = self.cache.get(attribute) {
             return *value;
         }
 
+        // Otherwise, calculate the value
         let value = self.calculate_attribute(attribute).unwrap_or(0f32);
-
+        // store in cache
         self.cache.insert(*attribute, value);
 
+        // Return the value
         value
     }
 
-    /// Inserts a single attribute into the compiler.
-    #[inline(always)]
-    pub fn insert_bonus(&mut self, bonus: Bonus) {
-        self.insert_bonuses(vec![bonus]);
+    /// Returns all attributes that have bonuses in the compiler.
+    pub fn get_all_attributes(&mut self) -> Vec<(Attribute, f32)> {
+        let attributes = self.bonuses.iter().map(|(attr, _)| attr).collect_vec();
+        attributes
+            .into_iter()
+            .map(|attr| (attr, self.get_attribute(&attr)))
+            .collect()
     }
 
-    /// Inserts a list of attributes into the compiler.
-    pub fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
-        // Adds additional attribute clones
-        clone_bonuses(&mut bonuses);
+    /// Adds one bonus to the compiler set.
+    pub fn add_bonus(&mut self, bonus: Bonus) {
+        self.add_bonuses(vec![bonus]);
+    }
 
-        // Creates and initially sets queue
-        let mut attribute_queue = AttributeQueue::new();
-        attribute_queue.insert_attriubtes(
-            bonuses.iter().map(Bonus::get_attribute).unique().collect(),
-            false,
-        );
+    /// Adds a set of bonuses to the compiler set.
+    pub fn add_bonuses(&mut self, bonuses: Vec<Bonus>) {
+        self.insert_bonuses(bonuses);
+    }
+}
 
-        bonuses
-            .iter()
-            .map(|bonus| (bonus.get_source(), bonus.get_attribute()))
-            .into_group_map()
+// Calculating Functions
+impl Compiler {
+    fn check_condition(&mut self, condition: Condition) -> bool {
+        match condition {
+            Condition::Has(attr) => self.get_attribute(&attr) > 0f32,
+            Condition::NotHave(attr) => self.get_attribute(&attr) <= 0f32,
+            Condition::Max(attr, val) => self.get_attribute(&attr) <= val,
+            Condition::Min(attr, val) => self.get_attribute(&attr) >= val,
+            Condition::Eq(attr, val) => self.get_attribute(&attr) == val,
+            Condition::NotEq(attr, val) => self.get_attribute(&attr) != val,
+            Condition::Any(set) => set.into_iter().any(|cond| self.check_condition(cond)),
+            Condition::All(set) => set.into_iter().all(|cond| self.check_condition(cond)),
+        }
+    }
+
+    fn calculate_value(&mut self, value: BonusValue) -> f32 {
+        match value {
+            BonusValue::Value(val) => val,
+            BonusValue::FromAttribute(attribute) => self.get_attribute(&attribute),
+            BonusValue::ScaleAttribute(attribute, scale) => self.get_attribute(&attribute) * scale,
+        }
+    }
+
+    fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<f32> {
+        // Collect valid bonuses that pass their conditions into a list of (type, value) tuples
+        let valid_bonuses = self
+            .bonuses
+            .get(attribute)?
+            .clone()
             .into_iter()
-            .for_each(|(source, set): (BonusSource, Vec<Attribute>)| {
-                // Inserts new set
-                if let Some(children) = self.children.insert(source, set) {
-                    // If there was an old set, remove the sources from that
-                    self.bonuses.remove_source_from(source, children);
-                }
+            .filter_map(|bonus| {
+                bonus
+                    .get_condition()
+                    .map(|condition| self.check_condition(condition))
+                    .unwrap_or(true)
+                    .then(|| (bonus.get_type(), self.calculate_value(bonus.get_value())))
             });
 
-        // Initializes list of bonuses to insert
-        let mut update_bonuses = bonuses
-            .into_iter()
-            .map(|bonus| (bonus.get_attribute(), bonus))
-            .into_group_map();
+        // Collect each type into a vec with EnumBinaryMap
+        let map = EnumBinaryMap::from(valid_bonuses);
 
-        // While the next attribute in the queue is inserted
-        while let Some((attribute, force_update)) = attribute_queue.get_next_attribute() {
-            // Fetches the initial value. If we're forcing the update, we won't care about it if
-            // it's not stored in the cache
-            let initial_value = {
-                if let Some(value) = self.cache.remove(&attribute) {
-                    value
-                } else if force_update {
-                    0f32
-                } else {
-                    self.calculate_attribute(&attribute).unwrap_or(0f32)
+        // flatten each type into a number
+        let final_values = map.into_iter().map(|(bonus_type, mut items)| {
+            let mut value = items.pop().unwrap_or(0f32);
+            if bonus_type.is_stacking() {
+                for item in items {
+                    value += item;
                 }
-            };
-
-            // Inserts the updated bonuses into the stack if they're not 0
-            if let Some(bonuses) = update_bonuses.remove(&attribute) {
-                self.bonuses.insert(attribute, bonuses);
+            } else {
+                for item in items {
+                    if value < item {
+                        value = item;
+                    }
+                }
             }
+            value
+        });
 
-            // If it's forced update, or if the initial value is not equal to the current value.
-            // This will coincidentally cache the attribute (if we're not forcing updates)
-            if force_update || initial_value != self.get_attribute(&attribute) {
-                // Push any bonus attributes that reference the attribute to the queue
-                attribute_queue
-                    .insert_attriubtes(self.bonuses.get_all_references(&attribute), true);
+        Some(final_values.sum())
+    }
+}
 
-                //Builds the source for any children bonuses
-                let source = attribute.into();
+// Inserting Bonuses
+impl Compiler {
+    fn remove_source_from_children(&mut self, source: BonusSource, children: Vec<Attribute>) {
+        for child in children {
+            if let Some(set) = self.bonuses.get_mut(&child) {
+                // Enumerate items in the set
+                let items = set.iter().enumerate();
 
-                // Removes any bonuses that are children
-                if let Some(children) = self.children.remove(&source) {
-                    self.bonuses.remove_source_from(source, children);
-                }
+                // Filter map to the indexes of bonuses with the same source, and collect into a vec
+                let indexes = items
+                    .filter_map(|(index, item)| item.get_source().eq(&source).then_some(index))
+                    .rev()
+                    .collect_vec();
 
-                let value = self.get_attribute(&attribute);
-
-                // Checks if there are any child bonuses
-                if let Some(mut bonuses) = attribute.get_attribute_bonuses(value) {
-                    // Includes child bonuses
-                    clone_bonuses(&mut bonuses);
-
-                    // Inserts updated attributes and returns iterator of unique attriubtes
-                    let updated_attributes = bonuses
-                        .into_iter()
-                        .into_group_map_by(|bonus| bonus.get_attribute())
-                        .into_iter()
-                        .map(|(attribute, mut set)| {
-                            // Inserts bonuses into update_bonuses
-                            if let Some(update_set) = update_bonuses.get_mut(&attribute) {
-                                update_set.append(&mut set);
-                            } else {
-                                update_bonuses.insert(attribute, set);
-                            }
-                            attribute
-                        })
-                        .unique()
-                        .collect_vec();
-
-                    // Updates children entry
-                    self.children.insert(source, updated_attributes.clone());
-
-                    // Update attribute queue
-                    attribute_queue.insert_attriubtes(updated_attributes, false);
+                // Swap-remove each index
+                for index in indexes {
+                    set.swap_remove(index);
                 }
             }
         }
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use crate::bonus::BonusType;
-
-    use super::*;
-
-    #[test]
-    fn inserting_attribute_updates_children() {
-        let mut compiler = AttributeCompiler::new();
-
-        compiler.insert_bonus(Bonus::dummy(BonusSource::Unique(0)));
-
-        assert_eq!(
-            Some(&vec![Attribute::Dummy()]),
-            compiler.children.get(&BonusSource::Unique(0))
-        );
+    fn get_bonus_iter(&self) -> impl Iterator<Item = &Bonus> {
+        self.bonuses
+            .iter()
+            .flat_map(|(_, bonus_set)| bonus_set.iter())
     }
 
-    #[test]
-    fn inserting_attribute_overwrites_children() {
-        let mut compiler = AttributeCompiler::new();
-
-        compiler.insert_bonus(Bonus::new(
-            Attribute::Dodge(),
-            BonusType::Stacking,
-            1f32,
-            BonusSource::Unique(1),
-            None,
-        ));
-        compiler.insert_bonus(Bonus::dummy(BonusSource::Unique(1)));
-
-        assert_eq!(
-            Some(&vec![Attribute::Dummy()]),
-            compiler.children.get(&BonusSource::Unique(1))
+    fn insert_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
+        // Add any cloned bonuses
+        bonuses.append(
+            &mut bonuses
+                .iter()
+                .filter_map(|bonus| bonus.get_attribute().clone_bonus(bonus))
+                .flatten()
+                .collect(),
         );
-    }
 
-    #[test]
-    fn getting_bonus_sets_cache() {
-        let mut compiler = AttributeCompiler::new();
+        // Create and populate queue of attributes to update
+        let mut attribute_queue = AttributeQueue::default();
+        attribute_queue.insert(bonuses.iter().map(Bonus::get_attribute).collect(), false);
 
-        compiler.get_attribute(&Attribute::Dummy());
+        // Updating sources that are being inserted
+        {
+            // Collect sources and their child attributes
+            let sources = EnumBinaryMap::from(
+                bonuses
+                    .iter()
+                    .map(|bonus| (bonus.get_source(), bonus.get_attribute())),
+            );
 
-        assert!(compiler.cache.contains_key(&Attribute::Dummy()));
+            // Iterate over each source, and if there was a prior mapping of source to children, remove those attributes and add them (forcefully) to the attribute queue
+            sources.into_iter().for_each(|(source, set)| {
+                if let Some(children) = self.children.insert(source, set) {
+                    attribute_queue.insert(children.clone(), true);
+                    self.remove_source_from_children(source, children);
+                }
+            });
+        }
+
+        // Initialize the update bonuses
+        let mut update_bonuses = EnumBinaryMap::from(
+            bonuses
+                .into_iter()
+                .map(|bonus| (bonus.get_attribute(), bonus)),
+        );
+
+        // Fetch the next attribute from the queue
+        while let Some((attribute, force_update)) = attribute_queue.get_next_attribute() {
+            let initial_value = {
+                if let Some(value) = self.cache.remove(&attribute) {
+                    // First try to REMOVE it from the cache
+                    value
+                } else if force_update {
+                    // Otherwise, if it's a forced update, return 0f32
+                    0f32
+                } else {
+                    // Since we're not forcing, we need to check the difference, so calcualte the value
+                    self.calculate_attribute(&attribute).unwrap_or(0f32)
+                }
+            };
+
+            // If there are any new bonuses, add those
+            if let Some(mut bonuses) = update_bonuses.remove(&attribute) {
+                self.bonuses
+                    .get_mut_or_default(&attribute)
+                    .append(&mut bonuses);
+            }
+
+            // Either check if it's forced, or if the initial value is different from the original
+            if force_update || initial_value != self.get_attribute(&attribute) {
+                // Add any attributes with this attribute as a dependant into the iterator
+                {
+                    // First get the attributes that have this attribute as a dependant
+                    let attributes = self
+                        .get_bonus_iter()
+                        .filter_map(|bonus| {
+                            bonus
+                                .get_dependencies()?
+                                .contains(&attribute)
+                                .then_some(bonus.get_attribute())
+                        })
+                        .collect_vec();
+                    // Add those to the attribute queue
+                    attribute_queue.insert(attributes, true);
+                }
+
+                // Source
+                let source = attribute.into();
+
+                // Removes any bonuses that are children
+                if let Some(children) = self.children.remove(&source) {
+                    self.remove_source_from_children(source, children);
+                }
+
+                // Calculate the value
+                let value = self.get_attribute(&attribute);
+
+                if let Some(mut bonuses) = attribute.get_bonuses(value) {
+                    // Add any cloned bonuses
+                    bonuses.append(
+                        &mut bonuses
+                            .iter()
+                            .filter_map(|bonus| bonus.get_attribute().clone_bonus(bonus))
+                            .flatten()
+                            .collect(),
+                    );
+
+                    let updated_attributes = EnumBinaryMap::from(
+                        EnumBinaryMap::from(
+                            bonuses
+                                .into_iter()
+                                .map(|bonus| (bonus.get_attribute(), bonus)),
+                        )
+                        .into_iter()
+                        .map(|(attribute, mut set)| {
+                            update_bonuses
+                                .get_mut_or_default(&attribute)
+                                .append(&mut set);
+                            attribute
+                        }),
+                    )
+                    .into_iter()
+                    .map(|(key, _)| key)
+                    .collect_vec();
+
+                    self.children.insert(source, updated_attributes.clone());
+                    attribute_queue.insert(updated_attributes, false);
+                }
+            }
+        }
     }
 }
