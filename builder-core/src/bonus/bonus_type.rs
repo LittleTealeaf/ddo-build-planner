@@ -10,7 +10,9 @@ use enum_map::Enum;
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum BonusType {
-    // TODO: Documentation
+    /// Bonuses that come from [`Attribute::AbilityModifier`]
+    ///
+    /// [`Attribute::AbilityModifier`]: crate::attribute::Attribute::AbilityModifier
     AbilityModifier,
     /// "Action Boost" bonuses
     ///
@@ -26,7 +28,7 @@ pub enum BonusType {
     Competence,
     /// Deflection bonus
     Deflection,
-    // Dodge
+    /// Dodge
     Dodge,
     /// Enhancement bonus
     Enhancement,
