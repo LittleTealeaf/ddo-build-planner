@@ -2,41 +2,48 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
+use super::Alignment;
 
 
+
+/// Different types of energy resistance or absorption that the user can have
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum EnergyResistance {
+    /// Acid Energy
     Acid,
-    Chaos,
+    /// Cold Energy
     Cold,
+    /// Electric Energy
     Electric,
-    Evil,
+    /// Fire Energy
     Fire,
+    /// Force
     Force,
-    Good,
-    Lawful,
+    /// Light
     Light,
+    /// Negative Energy
     Negative,
+    /// Poison
     Poison,
-    Sonic
+    /// Sonic
+    Sonic,
+    /// Alignment based
+    Alignment(Alignment),
 }
 
 impl Display for EnergyResistance {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             EnergyResistance::Acid => write!(f, "Acid"),
-            EnergyResistance::Chaos => write!(f, "Chaos"),
             EnergyResistance::Cold => write!(f, "Cold"),
             EnergyResistance::Electric => write!(f, "Electric"),
-            EnergyResistance::Evil => write!(f, "Evil"),
             EnergyResistance::Fire => write!(f, "Fire"),
             EnergyResistance::Force => write!(f, "Force"),
-            EnergyResistance::Good => write!(f, "Good"),
-            EnergyResistance::Lawful => write!(f, "Lawful"),
             EnergyResistance::Light => write!(f, "Light"),
             EnergyResistance::Negative => write!(f, "Negative"),
             EnergyResistance::Poison => write!(f, "Poison"),
             EnergyResistance::Sonic => write!(f, "Sonic"),
+            EnergyResistance::Alignment(alignment) => alignment.fmt(f),
         }
     }
 }

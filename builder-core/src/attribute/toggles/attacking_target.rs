@@ -5,10 +5,14 @@ use enum_map::Enum;
 use crate::attribute::types::{MonsterType, Alignment};
 
 
+/// Indicates that the character is attacking / fighting a certain type
 #[derive(PartialEq, Eq, Clone, Copy, Enum, Debug)]
 pub enum AttackingTarget {
+    /// The enemy is tripped
     Tripped,
+    /// The enemy is a certain monster tyype
     MonsterType(MonsterType),
+    /// The enemy is a certain alignment
     Alignment(Alignment),
 }
 

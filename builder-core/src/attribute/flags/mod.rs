@@ -1,3 +1,7 @@
+//! Handles any Flag that the character has.
+//!
+//! Most of the time, the flag is either a `1` (Has) or `0` (Not Have). 
+
 use std::fmt::Display;
 
 use enum_map::Enum;

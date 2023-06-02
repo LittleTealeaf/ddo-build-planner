@@ -1,29 +1,53 @@
+//! Describes the different player class options that are available.
+
 use std::fmt::Display;
 
 use enum_map::Enum;
 
+/// The different Player Classes that are in the game
 #[derive(Copy, Clone, PartialEq, Eq, Enum, Debug)]
 pub enum PlayerClass {
+    /// Alchemist Class
     Alchemist,
+    /// Artificer Class
     Artificer,
+    /// Barbarian Class
     Barbarian,
+    /// Fighter Class
     Fighter,
+    /// Monk Class
     Monk,
+    /// Rogue Class
     Rogue,
+    /// Sorcerer Class
     Sorcerer,
+    /// Wizard Class
     Wizard,
+    /// Favored Soul Class
     FavoredSoul,
+    /// Bard Class
     Bard,
+    /// Stormsinger Class
     Stormsinger,
+    /// Cleric Class
     Cleric,
+    /// Dark Apostate Class
     DarkApostate,
+    /// Druid Class
     Druid,
+    /// Blight Caster Class
     BlightCaster,
+    /// Paladin Class
     Paladin,
+    /// Sacred Fist Class
     SacredFist,
+    /// Ranger Class
     Ranger,
+    /// Dark Hunter Class
     DarkHunter,
+    /// Warlock Class
     Warlock,
+    /// Acolyte Of The Skin Class
     AcolyteOfTheSkin,
 }
 

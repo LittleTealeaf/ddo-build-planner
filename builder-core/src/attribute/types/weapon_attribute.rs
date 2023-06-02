@@ -9,6 +9,7 @@ use crate::{
 
 use super::{WeaponHand, WeaponStat};
 
+/// A WeaponStat that is specifically for a weapon hand.
 #[derive(PartialEq, Eq, Copy, Clone, Debug, Enum)]
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
@@ -81,6 +82,7 @@ impl CloneBonus for WeaponAttribute {
                 WeaponStat::DamageReductionBypass(dr) => {
                     WeaponHand::VALUES.map(|hand| (hand, WeaponStat::DamageReductionBypass(*dr)))
                 }
+                WeaponStat::CriticalThreatRange => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalThreatRange)),
             }
             .map(|stat| {
                 Bonus::new(

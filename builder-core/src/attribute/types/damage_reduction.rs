@@ -2,21 +2,31 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
+use super::Alignment;
+
+/// Indicates a type of Damage Reduction that something might have
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum DamageReduction {
+    /// Adamantine Damage Reduction
     Adamantine,
+    /// Byeshk Damage Reduction
     Byeshk,
+    /// Cold Iron Damage Reduction
     ColdIron,
+    /// Crystal Damage Reduction
     Crystal,
+    /// Mithral Damage Reduction
     Mithral,
+    /// Silver Damage Reduction
     Silver,
+    /// Bludgeoning Damage Reduction
     Bludgeon,
+    /// Piercing Damage Reduction
     Pierce,
+    /// Slashing Damage Reduction
     Slash,
-    Chaos,
-    Evil,
-    Good,
-    Law,
+    /// Alignment-based Damage Reduction
+    Alignment(Alignment),
 }
 
 impl Display for DamageReduction {
@@ -31,10 +41,7 @@ impl Display for DamageReduction {
             DamageReduction::Bludgeon => write!(f, "Bludgeon"),
             DamageReduction::Pierce => write!(f, "Pierce"),
             DamageReduction::Slash => write!(f, "Slash"),
-            DamageReduction::Chaos => write!(f, "Chaos"),
-            DamageReduction::Evil => write!(f, "Evil"),
-            DamageReduction::Good => write!(f, "Good"),
-            DamageReduction::Law => write!(f, "Law"),
+            DamageReduction::Alignment(alignment) => alignment.fmt(f),
         }
     }
 }

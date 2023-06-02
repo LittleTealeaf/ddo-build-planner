@@ -2,31 +2,29 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
+/// Determines alignment. To create a complete alignment, two of these attributes are required.
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum Alignment {
+    /// Good
     Good,
-    LawfulGood,
-    ChaoticGood,
+    /// Evil
     Evil,
-    LawfulEvil,
-    ChaoticEvil,
+    /// Neutral
     Neutral,
-    LawfulNeutral,
-    ChaoticNeutral
+    /// Lawful
+    Lawful,
+    /// Chaotic
+    Chaotic,
 }
 
 impl Display for Alignment {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Alignment::Good => write!(f, "Good"),
-            Alignment::LawfulGood => write!(f, "Lawful Good"),
-            Alignment::ChaoticGood => write!(f, "Chaotic Good"),
             Alignment::Evil => write!(f, "Evil"),
-            Alignment::LawfulEvil => write!(f, "Lawful Evil"),
-            Alignment::ChaoticEvil => write!(f, "Chaotic Evil"),
             Alignment::Neutral => write!(f, "Neutral"),
-            Alignment::LawfulNeutral => write!(f, "Lawful Neutral"),
-            Alignment::ChaoticNeutral => write!(f, "Chaotic Neutral"),
+            Alignment::Lawful => write!(f, "Lawful"),
+            Alignment::Chaotic => write!(f, "Chaotic"),
         }
     }
 }

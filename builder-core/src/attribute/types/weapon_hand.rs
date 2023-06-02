@@ -2,14 +2,19 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
+/// The hand used for a Weapon Attribute
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum WeaponHand {
+    /// The Main Hand
     Main,
+    /// The Off Hand
     Off,
+    /// Both Hands
     Both,
 }
 
 impl WeaponHand {
+    /// Both the Main Hand and the Off Hand
     pub const VALUES: [Self; 2] = [Self::Main, Self::Off];
 }
 

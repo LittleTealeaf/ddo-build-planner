@@ -1,3 +1,5 @@
+//! Any attribute that requires the user to interact / configure
+
 mod attacking_target;
 
 use std::fmt::Display;

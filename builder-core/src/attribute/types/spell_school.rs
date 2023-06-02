@@ -2,19 +2,29 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
+/// The different schools that a spell might belong to
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum SpellSchool {
+    /// Abjuration Spells
     Abjuration,
+    /// Conjuration Spells
     Conjuration,
+    /// Divination Spells
     Divination,
+    /// Enchantment Spells
     Enchantment,
+    /// Evocation Spells
     Evocation,
+    /// Illusion Spells
     Illusion,
+    /// Necromancy Spells
     Necromancy,
+    /// Transmutation Spells
     Transmutation,
 }
 
 impl SpellSchool {
+    /// Returns all of the Spell School values as an array.
     pub const ALL: [Self; 8] = [
         Self::Abjuration,
         Self::Conjuration,

@@ -7,11 +7,21 @@ use crate::{
     bonus::{Bonus, CloneBonus},
 };
 
+/// Sheltering attributes grant a % reduction to damage from that type.
+///
+/// Magical Sheltering can be capped at a certain amount based on equipment and enhancements, which is tracked with [`Sheltering::MagicalCap`]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum Sheltering {
+    /// Physical Sheltering
     Physical,
+    /// Magical Sheltering
     Magical,
+    /// Magical Sheltering Cap
     MagicalCap,
+    /// Both [`Physical`] and [`Magical`] Sheltering
+    ///
+    /// [`Physical`]: Sheltering::Physical
+    /// [`Magical`]: Sheltering::Magical
     Both,
 }
 

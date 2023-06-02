@@ -7,25 +7,44 @@ use crate::{
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
+/// The different spell power types used for spell damage
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum SpellPower {
+    /// Acid Spell Power
     Acid,
+    /// Light Spell Power
     Light,
+    /// Cold Spell Power
     Cold,
+    /// Electric Spell Power
     Electric,
+    /// Fire Spell Power
     Fire,
+    /// Force Spell Power
     Force,
+    /// Negative Spell Power
     Negative,
+    /// Poison Spell Power
     Poison,
+    /// Positive Spell Power
     Positive,
+    /// Repair Spell Power
     Repair,
+    /// Rust Spell Power
     Rust,
+    /// Sonic Spell Power
     Sonic,
+    /// Splits up each bonus into each of the other bonuses.
     Potency,
+    /// Universal adds universal bonuses to each of the other spell powers
     Universal,
 }
 
 impl SpellPower {
+    /// All of the spell power types except for [`Potency`] and [`Universal`]
+    ///
+    /// [`Potency`]: SpellPower::Potency
+    /// [`Universal`]: SpellPower::Universal
     pub const ALL: [Self; 12] = [
         Self::Acid,
         Self::Light,
