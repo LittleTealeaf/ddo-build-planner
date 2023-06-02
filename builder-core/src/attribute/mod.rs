@@ -20,7 +20,7 @@ use self::{
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
-        Ability, ArmorClass, SavingThrow, Sheltering, Skill, SpellPower, WeaponHandStat,
+        Ability, ArmorClass, SavingThrow, Sheltering, Skill, SpellPower, WeaponAttribute,
         _AbilityModifier, _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, EnergyResistance,
     },
 };
@@ -73,7 +73,7 @@ pub enum Attribute {
     /// Bonuses to the DCs of certain spells.
     SpellDC(SpellSelector),
     /// Bonuses to stats to either the main hand or off hand.
-    Weapon(WeaponHandStat),
+    Weapon(WeaponAttribute),
     /// Armor class values
     ArmorClass(ArmorClass),
     /// Physical or Magical Sheltering

@@ -10,16 +10,16 @@ use crate::{
 use super::{WeaponHand, WeaponStat};
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug, Enum)]
-pub struct WeaponHandStat(WeaponHand, WeaponStat);
+pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
-impl Display for WeaponHandStat {
+impl Display for WeaponAttribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let WeaponHandStat(hand, stat) = self;
+        let WeaponAttribute(hand, stat) = self;
         write!(f, "{}-Hand {}", hand, stat)
     }
 }
 
-impl From<(WeaponHand, WeaponStat)> for WeaponHandStat {
+impl From<(WeaponHand, WeaponStat)> for WeaponAttribute {
     fn from((hand, stat): (WeaponHand, WeaponStat)) -> Self {
         Self(hand, stat)
     }
@@ -27,20 +27,20 @@ impl From<(WeaponHand, WeaponStat)> for WeaponHandStat {
 
 impl From<(WeaponHand, WeaponStat)> for Attribute {
     fn from(value: (WeaponHand, WeaponStat)) -> Self {
-        WeaponHandStat::from(value).into()
+        WeaponAttribute::from(value).into()
     }
 }
 
-impl From<WeaponHandStat> for Attribute {
-    fn from(value: WeaponHandStat) -> Self {
+impl From<WeaponAttribute> for Attribute {
+    fn from(value: WeaponAttribute) -> Self {
         Attribute::Weapon(value)
     }
 }
 
-impl GetBonuses for WeaponHandStat {
+impl GetBonuses for WeaponAttribute {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            WeaponHandStat(hand, WeaponStat::CriticalMultiplier) => Some(vec![Bonus::new(
+            WeaponAttribute(hand, WeaponStat::CriticalMultiplier) => Some(vec![Bonus::new(
                 (*hand, WeaponStat::CriticalMultiplier1920).into(),
                 BonusType::Stacking,
                 value.into(),
@@ -52,16 +52,16 @@ impl GetBonuses for WeaponHandStat {
     }
 }
 
-impl TrackAttribute for WeaponHandStat {
+impl TrackAttribute for WeaponAttribute {
     fn is_tracked(&self) -> bool {
-        let WeaponHandStat(hand, _) = self;
+        let WeaponAttribute(hand, _) = self;
         !matches!(hand, WeaponHand::Both)
     }
 }
 
-impl CloneBonus for WeaponHandStat {
+impl CloneBonus for WeaponAttribute {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
-        let WeaponHandStat(hand, stat) = self;
+        let WeaponAttribute(hand, stat) = self;
         matches!(hand, WeaponHand::Both).then(|| {
             match stat {
                 WeaponStat::Attack => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Attack)),
@@ -104,7 +104,7 @@ mod tests {
     fn both_hands_is_not_tracked() {
         for i in 0..WeaponStat::LENGTH {
             let stat = WeaponStat::from_usize(i);
-            let hand_stat = WeaponHandStat::from((WeaponHand::Both, stat));
+            let hand_stat = WeaponAttribute::from((WeaponHand::Both, stat));
             assert!(!hand_stat.is_tracked());
             assert!(!Attribute::from(hand_stat).is_tracked());
         }
@@ -114,7 +114,7 @@ mod tests {
     fn either_hand_is_tracked() {
         for i in 0..WeaponHand::LENGTH {
             for hand in [WeaponHand::Off, WeaponHand::Main] {
-                let hand_stat = WeaponHandStat::from((hand, WeaponStat::from_usize(i)));
+                let hand_stat = WeaponAttribute::from((hand, WeaponStat::from_usize(i)));
                 assert!(hand_stat.is_tracked());
                 assert!(Attribute::from(hand_stat).is_tracked());
             }
