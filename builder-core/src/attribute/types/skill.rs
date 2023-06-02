@@ -9,33 +9,57 @@ use crate::{
 
 use super::SpellPower;
 
+/// Different skills that the character can have.
 #[derive(Clone, Copy, PartialEq, Eq, Enum, Debug)]
 pub enum Skill {
+    /// Balance Skill
     Balance,
+    /// Bluff Skill
     Bluff,
+    /// Concentration Skill
     Concentration,
+    /// Diplomacy Skill
     Diplomacy,
+    /// Disable Device Skill
     DisableDevice,
+    /// Haggle Skill
     Haggle,
+    /// Heal Skill
     Heal,
+    /// Hide Skill
     Hide,
+    /// Intimidate Skill
     Intimidate,
+    /// Jump Skill
     Jump,
+    /// Listen Skill
     Listen,
+    /// Move Silently Skill
     MoveSilently,
+    /// Open Lock Skill
     OpenLock,
+    /// Perform Skill
     Perform,
+    /// Repair Skill
     Repair,
+    /// Search Skill
     Search,
+    /// Spellcraft Skill
     Spellcraft,
+    /// Spot Skill
     Spot,
+    /// Swim Skill
     Swim,
+    /// Tumble Skill
     Tumble,
+    /// Use Magical Device Skill
     UseMagicalDevice,
+    /// All Skills
     All,
 }
 
 impl Skill {
+    /// Returns every possible value of [`Skill`] except for [`Skill::All`]
     pub const VALUES: [Skill; 21] = [
         Skill::Balance,
         Skill::Bluff,
