@@ -63,6 +63,7 @@ impl Display for SpellPower {
     }
 }
 
+/// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellPower`]
 pub struct _SpellPower;
 
 impl GetBonuses<_SpellPower> for SpellPower {
@@ -83,6 +84,7 @@ impl GetBonuses<_SpellPower> for SpellPower {
     }
 }
 
+/// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellCriticalChance`]
 pub struct _SpellCriticalChance;
 
 impl GetBonuses<_SpellCriticalChance> for SpellPower {
@@ -103,6 +105,7 @@ impl GetBonuses<_SpellCriticalChance> for SpellPower {
     }
 }
 
+/// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellCriticalDamage`]
 pub struct _SpellCriticalDamage;
 
 impl GetBonuses<_SpellCriticalDamage> for SpellPower {

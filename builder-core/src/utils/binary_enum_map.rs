@@ -110,10 +110,12 @@ impl<K: Enum + Copy, V> EnumBinaryMap<K, V> {
         self.array.shrink_to_fit()
     }
 
+    /// Checks if a key can be found in the map
     pub fn contains(&self, key: &K) -> bool {
         self.get(key).is_some()
     }
 
+    /// Attempts to remove a key from the map. If it successfully is removed, the associated value will be returned.
     pub fn remove(&mut self, key: &K) -> Option<V> {
         let key_usize = key.into_usize();
 
@@ -151,6 +153,7 @@ impl<K: Enum + Copy, V> FromIterator<(K, V)> for EnumBinaryMap<K, V> {
     }
 }
 
+/// Implementations when the value implements [`Default`].
 impl<K: Enum + Copy, V: Default> EnumBinaryMap<K, V> {
     /// Returns a mutable reference to a value associated with the key.
     ///

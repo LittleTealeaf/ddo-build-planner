@@ -83,6 +83,7 @@ impl Bonus {
         }
     }
 
+    /// Returns a bonus that gives the character some [`Flag`].
     pub fn flag(flag: Flag, source: BonusSource) -> Bonus {
         Self {
             attribute: flag.into(),
@@ -219,8 +220,8 @@ impl Bonus {
     /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Wisdom)));
     /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Strength)));
     /// ```
-    /// Attributes referenced in the [`BonusValue`] (see [`BonusValue::get_dependencies()`]) and 
-    /// [`Condition`] (see [`Condition::get_dependencies()`]) are included. However, the bonus 
+    /// Attributes referenced in the [`BonusValue`] (see [`BonusValue::get_dependencies()`]) and
+    /// [`Condition`] (see [`Condition::get_dependencies()`]) are included. However, the bonus
     /// [`Attribute`] and [`BonusSource`] are not included.
     ///
     ///

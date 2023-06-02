@@ -21,8 +21,41 @@ pub enum Condition {
     All(Vec<Condition>),
 }
 
+/// Implements different constructors to make building conditions easier.
 impl Condition {
-    // Returns any dependant condition
+    /// Creates a condition that checks that any of the provided attributes are present.
+    ///
+    ///
+    /// Returns a [`Condition::Any`] with a list of [`Condition::Has`] conditions for each of the provided attributes.
+    pub fn has_any(attributes: Vec<Attribute>) -> Condition {
+        Condition::Any(attributes.into_iter().map(Condition::Has).collect())
+    }
+
+    /// Creates a condition that checks that all of the provided attributes are present.
+    ///
+    /// Returns a [`Condition::All`] with a list of [`Condition::Has`] conditions for each of the provided attributes.
+    pub fn has_all(attributes: Vec<Attribute>) -> Condition {
+        Condition::All(attributes.into_iter().map(Condition::Has).collect())
+    }
+
+    /// Creates a condition that checks that none of the provided attributes are present.
+    ///
+    /// Returns a [`Condition::All`] with a list of [`Condition::NotHave`] conditions for each of the provided attributes.
+    pub fn not_have_any(attributes: Vec<Attribute>) -> Condition {
+        Condition::All(attributes.into_iter().map(Condition::NotHave).collect())
+    }
+
+    /// Creates a condition that checks that at least one of the provided arguments is not present.
+    ///
+    /// Returns a [`Condition::Any`] with a list of [`Condition::NotHave`] conditions for each of the provided attributes.
+    pub fn not_have_all(attributes: Vec<Attribute>) -> Condition {
+        Condition::Any(attributes.into_iter().map(Condition::NotHave).collect())
+    }
+}
+
+/// Methods that can be called from a condition.
+impl Condition {
+    /// Returns any dependant condition
     pub fn get_dependencies(&self) -> Vec<Attribute> {
         match self {
             Condition::Has(attr)
@@ -35,13 +68,5 @@ impl Condition {
                 conds.iter().flat_map(Condition::get_dependencies).collect()
             }
         }
-    }
-
-    pub fn has_any(&self, attributes: Vec<Attribute>) -> Condition {
-        Condition::Any(attributes.into_iter().map(Condition::Has).collect())
-    }
-
-    pub fn has_all(&self, attributes: Vec<Attribute>) -> Condition {
-        Condition::All(attributes.into_iter().map(Condition::Has).collect())
     }
 }

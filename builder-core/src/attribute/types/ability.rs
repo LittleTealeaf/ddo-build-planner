@@ -53,8 +53,7 @@ impl Ability {
     }
 }
 
-/// 0-size struct used to differentiat [`GetBonuses`] for [`Ability`] from the
-/// [`Attribute::Ability`] attribute.
+/// 0-sized struct used by [`Ability`] to differentiate [`GetBonuses`] for [`Attribute::Ability`]
 pub struct _AbilityScore;
 
 impl GetBonuses<_AbilityScore> for Ability {
@@ -71,8 +70,7 @@ impl GetBonuses<_AbilityScore> for Ability {
     }
 }
 
-/// 0-size struct used to differentiate [`GetBonuses`] for [`Ability`] from the
-/// [`Attribute::AbilityModifier`] attribute.
+/// 0-sized struct used by [`Ability`] to differentiate [`GetBonuses`] for [`Attribute::AbilityModifier`]
 pub struct _AbilityModifier;
 
 impl GetBonuses<_AbilityModifier> for Ability {
