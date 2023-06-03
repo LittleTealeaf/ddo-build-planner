@@ -14,12 +14,14 @@ use crate::{
 #[derive(PartialEq, Eq, Clone, Copy, Enum, Debug)]
 pub enum RacialFeat {
     SmallSizeBonus,
+    GnomishProficiencies,
 }
 
 impl Display for RacialFeat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             RacialFeat::SmallSizeBonus => write!(f, "Small Size Bonus"),
+            RacialFeat::GnomishProficiencies => write!(f, "Gnomish Proficiencies"),
         }
     }
 }
@@ -49,6 +51,22 @@ impl GetBonuses for RacialFeat {
                     Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
                     None,
                 ),
+            ]),
+            RacialFeat::GnomishProficiencies => Some(vec![
+                Bonus::new(
+                    Skill::Haggle.into(),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Skill::UseMagicalDevice.into(),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
+                    None,
+                ), // TODO: Proficiencies: Light Hammers, Throwing Hammers, War Hammers
             ]),
         }
     }
