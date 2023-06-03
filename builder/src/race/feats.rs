@@ -8,7 +8,8 @@ use crate::{
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType},
-    feat::Feat,
+    feat::{Feat, Proficiency},
+    item::types::WeaponType,
 };
 
 #[derive(PartialEq, Eq, Clone, Copy, Enum, Debug)]
@@ -27,8 +28,8 @@ impl Display for RacialFeat {
 }
 
 impl GetBonuses for RacialFeat {
-    fn get_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
-        match self {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+        (value > 0f32).then(|| match self {
             RacialFeat::SmallSizeBonus => Some(vec![
                 Bonus::new(
                     (WeaponHand::Both, WeaponStat::Attack).into(),
@@ -57,17 +58,38 @@ impl GetBonuses for RacialFeat {
                     Skill::Haggle.into(),
                     BonusType::Stacking,
                     2f32.into(),
-                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
                     None,
                 ),
                 Bonus::new(
                     Skill::UseMagicalDevice.into(),
                     BonusType::Stacking,
                     2f32.into(),
-                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
                     None,
-                ), // TODO: Proficiencies: Light Hammers, Throwing Hammers, War Hammers
+                ),
+                Bonus::new(
+                    Proficiency::from(WeaponType::LightHammer).into(),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Proficiency::from(WeaponType::ThrowingHammer).into(),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Proficiency::from(WeaponType::WarHammer).into(),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
+                    None,
+                ),
             ]),
-        }
+        })?
     }
 }

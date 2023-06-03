@@ -31,3 +31,4 @@ pub mod player_class;
 pub mod utils;
 pub mod race;
 pub mod feat;
+pub mod item;
