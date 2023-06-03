@@ -10,7 +10,7 @@ use crate::bonus::Bonus;
 /// # Examples
 ///
 /// ```
-/// use builder_core::{bonus::Bonus, attribute::GetBonuses};
+/// use builder::{bonus::Bonus, attribute::GetBonuses};
 ///
 /// enum Test {
 ///     A,
@@ -32,7 +32,7 @@ use crate::bonus::Bonus;
 /// If there are no bonuses for a type, [`None`] is returned.
 ///
 /// ```
-/// use builder_core::{bonus::Bonus, attribute::GetBonuses};
+/// use builder::{bonus::Bonus, attribute::GetBonuses};
 ///
 /// enum Test {
 ///     A,
@@ -61,7 +61,7 @@ use crate::bonus::Bonus;
 /// assert!(def_value.is_some());
 /// ```
 ///
-/// 
+///
 ///
 ///
 /// [`Attribute`]: crate::attribute::Attribute
@@ -79,7 +79,7 @@ pub trait GetBonuses<T = ()> {
 }
 
 
-/// Implements the check of whether a particular attribute is actually tracked. 
+/// Implements the check of whether a particular attribute is actually tracked.
 ///
 /// Most likely, this
 /// will be `true`, but there are some bonuses that should not be tracked and therefore should be

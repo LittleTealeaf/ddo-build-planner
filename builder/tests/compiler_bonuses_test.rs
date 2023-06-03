@@ -1,6 +1,6 @@
 // This tests the compiler with a large set of bonuses
 
-use builder_core::{compiler::Compiler, attribute::{types::Ability}, bonus::{BonusType, BonusSource, Bonus}};
+use builder::{compiler::Compiler, attribute::{types::Ability}, bonus::{BonusType, BonusSource, Bonus}};
 
 #[test]
 fn test_first_life_healer() {

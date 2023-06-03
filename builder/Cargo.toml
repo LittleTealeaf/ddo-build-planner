@@ -1,5 +1,5 @@
 [package]
-name = "builder-core"
+name = "builder"
 authors = ["Thomas Kwashnak"]
 version = "0.1.0"
 edition = "2021"

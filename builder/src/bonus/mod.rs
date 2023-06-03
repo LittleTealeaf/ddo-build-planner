@@ -35,7 +35,7 @@ impl Bonus {
     /// # Example
     ///
     /// ```
-    /// use builder_core::{bonus::{BonusType, Bonus}, attribute::Attribute};
+    /// use builder::{bonus::{BonusType, Bonus}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy.into(), BonusType::Stacking, 1f32.into(),
     /// Attribute::Dummy.into(), None);
@@ -64,7 +64,7 @@ impl Bonus {
     /// # Example
     ///
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusSource, BonusType, BonusValue}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusSource, BonusType, BonusValue}, attribute::Attribute};
     ///
     /// let dummy = Bonus::dummy(BonusSource::Base);
     /// assert_eq!(dummy.get_attribute(), Attribute::Dummy);
@@ -99,7 +99,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, 10f32.into(),
     /// BonusSource::Base, None);
@@ -113,7 +113,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, 10f32.into(),
     /// BonusSource::Base, None);
@@ -127,7 +127,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, BonusValue}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, BonusValue}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, BonusValue::Value(10f32),
     /// BonusSource::Base, None);
@@ -141,7 +141,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, 10f32.into(),
     /// BonusSource::Base, None);
@@ -155,7 +155,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, Condition},
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition},
     /// attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
@@ -173,7 +173,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
     /// attribute::{types::Ability, Attribute}};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
@@ -201,7 +201,7 @@ impl Bonus {
     /// # Example
     ///
     /// ```
-    /// use builder_core::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
     /// attribute::{types::Ability, Attribute}};
     ///
     /// let bonus = Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking,

@@ -26,7 +26,7 @@ use self::{attribute_queue::AttributeQueue, default_bonuses::build_default_value
 /// # Examples
 ///
 /// ```
-/// use builder_core::{
+/// use builder::{
 ///     attribute::{
 ///         Attribute,
 ///         types::{
