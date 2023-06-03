@@ -21,7 +21,7 @@ cargo doc --open # Builds the documentation and opens it up in a browser.
 If you want to dive through the documentation, `cargo doc --open` will land you in the `app` crate. You can either navigate to the `builder` crate, or run the following command to just document the core library (where all of the good builder stuff happens)
 
 ```sh
-cargo doc -p builder-core --open
+cargo doc -p builder --open
 ```
 
 ## Contributing
