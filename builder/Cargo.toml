@@ -1,8 +1,11 @@
 [package]
 name = "builder"
-authors = ["Thomas Kwashnak"]
-version = "0.1.0"
-edition = "2021"
+edition.workspace = true
+version.workspace = true
+repository.workspace = true
+authors.workspace = true
+readme.workspace = true
+
 
 [profile.release]
 lto = true

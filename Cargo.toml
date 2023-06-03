@@ -1,3 +1,10 @@
 [workspace]
 members = ["builder", "app"]
 resolver = "2"
+
+[workspace.package]
+authors = ["LittleTealeaf"]
+repository = "https://www.github.com/LittleTealeaf/ddo-build-planner"
+readme = "./README.md"
+edition = "2021"
+version = "0.0.1"
