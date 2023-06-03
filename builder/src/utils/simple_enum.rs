@@ -7,7 +7,7 @@
 /// An example of a simple string is as follows:
 ///
 /// ```
-/// use builder_core::simple_enum;
+/// use builder::simple_enum;
 ///
 /// simple_enum!(
 ///     SimpleEnum,
@@ -25,7 +25,7 @@
 /// Enums can also be complex. The primary use of this is to create enums that have subsidary types. To indicate sub-variables, use `()` with every enum, and assign variables as you would in function parameters. When implementing [ToString], you will have the provided variable names as parameters to use in the expression.
 ///
 /// ```
-/// use builder_core::simple_enum;
+/// use builder::simple_enum;
 ///
 /// simple_enum!(
 ///     SimpleEnum,

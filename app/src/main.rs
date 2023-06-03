@@ -1,4 +1,4 @@
-use builder_core::{
+use builder::{
     attribute::{
         types::{Ability, WeaponHand, WeaponStat},
         Attribute,
@@ -63,5 +63,5 @@ fn main() {
     }
 
 
-    println!("Sheltering: Both = {}", Attribute::Sheltering(builder_core::attribute::types::Sheltering::Both).into_usize());
+    println!("Sheltering: Both = {}", Attribute::Sheltering(builder::attribute::types::Sheltering::Both).into_usize());
 }
