@@ -15,7 +15,8 @@ panic = "abort"
 enum-map = {version = "2.5.0", features = ["serde"]}
 itertools = "0.10.5"
 serde = { version = "1.0.163", features = ["derive"] }
+ron = "0.8.0"
 serde_test = "1.0.163"
+# TODO: Change serde_test to dev-dependencies?
 
 [dev-dependencies]
-ron = "0.8.0"
