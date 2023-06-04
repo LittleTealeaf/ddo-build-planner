@@ -1,3 +1,7 @@
+mod proficinecy_class;
+
+pub use proficinecy_class::*;
+
 use std::fmt::Display;
 
 use enum_map::Enum;
@@ -5,8 +9,6 @@ use enum_map::Enum;
 use crate::{item::types::WeaponType, attribute::Attribute};
 
 use super::Feat;
-
-
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum Proficiency {
