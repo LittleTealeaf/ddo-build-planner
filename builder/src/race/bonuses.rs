@@ -9,14 +9,43 @@ use crate::{
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
+    feat::{Feat, Proficiency},
+    item::types::WeaponType,
     race::Race,
 };
+
+use super::RacialFeat;
+
+impl Race {
+    fn ability_modifier(&self, ability: Ability, value: f32) -> Bonus {
+        Bonus::new(
+            Attribute::Ability(ability),
+            BonusType::Stacking,
+            value.into(),
+            Attribute::from(*self).into(),
+            None,
+        )
+    }
+
+    fn bonus_feat<T>(&self, feat: T) -> Bonus
+    where
+        Feat: From<T>,
+    {
+        Bonus::new(
+            Feat::from(feat).into(),
+            BonusType::Stacking,
+            1f32.into(),
+            Attribute::from(*self).into(),
+            None,
+        )
+    }
+}
 
 impl GetBonuses for Race {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         (value > 0f32).then(|| match self {
             Race::Aasimar => Some(vec![
-                ability_modifier(Race::Aasimar, Ability::Wisdom, 2f32),
+                self.ability_modifier(Ability::Wisdom, 2f32),
                 Bonus::new(
                     Skill::Heal.into(),
                     BonusType::Racial,
@@ -60,71 +89,46 @@ impl GetBonuses for Race {
                     None,
                 ),
             ]),
-            Race::Scourge => Some(vec![ability_modifier(Race::Scourge, Ability::Wisdom, 2f32)]),
+            Race::Scourge => Some(vec![self.ability_modifier(Ability::Wisdom, 2f32)]),
             Race::Bladeforged => Some(vec![
-                ability_modifier(Race::Bladeforged, Ability::Constitution, 2f32),
-                ability_modifier(Race::Bladeforged, Ability::Dexterity, -2f32),
-                ability_modifier(Race::Bladeforged, Ability::Wisdom, -2f32),
+                self.ability_modifier(Ability::Constitution, 2f32),
+                self.ability_modifier(Ability::Dexterity, -2f32),
+                self.ability_modifier(Ability::Wisdom, -2f32),
             ]),
             Race::DeepGnome => Some(vec![
-                ability_modifier(Race::DeepGnome, Ability::Intelligence, 2f32),
-                ability_modifier(Race::DeepGnome, Ability::Wisdom, 2f32),
-                ability_modifier(Race::DeepGnome, Ability::Strength, -2f32),
-                ability_modifier(Race::DeepGnome, Ability::Charisma, -2f32),
-                Bonus::new(ArmorClass::Bonus.into(), BonusType::Size, 1f32.into(), Attribute::from(Race::DeepGnome).into(), None),
-                Bonus::new((WeaponHand::Both, WeaponStat::Attack).into(), BonusType::Size, 1f32.into(), Attribute::from(Race::DeepGnome).into(), None),
-                Bonus::new(Skill::Hide.into(), BonusType::Size, 4f32.into(), Attribute::from(Race::DeepGnome).into(), None),
-                Bonus::new(Skill::Intimidate.into(), BonusType::Stacking, (-4f32).into(), Attribute::from(Race::DeepGnome).into(), None),
-                Bonus::new(Skill::Haggle.into(), BonusType::Racial, 2f32.into(), Attribute::from(Race::DeepGnome).into(), None),
-                Bonus::new(Skill::UseMagicalDevice.into(), BonusType::Racial, 2f32.into(), Attribute::from(Race::DeepGnome).into(), None),
-                // TODO: +6 Spell Resistance
-                // TODO: Proficiencies: Light Hammer, Throwing Hammer, War Hammer
+                self.ability_modifier(Ability::Intelligence, 2f32),
+                self.ability_modifier(Ability::Wisdom, 2f32),
+                self.ability_modifier(Ability::Strength, -2f32),
+                self.ability_modifier(Ability::Charisma, -2f32),
+                self.bonus_feat(RacialFeat::SmallSizeBonus),
+                self.bonus_feat(RacialFeat::GnomishProficiencies),
+                self.bonus_feat(RacialFeat::RacialSpellResistance),
+                self.bonus_feat(Proficiency::from(WeaponType::LightHammer)),
+                self.bonus_feat(Proficiency::from(WeaponType::ThrowingHammer)),
+                self.bonus_feat(Proficiency::from(WeaponType::WarHammer)),
             ]),
             Race::Dragonborn => Some(vec![
-                ability_modifier(Race::Dragonborn, Ability::Strength, 2f32),
-                ability_modifier(Race::Dragonborn, Ability::Charisma, 2f32),
-                ability_modifier(Race::Dragonborn, Ability::Dexterity, -2f32),
+                self.ability_modifier(Ability::Strength, 2f32),
+                self.ability_modifier(Ability::Charisma, 2f32),
+                self.ability_modifier(Ability::Dexterity, -2f32),
             ]),
             Race::Drow => Some(vec![
-                ability_modifier(Race::Drow, Ability::Dexterity, 2f32),
-                ability_modifier(Race::Drow, Ability::Intelligence, 2f32),
-                ability_modifier(Race::Drow, Ability::Charisma, 2f32),
-                ability_modifier(Race::Drow, Ability::Constitution, -2f32),
-                Bonus::flag(Immunity::Sleep.into(), Attribute::from(Race::Drow).into()),
-                Bonus::new(
-                    SavingThrow::Enchantment.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Drow).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Listen.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Drow).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Search.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Drow).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Spot.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Drow).into(),
-                    None,
-                ),
-                // TODO: Proficiency with Rapiers, Shortswords, Shurikens
-                // TODO: +6 Spell Resistance
+                self.ability_modifier(Ability::Dexterity, 2f32),
+                self.ability_modifier(Ability::Intelligence, 2f32),
+                self.ability_modifier(Ability::Charisma, 2f32),
+                self.ability_modifier(Ability::Constitution, -2f32),
+                self.bonus_feat(RacialFeat::RacialSpellResistance),
+                self.bonus_feat(RacialFeat::ElvenKeenSenses),
+                self.bonus_feat(RacialFeat::EnchantmentSaveBonus),
+                self.bonus_feat(RacialFeat::ImmunityToSleep),
+                self.bonus_feat(Proficiency::from(WeaponType::Shuriken)),
+                self.bonus_feat(Proficiency::from(WeaponType::Rapier)),
+                self.bonus_feat(Proficiency::from(WeaponType::ShortSword)),
+                // TODO: Shuriken Expertise
             ]),
             Race::Dwarf => Some(vec![
-                ability_modifier(Race::Dwarf, Ability::Constitution, 2f32),
-                ability_modifier(Race::Dwarf, Ability::Charisma, -2f32),
+                self.ability_modifier(Ability::Constitution, 2f32),
+                self.ability_modifier(Ability::Charisma, -2f32),
                 // TODO: Proficiency with Dwarven Axe if proficiency with Martial Weapons
                 Bonus::new(
                     Skill::Balance.into(),
@@ -193,83 +197,28 @@ impl GetBonuses for Race {
                 ),
             ]),
             Race::Elf => Some(vec![
-                ability_modifier(Race::Elf, Ability::Dexterity, 2f32),
-                ability_modifier(Race::Elf, Ability::Constitution, -2f32),
-                Bonus::flag(Immunity::Sleep.into(), Attribute::from(Race::Elf).into()),
-                Bonus::new(
-                    Skill::Listen.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Elf).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Search.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Elf).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Spot.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Elf).into(),
-                    None,
-                ),
-                // TODO: Proficiencies: longsword, rapier, longbow, composite longbow, shortbow,
-                // composite shortbow
+                self.ability_modifier(Ability::Dexterity, 2f32),
+                self.ability_modifier(Ability::Constitution, -2f32),
+                self.bonus_feat(RacialFeat::ElvenKeenSenses),
+                self.bonus_feat(RacialFeat::ImmunityToSleep),
+                self.bonus_feat(RacialFeat::EnchantmentSaveBonus),
+                self.bonus_feat(Proficiency::from(WeaponType::Rapier)),
+                self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
+                self.bonus_feat(Proficiency::from(WeaponType::LongBow)),
+                self.bonus_feat(Proficiency::from(WeaponType::ShortBow)),
             ]),
             Race::Gnome => Some(vec![
-                ability_modifier(Race::Gnome, Ability::Intelligence, 2f32),
-                ability_modifier(Race::Gnome, Ability::Charisma, -2f32),
-                Bonus::new(
-                    ArmorClass::Bonus.into(),
-                    BonusType::Size,
-                    1f32.into(),
-                    Attribute::from(Race::Gnome).into(),
-                    None,
-                ),
-                Bonus::new(
-                    (WeaponHand::Both, WeaponStat::Attack).into(),
-                    BonusType::Size,
-                    1f32.into(),
-                    Attribute::from(Race::Gnome).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Hide.into(),
-                    BonusType::Size,
-                    4f32.into(),
-                    Attribute::from(Race::Gnome).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Intimidate.into(),
-                    BonusType::Size,
-                    (-4f32).into(),
-                    Attribute::from(Race::Gnome).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Haggle.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Gnome).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::UseMagicalDevice.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Gnome).into(),
-                    None,
-                ),
-                // TODO: Proficiencies: Light Hammer, Throwing Hammer, War Hammer
+                self.ability_modifier(Ability::Intelligence, 2f32),
+                self.ability_modifier(Ability::Charisma, -2f32),
+                self.bonus_feat(RacialFeat::SmallSizeBonus),
+                self.bonus_feat(RacialFeat::GnomishProficiencies),
+                self.bonus_feat(Proficiency::from(WeaponType::LightHammer)),
+                self.bonus_feat(Proficiency::from(WeaponType::ThrowingHammer)),
+                self.bonus_feat(Proficiency::from(WeaponType::WarHammer)),
             ]),
             Race::Halfling => Some(vec![
-                ability_modifier(Race::Halfling, Ability::Dexterity, 2f32),
-                ability_modifier(Race::Halfling, Ability::Strength, -2f32),
+                self.ability_modifier(Ability::Dexterity, 2f32),
+                self.ability_modifier(Ability::Strength, -2f32),
                 Bonus::new(
                     Skill::Intimidate.into(),
                     BonusType::Size,
@@ -370,40 +319,32 @@ impl GetBonuses for Race {
                 ),
             ]),
             Race::HalfOrc => Some(vec![
-                ability_modifier(Race::HalfOrc, Ability::Strength, 2f32),
-                ability_modifier(Race::HalfOrc, Ability::Intelligence, -2f32),
-                ability_modifier(Race::HalfOrc, Ability::Charisma, -2f32),
+                self.ability_modifier(Ability::Strength, 2f32),
+                self.ability_modifier(Ability::Intelligence, -2f32),
+                self.ability_modifier(Ability::Charisma, -2f32),
             ]),
             Race::Human => None,
             Race::Morninglord => Some(vec![
-                ability_modifier(Race::Morninglord, Ability::Intelligence, 2f32),
-                ability_modifier(Race::Morninglord, Ability::Constitution, -2f32),
+                self.ability_modifier(Ability::Intelligence, 2f32),
+                self.ability_modifier(Ability::Constitution, -2f32),
             ]),
             Race::PurpleDragonKnight => None,
             Race::Razorclaw => Some(vec![
-                ability_modifier(Race::Razorclaw, Ability::Strength, 2f32),
-                ability_modifier(Race::Razorclaw, Ability::Intelligence, -2f32),
+                self.ability_modifier(Ability::Strength, 2f32),
+                self.ability_modifier(Ability::Intelligence, -2f32),
             ]),
             Race::Shadarkai => Some(vec![
-                ability_modifier(Race::Shadarkai, Ability::Dexterity, 2f32),
-                ability_modifier(Race::Shadarkai, Ability::Charisma, -2f32),
+                self.ability_modifier(Ability::Dexterity, 2f32),
+                self.ability_modifier(Ability::Charisma, -2f32),
             ]),
             Race::Shifter => Some(vec![
-                ability_modifier(Race::Shifter, Ability::Dexterity, 2f32),
-                ability_modifier(Race::Shifter, Ability::Intelligence, -2f32),
+                self.ability_modifier(Ability::Dexterity, 2f32),
+                self.ability_modifier(Ability::Intelligence, -2f32),
             ]),
-            Race::Tabaxi => Some(vec![ability_modifier(
-                Race::Tabaxi,
-                Ability::Dexterity,
-                2f32,
-            )]),
-            Race::Trailblazer => Some(vec![ability_modifier(
-                Race::Trailblazer,
-                Ability::Dexterity,
-                2f32,
-            )]),
+            Race::Tabaxi => Some(vec![self.ability_modifier(Ability::Dexterity, 2f32)]),
+            Race::Trailblazer => Some(vec![self.ability_modifier(Ability::Dexterity, 2f32)]),
             Race::Tiefling => Some(vec![
-                ability_modifier(Race::Tiefling, Ability::Charisma, 2f32),
+                self.ability_modifier(Ability::Charisma, 2f32),
                 Bonus::new(
                     Skill::Balance.into(),
                     BonusType::Racial,
@@ -421,31 +362,24 @@ impl GetBonuses for Race {
                 // TODO: +2 to hit and damage against lawful outsiders and good outsiders
                 // TODO: Fear Immunity
             ]),
-            Race::Scoundrel => Some(vec![ability_modifier(
-                Race::Scoundrel,
-                Ability::Charisma,
-                2f32,
-            )]),
+            Race::Scoundrel => Some(vec![self.ability_modifier(Ability::Charisma, 2f32)]),
             Race::Warforged => Some(vec![
-                ability_modifier(Race::Warforged, Ability::Constitution, 2f32),
-                ability_modifier(Race::Warforged, Ability::Wisdom, -2f32),
-                ability_modifier(Race::Warforged, Ability::Charisma, -2f32),
+                self.ability_modifier(Ability::Constitution, 2f32),
+                self.ability_modifier(Ability::Wisdom, -2f32),
+                self.ability_modifier(Ability::Charisma, -2f32),
             ]),
             Race::WoodElf => Some(vec![
-                ability_modifier(Race::WoodElf, Ability::Dexterity, 2f32),
-                ability_modifier(Race::WoodElf, Ability::Intelligence, -2f32),
+                self.ability_modifier(Ability::Dexterity, 2f32),
+                self.ability_modifier(Ability::Intelligence, -2f32),
+                self.bonus_feat(RacialFeat::ElvenKeenSenses),
+                self.bonus_feat(RacialFeat::EnchantmentSaveBonus),
+                self.bonus_feat(RacialFeat::ImmunityToSleep),
+                self.bonus_feat(Proficiency::from(WeaponType::Rapier)),
+                self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
+                self.bonus_feat(Proficiency::from(WeaponType::ShortBow)),
             ]),
         })?
     }
-}
-fn ability_modifier(race: Race, ability: Ability, value: f32) -> Bonus {
-    Bonus::new(
-        ability.into(),
-        BonusType::Racial,
-        value.into(),
-        Attribute::from(Flag::from(race)).into(),
-        None,
-    )
 }
 
 impl From<Race> for Attribute {
