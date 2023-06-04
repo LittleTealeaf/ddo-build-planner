@@ -9,6 +9,17 @@ pub enum ProficiencyClass {
     Exotic,
 }
 
+impl ProficiencyClass {
+    // TODO: Make this more efficient by reversing the process?
+    fn get_weapon_types(&self) -> Vec<WeaponType> {
+        (0..WeaponType::LENGTH)
+            .into_iter()
+            .map(WeaponType::from_usize)
+            .filter(|wt| ProficiencyClass::from(*wt).eq(self))
+            .collect()
+    }
+}
+
 impl From<WeaponType> for ProficiencyClass {
     fn from(value: WeaponType) -> Self {
         match value {

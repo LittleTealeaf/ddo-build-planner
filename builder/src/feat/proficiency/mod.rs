@@ -1,6 +1,6 @@
-mod proficinecy_class;
+mod proficiency_class;
 
-pub use proficinecy_class::*;
+pub use proficiency_class::*;
 
 use std::fmt::Display;
 
