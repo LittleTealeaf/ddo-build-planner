@@ -49,161 +49,159 @@ impl Display for RacialFeat {
 
 impl GetBonuses for RacialFeat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (value > 0f32).then(|| {
-            match self {
-                RacialFeat::SmallSizeBonus => Some(vec![
-                    Bonus::new(
-                        (WeaponHand::Both, WeaponStat::Attack).into(),
-                        BonusType::Size,
-                        1f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        ArmorClass::Bonus.into(),
-                        BonusType::Size,
-                        1f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Skill::Hide.into(),
-                        BonusType::Size,
-                        4f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
-                        None,
-                    ),
-                ]),
-                RacialFeat::GnomishProficiencies => Some(vec![
-                    Bonus::new(
-                        Skill::Haggle.into(),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Skill::UseMagicalDevice.into(),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
-                        None,
-                    ),
-                ]),
-                RacialFeat::ImmunityToSleep => Some(vec![Bonus::new(
-                    Immunity::Sleep.into(),
-                    BonusType::Stacking,
+        (value > 0f32).then(|| match self {
+            RacialFeat::SmallSizeBonus => Some(vec![
+                Bonus::new(
+                    (WeaponHand::Both, WeaponStat::Attack).into(),
+                    BonusType::Size,
                     1f32.into(),
-                    Attribute::from(Feat::RacialFeat(RacialFeat::ImmunityToSleep)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
                     None,
-                )]),
-                RacialFeat::EnchantmentSaveBonus => Some(vec![Bonus::new(
-                    SavingThrow::Enchantment.into(),
+                ),
+                Bonus::new(
+                    ArmorClass::Bonus.into(),
+                    BonusType::Size,
+                    1f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Skill::Hide.into(),
+                    BonusType::Size,
+                    4f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::SmallSizeBonus)).into(),
+                    None,
+                ),
+            ]),
+            RacialFeat::GnomishProficiencies => Some(vec![
+                Bonus::new(
+                    Skill::Haggle.into(),
                     BonusType::Stacking,
                     2f32.into(),
-                    Attribute::from(Feat::RacialFeat(RacialFeat::EnchantmentSaveBonus)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
                     None,
-                )]),
-                RacialFeat::ElvenKeenSenses => Some(vec![
-                    Bonus::new(
-                        Skill::Listen.into(),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::ElvenKeenSenses)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Skill::Search.into(),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::ElvenKeenSenses)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Skill::Spot.into(),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::ElvenKeenSenses)).into(),
-                        None,
-                    ),
-                ]),
-                RacialFeat::RacialSpellResistance => Some(vec![
-                    // TODO: +6 Spell Resistance
-                ]),
-                RacialFeat::DwarvenStability => Some(vec![Bonus::new(
-                    Skill::Balance.into(),
+                ),
+                Bonus::new(
+                    Skill::UseMagicalDevice.into(),
                     BonusType::Stacking,
-                    4f32.into(),
-                    Attribute::from(Feat::RacialFeat(RacialFeat::DwarvenStability)).into(),
+                    2f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::GnomishProficiencies)).into(),
                     None,
-                )]),
-                RacialFeat::GiantEvasion => Some(vec![
-                    Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
-                    ),
-                    Bonus::new(
-                        ArmorClass::Bonus.into(),
-                        BonusType::Dodge,
-                        4f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
-                        Some(Condition::Has(
-                            Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant))
-                                .into(),
-                        )),
-                    ),
-                ]),
-                RacialFeat::OrcAndGoblinBonus => Some(vec![
-                    Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)).into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
-                    ),
-                    Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid))
-                            .into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
-                    ),
-                    Bonus::new(
-                        (WeaponHand::Both, WeaponStat::Attack).into(),
-                        BonusType::Racial,
-                        1f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
-                        Some(Condition::Any(vec![
-                            Condition::Has(
-                                Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
-                                    .into(),
-                            ),
-                            Condition::Has(
-                                Toggle::Attacking(AttackingTarget::MonsterType(
-                                    MonsterType::Goblinoid,
-                                ))
-                                .into(),
-                            ),
-                        ])),
-                    ),
-                ]),
-                RacialFeat::DwarvenStonecunning => Some(vec![Bonus::new(
+                ),
+            ]),
+            RacialFeat::ImmunityToSleep => Some(vec![Bonus::new(
+                Immunity::Sleep.into(),
+                BonusType::Stacking,
+                1f32.into(),
+                Attribute::from(Feat::RacialFeat(RacialFeat::ImmunityToSleep)).into(),
+                None,
+            )]),
+            RacialFeat::EnchantmentSaveBonus => Some(vec![Bonus::new(
+                SavingThrow::Enchantment.into(),
+                BonusType::Stacking,
+                2f32.into(),
+                Attribute::from(Feat::RacialFeat(RacialFeat::EnchantmentSaveBonus)).into(),
+                None,
+            )]),
+            RacialFeat::ElvenKeenSenses => Some(vec![
+                Bonus::new(
+                    Skill::Listen.into(),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::ElvenKeenSenses)).into(),
+                    None,
+                ),
+                Bonus::new(
                     Skill::Search.into(),
                     BonusType::Stacking,
                     2f32.into(),
-                    Attribute::from(Feat::RacialFeat(RacialFeat::DwarvenStonecunning)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::ElvenKeenSenses)).into(),
                     None,
-                )]),
-                RacialFeat::SpellSaveBonus => Some(vec![Bonus::new(
-                    SavingThrow::Spell.into(),
+                ),
+                Bonus::new(
+                    Skill::Spot.into(),
                     BonusType::Stacking,
                     2f32.into(),
-                    Attribute::from(Feat::from(RacialFeat::SpellSaveBonus)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::ElvenKeenSenses)).into(),
                     None,
-                )]),
-                RacialFeat::PoisonSaveBonus => Some(vec![Bonus::new(
-                    SavingThrow::Poison.into(),
-                    BonusType::Stacking,
-                    2f32.into(),
-                    Attribute::from(Feat::from(RacialFeat::PoisonSaveBonus)).into(),
-                    None,
-                )]),
-            }
+                ),
+            ]),
+            RacialFeat::RacialSpellResistance => Some(vec![Bonus::new(
+                Attribute::SpellResistance,
+                BonusType::Stacking,
+                6f32.into(),
+                Attribute::from(Feat::RacialFeat(RacialFeat::RacialSpellResistance)).into(),
+                None,
+            )]),
+            RacialFeat::DwarvenStability => Some(vec![Bonus::new(
+                Skill::Balance.into(),
+                BonusType::Stacking,
+                4f32.into(),
+                Attribute::from(Feat::RacialFeat(RacialFeat::DwarvenStability)).into(),
+                None,
+            )]),
+            RacialFeat::GiantEvasion => Some(vec![
+                Bonus::flag(
+                    Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                ),
+                Bonus::new(
+                    ArmorClass::Bonus.into(),
+                    BonusType::Dodge,
+                    4f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                    Some(Condition::Has(
+                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
+                    )),
+                ),
+            ]),
+            RacialFeat::OrcAndGoblinBonus => Some(vec![
+                Bonus::flag(
+                    Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                ),
+                Bonus::flag(
+                    Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid)).into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                ),
+                Bonus::new(
+                    (WeaponHand::Both, WeaponStat::Attack).into(),
+                    BonusType::Racial,
+                    1f32.into(),
+                    Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                    Some(Condition::Any(vec![
+                        Condition::Has(
+                            Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
+                                .into(),
+                        ),
+                        Condition::Has(
+                            Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid))
+                                .into(),
+                        ),
+                    ])),
+                ),
+            ]),
+            RacialFeat::DwarvenStonecunning => Some(vec![Bonus::new(
+                Skill::Search.into(),
+                BonusType::Stacking,
+                2f32.into(),
+                Attribute::from(Feat::RacialFeat(RacialFeat::DwarvenStonecunning)).into(),
+                None,
+            )]),
+            RacialFeat::SpellSaveBonus => Some(vec![Bonus::new(
+                SavingThrow::Spell.into(),
+                BonusType::Stacking,
+                2f32.into(),
+                Attribute::from(Feat::from(RacialFeat::SpellSaveBonus)).into(),
+                None,
+            )]),
+            RacialFeat::PoisonSaveBonus => Some(vec![Bonus::new(
+                SavingThrow::Poison.into(),
+                BonusType::Stacking,
+                2f32.into(),
+                Attribute::from(Feat::from(RacialFeat::PoisonSaveBonus)).into(),
+                None,
+            )]),
         })?
     }
 }

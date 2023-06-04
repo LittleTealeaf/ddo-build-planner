@@ -83,7 +83,11 @@ pub enum Attribute {
     /// Damage reduced from energy sources
     EnergyResistance(EnergyResistance),
     /// % Damage reduced from energy sources
-    EnergyAbsorption(EnergyResistance)
+    EnergyAbsorption(EnergyResistance),
+    /// Spell Resistance
+    SpellResistance,
+    /// Spell Penetration
+    SpellPenetration
 }
 
 impl Display for Attribute {
@@ -111,6 +115,8 @@ impl Display for Attribute {
             Attribute::EnergyResistance(energy) => write!(f, "{} Resistance", energy),
             Attribute::EnergyAbsorption(energy) => write!(f, "{} Absorption", energy),
             Attribute::Feat(feat) => write!(f, "Feat: {}", feat),
+            Attribute::SpellResistance => write!(f, "Spell Resistance"),
+            Attribute::SpellPenetration => write!(f, "Spell Penetration"),
         }
     }
 }
