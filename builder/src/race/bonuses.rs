@@ -129,72 +129,21 @@ impl GetBonuses for Race {
             Race::Dwarf => Some(vec![
                 self.ability_modifier(Ability::Constitution, 2f32),
                 self.ability_modifier(Ability::Charisma, -2f32),
-                // TODO: Proficiency with Dwarven Axe if proficiency with Martial Weapons
+                self.bonus_feat(RacialFeat::GiantEvasion),
+                self.bonus_feat(RacialFeat::OrcAndGoblinBonus),
+                self.bonus_feat(RacialFeat::PoisonSaveBonus),
+                self.bonus_feat(RacialFeat::DwarvenStonecunning),
+                self.bonus_feat(RacialFeat::DwarvenStability),
+                self.bonus_feat(RacialFeat::SpellSaveBonus),
                 Bonus::new(
-                    Skill::Balance.into(),
-                    BonusType::Racial,
-                    4f32.into(),
-                    Attribute::from(Race::Dwarf).into(),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Search.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Dwarf).into(),
-                    None,
-                ),
-                Bonus::new(
-                    SavingThrow::Poison.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Dwarf).into(),
-                    None,
-                ),
-                Bonus::new(
-                    SavingThrow::Spell.into(),
-                    BonusType::Racial,
-                    2f32.into(),
-                    Attribute::from(Race::Dwarf).into(),
-                    None,
-                ),
-                Bonus::flag(
-                    Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)).into(),
-                    Attribute::from(Race::Dwarf).into(),
-                ),
-                Bonus::flag(
-                    Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid)).into(),
-                    Attribute::from(Race::Dwarf).into(),
-                ),
-                Bonus::flag(
-                    Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
-                    Attribute::from(Race::Dwarf).into(),
-                ),
-                Bonus::new(
-                    (WeaponHand::Both, WeaponStat::Attack).into(),
-                    BonusType::Racial,
+                    Feat::from(Proficiency::from(WeaponType::DwarvenWarAxe)).into(),
+                    BonusType::Stacking,
                     1f32.into(),
                     Attribute::from(Race::Dwarf).into(),
-                    Some(Condition::Any(vec![
-                        Condition::Has(
-                            Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
-                                .into(),
-                        ),
-                        Condition::Has(
-                            Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid))
-                                .into(),
-                        ),
-                    ])),
-                ),
-                Bonus::new(
-                    ArmorClass::Bonus.into(),
-                    BonusType::Dodge,
-                    4f32.into(),
-                    Attribute::from(Race::Dwarf).into(),
-                    Some(Condition::Has(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
-                    )),
-                ),
+                    Some(Condition::Has(Attribute::Feat(Feat::Proficiency(
+                        Proficiency::MartialWeaponProficiency,
+                    )))),
+                ), 
             ]),
             Race::Elf => Some(vec![
                 self.ability_modifier(Ability::Dexterity, 2f32),
@@ -376,7 +325,7 @@ impl GetBonuses for Race {
                 self.bonus_feat(RacialFeat::ImmunityToSleep),
                 self.bonus_feat(Proficiency::from(WeaponType::Rapier)),
                 self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
-                self.bonus_feat(Proficiency::from(WeaponType::ShortBow)),
+                self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
             ]),
         })?
     }
