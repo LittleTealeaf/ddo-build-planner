@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, GetBonuses, TrackAttribute},
+    attribute::{Attribute, DefaultValue, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus, Condition},
 };
 
@@ -53,7 +53,7 @@ impl Ability {
     }
 }
 
-/// 0-sized struct used by [`Ability`] to differentiate [`GetBonuses`] for [`Attribute::Ability`]
+/// 0-sized struct used by [`Ability`] to differentiate for [`Attribute::Ability`]
 pub struct _AbilityScore;
 
 impl GetBonuses<_AbilityScore> for Ability {
@@ -70,7 +70,13 @@ impl GetBonuses<_AbilityScore> for Ability {
     }
 }
 
-/// 0-sized struct used by [`Ability`] to differentiate [`GetBonuses`] for [`Attribute::AbilityModifier`]
+impl DefaultValue<_AbilityScore> for Ability {
+    fn get_default_value(&self) -> Option<f32> {
+        (!matches!(self, Self::All)).then_some(8f32)
+    }
+}
+
+/// 0-sized struct used by [`Ability`] to differentiate for [`Attribute::AbilityModifier`]
 pub struct _AbilityModifier;
 
 impl GetBonuses<_AbilityModifier> for Ability {
@@ -94,10 +100,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                     Attribute::AbilityModifier(Ability::Dexterity).into(),
                     Some(Condition::Any(vec![
                         Condition::NotHave(ArmorClass::CalculatedMaxDexBonus.into()),
-                        Condition::Min(
-                            ArmorClass::CalculatedMaxDexBonus.into(),
-                            value,
-                        )
+                        Condition::Min(ArmorClass::CalculatedMaxDexBonus.into(), value),
                     ])),
                 ),
                 Bonus::new(
@@ -107,10 +110,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                     Attribute::AbilityModifier(Ability::Dexterity).into(),
                     Some(Condition::All(vec![
                         Condition::Has(ArmorClass::CalculatedMaxDexBonus.into()),
-                        Condition::Max(
-                            ArmorClass::CalculatedMaxDexBonus.into(),
-                            value,
-                        )
+                        Condition::Max(ArmorClass::CalculatedMaxDexBonus.into(), value),
                     ])),
                 ),
             ]),

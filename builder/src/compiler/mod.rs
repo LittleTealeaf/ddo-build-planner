@@ -3,17 +3,17 @@
 //! [`Bonuses`]: crate::bonus::Bonus
 
 mod attribute_queue;
-mod default_bonuses;
 
+use enum_map::Enum;
 use itertools::Itertools;
 
 use crate::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusValue, CloneBonus, Condition},
+    attribute::{Attribute, DefaultValue},
+    bonus::{Bonus, BonusSource, BonusType, BonusValue, CloneBonus, Condition},
     utils::EnumBinaryMap,
 };
 
-use self::{attribute_queue::AttributeQueue, default_bonuses::build_default_values};
+use self::attribute_queue::AttributeQueue;
 
 /// Compiles and calculates attribut values from a set of [`Bonus`] entries.
 ///
@@ -62,7 +62,21 @@ impl Default for Compiler {
             children: EnumBinaryMap::default(),
         };
 
-        new.insert_bonuses(build_default_values());
+        new.insert_bonuses(
+            (0..Attribute::LENGTH)
+                .map(Attribute::from_usize)
+                .filter_map(|attribute| {
+                    Some(Bonus::new(
+                        attribute,
+                        BonusType::Stacking,
+                        attribute.get_default_value()?.into(),
+                        BonusSource::Base,
+                        None,
+                    ))
+                })
+                .collect(),
+        );
+
         new
     }
 }

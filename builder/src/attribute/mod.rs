@@ -1,8 +1,8 @@
 //! Represents each attribute that a character can have
 pub mod flags;
+pub mod impls;
 pub mod selectors;
 pub mod toggles;
-pub mod impls;
 mod traits;
 pub mod types;
 
@@ -10,7 +10,8 @@ pub use traits::*;
 
 use crate::{
     bonus::{Bonus, CloneBonus},
-    player_class::PlayerClass, feat::Feat,
+    feat::Feat,
+    player_class::PlayerClass,
 };
 use enum_map::Enum;
 use std::fmt::Display;
@@ -20,8 +21,9 @@ use self::{
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
-        Ability, ArmorClass, SavingThrow, Sheltering, Skill, SpellPower, WeaponAttribute,
-        _AbilityModifier, _AbilityScore, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, EnergyResistance,
+        Ability, ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower,
+        WeaponAttribute, _AbilityModifier, _AbilityScore, _SpellCriticalChance,
+        _SpellCriticalDamage, _SpellPower,
     },
 };
 
@@ -87,7 +89,7 @@ pub enum Attribute {
     /// Spell Resistance
     SpellResistance,
     /// Spell Penetration
-    SpellPenetration
+    SpellPenetration,
 }
 
 impl Display for Attribute {
@@ -186,6 +188,16 @@ impl TrackAttribute for Attribute {
     }
 }
 
+impl DefaultValue for Attribute {
+    fn get_default_value(&self) -> Option<f32> {
+        match self {
+            Self::Ability(ability) => DefaultValue::<_AbilityScore>::get_default_value(ability),
+            Self::ArmorClass(ac) => ac.get_default_value(),
+            _ => None,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -277,6 +289,15 @@ mod tests {
                         );
                     }
                 });
+        }
+
+        #[test]
+        fn do_not_have_zero_default_value() {
+            get_all_attributes().for_each(|attr| {
+                if let Some(value) = attr.get_default_value() {
+                    assert!(value != 0f32);
+                }
+            })
         }
     }
 }

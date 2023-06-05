@@ -78,6 +78,7 @@ pub trait GetBonuses<T = ()> {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>>;
 }
 
+// TODO: More detailed documentation
 
 /// Implements the check of whether a particular attribute is actually tracked.
 ///
@@ -89,4 +90,17 @@ pub trait TrackAttribute {
     ///
     /// If the object should be tracked, returns `true`, otherwise returns `false`
     fn is_tracked(&self) -> bool;
+}
+
+
+// TODO: more detailed documentation
+
+/// Implements the ability for attributes to have a "default value"
+///
+/// Default values are initialized on creation for [`Compiler`] objects.
+///
+/// [`Compiler`]: crate::compiler::Compiler
+pub trait DefaultValue<T = ()> {
+    /// Returns the attribute's default value, if it has any.
+    fn get_default_value(&self) -> Option<f32>;
 }

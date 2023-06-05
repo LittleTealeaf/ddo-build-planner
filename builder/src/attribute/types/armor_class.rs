@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
+    attribute::{Attribute, DefaultValue, GetBonuses},
     bonus::{Bonus, BonusType},
 };
 
@@ -46,7 +46,7 @@ impl Display for ArmorClass {
             ArmorClass::NaturalArmor => write!(f, "Natural Armor"),
             ArmorClass::MaxDexBonus => write!(f, "Max Dexterity Bonus"),
             ArmorClass::TowerShieldMaxDexBonus => write!(f, "Max Dexterity Bonus (Tower Shields)"),
-            ArmorClass::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus")
+            ArmorClass::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus"),
         }
     }
 }
@@ -75,15 +75,22 @@ impl GetBonuses for ArmorClass {
                 Attribute::from(ArmorClass::NaturalArmor).into(),
                 None,
             )]),
-            ArmorClass::MaxDexBonus => Some(vec![
-                Bonus::new(
-                    ArmorClass::CalculatedMaxDexBonus.into(),
-                    BonusType::Stacking,
-                    value.into(),
-                    Attribute::from(ArmorClass::MaxDexBonus).into(),
-                    None // TODO: check if not weielding a tower shield and TowerShieldMaxDexBonus is less than the value
-                )
-            ]),
+            ArmorClass::MaxDexBonus => Some(vec![Bonus::new(
+                ArmorClass::CalculatedMaxDexBonus.into(),
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(ArmorClass::MaxDexBonus).into(),
+                None, // TODO: check if not weielding a tower shield and TowerShieldMaxDexBonus is less than the value
+            )]),
+            _ => None,
+        }
+    }
+}
+
+impl DefaultValue for ArmorClass {
+    fn get_default_value(&self) -> Option<f32> {
+        match self {
+            ArmorClass::ArmorScalar | ArmorClass::ShieldScalar | ArmorClass::Scalar => Some(1f32),
             _ => None,
         }
     }
