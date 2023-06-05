@@ -92,7 +92,6 @@ pub trait TrackAttribute {
     fn is_tracked(&self) -> bool;
 }
 
-
 // TODO: more detailed documentation
 
 /// Implements the ability to have default bonuses for a trait.
@@ -104,4 +103,3 @@ pub trait DefaultBonuses {
     /// Returns the default bonuses, if there are any
     fn get_default_bonuses() -> Vec<Bonus>;
 }
-

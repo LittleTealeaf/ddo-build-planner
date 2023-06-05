@@ -1,6 +1,9 @@
 use std::collections::VecDeque;
 
-use crate::{attribute::{Attribute, TrackAttribute}, utils::EnumBinaryMap};
+use crate::{
+    attribute::{Attribute, TrackAttribute},
+    utils::EnumBinaryMap,
+};
 
 #[derive(Default)]
 pub struct AttributeQueue {
@@ -61,7 +64,10 @@ mod tests {
 
         queue.insert(vec![Attribute::Debug(0), Attribute::Debug(0)], false);
 
-        assert_eq!(Some((Attribute::Debug(0), false)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::Debug(0), false)),
+            queue.get_next_attribute()
+        );
         assert_eq!(None, queue.get_next_attribute());
     }
 
@@ -72,7 +78,10 @@ mod tests {
         queue.insert(vec![Attribute::Debug(0)], false);
         queue.insert(vec![Attribute::Debug(0)], true);
 
-        assert_eq!(Some((Attribute::Debug(0), true)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::Debug(0), true)),
+            queue.get_next_attribute()
+        );
         assert_eq!(None, queue.get_next_attribute());
     }
 
@@ -82,7 +91,10 @@ mod tests {
 
         queue.insert(vec![Attribute::Debug(0)], true);
 
-        assert_eq!(Some((Attribute::Debug(0), true)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::Debug(0), true)),
+            queue.get_next_attribute()
+        );
     }
 
     #[test]
@@ -91,10 +103,16 @@ mod tests {
 
         queue.insert(vec![Attribute::Debug(0)], true);
 
-        assert_eq!(Some((Attribute::Debug(0), true)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::Debug(0), true)),
+            queue.get_next_attribute()
+        );
 
         queue.insert(vec![Attribute::Debug(0)], false);
 
-        assert_eq!(Some((Attribute::Debug(0), false)), queue.get_next_attribute());
+        assert_eq!(
+            Some((Attribute::Debug(0), false)),
+            queue.get_next_attribute()
+        );
     }
 }

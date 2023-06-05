@@ -1,19 +1,23 @@
 //! Handles any Flag that the character has.
 //!
-//! Most of the time, the flag is either a `1` (Has) or `0` (Not Have). 
-mod off_hand;
+//! Most of the time, the flag is either a `1` (Has) or `0` (Not Have).
 mod main_hand;
+mod off_hand;
 
-pub use off_hand::*;
 pub use main_hand::*;
+pub use off_hand::*;
 
 use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::{race::Race, bonus::Bonus};
+use crate::{bonus::Bonus, race::Race};
 
-use super::{toggles::Toggle, Attribute, types::{Immunity, Alignment}, GetBonuses};
+use super::{
+    toggles::Toggle,
+    types::{Alignment, Immunity},
+    Attribute, GetBonuses,
+};
 
 /// Indicates that the character possesses some flag.
 ///
@@ -31,9 +35,9 @@ pub enum Flag {
 
     /// Wielding an item in the main hand
     MainHandType(MainHandType),
-    
+
     /// Item type in the off hand
-    OffHandType(OffHandType)
+    OffHandType(OffHandType),
 }
 
 impl Display for Flag {
@@ -53,7 +57,7 @@ impl GetBonuses for Flag {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Race(race) => race.get_bonuses(value),
-            _ => None
+            _ => None,
         }
     }
 }

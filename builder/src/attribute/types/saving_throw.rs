@@ -51,7 +51,7 @@ pub enum SavingThrow {
 
 impl SavingThrow {
     /// Lists the three main bonuses: [`Fortitude`], [`Reflex`], and [`Will`]
-    /// 
+    ///
     /// [`Fortitude`]: SavingThrow::Fortitude
     /// [`Reflex`]: SavingThrow::Reflex
     /// [`Will`]: SavingThrow::Will

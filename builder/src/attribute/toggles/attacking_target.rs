@@ -2,8 +2,7 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::attribute::types::{MonsterType, Alignment};
-
+use crate::attribute::types::{Alignment, MonsterType};
 
 /// Indicates that the character is attacking / fighting a certain type
 #[derive(PartialEq, Eq, Clone, Copy, Enum, Debug)]

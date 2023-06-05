@@ -1,5 +1,5 @@
 use crate::{
-    attribute::{Attribute, GetBonuses, types::Ability},
+    attribute::{types::Ability, Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
     player_class::PlayerClass,
 };

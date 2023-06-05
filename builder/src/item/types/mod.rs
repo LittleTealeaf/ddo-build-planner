@@ -1,9 +1,9 @@
 //! Different item types
-mod weapon;
 mod shield;
+mod weapon;
 
-pub use weapon::*;
 pub use shield::*;
+pub use weapon::*;
 
 use enum_map::Enum;
 

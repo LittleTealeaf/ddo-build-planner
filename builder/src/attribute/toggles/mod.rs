@@ -8,7 +8,7 @@ use enum_map::Enum;
 
 use crate::bonus::Bonus;
 
-use super::{GetBonuses, Attribute};
+use super::{Attribute, GetBonuses};
 
 pub use attacking_target::*;
 

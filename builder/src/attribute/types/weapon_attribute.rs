@@ -82,7 +82,9 @@ impl CloneBonus for WeaponAttribute {
                 WeaponStat::DamageReductionBypass(dr) => {
                     WeaponHand::VALUES.map(|hand| (hand, WeaponStat::DamageReductionBypass(*dr)))
                 }
-                WeaponStat::CriticalThreatRange => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalThreatRange)),
+                WeaponStat::CriticalThreatRange => {
+                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalThreatRange))
+                }
             }
             .map(|stat| {
                 Bonus::new(

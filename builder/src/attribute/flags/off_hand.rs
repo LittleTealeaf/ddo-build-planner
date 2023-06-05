@@ -2,8 +2,7 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::item::types::{WeaponType, ShieldType};
-
+use crate::item::types::{ShieldType, WeaponType};
 
 /// Represents the different types of items the character can wield in their off hand
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
@@ -13,7 +12,7 @@ pub enum OffHandType {
     /// The character is wielding a shield in their off-hand
     Shield(ShieldType),
     /// The character is wielding a runearm in their off-hand
-    RuneArm
+    RuneArm,
 }
 
 impl Display for OffHandType {

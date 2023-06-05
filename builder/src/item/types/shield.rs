@@ -2,7 +2,6 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-
 /// The types of shields.
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum ShieldType {
@@ -20,7 +19,7 @@ pub enum ShieldType {
     Orb,
 }
 
-impl Display for ShieldType{
+impl Display for ShieldType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ShieldType::Buckler => write!(f, "Buckler"),
