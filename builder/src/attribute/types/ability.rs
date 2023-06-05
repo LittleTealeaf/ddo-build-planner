@@ -103,28 +103,6 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 self.modifier_bonus(Skill::OpenLock, value),
                 self.modifier_bonus(Skill::Tumble, value),
                 self.modifier_bonus(SavingThrow::Reflex, value),
-                // If max dex bonus is higher than value
-                Bonus::new(
-                    ArmorClass::Bonus.into(),
-                    BonusType::AbilityModifier,
-                    value.into(),
-                    Attribute::AbilityModifier(Ability::Dexterity).into(),
-                    Some(Condition::Any(vec![
-                        Condition::NotHave(ArmorClass::CalculatedMaxDexBonus.into()),
-                        Condition::Min(ArmorClass::CalculatedMaxDexBonus.into(), value),
-                    ])),
-                ),
-                // If max dex bonus is lower than value
-                Bonus::new(
-                    ArmorClass::Bonus.into(),
-                    BonusType::AbilityModifier,
-                    Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus).into(),
-                    Attribute::AbilityModifier(Ability::Dexterity).into(),
-                    Some(Condition::All(vec![
-                        Condition::Has(ArmorClass::CalculatedMaxDexBonus.into()),
-                        Condition::Max(ArmorClass::CalculatedMaxDexBonus.into(), value),
-                    ])),
-                ),
             ]),
             Ability::Constitution => Some(vec![
                 self.modifier_bonus(Skill::Concentration, value),
