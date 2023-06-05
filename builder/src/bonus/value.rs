@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::attribute::Attribute;
 
 /// Represents a value of a [`Bonus`]
@@ -22,6 +24,16 @@ impl BonusValue {
         match self {
             Self::ScaleAttribute(attr, _) | Self::FromAttribute(attr) => Some(vec![*attr]),
             _ => None,
+        }
+    }
+}
+
+impl Display for BonusValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BonusValue::Value(value) => value.fmt(f),
+            BonusValue::FromAttribute(attr) => attr.fmt(f),
+            BonusValue::ScaleAttribute(attr, scale) => write!(f, "{} * {}", scale, attr),
         }
     }
 }
