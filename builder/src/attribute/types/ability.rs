@@ -4,10 +4,10 @@ use enum_map::Enum;
 
 use crate::{
     attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
-    bonus::{Bonus, BonusSource, BonusType, CloneBonus, Condition},
+    bonus::{Bonus, BonusSource, BonusType, CloneBonus},
 };
 
-use super::{ArmorClass, SavingThrow, Skill};
+use super::{SavingThrow, Skill};
 
 /// The different abilities that a character has
 #[derive(Enum, PartialEq, Eq, Clone, Copy, Debug)]
