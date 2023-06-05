@@ -23,6 +23,8 @@ pub enum Condition {
     LessThan(Attribute, Attribute),
     /// Requires that an attribute is equal to another attribute
     EqualTo(Attribute, Attribute),
+    /// Requires that an attribute is not equal to another attribute
+    NotEqualTo(Attribute, Attribute),
     /// Requires any of the provided conditions
     Any(Vec<Condition>),
     /// Requires all of the provided conditions
@@ -71,7 +73,10 @@ impl Condition {
     pub fn get_dependencies(&self) -> Vec<Attribute> {
         match self {
             Condition::Not(condition) => condition.get_dependencies(),
-            Condition::GreaterThan(a, b) | Condition::LessThan(a, b) | Condition::EqualTo(a, b) => {
+            Condition::GreaterThan(a, b)
+            | Condition::LessThan(a, b)
+            | Condition::EqualTo(a, b)
+            | Condition::NotEqualTo(a, b) => {
                 vec![*a, *b]
             }
             Condition::Has(attr)
