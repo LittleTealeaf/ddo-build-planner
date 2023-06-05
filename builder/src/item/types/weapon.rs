@@ -88,6 +88,7 @@ pub enum WeaponType {
 }
 
 impl WeaponType {
+    /// Sub-set of thrown weapons.
     pub const THROWING_WEAPONS: [Self; 5] = [
         Self::Dart,
         Self::Shuriken,

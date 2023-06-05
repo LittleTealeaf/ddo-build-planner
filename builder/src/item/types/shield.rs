@@ -3,12 +3,20 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 
+/// The types of shields.
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum ShieldType {
+    /// Buckler shields
     Buckler,
+    /// Small Shields
     SmallShield,
+    /// Large Shields
     LargeShield,
+    /// Tower Shields
     TowerShield,
+    /// Orbs
+    ///
+    /// While not technically shields, they fit just as well in this category.
     Orb,
 }
 
