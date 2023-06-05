@@ -96,6 +96,17 @@ impl WeaponType {
         Self::ThrowingDagger,
         Self::ThrowingAxe,
     ];
+
+    /// Sub-set of ranged weapons
+    pub const RANGED_WEAPONS: [Self; 7] = [
+        Self::LightCrossbow,
+        Self::HeavyCrossbow,
+        Self::RepeatingHeavyCrossbow,
+        Self::RepeatingLightCrossbow,
+        Self::LongBow,
+        Self::ShortBow,
+        Self::GreatCrossbow,
+    ];
 }
 
 impl Display for WeaponType {
@@ -154,6 +165,16 @@ mod tests {
         let mut types = Vec::new();
 
         for item in WeaponType::THROWING_WEAPONS {
+            assert!(!types.contains(&item));
+            types.push(item);
+        }
+    }
+
+    #[test]
+    fn no_repeats_in_ranged_weapons() {
+        let mut types = Vec::new();
+
+        for item in WeaponType::RANGED_WEAPONS {
             assert!(!types.contains(&item));
             types.push(item);
         }

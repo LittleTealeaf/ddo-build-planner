@@ -13,5 +13,5 @@ pub enum ItemType {
     /// Weapons
     Weapon(WeaponType),
     /// Shields
-    Shield(ShieldType)
+    Shield(ShieldType),
 }
