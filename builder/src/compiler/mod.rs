@@ -129,6 +129,7 @@ impl Compiler {
             Condition::None(conditions) => conditions
                 .into_iter()
                 .all(|cond| !self.check_condition(cond)),
+            Condition::NotEqualTo(a, b) => self.get_attribute(&a) != self.get_attribute(&b),
         }
     }
 
