@@ -1,17 +1,19 @@
 use builder::{
     attribute::{
-        types::{Ability, WeaponHand, WeaponStat},
+        flags::OffHandType,
+        types::{Ability, ArmorClass, WeaponHand, WeaponStat},
         Attribute,
     },
     bonus::{Bonus, BonusType},
     compiler::Compiler,
-    player_class::PlayerClass, race::Race,
+    item::types::ShieldType,
+    player_class::PlayerClass,
+    race::Race,
 };
 use enum_map::Enum;
 
 fn main() {
     let mut compiler = Compiler::default();
-
 
     println!("Adding Bonuses");
 
@@ -23,11 +25,33 @@ fn main() {
             0.into(),
             None,
         ),
+        Bonus::flag(OffHandType::from(ShieldType::TowerShield).into(), 0.into()),
         Bonus::flag(Race::Gnome.into(), 0.into()),
+        Bonus::new(
+            Attribute::ArmorClass(ArmorClass::ShieldMaxDexBonus),
+            BonusType::Stacking,
+            5f32.into(),
+            1.into(),
+            None,
+        ),
+        Bonus::new(
+            Attribute::ArmorClass(ArmorClass::ArmorMaxDexBonus),
+            BonusType::Stacking,
+            10f32.into(),
+            1.into(),
+            None,
+        ),
         Bonus::new(
             Ability::All.into(),
             BonusType::Stacking,
             8f32.into(),
+            1.into(),
+            None,
+        ),
+        Bonus::new(
+            Ability::Dexterity.into(),
+            BonusType::Stacking,
+            20f32.into(),
             1.into(),
             None,
         ),
@@ -65,6 +89,8 @@ fn main() {
         println!("{}: {}", attr, val);
     }
 
-
-    println!("Sheltering: Both = {}", Attribute::Sheltering(builder::attribute::types::Sheltering::Both).into_usize());
+    println!(
+        "Sheltering: Both = {}",
+        Attribute::Sheltering(builder::attribute::types::Sheltering::Both).into_usize()
+    );
 }

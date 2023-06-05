@@ -95,12 +95,13 @@ pub trait TrackAttribute {
 
 // TODO: more detailed documentation
 
-/// Implements the ability for attributes to have a "default value"
+/// Implements the ability to have default bonuses for a trait.
 ///
-/// Default values are initialized on creation for [`Compiler`] objects.
+/// Default bonuses are implemented on initialization of [`Compilers`]
 ///
-/// [`Compiler`]: crate::compiler::Compiler
-pub trait DefaultValue<T = ()> {
-    /// Returns the attribute's default value, if it has any.
-    fn get_default_value(&self) -> Option<f32>;
+/// [`Compilers`]: crate::compiler::Compiler
+pub trait DefaultBonuses {
+    /// Returns the default bonuses, if there are any
+    fn get_default_bonuses() -> Vec<Bonus>;
 }
+
