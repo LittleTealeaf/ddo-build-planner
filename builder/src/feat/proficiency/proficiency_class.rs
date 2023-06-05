@@ -69,3 +69,26 @@ impl From<WeaponType> for ProficiencyClass {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use itertools::Itertools;
+
+    use super::*;
+
+    #[test]
+    fn fully_describes_weapon_types() {
+        let classes = (0..ProficiencyClass::LENGTH)
+            .map(ProficiencyClass::from_usize)
+            .collect_vec();
+
+        let mut set = Vec::new();
+
+        for class in classes {
+            for weapon_type in class.get_weapon_types() {
+                assert!(!set.contains(&weapon_type));
+                set.push(weapon_type);
+            }
+        }
+    }
+}
