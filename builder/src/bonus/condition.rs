@@ -3,6 +3,8 @@ use crate::attribute::Attribute;
 /// Describes an attribute-based condition that must be met for a bonus to be included.
 #[derive(Clone, Debug)]
 pub enum Condition {
+    /// Negates a condition
+    Not(Box<Condition>),
     /// Requires that an attribute has an above 0 value
     Has(Attribute),
     /// Requires that an attribute is either zero or below
@@ -15,10 +17,20 @@ pub enum Condition {
     Eq(Attribute, f32),
     /// Requires that an attribute is not equal to some value
     NotEq(Attribute, f32),
+    /// Requires that an attribute is greater than another attribute
+    GreaterThan(Attribute, Attribute),
+    /// Requires that an attribute is less than another attribute
+    LessThan(Attribute, Attribute),
+    /// Requires that an attribute is equal to another attribute
+    EqualTo(Attribute, Attribute),
     /// Requires any of the provided conditions
     Any(Vec<Condition>),
     /// Requires all of the provided conditions
     All(Vec<Condition>),
+    /// Requires that not all of the provided conditions are true
+    NotAll(Vec<Condition>),
+    /// Requires that none of the provided conditions are true
+    None(Vec<Condition>),
 }
 
 /// Implements different constructors to make building conditions easier.
@@ -58,13 +70,20 @@ impl Condition {
     /// Returns any dependant condition
     pub fn get_dependencies(&self) -> Vec<Attribute> {
         match self {
+            Condition::Not(condition) => condition.get_dependencies(),
+            Condition::GreaterThan(a, b) | Condition::LessThan(a, b) | Condition::EqualTo(a, b) => {
+                vec![*a, *b]
+            }
             Condition::Has(attr)
             | Condition::NotHave(attr)
             | Condition::Max(attr, _)
             | Condition::Min(attr, _)
             | Condition::Eq(attr, _)
             | Condition::NotEq(attr, _) => vec![*attr],
-            Condition::Any(conds) | Condition::All(conds) => {
+            Condition::Any(conds)
+            | Condition::All(conds)
+            | Condition::NotAll(conds)
+            | Condition::None(conds) => {
                 conds.iter().flat_map(Condition::get_dependencies).collect()
             }
         }

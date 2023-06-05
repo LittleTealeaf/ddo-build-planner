@@ -4,12 +4,11 @@
 
 mod attribute_queue;
 
-use enum_map::Enum;
 use itertools::Itertools;
 
 use crate::{
-    attribute::{Attribute, DefaultValue},
-    bonus::{Bonus, BonusSource, BonusType, BonusValue, CloneBonus, Condition},
+    attribute::{Attribute, DefaultBonuses},
+    bonus::{Bonus, BonusSource, BonusValue, CloneBonus, Condition},
     utils::EnumBinaryMap,
 };
 
@@ -62,20 +61,7 @@ impl Default for Compiler {
             children: EnumBinaryMap::default(),
         };
 
-        new.insert_bonuses(
-            (0..Attribute::LENGTH)
-                .map(Attribute::from_usize)
-                .filter_map(|attribute| {
-                    Some(Bonus::new(
-                        attribute,
-                        BonusType::Stacking,
-                        attribute.get_default_value()?.into(),
-                        BonusSource::Base,
-                        None,
-                    ))
-                })
-                .collect(),
-        );
+        new.add_bonuses(Attribute::get_default_bonuses());
 
         new
     }
@@ -133,6 +119,16 @@ impl Compiler {
             Condition::NotEq(attr, val) => self.get_attribute(&attr) != val,
             Condition::Any(set) => set.into_iter().any(|cond| self.check_condition(cond)),
             Condition::All(set) => set.into_iter().all(|cond| self.check_condition(cond)),
+            Condition::GreaterThan(a, b) => self.get_attribute(&a) > self.get_attribute(&b),
+            Condition::LessThan(a, b) => self.get_attribute(&a) < self.get_attribute(&b),
+            Condition::EqualTo(a, b) => self.get_attribute(&a) == self.get_attribute(&b),
+            Condition::Not(condition) => !self.check_condition(*condition),
+            Condition::NotAll(conditions) => conditions
+                .into_iter()
+                .any(|cond| !self.check_condition(cond)),
+            Condition::None(conditions) => conditions
+                .into_iter()
+                .all(|cond| !self.check_condition(cond)),
         }
     }
 

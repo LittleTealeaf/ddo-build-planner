@@ -188,13 +188,15 @@ impl TrackAttribute for Attribute {
     }
 }
 
-impl DefaultValue for Attribute {
-    fn get_default_value(&self) -> Option<f32> {
-        match self {
-            Self::Ability(ability) => DefaultValue::<_AbilityScore>::get_default_value(ability),
-            Self::ArmorClass(ac) => ac.get_default_value(),
-            _ => None,
-        }
+impl DefaultBonuses for Attribute {
+    fn get_default_bonuses() -> Vec<Bonus> {
+        vec![
+            Ability::get_default_bonuses(),
+            ArmorClass::get_default_bonuses(),
+        ]
+        .into_iter()
+        .flatten()
+        .collect()
     }
 }
 
@@ -289,15 +291,6 @@ mod tests {
                         );
                     }
                 });
-        }
-
-        #[test]
-        fn do_not_have_zero_default_value() {
-            get_all_attributes().for_each(|attr| {
-                if let Some(value) = attr.get_default_value() {
-                    assert!(value != 0f32);
-                }
-            })
         }
     }
 }

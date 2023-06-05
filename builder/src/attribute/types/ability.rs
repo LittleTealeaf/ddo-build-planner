@@ -3,8 +3,8 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 use crate::{
-    attribute::{Attribute, DefaultValue, GetBonuses, TrackAttribute},
-    bonus::{Bonus, BonusType, CloneBonus, Condition},
+    attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
+    bonus::{Bonus, BonusSource, BonusType, CloneBonus, Condition},
 };
 
 use super::{ArmorClass, SavingThrow, Skill};
@@ -70,9 +70,19 @@ impl GetBonuses<_AbilityScore> for Ability {
     }
 }
 
-impl DefaultValue<_AbilityScore> for Ability {
-    fn get_default_value(&self) -> Option<f32> {
-        (!matches!(self, Self::All)).then_some(8f32)
+impl DefaultBonuses for Ability {
+    fn get_default_bonuses() -> Vec<Bonus> {
+        Self::VALUES
+            .map(|ability| {
+                Bonus::new(
+                    Attribute::Ability(ability),
+                    BonusType::Stacking,
+                    8f32.into(),
+                    BonusSource::Base,
+                    None,
+                )
+            })
+            .to_vec()
     }
 }
 
@@ -93,6 +103,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                 self.modifier_bonus(Skill::OpenLock, value),
                 self.modifier_bonus(Skill::Tumble, value),
                 self.modifier_bonus(SavingThrow::Reflex, value),
+                // If max dex bonus is higher than value
                 Bonus::new(
                     ArmorClass::Bonus.into(),
                     BonusType::AbilityModifier,
@@ -103,6 +114,7 @@ impl GetBonuses<_AbilityModifier> for Ability {
                         Condition::Min(ArmorClass::CalculatedMaxDexBonus.into(), value),
                     ])),
                 ),
+                // If max dex bonus is lower than value
                 Bonus::new(
                     ArmorClass::Bonus.into(),
                     BonusType::AbilityModifier,
