@@ -2,11 +2,13 @@
 
 mod display;
 mod bonuses;
+mod feats;
 
 use enum_map::Enum;
 
 pub use display::*;
 pub use bonuses::*;
+pub use feats::*;
 
 
 /// The different race options that the character can be.

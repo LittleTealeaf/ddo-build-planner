@@ -10,7 +10,7 @@ pub use traits::*;
 
 use crate::{
     bonus::{Bonus, CloneBonus},
-    player_class::PlayerClass,
+    player_class::PlayerClass, feat::Feat,
 };
 use enum_map::Enum;
 use std::fmt::Display;
@@ -46,6 +46,8 @@ pub enum Attribute {
     /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
     /// associated bonuses can react.
     Toggle(Toggle),
+    /// Does the user have the feat.
+    Feat(Feat),
     /// The ability score of the character.
     Ability(Ability),
     /// The modifier, calculated from [`Attribute::Ability`].
@@ -81,7 +83,11 @@ pub enum Attribute {
     /// Damage reduced from energy sources
     EnergyResistance(EnergyResistance),
     /// % Damage reduced from energy sources
-    EnergyAbsorption(EnergyResistance)
+    EnergyAbsorption(EnergyResistance),
+    /// Spell Resistance
+    SpellResistance,
+    /// Spell Penetration
+    SpellPenetration
 }
 
 impl Display for Attribute {
@@ -108,6 +114,9 @@ impl Display for Attribute {
             Attribute::Flag(fl) => fl.fmt(f),
             Attribute::EnergyResistance(energy) => write!(f, "{} Resistance", energy),
             Attribute::EnergyAbsorption(energy) => write!(f, "{} Absorption", energy),
+            Attribute::Feat(feat) => write!(f, "Feat: {}", feat),
+            Attribute::SpellResistance => write!(f, "Spell Resistance"),
+            Attribute::SpellPenetration => write!(f, "Spell Penetration"),
         }
     }
 }
@@ -138,6 +147,7 @@ impl Attribute {
             Attribute::ArmorClass(ac) => ac.get_bonuses(value),
             Attribute::ClassLevel(cl) => cl.get_bonuses(value),
             Attribute::Flag(flag) => flag.get_bonuses(value),
+            Attribute::Feat(feat) => feat.get_bonuses(value),
             _ => None,
         }
     }

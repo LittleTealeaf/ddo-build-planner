@@ -12,6 +12,9 @@ use enum_map::Enum;
 fn main() {
     let mut compiler = Compiler::default();
 
+
+    println!("Adding Bonuses");
+
     compiler.add_bonuses(vec![
         Bonus::new(
             PlayerClass::FavoredSoul.into(),
