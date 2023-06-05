@@ -1,10 +1,7 @@
 use crate::{
     attribute::{
         flags::Flag,
-        types::{
-            Ability, ArmorClass, EnergyResistance, Immunity, SavingThrow, Skill, WeaponHand,
-            WeaponStat,
-        },
+        types::{Ability, EnergyResistance, Immunity, SavingThrow, Skill},
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
