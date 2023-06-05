@@ -144,3 +144,18 @@ impl Display for WeaponType {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn no_repeats_in_thrown_weapons() {
+        let mut types = Vec::new();
+
+        for item in WeaponType::THROWING_WEAPONS {
+            assert!(!types.contains(&item));
+            types.push(item);
+        }
+    }
+}
