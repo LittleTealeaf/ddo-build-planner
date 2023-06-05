@@ -41,9 +41,13 @@ pub enum RacialFeat {
     PoisonSaveBonus,
     /// Halfling Agility
     HalflingAgility,
+    /// Halfling Bravery
     HalflingBravery,
+    /// Halfling Keen Ears
     HalflingKeenEars,
+    /// Halfling Luck
     HalflingLuck,
+    /// Halfling Thrown Weapon Focus
     HalflingThrownWeaponFocus,
 }
 
