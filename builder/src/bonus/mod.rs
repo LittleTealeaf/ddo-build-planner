@@ -5,7 +5,7 @@ mod source;
 mod traits;
 mod value;
 
-use crate::attribute::{Attribute, flags::Flag};
+use crate::attribute::{flags::Flag, Attribute};
 
 pub use bonus_type::*;
 pub use condition::*;
@@ -90,10 +90,9 @@ impl Bonus {
             bonus_type: BonusType::Stacking,
             value: 1f32.into(),
             source,
-            condition: None
+            condition: None,
         }
     }
-
 
     /// Returns the attribute that the bonus applies to.
     ///

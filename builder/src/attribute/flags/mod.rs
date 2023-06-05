@@ -1,6 +1,11 @@
 //! Handles any Flag that the character has.
 //!
 //! Most of the time, the flag is either a `1` (Has) or `0` (Not Have). 
+mod off_hand;
+mod main_hand;
+
+pub use off_hand::*;
+pub use main_hand::*;
 
 use std::fmt::Display;
 
@@ -23,6 +28,12 @@ pub enum Flag {
     Immunity(Immunity),
     /// The alignment that the character is
     Alignment(Alignment),
+
+    /// Wielding an item in the main hand
+    MainHandType(MainHandType),
+    
+    /// Item type in the off hand
+    OffHandType(OffHandType)
 }
 
 impl Display for Flag {
@@ -32,6 +43,8 @@ impl Display for Flag {
             Flag::Race(race) => write!(f, "{} Race", race),
             Flag::Immunity(immunity) => write!(f, "{} Immunity", immunity),
             Flag::Alignment(alignment) => write!(f, "Is {}", alignment),
+            Flag::OffHandType(off_hand) => write!(f, "{} in the off hand", off_hand),
+            Flag::MainHandType(main_hand) => write!(f, "{} in the main hand", main_hand),
         }
     }
 }
@@ -60,6 +73,18 @@ impl From<Race> for Flag {
 impl From<Immunity> for Flag {
     fn from(value: Immunity) -> Self {
         Self::Immunity(value)
+    }
+}
+
+impl From<OffHandType> for Flag {
+    fn from(value: OffHandType) -> Self {
+        Self::OffHandType(value)
+    }
+}
+
+impl From<MainHandType> for Flag {
+    fn from(value: MainHandType) -> Self {
+        Self::MainHandType(value)
     }
 }
 

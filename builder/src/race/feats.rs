@@ -4,12 +4,14 @@ use enum_map::Enum;
 
 use crate::{
     attribute::{
+        flags::{Flag, MainHandType, OffHandType},
         toggles::{AttackingTarget, Toggle},
         types::{ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat},
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
     feat::Feat,
+    item::types::WeaponType,
 };
 
 /// Feats granted from different races.
@@ -296,7 +298,28 @@ impl GetBonuses for RacialFeat {
                 None,
             )],
             RacialFeat::HalflingThrownWeaponFocus => vec![
-                // TODO: Halfling Thrown Weapon Focus
+                Bonus::new(
+                    (WeaponHand::Main, WeaponStat::Attack).into(),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::from(Feat::from(RacialFeat::HalflingThrownWeaponFocus)).into(),
+                    Some(Condition::Any(
+                        WeaponType::THROWING_WEAPONS
+                            .map(|wt| Condition::Has(Flag::from(MainHandType::Weapon(wt)).into()))
+                            .to_vec(),
+                    )),
+                ),
+                Bonus::new(
+                    (WeaponHand::Off, WeaponStat::Attack).into(),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::from(Feat::from(RacialFeat::HalflingThrownWeaponFocus)).into(),
+                    Some(Condition::Any(
+                        WeaponType::THROWING_WEAPONS
+                            .map(|wt| Condition::Has(Flag::from(OffHandType::Weapon(wt)).into()))
+                            .to_vec(),
+                    )),
+                ),
             ],
         })
     }

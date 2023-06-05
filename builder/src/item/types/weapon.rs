@@ -2,7 +2,6 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-
 /// Weapon Types
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum WeaponType {
@@ -85,7 +84,29 @@ pub enum WeaponType {
     /// Dart
     Dart,
     /// Shuriken
-    Shuriken
+    Shuriken,
+}
+
+impl WeaponType {
+    /// Sub-set of thrown weapons.
+    pub const THROWING_WEAPONS: [Self; 5] = [
+        Self::Dart,
+        Self::Shuriken,
+        Self::ThrowingHammer,
+        Self::ThrowingDagger,
+        Self::ThrowingAxe,
+    ];
+
+    /// Sub-set of ranged weapons
+    pub const RANGED_WEAPONS: [Self; 7] = [
+        Self::LightCrossbow,
+        Self::HeavyCrossbow,
+        Self::RepeatingHeavyCrossbow,
+        Self::RepeatingLightCrossbow,
+        Self::LongBow,
+        Self::ShortBow,
+        Self::GreatCrossbow,
+    ];
 }
 
 impl Display for WeaponType {
@@ -131,6 +152,31 @@ impl Display for WeaponType {
             WeaponType::ThrowingHammer => write!(f, "Throwing Hammer"),
             WeaponType::Dart => write!(f, "Dart"),
             WeaponType::Shuriken => write!(f, "Shuriken"),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn no_repeats_in_thrown_weapons() {
+        let mut types = Vec::new();
+
+        for item in WeaponType::THROWING_WEAPONS {
+            assert!(!types.contains(&item));
+            types.push(item);
+        }
+    }
+
+    #[test]
+    fn no_repeats_in_ranged_weapons() {
+        let mut types = Vec::new();
+
+        for item in WeaponType::RANGED_WEAPONS {
+            assert!(!types.contains(&item));
+            types.push(item);
         }
     }
 }
