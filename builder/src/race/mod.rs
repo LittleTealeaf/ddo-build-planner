@@ -1,15 +1,14 @@
 //! Describes the different race options that a player can be.
 
-mod display;
 mod bonuses;
+mod display;
 mod feats;
 
 use enum_map::Enum;
 
-pub use display::*;
 pub use bonuses::*;
+pub use display::*;
 pub use feats::*;
-
 
 /// The different race options that the character can be.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Enum)]
@@ -61,5 +60,5 @@ pub enum Race {
     /// Shadarkai Race
     Shadarkai,
     /// Trailblazer Race
-    Trailblazer
+    Trailblazer,
 }

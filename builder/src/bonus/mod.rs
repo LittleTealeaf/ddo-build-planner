@@ -24,6 +24,7 @@ pub struct Bonus {
     value: BonusValue,
     source: BonusSource,
     condition: Option<Condition>,
+    dependnecies: Option<Vec<Attribute>>,
 }
 
 impl Bonus {
@@ -48,12 +49,23 @@ impl Bonus {
         source: BonusSource,
         condition: Option<Condition>,
     ) -> Self {
+        let mut deps = Vec::new();
+
+        if let Some(condition) = &condition {
+            deps.append(&mut condition.get_dependencies());
+        }
+
+        if let Some(mut value_deps) = value.get_dependencies() {
+            deps.append(&mut value_deps);
+        }
+
         Self {
             attribute,
             bonus_type,
             value,
             source,
             condition,
+            dependnecies: (deps.len() > 0).then_some(deps),
         }
     }
 
@@ -74,24 +86,24 @@ impl Bonus {
     /// assert!(dummy.get_condition().is_none());
     /// ```
     pub fn dummy(source: BonusSource) -> Bonus {
-        Self {
-            attribute: Attribute::Dummy,
-            bonus_type: BonusType::Stacking,
-            value: 0f32.into(),
+        Self::new(
+            Attribute::Dummy,
+            BonusType::Stacking,
+            0f32.into(),
             source,
-            condition: None,
-        }
+            None,
+        )
     }
 
     /// Returns a bonus that gives the character some [`Flag`].
     pub fn flag(flag: Flag, source: BonusSource) -> Bonus {
-        Self {
-            attribute: flag.into(),
-            bonus_type: BonusType::Stacking,
-            value: 1f32.into(),
+        Self::new(
+            Attribute::Flag(flag),
+            BonusType::Stacking,
+            1f32.into(),
             source,
-            condition: None,
-        }
+            None,
+        )
     }
 
     /// Returns the attribute that the bonus applies to.
@@ -186,13 +198,13 @@ impl Bonus {
     /// assert!(new_bonus.get_condition().is_none());
     /// ```
     pub fn clone_into_attribute(&self, attribute: Attribute) -> Bonus {
-        Bonus {
+        Bonus::new(
             attribute,
-            bonus_type: self.bonus_type,
-            value: self.value,
-            source: self.source,
-            condition: self.condition.clone(),
-        }
+            self.bonus_type,
+            self.value,
+            self.source,
+            self.condition.clone(),
+        )
     }
 
     /// Returns all other [`Attributes`] that this bonus references
@@ -228,17 +240,18 @@ impl Bonus {
     /// [`Condition::get_dependencies()`]: crate::bonus::Condition::get_dependencies
     /// [`Attributes`]: crate::attribute::Attribute
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
-        let condition_deps = self.condition.as_ref().map(Condition::get_dependencies);
-
-        let value_deps = self.value.get_dependencies();
-
-        if let Some(mut cond_deps) = condition_deps {
-            if let Some(mut val_deps) = value_deps {
-                cond_deps.append(&mut val_deps);
-            }
-            Some(cond_deps)
-        } else {
-            value_deps
-        }
+        self.dependnecies.clone()
+        // let condition_deps = self.condition.as_ref().map(Condition::get_dependencies);
+        //
+        // let value_deps = self.value.get_dependencies();
+        //
+        // if let Some(mut cond_deps) = condition_deps {
+        //     if let Some(mut val_deps) = value_deps {
+        //         cond_deps.append(&mut val_deps);
+        //     }
+        //     Some(cond_deps)
+        // } else {
+        //     value_deps
+        // }
     }
 }
