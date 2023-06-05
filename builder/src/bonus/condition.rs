@@ -1,3 +1,7 @@
+use std::fmt::Display;
+
+use itertools::Itertools;
+
 use crate::attribute::Attribute;
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
@@ -91,6 +95,28 @@ impl Condition {
             | Condition::None(conds) => {
                 conds.iter().flat_map(Condition::get_dependencies).collect()
             }
+        }
+    }
+}
+
+impl Display for Condition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Condition::Not(condition) => write!(f, "Not {}", *condition),
+            Condition::Has(attr) => write!(f, "Has {}", attr),
+            Condition::NotHave(attr) => write!(f, "Does not have {}", attr),
+            Condition::Max(attr, value) => write!(f, "{} is at most {}", attr, value),
+            Condition::Min(attr, value) => write!(f, "{} is at least {}", attr, value),
+            Condition::Eq(attr, value) => write!(f, "{} is {}", attr, value),
+            Condition::NotEq(attr, value) => write!(f, "{} is not {}", attr, value),
+            Condition::GreaterThan(a, b) => write!(f, "{} is greater than {}", a, b),
+            Condition::LessThan(a, b) => write!(f, "{} is less than {}", a, b),
+            Condition::EqualTo(a, b) => write!(f, "{} is equal to {}", a, b),
+            Condition::NotEqualTo(a, b) => write!(f, "{} is not equal to {}", a, b),
+            Condition::Any(conditions) => write!(f, "Any of {:?}", conditions),
+            Condition::All(conditions) => write!(f, "All of {:?}", conditions),
+            Condition::NotAll(conditions) => write!(f, "Not all of {:?}", conditions),
+            Condition::None(conditions) => write!(f, "None of {:?}", conditions),
         }
     }
 }

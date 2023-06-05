@@ -5,6 +5,8 @@ mod source;
 mod traits;
 mod value;
 
+use std::fmt::Display;
+
 use crate::attribute::{flags::Flag, Attribute};
 
 pub use bonus_type::*;
@@ -261,5 +263,23 @@ impl Bonus {
         // } else {
         //     value_deps
         // }
+    }
+}
+
+impl Display for Bonus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if let Some(condition) = &self.condition {
+            write!(
+                f,
+                "{} {} bonus to {} if {}",
+                self.value, self.bonus_type, self.attribute, condition
+            )
+        } else {
+            write!(
+                f,
+                "{} {} bonus to {}",
+                self.value, self.bonus_type, self.attribute
+            )
+        }
     }
 }
