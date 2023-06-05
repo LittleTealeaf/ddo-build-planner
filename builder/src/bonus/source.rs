@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use enum_map::Enum;
 
 use crate::attribute::Attribute;
@@ -16,6 +18,18 @@ pub enum BonusSource {
     Debug(u8),
     /// Only used for initial values
     Base,
+}
+
+impl Display for BonusSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BonusSource::Attribute(attr) => write!(f, "Attribute: {}", attr),
+            BonusSource::Custom(num) => write!(f, "Custom: {}", num),
+            #[cfg(test)]
+            BonusSource::Debug(num) => write!(f, "Debug: {}", num),
+            BonusSource::Base => write!(f, "Base"),
+        }
+    }
 }
 
 impl From<Attribute> for BonusSource {

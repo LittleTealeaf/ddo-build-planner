@@ -47,6 +47,8 @@ pub enum BonusType {
     Insightful,
     /// Legendary bonus
     Legendary,
+    /// Luck Bonus
+    Luck,
     /// Morale bonus
     Morale,
     /// Music bonus
@@ -116,6 +118,7 @@ impl Display for BonusType {
                 BonusType::Standard => "Standard",
                 BonusType::Racial => "Racial",
                 BonusType::Dodge => "Dodge",
+                BonusType::Luck => "Luck",
             }
         )
     }

@@ -39,6 +39,12 @@ pub enum RacialFeat {
     SpellSaveBonus,
     /// Poison Save Bonus
     PoisonSaveBonus,
+    /// Halfling Agility
+    HalflingAgility,
+    HalflingBravery,
+    HalflingKeenEars,
+    HalflingLuck,
+    HalflingThrownWeaponFocus,
 }
 
 impl Display for RacialFeat {
@@ -56,6 +62,11 @@ impl Display for RacialFeat {
             RacialFeat::DwarvenStonecunning => write!(f, "Dwarven Stonecunning"),
             RacialFeat::SpellSaveBonus => write!(f, "Spell Save Bonus"),
             RacialFeat::PoisonSaveBonus => write!(f, "Poison Save Bonus"),
+            RacialFeat::HalflingAgility => write!(f, "Halfling Agility"),
+            RacialFeat::HalflingBravery => write!(f, "Halfling Bravery"),
+            RacialFeat::HalflingKeenEars => write!(f, "Halfling Keen Ears"),
+            RacialFeat::HalflingLuck => write!(f, "Halfling Luck"),
+            RacialFeat::HalflingThrownWeaponFocus => write!(f, "Halfling Thrown Weapon Focus"),
         }
     }
 }
@@ -171,13 +182,13 @@ impl GetBonuses for RacialFeat {
                 vec![
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                        Attribute::from(Feat::RacialFeat(RacialFeat::GiantEvasion)).into(),
                     ),
                     Bonus::new(
                         ArmorClass::Bonus.into(),
                         BonusType::Dodge,
                         4f32.into(),
-                        Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
+                        Attribute::from(Feat::RacialFeat(RacialFeat::GiantEvasion)).into(),
                         Some(Condition::Has(
                             Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant))
                                 .into(),
@@ -243,6 +254,77 @@ impl GetBonuses for RacialFeat {
                     None,
                 )]
             }
+            RacialFeat::HalflingAgility => vec![
+                Bonus::new(
+                    Skill::Jump.into(),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::from(Feat::from(RacialFeat::HalflingAgility)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Skill::MoveSilently.into(),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::from(Feat::from(RacialFeat::HalflingAgility)).into(),
+                    None,
+                ),
+            ],
+            RacialFeat::HalflingBravery => vec![Bonus::new(
+                SavingThrow::Fear.into(),
+                BonusType::Morale,
+                2f32.into(),
+                Attribute::from(Feat::from(RacialFeat::HalflingBravery)).into(),
+                None,
+            )],
+            RacialFeat::HalflingKeenEars => vec![Bonus::new(
+                Skill::Listen.into(),
+                BonusType::Stacking,
+                2f32.into(),
+                Attribute::from(Feat::from(RacialFeat::HalflingBravery)).into(),
+                None,
+            )],
+            RacialFeat::HalflingLuck => vec![Bonus::new(
+                SavingThrow::All.into(),
+                BonusType::Luck,
+                1f32.into(),
+                Attribute::from(Feat::from(RacialFeat::HalflingLuck)).into(),
+                None,
+            )],
+            RacialFeat::HalflingThrownWeaponFocus => vec![
+                // TODO: Halfling Thrown Weapon Focus
+            ],
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::bonus::BonusSource;
+
+    use super::*;
+
+    #[test]
+    fn one_value_returns_bonuses() {
+        for feat in (0..RacialFeat::LENGTH).map(RacialFeat::from_usize) {
+            assert!(feat.get_bonuses(1f32).is_some());
+        }
+    }
+
+    #[test]
+    fn source_matches_up() {
+        for feat in (0..RacialFeat::LENGTH).map(RacialFeat::from_usize) {
+            if let Some(bonuses) = feat.get_bonuses(1f32) {
+                for bonus in bonuses {
+                    let source = bonus.get_source();
+                    let expected = BonusSource::Attribute(Attribute::Feat(Feat::RacialFeat(feat)));
+                    assert_eq!(
+                        source, expected,
+                        "Expected [{}], found [{}]",
+                        expected, source
+                    );
+                }
+            }
+        }
     }
 }
