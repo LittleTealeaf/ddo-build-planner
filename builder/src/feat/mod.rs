@@ -55,3 +55,15 @@ impl From<Feat> for Attribute {
         Self::Feat(value)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn zero_bonus_returns_none() {
+        for feat in (0..Feat::LENGTH).map(Feat::from_usize) {
+            assert!(feat.get_bonuses(0f32).is_none());
+        }
+    }
+}
