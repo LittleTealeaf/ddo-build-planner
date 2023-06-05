@@ -285,7 +285,7 @@ impl GetBonuses for RacialFeat {
                 Skill::Listen.into(),
                 BonusType::Stacking,
                 2f32.into(),
-                Attribute::from(Feat::from(RacialFeat::HalflingBravery)).into(),
+                Attribute::from(Feat::from(RacialFeat::HalflingKeenEars)).into(),
                 None,
             )],
             RacialFeat::HalflingLuck => vec![Bonus::new(
