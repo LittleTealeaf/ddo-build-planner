@@ -1,7 +1,5 @@
 use std::fmt::Display;
 
-use itertools::Itertools;
-
 use crate::attribute::Attribute;
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
