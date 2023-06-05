@@ -164,6 +164,12 @@ impl GetBonuses for Race {
             Race::Halfling => Some(vec![
                 self.ability_modifier(Ability::Dexterity, 2f32),
                 self.ability_modifier(Ability::Strength, -2f32),
+                self.bonus_feat(RacialFeat::HalflingAgility),
+                self.bonus_feat(RacialFeat::HalflingBravery),
+                self.bonus_feat(RacialFeat::HalflingKeenEars),
+                self.bonus_feat(RacialFeat::HalflingLuck),
+                self.bonus_feat(RacialFeat::HalflingThrownWeaponFocus),
+                self.bonus_feat(RacialFeat::SmallSizeBonus),
             ]),
             Race::HalfElf => Some(vec![
                 Bonus::new(
