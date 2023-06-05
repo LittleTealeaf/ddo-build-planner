@@ -87,40 +87,35 @@ pub enum BonusType {
 
 impl Display for BonusType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // TODO: Refactor this
-        write!(
-            f,
-            "{}",
-            match self {
-                BonusType::AbilityModifier => "Ability Modifier",
-                BonusType::ActionBoost => "Action Boost",
-                BonusType::Alchemical => "Alchemical",
-                BonusType::Artifact => "Artifact",
-                BonusType::Competence => "Competence",
-                BonusType::Deflection => "Deflection",
-                BonusType::Enhancement => "Enhancement",
-                BonusType::Epic => "Epic",
-                BonusType::Exceptional => "Exceptional",
-                BonusType::Feat => "Feat",
-                BonusType::Festive => "Festive",
-                BonusType::Insightful => "Insightful",
-                BonusType::Legendary => "Legendary",
-                BonusType::Morale => "Morale",
-                BonusType::Music => "Music",
-                BonusType::Primal => "Primal",
-                BonusType::Profane => "Profane",
-                BonusType::Quality => "Quality",
-                BonusType::Sacred => "Sacred",
-                BonusType::Shield => "Shield",
-                BonusType::Size => "Size",
-                BonusType::Stacking => "Stacking",
-                BonusType::Spooky => "Spooky",
-                BonusType::Standard => "Standard",
-                BonusType::Racial => "Racial",
-                BonusType::Dodge => "Dodge",
-                BonusType::Luck => "Luck",
-            }
-        )
+        match self {
+            BonusType::AbilityModifier => write!(f, "Ability Modifier"),
+            BonusType::ActionBoost => write!(f, "Action Boost"),
+            BonusType::Alchemical => write!(f, "Alchemical"),
+            BonusType::Artifact => write!(f, "Artifact"),
+            BonusType::Competence => write!(f, "Competence"),
+            BonusType::Deflection => write!(f, "Deflection"),
+            BonusType::Enhancement => write!(f, "Enhancement"),
+            BonusType::Epic => write!(f, "Epic"),
+            BonusType::Exceptional => write!(f, "Exceptional"),
+            BonusType::Feat => write!(f, "Feat"),
+            BonusType::Festive => write!(f, "Festive"),
+            BonusType::Insightful => write!(f, "Insightful"),
+            BonusType::Legendary => write!(f, "Legendary"),
+            BonusType::Morale => write!(f, "Morale"),
+            BonusType::Music => write!(f, "Music"),
+            BonusType::Primal => write!(f, "Primal"),
+            BonusType::Profane => write!(f, "Profane"),
+            BonusType::Quality => write!(f, "Quality"),
+            BonusType::Sacred => write!(f, "Sacred"),
+            BonusType::Shield => write!(f, "Shield"),
+            BonusType::Size => write!(f, "Size"),
+            BonusType::Stacking => write!(f, "Stacking"),
+            BonusType::Spooky => write!(f, "Spooky"),
+            BonusType::Standard => write!(f, "Standard"),
+            BonusType::Racial => write!(f, "Racial"),
+            BonusType::Dodge => write!(f, "Dodge"),
+            BonusType::Luck => write!(f, "Luck"),
+        }
     }
 }
 
