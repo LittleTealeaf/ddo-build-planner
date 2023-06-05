@@ -11,9 +11,12 @@ use crate::{
     race::RacialFeat,
 };
 
+/// All possible feats that the player can have.
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum Feat {
+    /// Feats pertaining to a certain race.
     RacialFeat(RacialFeat),
+    /// Proficiencies for Weapons or Armor
     Proficiency(Proficiency),
 }
 

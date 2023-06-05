@@ -10,10 +10,14 @@ use crate::{item::types::WeaponType, attribute::Attribute};
 
 use super::Feat;
 
+/// Proficiencies for Weapons and Armor
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum Proficiency {
+    /// Proficiency for each weapon.
     WeaponProficiency(WeaponType),
+    /// Proficiency for Simple Weapons
     SimpleWeaponProficiency,
+    /// Proficiency for Martial Weapons
     MartialWeaponProficiency,
 }
 

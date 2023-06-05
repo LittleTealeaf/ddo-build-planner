@@ -1,10 +1,9 @@
 use crate::{
     attribute::{
         flags::Flag,
-        toggles::{AttackingTarget, Toggle},
         types::{
-            Ability, ArmorClass, EnergyResistance, Immunity, MonsterType, SavingThrow, Skill,
-            WeaponHand, WeaponStat,
+            Ability, ArmorClass, EnergyResistance, Immunity, SavingThrow, Skill, WeaponHand,
+            WeaponStat,
         },
         Attribute, GetBonuses,
     },
@@ -143,7 +142,7 @@ impl GetBonuses for Race {
                     Some(Condition::Has(Attribute::Feat(Feat::Proficiency(
                         Proficiency::MartialWeaponProficiency,
                     )))),
-                ), 
+                ),
             ]),
             Race::Elf => Some(vec![
                 self.ability_modifier(Ability::Dexterity, 2f32),

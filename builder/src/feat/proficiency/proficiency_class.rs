@@ -2,10 +2,14 @@ use enum_map::Enum;
 
 use crate::item::types::WeaponType;
 
+/// Proficiency Class for weapons
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
 pub enum ProficiencyClass {
+    /// Simple Weapons
     Simple,
+    /// Martial Weapons
     Martial,
+    /// Exotic WEapons
     Exotic,
 }
 

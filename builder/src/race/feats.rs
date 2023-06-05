@@ -12,19 +12,32 @@ use crate::{
     feat::Feat,
 };
 
+/// Feats granted from different races.
 #[derive(PartialEq, Eq, Clone, Copy, Enum, Debug)]
 pub enum RacialFeat {
+    /// Small Size Bonus
     SmallSizeBonus,
+    /// Gnomish Proficiencies
     GnomishProficiencies,
+    /// Immunity to Sleep
     ImmunityToSleep,
+    /// Enchantment Save Bonus
     EnchantmentSaveBonus,
+    /// Elven Keen Senses
     ElvenKeenSenses,
+    /// Racial Spell Resistance
     RacialSpellResistance,
+    /// Dwarven Stability
     DwarvenStability,
+    /// Giant Evasion
     GiantEvasion,
+    /// Orc and Goblin Bonus
     OrcAndGoblinBonus,
+    /// Dwarven Stonecunning
     DwarvenStonecunning,
+    /// Spell Save Bonus
     SpellSaveBonus,
+    /// Poison Save Bonus
     PoisonSaveBonus,
 }
 

@@ -3,47 +3,88 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 
+/// Weapon Types
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum WeaponType {
+    /// Club
     Club,
+    /// Quarterstaff
     Quarterstaff,
+    /// Dagger
     Dagger,
+    /// Sickle
     Sickle,
+    /// Light Mace
     LightMace,
+    /// Heavy Mace
     HeavyMace,
+    /// Morningstar
     Morningstar,
+    /// Heavy Crossbow
     HeavyCrossbow,
+    /// Light Crossbow
     LightCrossbow,
+    /// Handaxe
     Handaxe,
+    /// Battle Axe
     BattleAxe,
+    /// Great Axe
     GreatAxe,
+    /// Kukri
     Kukri,
+    /// Long Sword
     LongSword,
+    /// Great Sword
     GreatSword,
+    /// Scimitar
     Scimitar,
+    /// Falchion
     Falchion,
+    /// Long Bow
     LongBow,
+    /// Short Sword
     ShortSword,
+    /// Rapier
     Rapier,
+    /// Heavy Pick
     HeavyPick,
+    /// Light Pick
     LightPick,
+    /// Light Hammer
     LightHammer,
+    /// War Hammer
     WarHammer,
+    /// Maul
     Maul,
+    /// Great Club
     GreatClub,
+    /// Short Bow
     ShortBow,
+    /// Bastard Sword
     BastardSword,
+    /// Dwarven War Axe
     DwarvenWarAxe,
+    /// Kama
     Kama,
+    /// Khopesh
     Khopesh,
+    /// Handwraps
     Handwraps,
+    /// Great Crossbow
     GreatCrossbow,
+    /// Repeating Heavy Crossbow
     RepeatingHeavyCrossbow,
+    /// Repeating Light Crossbow
     RepeatingLightCrossbow,
+    /// Throwing Axe
     ThrowingAxe,
+    /// Throwing Dagger
     ThrowingDagger,
+    /// Throwing Hammer
     ThrowingHammer,
+    /// Dart
     Dart,
+    /// Shuriken
     Shuriken
 }
 
