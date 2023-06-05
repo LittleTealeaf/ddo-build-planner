@@ -1,12 +1,14 @@
-mod proficiency_class;
+mod shield_class;
+mod weapon_class;
 
-pub use proficiency_class::*;
+pub use shield_class::*;
+pub use weapon_class::*;
 
 use std::fmt::Display;
 
 use enum_map::Enum;
 
-use crate::{item::types::WeaponType, attribute::Attribute};
+use crate::{attribute::Attribute, item::types::WeaponType};
 
 use super::Feat;
 
@@ -19,6 +21,8 @@ pub enum Proficiency {
     SimpleWeaponProficiency,
     /// Proficiency for Martial Weapons
     MartialWeaponProficiency,
+    /// Shield Proficiency
+    Shield(ShieldProficiency),
 }
 
 impl Display for Proficiency {
@@ -27,6 +31,7 @@ impl Display for Proficiency {
             Proficiency::WeaponProficiency(weapon) => write!(f, "{} Proficiency", weapon),
             Proficiency::SimpleWeaponProficiency => write!(f, "Simple Weapon Proficiency"),
             Proficiency::MartialWeaponProficiency => write!(f, "Martial Weapon Proficiency"),
+            Proficiency::Shield(shield) => write!(f, "{} Shield Proficiency", shield),
         }
     }
 }
@@ -37,6 +42,11 @@ impl From<WeaponType> for Proficiency {
     }
 }
 
+impl From<ShieldProficiency> for Proficiency {
+    fn from(value: ShieldProficiency) -> Self {
+        Self::Shield(value)
+    }
+}
 
 impl From<Proficiency> for Attribute {
     fn from(value: Proficiency) -> Self {

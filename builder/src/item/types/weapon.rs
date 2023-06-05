@@ -2,7 +2,6 @@ use std::fmt::Display;
 
 use enum_map::Enum;
 
-
 /// Weapon Types
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
 pub enum WeaponType {
@@ -85,7 +84,17 @@ pub enum WeaponType {
     /// Dart
     Dart,
     /// Shuriken
-    Shuriken
+    Shuriken,
+}
+
+impl WeaponType {
+    pub const THROWING_WEAPONS: [Self; 5] = [
+        Self::Dart,
+        Self::Shuriken,
+        Self::ThrowingHammer,
+        Self::ThrowingDagger,
+        Self::ThrowingAxe,
+    ];
 }
 
 impl Display for WeaponType {

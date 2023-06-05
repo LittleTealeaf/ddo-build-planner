@@ -4,7 +4,7 @@ use crate::item::types::WeaponType;
 
 /// Proficiency Class for weapons
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
-pub enum ProficiencyClass {
+pub enum WeaponProficiencyClass {
     /// Simple Weapons
     Simple,
     /// Martial Weapons
@@ -13,17 +13,17 @@ pub enum ProficiencyClass {
     Exotic,
 }
 
-impl ProficiencyClass {
+impl WeaponProficiencyClass {
     // TODO: Make this more efficient by reversing the process?
     fn get_weapon_types(&self) -> Vec<WeaponType> {
         (0..WeaponType::LENGTH)
             .map(WeaponType::from_usize)
-            .filter(|wt| ProficiencyClass::from(*wt).eq(self))
+            .filter(|wt| WeaponProficiencyClass::from(*wt).eq(self))
             .collect()
     }
 }
 
-impl From<WeaponType> for ProficiencyClass {
+impl From<WeaponType> for WeaponProficiencyClass {
     fn from(value: WeaponType) -> Self {
         match value {
             WeaponType::Club
@@ -78,8 +78,8 @@ mod tests {
 
     #[test]
     fn fully_describes_weapon_types() {
-        let classes = (0..ProficiencyClass::LENGTH)
-            .map(ProficiencyClass::from_usize)
+        let classes = (0..WeaponProficiencyClass::LENGTH)
+            .map(WeaponProficiencyClass::from_usize)
             .collect_vec();
 
         let mut set = Vec::new();
