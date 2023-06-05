@@ -57,9 +57,8 @@ impl Bonus {
                     deps.push(dep);
                 }
             }
-
         }
-        
+
         if let Some(value_deps) = value.get_dependencies() {
             for dep in value_deps {
                 if !deps.contains(&dep) {
@@ -68,14 +67,13 @@ impl Bonus {
             }
         }
 
-
         Self {
             attribute,
             bonus_type,
             value,
             source,
             condition,
-            dependnecies: (deps.len() > 0).then_some(deps),
+            dependnecies: (!deps.is_empty()).then_some(deps),
         }
     }
 
