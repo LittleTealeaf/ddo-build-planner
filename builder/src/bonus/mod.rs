@@ -52,12 +52,22 @@ impl Bonus {
         let mut deps = Vec::new();
 
         if let Some(condition) = &condition {
-            deps.append(&mut condition.get_dependencies());
+            for dep in condition.get_dependencies() {
+                if !deps.contains(&dep) {
+                    deps.push(dep);
+                }
+            }
+
+        }
+        
+        if let Some(value_deps) = value.get_dependencies() {
+            for dep in value_deps {
+                if !deps.contains(&dep) {
+                    deps.push(dep);
+                }
+            }
         }
 
-        if let Some(mut value_deps) = value.get_dependencies() {
-            deps.append(&mut value_deps);
-        }
 
         Self {
             attribute,
