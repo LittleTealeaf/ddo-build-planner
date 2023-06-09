@@ -88,7 +88,7 @@ impl GetBonuses for ArmorClass {
 // TODO: Impelemnt
 const IS_WEARING_ARMOR: Condition = Condition::Any(vec![]);
 
-const IS_WIELDING_SHEILD: Condition = Condition::Has(Attribute::Flag(Flag::OffHandType(
+const IS_WIELDING_SHIELD: Condition = Condition::Has(Attribute::Flag(Flag::OffHandType(
     OffHandType::Shield(ShieldType::TowerShield),
 )));
 
@@ -103,7 +103,7 @@ impl DefaultBonuses for ArmorClass {
                 Some(Condition::All(vec![
                     IS_WEARING_ARMOR,
                     Condition::NotAll(vec![
-                        IS_WIELDING_SHEILD,
+                        IS_WIELDING_SHIELD,
                         Condition::GreaterThan(
                             ArmorClass::ArmorMaxDexBonus.into(),
                             ArmorClass::ShieldMaxDexBonus.into(),
@@ -117,7 +117,7 @@ impl DefaultBonuses for ArmorClass {
                 Attribute::ArmorClass(ArmorClass::ShieldMaxDexBonus).into(),
                 BonusSource::Base,
                 Some(Condition::All(vec![
-                    IS_WIELDING_SHEILD,
+                    IS_WIELDING_SHIELD,
                     Condition::NotAll(vec![
                         IS_WEARING_ARMOR,
                         Condition::GreaterThan(
