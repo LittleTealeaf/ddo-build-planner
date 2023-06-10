@@ -1,0 +1,31 @@
+use serde::{Deserialize, Serialize};
+
+use crate::attribute::Attribute;
+
+use super::{Bonus, BonusSource, BonusType, BonusValue, Condition};
+
+#[derive(Serialize, Deserialize)]
+pub struct DeserializedBonus {
+    #[serde(rename = "attr")]
+    attribute: Attribute,
+    #[serde(rename = "type")]
+    bonus_type: BonusType,
+    #[serde(rename = "val")]
+    value: BonusValue,
+    #[serde(rename = "src")]
+    source: BonusSource,
+    #[serde(rename = "cond")]
+    condition: Option<Condition>,
+}
+
+impl From<DeserializedBonus> for Bonus {
+    fn from(value: DeserializedBonus) -> Self {
+        Bonus::new(
+            value.attribute,
+            value.bonus_type,
+            value.value,
+            value.source,
+            value.condition,
+        )
+    }
+}

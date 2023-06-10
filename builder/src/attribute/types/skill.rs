@@ -54,6 +54,7 @@ pub enum Skill {
     /// Tumble Skill
     Tumble,
     /// Use Magical Device Skill
+    #[serde(rename = "UMD")]
     UseMagicalDevice,
     /// All Skills
     All,
