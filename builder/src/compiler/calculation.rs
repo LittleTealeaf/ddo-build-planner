@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusValue, Condition},
+    bonus::{BonusValue, Condition},
     utils::EnumBinaryMap,
 };
 
@@ -43,11 +43,38 @@ impl Compiler {
     }
 }
 
-// public functions
+/// Implementations for getting values from the compiler.
 impl Compiler {
-    /// Returns the value of an attribute.
+    /// Returns the calculated value of the given [`Attribute`].
     ///
-    /// If the attribute has no bonuses, then it will return `0f32`
+    /// If the [`Attribute`] is not currently tracked in the system, then this will simply return
+    /// `0f32`.
+    ///
+    /// This function will first check if the value can be found in the cache. If it can't, then it
+    /// will use [`Compiler::calculate_attribute`] to get the calculated value, and store that in the
+    /// cache.
+    ///
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use builder::{
+    ///     compiler::Compiler,
+    ///     attribute::{
+    ///         Attribute,
+    ///         types::Ability
+    ///     }
+    /// };
+    ///
+    /// let mut compiler = Compiler::default();
+    /// assert!(compiler.get_attribute(&Attribute::SpellResistance) == 0f32);
+    ///
+    /// // Note that attributes like Ability Scores are automatically inserted on creation.
+    ///
+    /// assert!(compiler.get_attribute(&Attribute::Ability(Ability::Strength)) == 8f32);
+    /// ```
+    ///
+    /// [`Compiler::calculate_attribute`]: crate::compiler::Compiler::calculate_attribute()
     pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
         // First try the cache
         if let Some(value) = self.cache.get(attribute) {
@@ -72,9 +99,38 @@ impl Compiler {
             .collect()
     }
 
-    /// Calculates an attribute.
+    /// Calculates the total value of valid bonuses for a particular attribute.
     ///
-    /// Does not insert that attribute into the cache.
+    /// **Note**: This does not update the cache. For most cases, it is advisable to
+    /// use [`Condition::get_attribute`].
+    ///
+    /// If there are no bonuses that apply to that attribute in the compiler, this returns
+    /// `None`. If there are no *active* bonuses, this will return `Some(0f32)`.
+    ///
+    /// Note that *active* bonsues are bonuses who either have no [`Condition`] or a true
+    /// [`Condition`].
+    ///
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use builder::{
+    ///     compiler::Compiler,
+    ///     attribute::{
+    ///         Attribute,
+    ///         types::Ability
+    ///     }
+    /// };
+    ///
+    /// let mut compiler = Compiler::default();
+    /// assert_eq!(None, compiler.calculate_attribute(&Attribute::SpellResistance));
+    ///
+    /// // Note that attributes like Ability Scores are automatically inserted on creation.
+    ///
+    /// assert!(compiler.calculate_attribute(&Attribute::Ability(Ability::Charisma)).is_some());
+    /// ```
+    ///
+    /// [`Condition::get_attribute`]: crate::compiler::Compiler::get_attribute()
     pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<f32> {
         // Collect valid bonuses that pass their conditions into a list of (type, value) tuples
         let valid_bonuses = self
