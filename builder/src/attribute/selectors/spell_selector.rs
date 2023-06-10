@@ -10,7 +10,7 @@ use crate::{
 /// Specifies the spell, type of spell, spell class.
 ///
 /// This allows for bonuses such as spell DCs or caster levels to be as specific or generic as they need to be.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum SpellSelector {
     /// Spells that fall under a specific spell power
     SpellPower(SpellPower),

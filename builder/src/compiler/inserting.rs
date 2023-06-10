@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, CloneBonus},
-    utils::EnumBinaryMap,
+    utils::ord::{ToGroupOrdMap, ToGroupedOrdSet},
 };
 
 use super::{attribute_queue::AttributeQueue, Compiler};
@@ -119,11 +119,10 @@ impl Compiler {
         // Updating sources that are being inserted
         {
             // Collect sources and their child attributes
-            let sources = EnumBinaryMap::from(
-                bonuses
-                    .iter()
-                    .map(|bonus| (bonus.get_source(), bonus.get_attribute())),
-            );
+            let sources = bonuses
+                .iter()
+                .map(|bonus| (bonus.get_source(), bonus.get_attribute()))
+                .into_grouped_ord_map();
 
             // Iterate over each source, and if there was a prior mapping of source to children, remove those attributes and add them (forcefully) to the attribute queue
             sources.into_iter().for_each(|(source, set)| {
@@ -135,11 +134,10 @@ impl Compiler {
         }
 
         // Initialize the update bonuses
-        let mut update_bonuses = EnumBinaryMap::from(
-            bonuses
-                .into_iter()
-                .map(|bonus| (bonus.get_attribute(), bonus)),
-        );
+        let mut update_bonuses = bonuses
+            .into_iter()
+            .map(|bonus| (bonus.get_attribute(), bonus))
+            .into_grouped_ord_map();
 
         // Fetch the next attribute from the queue
         while let Some((attribute, force_update)) = attribute_queue.get_next_attribute() {
@@ -158,9 +156,14 @@ impl Compiler {
 
             // If there are any new bonuses, add those
             if let Some(mut bonuses) = update_bonuses.remove(&attribute) {
-                self.bonuses
-                    .get_mut_or_default(&attribute)
-                    .append(&mut bonuses);
+                if let Some(list) = self.bonuses.get_mut(&attribute) {
+                    list.append(&mut bonuses);
+                } else {
+                    self.bonuses.insert(attribute, bonuses);
+                }
+                // self.bonuses
+                //     .get_mut_or_default(&attribute)
+                //     .append(&mut bonuses);
             }
 
             // Either check if it's forced, or if the initial value is different from the original
@@ -202,23 +205,24 @@ impl Compiler {
                             .collect(),
                     );
 
-                    let updated_attributes = EnumBinaryMap::from(
-                        EnumBinaryMap::from(
-                            bonuses
-                                .into_iter()
-                                .map(|bonus| (bonus.get_attribute(), bonus)),
-                        )
+                    let bonuses_by_attribute = bonuses
+                        .into_iter()
+                        .map(|bonus| (bonus.get_attribute(), bonus))
+                        .into_grouped_ord_map();
+
+                    let updated_attributes = bonuses_by_attribute
                         .into_iter()
                         .map(|(attribute, mut set)| {
-                            update_bonuses
-                                .get_mut_or_default(&attribute)
-                                .append(&mut set);
+                            if let Some(value) = update_bonuses.get_mut(&attribute) {
+                                value.append(&mut set);
+                            } else {
+                                update_bonuses.insert(attribute, set);
+                            }
                             attribute
-                        }),
-                    )
-                    .into_iter()
-                    .map(|(key, _)| key)
-                    .collect_vec();
+                        })
+                        .into_grouped_ord_set()
+                        .into_iter()
+                        .collect_vec();
 
                     self.children.insert(source, updated_attributes.clone());
                     attribute_queue.insert(updated_attributes, false);

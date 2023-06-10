@@ -17,10 +17,11 @@ panic = "abort"
 [dependencies]
 enum-map = {version = "2.5.0", features = ["serde"]}
 itertools = "0.10.5"
-serde = { version = "1.0.163", features = ["derive"] }
+serde = { version = "1.0.164", features = ["derive"] }
 ron = "0.8.0"
-serde_test = "1.0.163"
+serde_test = "1.0.164"
 log = "0.4.18"
+im = "15.1.0"
 # TODO: Change serde_test to dev-dependencies?
 
 [dev-dependencies]

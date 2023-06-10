@@ -22,7 +22,7 @@ use super::{
 /// Indicates that the character possesses some flag.
 ///
 /// Flags are most often used for indirect effects, such as "does the character have this toggle", or other traits.
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum, PartialOrd, Ord)]
 pub enum Flag {
     /// Indicates that the user has access to a given toggle.
     HasToggle(Toggle),

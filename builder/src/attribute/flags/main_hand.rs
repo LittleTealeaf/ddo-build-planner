@@ -5,7 +5,7 @@ use enum_map::Enum;
 use crate::item::types::WeaponType;
 
 /// Represents the different options that the character can have in their main hand.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum MainHandType {
     /// The character is wielding a wand in their main hand.
     Wand,

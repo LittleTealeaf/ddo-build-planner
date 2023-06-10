@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// The different spell power types used for spell damage
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum SpellPower {
     /// Acid Spell Power
     Acid,

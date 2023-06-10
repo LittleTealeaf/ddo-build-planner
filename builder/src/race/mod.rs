@@ -11,7 +11,7 @@ pub use display::*;
 pub use feats::*;
 
 /// The different race options that the character can be.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Enum)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Enum, PartialOrd, Ord)]
 pub enum Race {
     /// Dragonborn Race
     Dragonborn,

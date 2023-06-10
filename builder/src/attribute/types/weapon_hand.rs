@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 /// The hand used for a Weapon Attribute
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum, PartialOrd, Ord)]
 pub enum WeaponHand {
     /// The Main Hand
     Main,

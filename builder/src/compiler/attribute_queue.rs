@@ -1,13 +1,12 @@
 use std::collections::VecDeque;
 
-use crate::{
-    attribute::{Attribute, TrackAttribute},
-    utils::EnumBinaryMap,
-};
+use im::OrdSet;
+
+use crate::attribute::{Attribute, TrackAttribute};
 
 #[derive(Default)]
 pub struct AttributeQueue {
-    forced: EnumBinaryMap<Attribute, ()>,
+    forced: OrdSet<Attribute>,
     queue: VecDeque<Attribute>,
     buffer: Vec<Attribute>,
 }
@@ -28,7 +27,7 @@ impl AttributeQueue {
     pub fn insert(&mut self, mut attributes: Vec<Attribute>, forced: bool) {
         if forced {
             for attribute in &attributes {
-                self.forced.insert(*attribute, ());
+                self.forced.insert(*attribute);
             }
         }
 

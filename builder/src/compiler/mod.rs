@@ -7,17 +7,17 @@ mod calculation;
 mod inserting;
 
 pub use calculation::*;
+use im::OrdMap;
 pub use inserting::*;
 
 use crate::{
     attribute::{Attribute, DefaultBonuses},
     bonus::{Bonus, BonusSource},
-    utils::EnumBinaryMap,
 };
 
 /// Compiles and calculates attribut values from a set of [`Bonus`] entries.
 ///
-/// Internally, this uses [`EnumBinaryMaps`] to efficiently store bonuses in a HashMap structure without the need of deriving [`Hash`].
+/// Internally, this uses [`OrdMap`] to efficiently store bonuses in a HashMap structure without the need of deriving [`Hash`].
 ///
 /// This will handle any bonuses that different attributes may give (such as [`Attribute::Ability`] giving bonuses to [`Attribute::AbilityModifier`]), as well as cloned bonuses (such as [`Ability::All`] being split off into each of the abilities)
 ///
@@ -45,21 +45,20 @@ use crate::{
 /// ```
 ///
 ///
-/// [`EnumBinaryMaps`]: crate::utils::EnumBinaryMap
 /// [`Bonus`]: crate::bonus::Bonus
 /// [`Ability::All`]: crate::attribute::types::Ability::All
 pub struct Compiler {
-    bonuses: EnumBinaryMap<Attribute, Vec<Bonus>>,
-    cache: EnumBinaryMap<Attribute, f32>,
-    children: EnumBinaryMap<BonusSource, Vec<Attribute>>,
+    bonuses: OrdMap<Attribute, Vec<Bonus>>,
+    cache: OrdMap<Attribute, f32>,
+    children: OrdMap<BonusSource, Vec<Attribute>>,
 }
 
 impl Default for Compiler {
     fn default() -> Self {
         let mut new = Self {
-            bonuses: EnumBinaryMap::default(),
-            cache: EnumBinaryMap::default(),
-            children: EnumBinaryMap::default(),
+            bonuses: OrdMap::new(),
+            cache: OrdMap::new(),
+            children: OrdMap::new(),
         };
 
         new.add_bonuses(Attribute::get_default_bonuses());

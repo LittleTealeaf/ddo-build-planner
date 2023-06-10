@@ -5,7 +5,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 /// The different Player Classes that are in the game
-#[derive(Copy, Clone, PartialEq, Eq, Enum, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Enum, Debug, PartialOrd, Ord)]
 pub enum PlayerClass {
     /// Alchemist Class
     Alchemist,

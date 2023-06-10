@@ -10,7 +10,7 @@ use crate::{
 use super::{WeaponHand, WeaponStat};
 
 /// A WeaponStat that is specifically for a weapon hand.
-#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum)]
+#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum, PartialOrd, Ord)]
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
 impl Display for WeaponAttribute {

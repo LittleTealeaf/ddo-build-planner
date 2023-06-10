@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 /// Different Monster Types that the character may encounter
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum MonsterType {
     /// Orcs
     Orc,
