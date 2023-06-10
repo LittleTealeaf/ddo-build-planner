@@ -1,6 +1,5 @@
 use std::fmt::Display;
 
-use enum_map::Enum;
 use serde::{Serialize, Deserialize};
 
 use crate::{
@@ -11,7 +10,8 @@ use crate::{
 /// Specifies the spell, type of spell, spell class.
 ///
 /// This allows for bonuses such as spell DCs or caster levels to be as specific or generic as they need to be.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellSelector {
     /// Spells that fall under a specific spell power
     SpellPower(SpellPower),

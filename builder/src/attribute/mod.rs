@@ -14,7 +14,6 @@ use crate::{
     feat::Feat,
     player_class::PlayerClass,
 };
-use enum_map::Enum;
 use std::fmt::Display;
 
 use self::{
@@ -29,7 +28,8 @@ use self::{
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
-#[derive(Copy, Clone, Enum, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
     #[cfg(test)]
@@ -214,6 +214,8 @@ mod tests {
         use std::collections::HashSet;
 
         use crate::bonus::{BonusSource, BonusType};
+
+        use enum_map::Enum;
 
         use super::*;
 

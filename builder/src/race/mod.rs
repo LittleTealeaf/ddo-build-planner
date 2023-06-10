@@ -4,7 +4,6 @@ mod bonuses;
 mod display;
 mod feats;
 
-use enum_map::Enum;
 
 pub use bonuses::*;
 pub use display::*;
@@ -12,7 +11,8 @@ pub use feats::*;
 use serde::{Serialize, Deserialize};
 
 /// The different race options that the character can be.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Enum, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Race {
     /// Dragonborn Race
     Dragonborn,

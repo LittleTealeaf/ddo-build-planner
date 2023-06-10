@@ -5,10 +5,10 @@ mod weapon;
 pub use shield::*;
 pub use weapon::*;
 
-use enum_map::Enum;
 
 /// The types that an item can be
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum ItemType {
     /// Weapons
     Weapon(WeaponType),

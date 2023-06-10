@@ -1,12 +1,12 @@
 use std::fmt::Display;
 
-use enum_map::Enum;
 use serde::{Serialize, Deserialize};
 
 use crate::item::types::WeaponType;
 
 /// Represents the different options that the character can have in their main hand.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum MainHandType {
     /// The character is wielding a wand in their main hand.
     Wand,
