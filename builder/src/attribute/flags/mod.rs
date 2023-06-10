@@ -10,8 +10,6 @@ use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
 
-use enum_map::Enum;
-
 use crate::{bonus::Bonus, race::Race};
 
 use super::{
@@ -23,7 +21,8 @@ use super::{
 /// Indicates that the character possesses some flag.
 ///
 /// Flags are most often used for indirect effects, such as "does the character have this toggle", or other traits.
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Flag {
     /// Indicates that the user has access to a given toggle.
     HasToggle(Toggle),

@@ -10,7 +10,6 @@ use builder::{
     player_class::PlayerClass,
     race::Race,
 };
-use enum_map::Enum;
 
 fn main() {
     let mut compiler = Compiler::default();
@@ -88,9 +87,4 @@ fn main() {
     for (attr, val) in compiler.get_all_attributes() {
         println!("{}: {}", attr, val);
     }
-
-    println!(
-        "Sheltering: Both = {}",
-        Attribute::Sheltering(builder::attribute::types::Sheltering::Both).into_usize()
-    );
 }

@@ -5,7 +5,6 @@ use serde::{Serialize, Deserialize};
 
 use std::fmt::Display;
 
-use enum_map::Enum;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -13,7 +12,8 @@ use crate::{
 };
 
 /// All possible feats that the player can have.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Feat {
     /// Feats pertaining to a certain race.
     RacialFeat(RacialFeat),
@@ -60,6 +60,8 @@ impl From<Feat> for Attribute {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use enum_map::Enum;
 
     #[test]
     fn zero_bonus_returns_none() {

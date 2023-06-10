@@ -1,12 +1,12 @@
 use std::fmt::Display;
 
-use enum_map::Enum;
 use serde::{Serialize, Deserialize};
 
 use super::DamageReduction;
 
 /// Different stats that can be applied to a particular weapon
-#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponStat {
     /// Bonus to Attack
     Attack,

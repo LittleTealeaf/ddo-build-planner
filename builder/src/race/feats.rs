@@ -1,6 +1,5 @@
 use std::fmt::Display;
 
-use enum_map::Enum;
 use serde::{Serialize, Deserialize};
 
 use crate::{
@@ -16,7 +15,8 @@ use crate::{
 };
 
 /// Feats granted from different races.
-#[derive(PartialEq, Eq, Clone, Copy, Enum, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(test, derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum RacialFeat {
     /// Small Size Bonus
     SmallSizeBonus,
@@ -331,6 +331,7 @@ mod tests {
     use crate::bonus::BonusSource;
 
     use super::*;
+    use enum_map::Enum;
 
     #[test]
     fn one_value_returns_bonuses() {
