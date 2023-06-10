@@ -203,7 +203,11 @@ impl DefaultBonuses for Attribute {
 
 #[cfg(test)]
 mod tests {
+    use crate::test_default_bonuses;
+
     use super::*;
+
+    test_default_bonuses!(Attribute);
 
     #[test]
     fn dummy_is_not_tracked() {

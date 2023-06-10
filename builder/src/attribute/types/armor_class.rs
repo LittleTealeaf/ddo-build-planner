@@ -169,3 +169,12 @@ impl From<ArmorClass> for Attribute {
         Self::ArmorClass(value)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::test_default_bonuses;
+
+    use super::*;
+
+    test_default_bonuses!(ArmorClass);
+}

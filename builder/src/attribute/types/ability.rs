@@ -186,7 +186,11 @@ impl From<Ability> for Attribute {
 
 #[cfg(test)]
 mod tests {
+    use crate::test_default_bonuses;
+
     use super::*;
+
+    test_default_bonuses!(Ability);
 
     #[test]
     fn score_attribute_bonuses() {
