@@ -1,11 +1,12 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::attribute::types::{Alignment, MonsterType};
 
 /// Indicates that the character is attacking / fighting a certain type
-#[derive(PartialEq, Eq, Clone, Copy, Enum, Debug, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Enum, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum AttackingTarget {
     /// The enemy is tripped
     Tripped,

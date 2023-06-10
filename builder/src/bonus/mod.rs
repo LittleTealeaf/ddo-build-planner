@@ -1,6 +1,7 @@
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
 mod bonus_type;
 mod condition;
+mod deserialize;
 mod source;
 mod traits;
 mod value;
@@ -11,6 +12,7 @@ use crate::attribute::{flags::Flag, Attribute};
 
 pub use bonus_type::*;
 pub use condition::*;
+use serde::{Deserialize, Serialize};
 pub use source::*;
 pub use traits::*;
 pub use value::*;
@@ -19,14 +21,21 @@ pub use value::*;
 ///
 /// A bonus contains the [`Attribute`], a [`BonusType`], a [`BonusValue`], a [`BonusSource`], and
 /// an optional [`Condition`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(from = "deserialize::DeserializedBonus")]
 pub struct Bonus {
+    #[serde(rename = "attr")]
     attribute: Attribute,
+    #[serde(rename = "type")]
     bonus_type: BonusType,
+    #[serde(rename = "val")]
     value: BonusValue,
+    #[serde(rename = "src")]
     source: BonusSource,
+    #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
     condition: Option<Condition>,
-    dependnecies: Option<Vec<Attribute>>,
+    #[serde(skip)]
+    dependencies: Option<Vec<Attribute>>,
 }
 
 impl Bonus {
@@ -75,7 +84,7 @@ impl Bonus {
             value,
             source,
             condition,
-            dependnecies: (!deps.is_empty()).then_some(deps),
+            dependencies: (!deps.is_empty()).then_some(deps),
         }
     }
 
@@ -250,19 +259,7 @@ impl Bonus {
     /// [`Condition::get_dependencies()`]: crate::bonus::Condition::get_dependencies
     /// [`Attributes`]: crate::attribute::Attribute
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
-        self.dependnecies.clone()
-        // let condition_deps = self.condition.as_ref().map(Condition::get_dependencies);
-        //
-        // let value_deps = self.value.get_dependencies();
-        //
-        // if let Some(mut cond_deps) = condition_deps {
-        //     if let Some(mut val_deps) = value_deps {
-        //         cond_deps.append(&mut val_deps);
-        //     }
-        //     Some(cond_deps)
-        // } else {
-        //     value_deps
-        // }
+        self.dependencies.clone()
     }
 }
 
@@ -281,5 +278,30 @@ impl Display for Bonus {
                 self.value, self.bonus_type, self.attribute
             )
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::attribute::types::Ability;
+
+    use super::*;
+
+    #[test]
+    fn serializes_and_deserializes_correct() {
+        let bonus = Bonus::new(
+            Attribute::Ability(Ability::Strength),
+            BonusType::Profane,
+            BonusValue::Value(10f32),
+            BonusSource::Debug(3),
+            None,
+        );
+
+        let serialized = ron::to_string(&bonus).unwrap();
+        let deserialized: Bonus = ron::from_str(&serialized).unwrap();
+
+        assert_eq!(bonus.get_attribute(), deserialized.get_attribute());
+        assert!(deserialized.condition.is_none());
+        assert_eq!(bonus.bonus_type, deserialized.bonus_type);
     }
 }

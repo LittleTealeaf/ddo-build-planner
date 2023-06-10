@@ -6,6 +6,7 @@ mod off_hand;
 
 pub use main_hand::*;
 pub use off_hand::*;
+use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
 
@@ -22,7 +23,7 @@ use super::{
 /// Indicates that the character possesses some flag.
 ///
 /// Flags are most often used for indirect effects, such as "does the character have this toggle", or other traits.
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum, PartialOrd, Ord)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Flag {
     /// Indicates that the user has access to a given toggle.
     HasToggle(Toggle),

@@ -1,11 +1,12 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::item::types::{ShieldType, WeaponType};
 
 /// Represents the different types of items the character can wield in their off hand
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum OffHandType {
     /// The character is wielding a weapon in their off hand
     Weapon(WeaponType),

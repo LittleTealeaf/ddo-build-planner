@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses, TrackAttribute},
@@ -10,7 +11,7 @@ use crate::{
 use super::SpellPower;
 
 /// Different skills that the character can have.
-#[derive(Clone, Copy, PartialEq, Eq, Enum, Debug, PartialOrd, Ord)]
+#[derive(Clone, Copy, PartialEq, Eq, Enum, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Skill {
     /// Balance Skill
     Balance,
@@ -53,6 +54,7 @@ pub enum Skill {
     /// Tumble Skill
     Tumble,
     /// Use Magical Device Skill
+    #[serde(rename = "UMD")]
     UseMagicalDevice,
     /// All Skills
     All,

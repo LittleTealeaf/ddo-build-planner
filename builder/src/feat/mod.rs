@@ -1,6 +1,7 @@
 //! Feats that a character can have.
 mod proficiency;
 pub use proficiency::*;
+use serde::{Serialize, Deserialize};
 
 use std::fmt::Display;
 
@@ -12,7 +13,7 @@ use crate::{
 };
 
 /// All possible feats that the player can have.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Feat {
     /// Feats pertaining to a certain race.
     RacialFeat(RacialFeat),

@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
@@ -10,19 +11,25 @@ use crate::{
 use super::{SavingThrow, Skill};
 
 /// The different abilities that a character has
-#[derive(Enum, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord)]
+#[derive(Enum, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Ability {
     /// Represents how strong the character is
+    #[serde(rename = "Str")]
     Strength,
     /// Represents how flexible the character is
+    #[serde(rename = "Dex")]
     Dexterity,
     /// Determines the character's health
+    #[serde(rename = "Con")]
     Constitution,
     /// Represents how smart the character is
+    #[serde(rename = "Int")]
     Intelligence,
     /// Represents how wise the character is.
+    #[serde(rename = "Wis")]
     Wisdom,
     /// Represents how charismatic the character is.
+    #[serde(rename = "Cha")]
     Charisma,
     /// All values
     All,

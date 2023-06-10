@@ -1,9 +1,10 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 /// The hand used for a Weapon Attribute
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum, PartialOrd, Ord)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponHand {
     /// The Main Hand
     Main,

@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses, TrackAttribute},
@@ -10,7 +11,7 @@ use crate::{
 use super::{WeaponHand, WeaponStat};
 
 /// A WeaponStat that is specifically for a weapon hand.
-#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
 impl Display for WeaponAttribute {

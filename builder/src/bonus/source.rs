@@ -1,13 +1,14 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::attribute::Attribute;
 
 /// Dictates the source that a bonus comes from.
 ///
 /// Each bonus must have a source that dictates where that bonus came from. For example, if an attribute returns any new bonuses, they must all have a source of that attribute.
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum, PartialOrd, Ord)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum BonusSource {
     /// Indicates that the bonus comes from an attribute.
     Attribute(Attribute),

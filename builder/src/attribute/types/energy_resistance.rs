@@ -1,11 +1,12 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use super::Alignment;
 
 /// Different types of energy resistance or absorption that the user can have
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum, PartialOrd, Ord)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum EnergyResistance {
     /// Acid Energy
     Acid,

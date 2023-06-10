@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 /// Describes the stacking-type of a bonus.
 ///
@@ -8,7 +9,7 @@ use enum_map::Enum;
 /// added. However, bonuses of different [`BonusType`] will stack.
 ///
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Enum)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Enum, Serialize, Deserialize)]
 pub enum BonusType {
     /// Bonuses that come from [`Attribute::AbilityModifier`]
     ///
