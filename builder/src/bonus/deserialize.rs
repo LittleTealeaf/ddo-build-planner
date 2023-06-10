@@ -1,3 +1,6 @@
+// Deserialized version of Bonus, used to rebuild Bonus, which
+// re-populates the dependencies (without needing to serialize them)
+
 use serde::{Deserialize, Serialize};
 
 use crate::attribute::Attribute;
