@@ -3,7 +3,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
+    attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
