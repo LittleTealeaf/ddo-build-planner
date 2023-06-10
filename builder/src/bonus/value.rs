@@ -1,11 +1,13 @@
 use std::fmt::Display;
 
+use serde::{Serialize, Deserialize};
+
 use crate::attribute::Attribute;
 
 /// Represents a value of a [`Bonus`]
 ///
 /// [`Bonus`]: crate::bonus::Bonus
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum BonusValue {
     /// Just a simple [`f32`] value.
     Value(f32),

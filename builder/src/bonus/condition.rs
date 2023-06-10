@@ -1,9 +1,11 @@
 use std::fmt::Display;
 
+use serde::{Serialize, Deserialize};
+
 use crate::attribute::Attribute;
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Condition {
     /// Negates a condition
     Not(Box<Condition>),

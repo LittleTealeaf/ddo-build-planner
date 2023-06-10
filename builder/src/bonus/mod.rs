@@ -11,6 +11,7 @@ use crate::attribute::{flags::Flag, Attribute};
 
 pub use bonus_type::*;
 pub use condition::*;
+use serde::{Serialize, Deserialize};
 pub use source::*;
 pub use traits::*;
 pub use value::*;
@@ -19,7 +20,7 @@ pub use value::*;
 ///
 /// A bonus contains the [`Attribute`], a [`BonusType`], a [`BonusValue`], a [`BonusSource`], and
 /// an optional [`Condition`].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Bonus {
     attribute: Attribute,
     bonus_type: BonusType,
