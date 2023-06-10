@@ -15,7 +15,7 @@ use crate::{
 /// [`Reflex`]: SavingThrow::Reflex
 /// [`Will`]: SavingThrow::Will
 /// [`Traps`]: SavingThrow::Traps
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum SavingThrow {
     /// Fortitude Saving Throw
     Fortitude,

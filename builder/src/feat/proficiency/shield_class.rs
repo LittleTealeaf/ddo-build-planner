@@ -5,7 +5,7 @@ use enum_map::Enum;
 use crate::item::types::ShieldType;
 
 /// Shield Proficiencies
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum ShieldProficiency {
     /// Orbs
     Orb,

@@ -13,7 +13,7 @@ use crate::{
 };
 
 /// Represents different attributes that relate to Armor Class
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum ArmorClass {
     /// Flat bonuses to armor class
     Bonus,

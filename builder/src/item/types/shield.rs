@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 /// The types of shields.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum ShieldType {
     /// Buckler shields
     Buckler,

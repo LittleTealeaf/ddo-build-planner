@@ -13,7 +13,7 @@ use super::{Attribute, GetBonuses};
 pub use attacking_target::*;
 
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
-#[derive(Clone, Copy, PartialEq, Eq, Enum, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Enum, Debug, PartialOrd, Ord)]
 pub enum Toggle {
     /// Is the character blocking
     Blocking,

@@ -5,7 +5,7 @@ use enum_map::Enum;
 use super::Alignment;
 
 /// Indicates a type of Damage Reduction that something might have
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum DamageReduction {
     /// Adamantine Damage Reduction
     Adamantine,

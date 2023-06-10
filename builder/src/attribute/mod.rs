@@ -28,7 +28,7 @@ use self::{
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
-#[derive(Copy, Clone, Enum, Eq, PartialEq, Debug)]
+#[derive(Copy, Clone, Enum, Eq, PartialEq, Debug, PartialOrd, Ord)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
     #[cfg(test)]

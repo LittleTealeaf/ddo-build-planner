@@ -21,6 +21,7 @@ serde = { version = "1.0.163", features = ["derive"] }
 ron = "0.8.0"
 serde_test = "1.0.163"
 log = "0.4.18"
+im = "15.1.0"
 # TODO: Change serde_test to dev-dependencies?
 
 [dev-dependencies]
