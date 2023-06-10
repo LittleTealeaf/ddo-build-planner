@@ -60,10 +60,7 @@ impl Ability {
     }
 }
 
-/// 0-sized struct used by [`Ability`] to differentiate for [`Attribute::Ability`]
-pub struct _AbilityScore;
-
-impl GetBonuses<_AbilityScore> for Ability {
+impl GetBonuses for Ability {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         (!matches!(self, Self::All)).then(|| {
             vec![Bonus::new(
@@ -90,53 +87,6 @@ impl DefaultBonuses for Ability {
                 )
             })
             .to_vec()
-    }
-}
-
-/// 0-sized struct used by [`Ability`] to differentiate for [`Attribute::AbilityModifier`]
-pub struct _AbilityModifier;
-
-impl GetBonuses<_AbilityModifier> for Ability {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            Ability::Strength => Some(vec![
-                self.modifier_bonus(Skill::Jump, value),
-                self.modifier_bonus(Skill::Swim, value),
-            ]),
-            Ability::Dexterity => Some(vec![
-                self.modifier_bonus(Skill::Balance, value),
-                self.modifier_bonus(Skill::Hide, value),
-                self.modifier_bonus(Skill::MoveSilently, value),
-                self.modifier_bonus(Skill::OpenLock, value),
-                self.modifier_bonus(Skill::Tumble, value),
-                self.modifier_bonus(SavingThrow::Reflex, value),
-            ]),
-            Ability::Constitution => Some(vec![
-                self.modifier_bonus(Skill::Concentration, value),
-                self.modifier_bonus(SavingThrow::Fortitude, value),
-            ]),
-            Ability::Intelligence => Some(vec![
-                self.modifier_bonus(Skill::DisableDevice, value),
-                self.modifier_bonus(Skill::Repair, value),
-                self.modifier_bonus(Skill::Search, value),
-                self.modifier_bonus(Skill::Spellcraft, value),
-            ]),
-            Ability::Wisdom => Some(vec![
-                self.modifier_bonus(Skill::Heal, value),
-                self.modifier_bonus(Skill::Listen, value),
-                self.modifier_bonus(Skill::Spot, value),
-                self.modifier_bonus(SavingThrow::Will, value),
-            ]),
-            Ability::Charisma => Some(vec![
-                self.modifier_bonus(Skill::Bluff, value),
-                self.modifier_bonus(Skill::Diplomacy, value),
-                self.modifier_bonus(Skill::Haggle, value),
-                self.modifier_bonus(Skill::Intimidate, value),
-                self.modifier_bonus(Skill::Perform, value),
-                self.modifier_bonus(Skill::UseMagicalDevice, value),
-            ]),
-            Ability::All => None,
-        }
     }
 }
 
@@ -191,30 +141,6 @@ mod tests {
     use super::*;
 
     test_default_bonuses!(Ability);
-
-    #[test]
-    fn score_attribute_bonuses() {
-        for ability in Ability::VALUES {
-            let bonuses = Attribute::Ability(ability)
-                .get_bonuses(20f32)
-                .expect("Expected Bonuses to be returned for an Ability Score");
-
-            assert!(bonuses.len() >= 1);
-        }
-    }
-
-    #[test]
-    fn modifier_attribute_gets_bonuses() {
-        for ability in Ability::VALUES {
-            let bonuses = Attribute::AbilityModifier(ability).get_bonuses(20f32);
-
-            assert!(
-                !matches!(bonuses, None),
-                "No bonuses returned for {} ability modifier",
-                ability
-            );
-        }
-    }
 
     #[test]
     fn all_is_not_tracked() {
