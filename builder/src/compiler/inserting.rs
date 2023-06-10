@@ -37,14 +37,71 @@ impl Compiler {
     }
 }
 
-// Public Functions
+/// Adding or Inserting bonuses into the Compiler
 impl Compiler {
-    /// Adds one bonus to the compiler set.
+    /// Adds a single bonus into the compiler.
+    ///
+    /// See [`Compiler::add_bonuses`] for implementation details.
+    ///
+    /// [`Compiler::add_bonuses`]: crate::compiler::Compiler::add_bonuses
     pub fn add_bonus(&mut self, bonus: Bonus) {
         self.add_bonuses(vec![bonus]);
     }
 
-    /// Adds a set of bonuses to the compiler.
+    /// Inserts a vector of [`Bonus`] entries into the compiler.
+    ///
+    /// Removes pre-existing bonuses with the same source, and updates all dependant [`Bonus`]
+    /// entries and [`Attribute`] caches.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use builder::{
+    ///     compiler::Compiler,
+    ///     attribute::Attribute,
+    ///     bonus::{
+    ///         Bonus,
+    ///         BonusSource,
+    ///         BonusType
+    ///     }
+    /// };
+    ///
+    /// let mut compiler = Compiler::default();
+    ///
+    /// let bonus_a = Bonus::new(
+    ///     Attribute::SpellResistance,
+    ///     BonusType::Enhancement,
+    ///     10f32.into(),
+    ///     BonusSource::Custom(0),
+    ///     None
+    /// );
+    ///
+    /// compiler.add_bonuses(vec![bonus_a]);
+    ///
+    /// assert!(compiler.get_attribute(&Attribute::SpellResistance) == 10f32);
+    ///
+    /// let bonus_b = Bonus::new(
+    ///     Attribute::SpellResistance,
+    ///     BonusType::Enhancement,
+    ///     5f32.into(),
+    ///     BonusSource::Custom(0),
+    ///     None
+    /// );
+    ///
+    /// // We can use add_bous to only add one bonus as well!
+    /// compiler.add_bonus(bonus_b);
+    ///
+    /// assert!(compiler.get_attribute(&Attribute::SpellResistance) == 5f32);
+    /// ```
+    /// Any [`Bonus`] already in the [`Compiler`] with the same [`BonusSource`] as any [`Bonus`]
+    /// being added will be removed.
+    ///
+    /// In the example above, We first added bonus to the SpellResistance equal to `10f32`. We
+    /// verified that the compiler calculated that bonus to equal `10f32`. Next, we added a bonus
+    /// *from the same source* to SpellResistance equal to `5f32`. Because the two bonuses share a
+    /// [`BonusSource`], adding the second [`Bonus`] will remove the first [`Bonus`].
+    ///
+    ///
     pub fn add_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
         // Add any cloned bonuses
         bonuses.append(
