@@ -116,5 +116,5 @@ macro_rules! test_default_bonuses {
                 assert_eq!(bonus.get_source(), BonusSource::Base);
             }
         }
-    }
+    };
 }

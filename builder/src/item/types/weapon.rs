@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Weapon Types
 #[cfg_attr(test, derive(enum_map::Enum))]

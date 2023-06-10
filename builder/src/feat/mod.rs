@@ -1,10 +1,9 @@
 //! Feats that a character can have.
 mod proficiency;
 pub use proficiency::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
-
 
 use crate::{
     attribute::{Attribute, GetBonuses},

@@ -4,11 +4,10 @@ mod bonuses;
 mod display;
 mod feats;
 
-
 pub use bonuses::*;
 pub use display::*;
 pub use feats::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// The different race options that the character can be.
 #[cfg_attr(test, derive(enum_map::Enum))]

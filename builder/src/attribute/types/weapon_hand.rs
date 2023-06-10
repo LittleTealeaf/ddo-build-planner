@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// The hand used for a Weapon Attribute
 #[cfg_attr(test, derive(enum_map::Enum))]

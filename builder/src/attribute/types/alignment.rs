@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Determines alignment. To create a complete alignment, two of these attributes are required.
 #[cfg_attr(test, derive(enum_map::Enum))]

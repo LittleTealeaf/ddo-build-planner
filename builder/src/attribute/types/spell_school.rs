@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// The different schools that a spell might belong to
 #[cfg_attr(test, derive(enum_map::Enum))]

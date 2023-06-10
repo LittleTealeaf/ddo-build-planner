@@ -2,7 +2,7 @@
 
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// The different Player Classes that are in the game
 #[cfg_attr(test, derive(enum_map::Enum))]
