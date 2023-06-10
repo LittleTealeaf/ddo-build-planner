@@ -16,6 +16,7 @@ mod spell_school;
 mod weapon_attribute;
 mod weapon_hand;
 mod weapon_stat;
+mod guild_amenity;
 
 pub use ability::*;
 pub use alignment::*;
@@ -32,3 +33,4 @@ pub use spell_school::*;
 pub use weapon_attribute::*;
 pub use weapon_hand::*;
 pub use weapon_stat::*;
+pub use guild_amenity::*;
