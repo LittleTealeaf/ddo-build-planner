@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     attribute::Attribute,
     bonus::{BonusValue, Condition},
-    utils::EnumBinaryMap,
+    utils::ord::ToGroupOrdMap,
 };
 
 use super::Compiler;
@@ -92,7 +92,7 @@ impl Compiler {
 
     /// Returns all attributes that have bonuses in the compiler.
     pub fn get_all_attributes(&mut self) -> Vec<(Attribute, f32)> {
-        let attributes = self.bonuses.iter().map(|(attr, _)| attr).collect_vec();
+        let attributes = self.bonuses.iter().map(|(key, _)| *key).collect_vec();
         attributes
             .into_iter()
             .map(|attr| (attr, self.get_attribute(&attr)))
@@ -147,7 +147,7 @@ impl Compiler {
             });
 
         // Collect each type into a vec with EnumBinaryMap
-        let map = EnumBinaryMap::from(valid_bonuses);
+        let map = valid_bonuses.into_grouped_ord_map();
 
         // flatten each type into a number
         let final_values = map.into_iter().map(|(bonus_type, mut items)| {

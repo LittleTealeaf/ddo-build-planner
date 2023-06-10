@@ -3,7 +3,7 @@ use std::fmt::Display;
 use enum_map::Enum;
 
 /// The different schools that a spell might belong to
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum SpellSchool {
     /// Abjuration Spells
     Abjuration,

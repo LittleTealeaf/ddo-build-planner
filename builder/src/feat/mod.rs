@@ -12,7 +12,7 @@ use crate::{
 };
 
 /// All possible feats that the player can have.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum Feat {
     /// Feats pertaining to a certain race.
     RacialFeat(RacialFeat),

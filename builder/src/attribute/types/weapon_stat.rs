@@ -5,7 +5,7 @@ use enum_map::Enum;
 use super::DamageReduction;
 
 /// Different stats that can be applied to a particular weapon
-#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum)]
+#[derive(PartialEq, Eq, Copy, Clone, Debug, Enum, PartialOrd, Ord)]
 pub enum WeaponStat {
     /// Bonus to Attack
     Attack,

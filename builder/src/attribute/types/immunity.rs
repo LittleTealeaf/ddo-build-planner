@@ -5,7 +5,7 @@ use enum_map::Enum;
 use crate::attribute::{flags::Flag, Attribute};
 
 /// Indicates that the character is immune to certain things
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
 pub enum Immunity {
     /// Immunity to Sleep
     Sleep,

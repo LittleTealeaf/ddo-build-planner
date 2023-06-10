@@ -10,7 +10,7 @@ use crate::{
 use super::{SavingThrow, Skill};
 
 /// The different abilities that a character has
-#[derive(Enum, PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(Enum, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord)]
 pub enum Ability {
     /// Represents how strong the character is
     Strength,
