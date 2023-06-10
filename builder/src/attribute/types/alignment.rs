@@ -1,9 +1,10 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 /// Determines alignment. To create a complete alignment, two of these attributes are required.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Alignment {
     /// Good
     Good,

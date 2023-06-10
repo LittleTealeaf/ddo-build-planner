@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses, TrackAttribute},
@@ -8,7 +9,7 @@ use crate::{
 };
 
 /// The different spell power types used for spell damage
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellPower {
     /// Acid Spell Power
     Acid,

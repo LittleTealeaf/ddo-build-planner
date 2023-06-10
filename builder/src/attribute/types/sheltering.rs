@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::{
     attribute::{Attribute, TrackAttribute},
@@ -10,7 +11,7 @@ use crate::{
 /// Sheltering attributes grant a % reduction to damage from that type.
 ///
 /// Magical Sheltering can be capped at a certain amount based on equipment and enhancements, which is tracked with [`Sheltering::MagicalCap`]
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Sheltering {
     /// Physical Sheltering
     Physical,

@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use crate::{
     attribute::{Attribute, TrackAttribute},
@@ -15,7 +16,7 @@ use crate::{
 /// [`Reflex`]: SavingThrow::Reflex
 /// [`Will`]: SavingThrow::Will
 /// [`Traps`]: SavingThrow::Traps
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SavingThrow {
     /// Fortitude Saving Throw
     Fortitude,

@@ -1,11 +1,12 @@
 use std::fmt::Display;
 
 use enum_map::Enum;
+use serde::{Serialize, Deserialize};
 
 use super::Alignment;
 
 /// Indicates a type of Damage Reduction that something might have
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Enum, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum DamageReduction {
     /// Adamantine Damage Reduction
     Adamantine,

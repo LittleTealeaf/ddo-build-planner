@@ -6,6 +6,7 @@ pub mod toggles;
 mod traits;
 pub mod types;
 
+use serde::{Serialize, Deserialize};
 pub use traits::*;
 
 use crate::{
@@ -28,7 +29,7 @@ use self::{
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
-#[derive(Copy, Clone, Enum, Eq, PartialEq, Debug, PartialOrd, Ord)]
+#[derive(Copy, Clone, Enum, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
     #[cfg(test)]
