@@ -4,7 +4,7 @@ use builder::{
         types::{Ability, ArmorClass, WeaponHand, WeaponStat},
         Attribute,
     },
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
     item::types::ShieldType,
     player_class::PlayerClass,
@@ -15,6 +15,14 @@ fn main() {
     let mut compiler = Compiler::default();
 
     println!("Adding Bonuses");
+
+    compiler.add_bonuses(vec![Bonus::new(
+        Ability::All.into(),
+        BonusType::Stacking,
+        10f32.into(),
+        BonusSource::Custom(10),
+        None,
+    )]);
 
     compiler.add_bonuses(vec![
         Bonus::new(

@@ -7,8 +7,6 @@ use crate::{
     bonus::{Bonus, BonusSource, BonusType, CloneBonus},
 };
 
-use super::{SavingThrow, Skill};
-
 /// The different abilities that a character has
 #[cfg_attr(test, derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]

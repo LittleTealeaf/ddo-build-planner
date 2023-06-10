@@ -97,27 +97,27 @@ impl Skill {
     }
 }
 
-impl GetBonuses for Skill {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            Skill::Heal => Some(vec![
-                self.spell_power_bonus(SpellPower::Positive, value),
-                self.spell_power_bonus(SpellPower::Negative, value),
-            ]),
-            Skill::Perform => Some(vec![self.spell_power_bonus(SpellPower::Sonic, value)]),
-            Skill::Spellcraft => Some(vec![
-                self.spell_power_bonus(SpellPower::Acid, value),
-                self.spell_power_bonus(SpellPower::Cold, value),
-                self.spell_power_bonus(SpellPower::Electric, value),
-                self.spell_power_bonus(SpellPower::Fire, value),
-                self.spell_power_bonus(SpellPower::Force, value),
-                self.spell_power_bonus(SpellPower::Light, value),
-                self.spell_power_bonus(SpellPower::Poison, value),
-            ]),
-            _ => None,
-        }
-    }
-}
+// impl GetBonuses for Skill {
+//     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+//         match self {
+//             Skill::Heal => Some(vec![
+//                 self.spell_power_bonus(SpellPower::Positive, value),
+//                 self.spell_power_bonus(SpellPower::Negative, value),
+//             ]),
+//             Skill::Perform => Some(vec![self.spell_power_bonus(SpellPower::Sonic, value)]),
+//             Skill::Spellcraft => Some(vec![
+//                 self.spell_power_bonus(SpellPower::Acid, value),
+//                 self.spell_power_bonus(SpellPower::Cold, value),
+//                 self.spell_power_bonus(SpellPower::Electric, value),
+//                 self.spell_power_bonus(SpellPower::Fire, value),
+//                 self.spell_power_bonus(SpellPower::Force, value),
+//                 self.spell_power_bonus(SpellPower::Light, value),
+//                 self.spell_power_bonus(SpellPower::Poison, value),
+//             ]),
+//             _ => None,
+//         }
+//     }
+// }
 
 impl CloneBonus for Skill {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {

@@ -133,7 +133,6 @@ impl Attribute {
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Attribute::Ability(ability) => ability.get_bonuses(value),
-            Attribute::Skill(skill) => skill.get_bonuses(value),
             Attribute::Toggle(toggle) => toggle.get_bonuses(value),
             Attribute::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
             Attribute::SpellCriticalChance(sp) => {
@@ -192,6 +191,7 @@ impl DefaultBonuses for Attribute {
             ArmorClass::get_default_bonuses(),
             SavingThrow::get_default_bonuses(),
             Skill::get_default_bonuses(),
+            SpellPower::get_default_bonuses(),
         ]
         .into_iter()
         .flatten()
