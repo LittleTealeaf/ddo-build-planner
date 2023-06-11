@@ -21,6 +21,7 @@ use std::fmt::Display;
 
 use self::{
     flags::Flag,
+    impls::_BaseAttackBonus,
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
@@ -152,6 +153,7 @@ impl Attribute {
             Attribute::ClassLevel(cl) => cl.get_bonuses(value),
             Attribute::Flag(flag) => flag.get_bonuses(value),
             Attribute::Feat(feat) => feat.get_bonuses(value),
+            Attribute::BaseAttackBonus => _BaseAttackBonus.get_bonuses(value),
             _ => None,
         }
     }
