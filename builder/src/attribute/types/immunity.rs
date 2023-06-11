@@ -2,8 +2,6 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::{flags::Flag, Attribute};
-
 /// Indicates that the character is immune to certain things
 #[cfg_attr(test, derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -20,11 +18,5 @@ impl Display for Immunity {
             Immunity::Sleep => write!(f, "Sleep"),
             Immunity::Fear => write!(f, "Fear"),
         }
-    }
-}
-
-impl From<Immunity> for Attribute {
-    fn from(value: Immunity) -> Self {
-        Flag::from(value).into()
     }
 }

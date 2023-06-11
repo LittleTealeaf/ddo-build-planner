@@ -19,7 +19,6 @@ pub enum ItemType {
     Armor(ArmorType),
 }
 
-
 impl From<WeaponType> for ItemType {
     fn from(value: WeaponType) -> Self {
         Self::Weapon(value)

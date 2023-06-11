@@ -164,12 +164,6 @@ impl DefaultBonuses for ArmorClass {
     }
 }
 
-impl From<ArmorClass> for Attribute {
-    fn from(value: ArmorClass) -> Self {
-        Self::ArmorClass(value)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::test_default_bonuses;

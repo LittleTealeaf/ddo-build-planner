@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::bonus::Bonus;
 
-use super::{Attribute, GetBonuses};
-
 pub use attacking_target::*;
+
+use super::GetBonuses;
 
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
 #[cfg_attr(test, derive(enum_map::Enum))]
@@ -38,11 +38,5 @@ impl Display for Toggle {
 impl GetBonuses for Toggle {
     fn get_bonuses(&self, _value: f32) -> Option<Vec<Bonus>> {
         None
-    }
-}
-
-impl From<Toggle> for Attribute {
-    fn from(value: Toggle) -> Self {
-        Self::Toggle(value)
     }
 }
