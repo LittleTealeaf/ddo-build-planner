@@ -40,7 +40,7 @@ impl PlayerClass {
             | Self::AcolyteOfTheSkin => Some(vec![Bonus::new(
                 Attribute::SpellDC((*self).into()),
                 BonusType::AbilityModifier,
-                Attribute::AbilityModifier(Ability::Wisdom).into(),
+                Attribute::AbilityModifier(Ability::Charisma).into(),
                 Attribute::from(*self).into(),
                 None,
             )]),
