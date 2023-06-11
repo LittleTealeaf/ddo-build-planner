@@ -1,6 +1,6 @@
 use crate::{
-    attribute::{types::Ability, Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    attribute::{flags::Flag, types::Ability, Attribute, GetBonuses},
+    bonus::{Bonus, BonusType, Condition},
 };
 
 use super::PlayerClass;
@@ -8,16 +8,15 @@ use super::PlayerClass;
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
         (value > 0f32).then(|| {
-            let mut bonuses = vec![
-                Bonus::new(
-                    Attribute::CasterLevel((*self).into()),
-                    BonusType::Stacking,
-                    value.into(),
-                    Attribute::from(*self).into(),
-                    None,
-                ),
-                self.get_base_attack_bonus(value),
-            ];
+            let mut bonuses = self.get_base_attack_bonus(value);
+
+            bonuses.push(Bonus::new(
+                Attribute::CasterLevel((*self).into()),
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(*self).into(),
+                None,
+            ));
 
             if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
                 bonuses.append(&mut dc_bonuses);
@@ -29,7 +28,7 @@ impl GetBonuses for PlayerClass {
 }
 
 impl PlayerClass {
-    fn get_base_attack_bonus(&self, value: f32) -> Bonus {
+    fn get_base_attack_bonus(&self, value: f32) -> Vec<Bonus> {
         let bab = match self {
             Self::Barbarian
             | Self::Fighter
@@ -53,13 +52,22 @@ impl PlayerClass {
             Self::Sorcerer | Self::Wizard => (value * 0.5f32).floor(),
         };
 
-        Bonus::new(
-            Attribute::BaseAttackBonus,
-            BonusType::Stacking,
-            bab.into(),
-            Attribute::from(*self).into(),
-            None,
-        )
+        vec![
+            Bonus::new(
+                Attribute::BaseAttackBonus,
+                BonusType::Stacking,
+                bab.into(),
+                Attribute::from(*self).into(),
+                Some(Condition::NotHave(Flag::FullBaseAttackBonus.into())),
+            ),
+            Bonus::new(
+                Attribute::BaseAttackBonus,
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(*self).into(),
+                Some(Condition::Has(Flag::FullBaseAttackBonus.into())),
+            ),
+        ]
     }
 
     fn get_ability_spell_dc_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
