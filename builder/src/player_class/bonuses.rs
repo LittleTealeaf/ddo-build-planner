@@ -7,20 +7,19 @@ use super::PlayerClass;
 
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        let mut bonuses = vec![Bonus::new(
-            Attribute::CasterLevel((*self).into()),
-            BonusType::Stacking,
-            value.into(),
-            Attribute::from(*self).into(),
-            None,
-        )];
+        let mut bonuses = vec![
+            Bonus::new(
+                Attribute::CasterLevel((*self).into()),
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(*self).into(),
+                None,
+            ),
+            self.get_base_attack_bonus(value),
+        ];
 
         if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
             bonuses.append(&mut dc_bonuses);
-        }
-
-        if let Some(bonus) = self.get_base_attack_bonus(value) {
-            bonuses.push(bonus);
         }
 
         Some(bonuses)
@@ -28,7 +27,7 @@ impl GetBonuses for PlayerClass {
 }
 
 impl PlayerClass {
-    fn get_base_attack_bonus(&self, value: f32) -> Option<Bonus> {
+    fn get_base_attack_bonus(&self, value: f32) -> Bonus {
         let bab = match self {
             Self::Barbarian
             | Self::Fighter
@@ -52,15 +51,13 @@ impl PlayerClass {
             Self::Sorcerer | Self::Wizard => (value * 0.5f32).floor(),
         };
 
-        (bab > 0f32).then(|| {
-            Bonus::new(
-                Attribute::BaseAttackBonus,
-                BonusType::Stacking,
-                bab.into(),
-                Attribute::from(*self).into(),
-                None,
-            )
-        })
+        Bonus::new(
+            Attribute::BaseAttackBonus,
+            BonusType::Stacking,
+            bab.into(),
+            Attribute::from(*self).into(),
+            None,
+        )
     }
 
     fn get_ability_spell_dc_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
