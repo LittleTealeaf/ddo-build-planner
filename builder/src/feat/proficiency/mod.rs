@@ -1,12 +1,11 @@
 mod shield_class;
 mod weapon_class;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 pub use shield_class::*;
 pub use weapon_class::*;
 
 use std::fmt::Display;
-
 
 use crate::{attribute::Attribute, item::types::WeaponType};
 

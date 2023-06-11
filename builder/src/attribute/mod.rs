@@ -6,7 +6,7 @@ pub mod toggles;
 mod traits;
 pub mod types;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 pub use traits::*;
 
 use crate::{
@@ -22,8 +22,7 @@ use self::{
     toggles::Toggle,
     types::{
         Ability, ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower,
-        WeaponAttribute, _AbilityModifier, _AbilityScore, _SpellCriticalChance,
-        _SpellCriticalDamage, _SpellPower,
+        WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },
 };
 
@@ -133,11 +132,7 @@ impl Attribute {
     /// If an attribute has no bonuses associated with it, then `None` is returned.
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Attribute::AbilityModifier(ability) => {
-                GetBonuses::<_AbilityModifier>::get_bonuses(ability, value)
-            }
-            Attribute::Ability(ability) => GetBonuses::<_AbilityScore>::get_bonuses(ability, value),
-            Attribute::Skill(skill) => skill.get_bonuses(value),
+            Attribute::Ability(ability) => ability.get_bonuses(value),
             Attribute::Toggle(toggle) => toggle.get_bonuses(value),
             Attribute::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
             Attribute::SpellCriticalChance(sp) => {
@@ -194,6 +189,9 @@ impl DefaultBonuses for Attribute {
         vec![
             Ability::get_default_bonuses(),
             ArmorClass::get_default_bonuses(),
+            SavingThrow::get_default_bonuses(),
+            Skill::get_default_bonuses(),
+            SpellPower::get_default_bonuses(),
         ]
         .into_iter()
         .flatten()

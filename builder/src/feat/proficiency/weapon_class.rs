@@ -1,9 +1,8 @@
-
 use crate::item::types::WeaponType;
 
 /// Proficiency Class for weapons
 #[cfg_attr(test, derive(enum_map::Enum))]
-#[derive(Clone, Copy, PartialEq, Eq, Debug )]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum WeaponProficiencyClass {
     /// Simple Weapons
     Simple,

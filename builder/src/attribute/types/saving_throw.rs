@@ -1,10 +1,10 @@
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, TrackAttribute},
-    bonus::{Bonus, CloneBonus},
+    attribute::{types::Ability, Attribute, DefaultBonuses, TrackAttribute},
+    bonus::{Bonus, BonusSource, BonusType, CloneBonus},
 };
 
 /// The different saving throws that a character can have bonuses to
@@ -97,6 +97,34 @@ impl CloneBonus for SavingThrow {
     }
 }
 
+impl DefaultBonuses for SavingThrow {
+    fn get_default_bonuses() -> Vec<Bonus> {
+        vec![
+            Bonus::new(
+                SavingThrow::Reflex.into(),
+                BonusType::AbilityModifier,
+                Attribute::AbilityModifier(Ability::Dexterity).into(),
+                BonusSource::Base,
+                None,
+            ),
+            Bonus::new(
+                SavingThrow::Fortitude.into(),
+                BonusType::AbilityModifier,
+                Attribute::AbilityModifier(Ability::Constitution).into(),
+                BonusSource::Base,
+                None,
+            ),
+            Bonus::new(
+                SavingThrow::Will.into(),
+                BonusType::AbilityModifier,
+                Attribute::AbilityModifier(Ability::Wisdom).into(),
+                BonusSource::Base,
+                None,
+            ),
+        ]
+    }
+}
+
 impl TrackAttribute for SavingThrow {
     fn is_tracked(&self) -> bool {
         !matches!(self, Self::All)
@@ -111,7 +139,11 @@ impl From<SavingThrow> for Attribute {
 
 #[cfg(test)]
 mod tests {
+    use crate::test_default_bonuses;
+
     use super::*;
+
+    test_default_bonuses!(SavingThrow);
 
     #[test]
     fn all_is_not_tracked() {

@@ -4,7 +4,7 @@ mod attacking_target;
 
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::bonus::Bonus;
 
@@ -14,7 +14,7 @@ pub use attacking_target::*;
 
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
 #[cfg_attr(test, derive(enum_map::Enum))]
-#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize,)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
     /// Is the character blocking
     Blocking,

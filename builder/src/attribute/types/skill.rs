@@ -1,9 +1,9 @@
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, GetBonuses, TrackAttribute},
+    attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
@@ -97,27 +97,27 @@ impl Skill {
     }
 }
 
-impl GetBonuses for Skill {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            Skill::Heal => Some(vec![
-                self.spell_power_bonus(SpellPower::Positive, value),
-                self.spell_power_bonus(SpellPower::Negative, value),
-            ]),
-            Skill::Perform => Some(vec![self.spell_power_bonus(SpellPower::Sonic, value)]),
-            Skill::Spellcraft => Some(vec![
-                self.spell_power_bonus(SpellPower::Acid, value),
-                self.spell_power_bonus(SpellPower::Cold, value),
-                self.spell_power_bonus(SpellPower::Electric, value),
-                self.spell_power_bonus(SpellPower::Fire, value),
-                self.spell_power_bonus(SpellPower::Force, value),
-                self.spell_power_bonus(SpellPower::Light, value),
-                self.spell_power_bonus(SpellPower::Poison, value),
-            ]),
-            _ => None,
-        }
-    }
-}
+// impl GetBonuses for Skill {
+//     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+//         match self {
+//             Skill::Heal => Some(vec![
+//                 self.spell_power_bonus(SpellPower::Positive, value),
+//                 self.spell_power_bonus(SpellPower::Negative, value),
+//             ]),
+//             Skill::Perform => Some(vec![self.spell_power_bonus(SpellPower::Sonic, value)]),
+//             Skill::Spellcraft => Some(vec![
+//                 self.spell_power_bonus(SpellPower::Acid, value),
+//                 self.spell_power_bonus(SpellPower::Cold, value),
+//                 self.spell_power_bonus(SpellPower::Electric, value),
+//                 self.spell_power_bonus(SpellPower::Fire, value),
+//                 self.spell_power_bonus(SpellPower::Force, value),
+//                 self.spell_power_bonus(SpellPower::Light, value),
+//                 self.spell_power_bonus(SpellPower::Poison, value),
+//             ]),
+//             _ => None,
+//         }
+//     }
+// }
 
 impl CloneBonus for Skill {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
@@ -166,6 +166,49 @@ impl Display for Skill {
     }
 }
 
+macro_rules! skill_ability_bonus {
+    ($ability: ident, $skill: ident) => {
+        Bonus::new(
+            $crate::attribute::Attribute::Skill(Skill::$skill).into(),
+            $crate::bonus::BonusType::AbilityModifier,
+            $crate::attribute::Attribute::AbilityModifier(
+                $crate::attribute::types::Ability::$ability,
+            )
+            .into(),
+            $crate::bonus::BonusSource::Base,
+            None,
+        )
+    };
+}
+
+impl DefaultBonuses for Skill {
+    fn get_default_bonuses() -> Vec<Bonus> {
+        vec![
+            skill_ability_bonus!(Dexterity, Balance),
+            skill_ability_bonus!(Charisma, Bluff),
+            skill_ability_bonus!(Constitution, Concentration),
+            skill_ability_bonus!(Charisma, Diplomacy),
+            skill_ability_bonus!(Intelligence, DisableDevice),
+            skill_ability_bonus!(Charisma, Haggle),
+            skill_ability_bonus!(Wisdom, Heal),
+            skill_ability_bonus!(Dexterity, Hide),
+            skill_ability_bonus!(Charisma, Intimidate),
+            skill_ability_bonus!(Strength, Jump),
+            skill_ability_bonus!(Wisdom, Listen),
+            skill_ability_bonus!(Dexterity, MoveSilently),
+            skill_ability_bonus!(Dexterity, OpenLock),
+            skill_ability_bonus!(Charisma, Perform),
+            skill_ability_bonus!(Intelligence, Repair),
+            skill_ability_bonus!(Intelligence, Search),
+            skill_ability_bonus!(Intelligence, Spellcraft),
+            skill_ability_bonus!(Wisdom, Spot),
+            skill_ability_bonus!(Strength, Swim),
+            skill_ability_bonus!(Dexterity, Tumble),
+            skill_ability_bonus!(Charisma, UseMagicalDevice),
+        ]
+    }
+}
+
 impl TrackAttribute for Skill {
     fn is_tracked(&self) -> bool {
         !matches!(self, Self::All)
@@ -180,7 +223,11 @@ impl From<Skill> for Attribute {
 
 #[cfg(test)]
 mod tests {
+    use crate::test_default_bonuses;
+
     use super::*;
+
+    test_default_bonuses!(Skill);
 
     #[test]
     fn all_is_not_tracked() {
