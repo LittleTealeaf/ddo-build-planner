@@ -7,9 +7,7 @@ pub use weapon_class::*;
 
 use std::fmt::Display;
 
-use crate::{attribute::Attribute, item::types::WeaponType};
-
-use super::Feat;
+use crate::item::types::WeaponType;
 
 /// Proficiencies for Weapons and Armor
 #[cfg_attr(test, derive(enum_map::Enum))]
@@ -45,11 +43,5 @@ impl From<WeaponType> for Proficiency {
 impl From<ShieldProficiency> for Proficiency {
     fn from(value: ShieldProficiency) -> Self {
         Self::Shield(value)
-    }
-}
-
-impl From<Proficiency> for Attribute {
-    fn from(value: Proficiency) -> Self {
-        Feat::from(value).into()
     }
 }

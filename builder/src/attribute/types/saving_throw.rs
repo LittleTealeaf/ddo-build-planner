@@ -131,12 +131,6 @@ impl TrackAttribute for SavingThrow {
     }
 }
 
-impl From<SavingThrow> for Attribute {
-    fn from(value: SavingThrow) -> Self {
-        Attribute::SavingThrow(value)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::test_default_bonuses;

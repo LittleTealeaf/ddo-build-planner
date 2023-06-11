@@ -15,7 +15,7 @@ use crate::{bonus::Bonus, item::types::ArmorType, race::Race};
 use super::{
     toggles::Toggle,
     types::{Alignment, Immunity},
-    Attribute, GetBonuses,
+    GetBonuses,
 };
 
 /// Indicates that the character possesses some flag.
@@ -99,11 +99,5 @@ impl From<MainHandType> for Flag {
 impl From<ArmorType> for Flag {
     fn from(value: ArmorType) -> Self {
         Self::ArmorType(value)
-    }
-}
-
-impl From<Flag> for Attribute {
-    fn from(value: Flag) -> Self {
-        Self::Flag(value)
     }
 }

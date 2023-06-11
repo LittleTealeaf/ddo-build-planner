@@ -6,6 +6,9 @@ pub mod toggles;
 mod traits;
 pub mod types;
 
+mod from;
+
+pub use from::*;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
 

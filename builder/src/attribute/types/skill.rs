@@ -215,12 +215,6 @@ impl TrackAttribute for Skill {
     }
 }
 
-impl From<Skill> for Attribute {
-    fn from(value: Skill) -> Self {
-        Attribute::Skill(value)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::test_default_bonuses;

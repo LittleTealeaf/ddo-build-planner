@@ -3,7 +3,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, TrackAttribute},
+    attribute::TrackAttribute,
     bonus::{Bonus, CloneBonus},
 };
 
@@ -58,11 +58,5 @@ impl Display for Sheltering {
 impl TrackAttribute for Sheltering {
     fn is_tracked(&self) -> bool {
         !matches!(self, Self::Both)
-    }
-}
-
-impl From<Sheltering> for Attribute {
-    fn from(value: Sheltering) -> Self {
-        Self::Sheltering(value)
     }
 }

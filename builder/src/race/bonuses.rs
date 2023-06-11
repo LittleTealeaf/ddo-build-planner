@@ -1,6 +1,5 @@
 use crate::{
     attribute::{
-        flags::Flag,
         types::{Ability, EnergyResistance, Immunity, SavingThrow, Skill},
         Attribute, GetBonuses,
     },
@@ -266,11 +265,5 @@ impl GetBonuses for Race {
                 self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
             ]),
         })?
-    }
-}
-
-impl From<Race> for Attribute {
-    fn from(value: Race) -> Self {
-        Flag::from(value).into()
     }
 }

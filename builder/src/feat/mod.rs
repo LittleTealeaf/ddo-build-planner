@@ -5,10 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
 
-use crate::{
-    attribute::{Attribute, GetBonuses},
-    race::RacialFeat,
-};
+use crate::{attribute::GetBonuses, race::RacialFeat};
 
 /// All possible feats that the player can have.
 #[cfg_attr(test, derive(enum_map::Enum))]
@@ -47,12 +44,6 @@ impl From<RacialFeat> for Feat {
 impl From<Proficiency> for Feat {
     fn from(value: Proficiency) -> Self {
         Self::Proficiency(value)
-    }
-}
-
-impl From<Feat> for Attribute {
-    fn from(value: Feat) -> Self {
-        Self::Feat(value)
     }
 }
 

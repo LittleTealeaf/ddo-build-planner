@@ -33,12 +33,6 @@ impl From<(WeaponHand, WeaponStat)> for Attribute {
     }
 }
 
-impl From<WeaponAttribute> for Attribute {
-    fn from(value: WeaponAttribute) -> Self {
-        Attribute::Weapon(value)
-    }
-}
-
 impl GetBonuses for WeaponAttribute {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {

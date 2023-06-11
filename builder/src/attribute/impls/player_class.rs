@@ -72,9 +72,3 @@ impl PlayerClass {
         }
     }
 }
-
-impl From<PlayerClass> for Attribute {
-    fn from(value: PlayerClass) -> Self {
-        Self::ClassLevel(value)
-    }
-}
