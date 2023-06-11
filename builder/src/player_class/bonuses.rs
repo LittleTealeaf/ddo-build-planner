@@ -7,22 +7,24 @@ use super::PlayerClass;
 
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        let mut bonuses = vec![
-            Bonus::new(
-                Attribute::CasterLevel((*self).into()),
-                BonusType::Stacking,
-                value.into(),
-                Attribute::from(*self).into(),
-                None,
-            ),
-            self.get_base_attack_bonus(value),
-        ];
+        (value > 0f32).then(|| {
+            let mut bonuses = vec![
+                Bonus::new(
+                    Attribute::CasterLevel((*self).into()),
+                    BonusType::Stacking,
+                    value.into(),
+                    Attribute::from(*self).into(),
+                    None,
+                ),
+                self.get_base_attack_bonus(value),
+            ];
 
-        if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
-            bonuses.append(&mut dc_bonuses);
-        }
+            if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
+                bonuses.append(&mut dc_bonuses);
+            }
 
-        Some(bonuses)
+            bonuses
+        })
     }
 }
 
