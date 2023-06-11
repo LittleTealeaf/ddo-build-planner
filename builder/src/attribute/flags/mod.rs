@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
 
-use crate::{bonus::Bonus, race::Race};
+use crate::{bonus::Bonus, item::types::ArmorType, race::Race};
 
 use super::{
     toggles::Toggle,
@@ -38,6 +38,9 @@ pub enum Flag {
 
     /// Item type in the off hand
     OffHandType(OffHandType),
+
+    /// Wearing Armor Type
+    ArmorType(ArmorType),
 }
 
 impl Display for Flag {
@@ -49,6 +52,7 @@ impl Display for Flag {
             Flag::Alignment(alignment) => write!(f, "Is {}", alignment),
             Flag::OffHandType(off_hand) => write!(f, "{} in the off hand", off_hand),
             Flag::MainHandType(main_hand) => write!(f, "{} in the main hand", main_hand),
+            Flag::ArmorType(armor) => write!(f, "Wearing {} Armor", armor),
         }
     }
 }
@@ -89,6 +93,12 @@ impl From<OffHandType> for Flag {
 impl From<MainHandType> for Flag {
     fn from(value: MainHandType) -> Self {
         Self::MainHandType(value)
+    }
+}
+
+impl From<ArmorType> for Flag {
+    fn from(value: ArmorType) -> Self {
+        Self::ArmorType(value)
     }
 }
 
