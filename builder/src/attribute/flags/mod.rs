@@ -61,6 +61,8 @@ impl GetBonuses for Flag {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Race(race) => race.get_bonuses(value),
+            Self::ArmorType(armor) => armor.get_bonuses(value),
+            Self::OffHandType(item) => item.get_bonuses(value),
             _ => None,
         }
     }

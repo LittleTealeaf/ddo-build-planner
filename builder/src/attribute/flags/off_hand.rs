@@ -2,7 +2,10 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::item::types::{ShieldType, WeaponType};
+use crate::{
+    attribute::GetBonuses,
+    item::types::{ShieldType, WeaponType},
+};
 
 /// Represents the different types of items the character can wield in their off hand
 #[cfg_attr(test, derive(enum_map::Enum))]
@@ -22,6 +25,15 @@ impl Display for OffHandType {
             OffHandType::Weapon(weapon) => weapon.fmt(f),
             OffHandType::Shield(shield) => shield.fmt(f),
             OffHandType::RuneArm => write!(f, "Rune Arm"),
+        }
+    }
+}
+
+impl GetBonuses for OffHandType {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
+        match self {
+            Self::Shield(shield) => shield.get_bonuses(value),
+            _ => None,
         }
     }
 }
