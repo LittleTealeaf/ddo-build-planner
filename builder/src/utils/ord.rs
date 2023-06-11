@@ -11,7 +11,7 @@ where
     K: Ord,
 {
     /// Converts the current object into an [`OrdMap`]
-    fn into_grouped_ord_map(self    ) -> OrdMap<K, V>;
+    fn into_grouped_ord_map(self) -> OrdMap<K, V>;
 }
 
 impl<I, K, V> ToGroupOrdMap<K, Vec<V>> for I
