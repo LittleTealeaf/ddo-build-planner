@@ -1,5 +1,9 @@
 //! Describes the different player class options that are available.
 
+mod bonuses;
+
+pub use bonuses::*;
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};

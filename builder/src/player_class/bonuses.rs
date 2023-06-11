@@ -1,8 +1,9 @@
 use crate::{
     attribute::{types::Ability, Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
-    player_class::PlayerClass,
 };
+
+use super::PlayerClass;
 
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
@@ -39,7 +40,7 @@ impl PlayerClass {
             | Self::AcolyteOfTheSkin => Some(vec![Bonus::new(
                 Attribute::SpellDC((*self).into()),
                 BonusType::AbilityModifier,
-                Attribute::AbilityModifier(Ability::Charisma).into(),
+                Attribute::AbilityModifier(Ability::Wisdom).into(),
                 Attribute::from(*self).into(),
                 None,
             )]),
