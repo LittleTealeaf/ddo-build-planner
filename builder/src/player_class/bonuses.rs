@@ -19,11 +19,50 @@ impl GetBonuses for PlayerClass {
             bonuses.append(&mut dc_bonuses);
         }
 
+        if let Some(bonus) = self.get_base_attack_bonus(value) {
+            bonuses.push(bonus);
+        }
+
         Some(bonuses)
     }
 }
 
 impl PlayerClass {
+    fn get_base_attack_bonus(&self, value: f32) -> Option<Bonus> {
+        let bab = match self {
+            Self::Barbarian
+            | Self::Fighter
+            | Self::Paladin
+            | Self::Ranger
+            | Self::DarkHunter
+            | Self::SacredFist => value,
+            Self::Alchemist
+            | Self::Artificer
+            | Self::Bard
+            | Self::Stormsinger
+            | Self::Cleric
+            | Self::DarkApostate
+            | Self::Druid
+            | Self::BlightCaster
+            | Self::FavoredSoul
+            | Self::Monk
+            | Self::Rogue
+            | Self::Warlock
+            | Self::AcolyteOfTheSkin => (value * 0.75f32).floor(),
+            Self::Sorcerer | Self::Wizard => (value * 0.5f32).floor(),
+        };
+
+        (bab > 0f32).then(|| {
+            Bonus::new(
+                Attribute::BaseAttackBonus,
+                BonusType::Stacking,
+                bab.into(),
+                Attribute::from(*self).into(),
+                None,
+            )
+        })
+    }
+
     fn get_ability_spell_dc_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Alchemist | Self::Artificer | Self::Wizard => Some(vec![Bonus::new(
