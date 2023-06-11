@@ -24,7 +24,10 @@ jobs:
           toolchain: stable
           components: clippy
       - name: Build
-        run: cargo build --release
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
   test:
     name: Tests
     runs-on: ubuntu-latest
@@ -37,7 +40,9 @@ jobs:
           toolchain: stable
           components: clippy
       - name: Test
-        run: cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
@@ -53,8 +58,14 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-      - name: Install required cargo
-        run: cargo install clippy-sarif sarif-fmt
+      - name: Install Clippy-Sarif
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: clippy-sarif
+      - name: Install Sarif-fmt
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: sarif-fmt
       - name: Run rust-clippy
         run: cargo clippy
           --no-deps
