@@ -8,6 +8,7 @@ readme.workspace = true
 
 [features]
 enum_ord = ["dep:enum-map"]
+editor = ["enum_ord"]
 
 
 [profile.release]
