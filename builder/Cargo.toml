@@ -20,7 +20,7 @@ itertools = "0.10.5"
 serde = { version = "1.0.164", features = ["derive"] }
 ron = "0.8.0"
 serde_test = "1.0.164"
-log = "0.4.18"
+log = "0.4.19"
 im = "15.1.0"
 enum-map = {version = "2.5.0", features = ["serde"], optional = true}
 
