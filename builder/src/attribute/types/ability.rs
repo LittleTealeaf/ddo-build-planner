@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// The different abilities that a character has
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Ability {
     /// Represents how strong the character is

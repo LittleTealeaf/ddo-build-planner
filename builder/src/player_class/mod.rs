@@ -5,7 +5,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 /// The different Player Classes that are in the game
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum PlayerClass {
     /// Alchemist Class

@@ -30,7 +30,7 @@ use self::{
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute

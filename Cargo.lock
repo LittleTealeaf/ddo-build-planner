@@ -35,6 +35,7 @@ dependencies = [
 name = "builder"
 version = "0.0.1"
 dependencies = [
+ "builder",
  "enum-map",
  "im",
  "itertools",

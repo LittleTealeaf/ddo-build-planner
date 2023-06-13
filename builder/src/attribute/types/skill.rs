@@ -10,7 +10,7 @@ use crate::{
 use super::SpellPower;
 
 /// Different skills that the character can have.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Skill {
     /// Balance Skill

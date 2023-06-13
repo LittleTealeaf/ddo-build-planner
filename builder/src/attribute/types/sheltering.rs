@@ -10,7 +10,7 @@ use crate::{
 /// Sheltering attributes grant a % reduction to damage from that type.
 ///
 /// Magical Sheltering can be capped at a certain amount based on equipment and enhancements, which is tracked with [`Sheltering::MagicalCap`]
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Sheltering {
     /// Physical Sheltering

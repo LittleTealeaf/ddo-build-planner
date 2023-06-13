@@ -8,7 +8,7 @@ use std::fmt::Display;
 use crate::{attribute::GetBonuses, race::RacialFeat};
 
 /// All possible feats that the player can have.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Feat {
     /// Feats pertaining to a certain race.
