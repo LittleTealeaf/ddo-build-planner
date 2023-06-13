@@ -215,7 +215,6 @@ mod tests {
         assert!(!Attribute::Dummy.is_tracked());
     }
 
-    #[cfg(feature = "enum_ord")]
     mod all_attributes {
         use std::collections::HashSet;
 

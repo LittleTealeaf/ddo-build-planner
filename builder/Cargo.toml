@@ -10,13 +10,10 @@ readme.workspace = true
 enum_ord = ["dep:enum-map"]
 editor = ["enum_ord"]
 
-
 [profile.release]
 lto = true
 codegen-units = 1
 panic = "abort"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 itertools = "0.10.5"
@@ -26,7 +23,6 @@ serde_test = "1.0.164"
 log = "0.4.18"
 im = "15.1.0"
 enum-map = {version = "2.5.0", features = ["serde"], optional = true}
-# TODO: Change serde_test to dev-dependencies?
 
 [dev-dependencies]
 builder = { path = ".", features = ["enum_ord"] }

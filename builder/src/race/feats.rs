@@ -326,7 +326,6 @@ impl GetBonuses for RacialFeat {
     }
 }
 
-#[cfg(feature = "enum_ord")]
 #[cfg(test)]
 mod tests {
     use crate::bonus::BonusSource;

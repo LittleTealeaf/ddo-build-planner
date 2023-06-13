@@ -47,7 +47,6 @@ impl From<Proficiency> for Feat {
     }
 }
 
-#[cfg(feature = "enum_ord")]
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -95,7 +95,6 @@ impl CloneBonus for WeaponAttribute {
     }
 }
 
-#[cfg(feature = "enum_ord")]
 #[cfg(test)]
 mod tests {
     use super::*;
