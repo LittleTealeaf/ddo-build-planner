@@ -6,6 +6,9 @@ repository.workspace = true
 authors.workspace = true
 readme.workspace = true
 
+[features]
+enum_ord = ["dep:enum-map"]
+
 
 [profile.release]
 lto = true
@@ -21,7 +24,8 @@ ron = "0.8.0"
 serde_test = "1.0.164"
 log = "0.4.18"
 im = "15.1.0"
+enum-map = {version = "2.5.0", features = ["serde"], optional = true}
 # TODO: Change serde_test to dev-dependencies?
 
 [dev-dependencies]
-enum-map = {version = "2.5.0", features = ["serde"]}
+builder = { path = ".", features = ["enum_ord"] }

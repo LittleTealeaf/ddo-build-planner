@@ -10,7 +10,7 @@ pub use feats::*;
 use serde::{Deserialize, Serialize};
 
 /// The different race options that the character can be.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Race {
     /// Dragonborn Race

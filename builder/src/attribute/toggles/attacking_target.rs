@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::attribute::types::{Alignment, MonsterType};
 
 /// Indicates that the character is attacking / fighting a certain type
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum AttackingTarget {
     /// The enemy is tripped

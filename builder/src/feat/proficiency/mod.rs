@@ -10,7 +10,7 @@ use std::fmt::Display;
 use crate::item::types::WeaponType;
 
 /// Proficiencies for Weapons and Armor
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Proficiency {
     /// Proficiency for each weapon.
