@@ -8,12 +8,8 @@ readme.workspace = true
 
 [features]
 enum_ord = ["dep:enum-map"]
+enum_map = ["enum_ord"]
 editor = ["enum_ord"]
-
-[profile.release]
-lto = true
-codegen-units = 1
-panic = "abort"
 
 [dependencies]
 itertools = "0.10.5"

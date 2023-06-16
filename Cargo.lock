@@ -7,6 +7,7 @@ name = "app"
 version = "0.0.1"
 dependencies = [
  "builder",
+ "builder-data",
  "roc",
 ]
 
@@ -43,6 +44,24 @@ dependencies = [
  "ron",
  "serde",
  "serde_test",
+]
+
+[[package]]
+name = "builder-data"
+version = "0.0.1"
+dependencies = [
+ "builder",
+ "ron",
+ "serde",
+]
+
+[[package]]
+name = "editor"
+version = "0.0.1"
+dependencies = [
+ "builder",
+ "roc",
+ "serde",
 ]
 
 [[package]]
