@@ -88,3 +88,65 @@ impl From<Attribute> for BonusValue {
         BonusValue::Attribute(value)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn attribute_returns_dependency() {
+        let value = BonusValue::Attribute(Attribute::Debug(3));
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(Some(vec![Attribute::Debug(3)]), dependencies);
+    }
+
+    #[test]
+    fn value_returns_no_dependency() {
+        let value = BonusValue::Value(0f32);
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(None, dependencies);
+    }
+
+    #[test]
+    fn sum_returns_dependencies() {
+        let value = BonusValue::Sum(vec![
+            BonusValue::Attribute(Attribute::Debug(5)),
+            BonusValue::Value(3f32),
+        ]);
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(Some(vec![Attribute::Debug(5)]), dependencies);
+    }
+
+    #[test]
+    fn product_returns_dependencies() {
+        let value = BonusValue::Product(vec![
+            BonusValue::Attribute(Attribute::Debug(5)),
+            BonusValue::Value(3f32),
+        ]);
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(Some(vec![Attribute::Debug(5)]), dependencies);
+    }
+
+    #[test]
+    fn from_attribute() {
+        let value = BonusValue::from(Attribute::Debug(4));
+        assert_eq!(value, BonusValue::Attribute(Attribute::Debug(4)));
+    }
+
+    #[test]
+    fn from_value() {
+        let value = BonusValue::from(3f32);
+
+        assert!({
+            if let BonusValue::Value(val) = value {
+                val == 3f32
+            } else {
+                false
+            }
+        });
+    }
+}
