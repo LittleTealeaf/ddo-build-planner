@@ -30,11 +30,12 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
+          args: --all
       - name: Build Release
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release
+          args: --release --all
   clippy:
     name: Clippy
     runs-on: ubuntu-latest

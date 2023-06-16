@@ -41,7 +41,6 @@ dependencies = [
  "im",
  "itertools",
  "log",
- "ron",
  "serde",
  "serde_test",
 ]
