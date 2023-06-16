@@ -12,8 +12,9 @@ pub enum BonusValue {
     /// Just a simple [`f32`] value.
     Value(f32),
     /// Copy the total value of some [`Attribute`].
-    FromAttribute(Attribute),
+    Attribute(Attribute),
     /// Scale some total value of some [`Attribute`] by some value.
+    #[deprecated]
     ScaleAttribute(Attribute, f32),
 }
 
@@ -24,7 +25,7 @@ impl BonusValue {
     /// [`Vec`] with all attributes included.
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
         match self {
-            Self::ScaleAttribute(attr, _) | Self::FromAttribute(attr) => Some(vec![*attr]),
+            Self::ScaleAttribute(attr, _) | Self::Attribute(attr) => Some(vec![*attr]),
             _ => None,
         }
     }
@@ -34,7 +35,7 @@ impl Display for BonusValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             BonusValue::Value(value) => value.fmt(f),
-            BonusValue::FromAttribute(attr) => attr.fmt(f),
+            BonusValue::Attribute(attr) => attr.fmt(f),
             BonusValue::ScaleAttribute(attr, scale) => write!(f, "{} * {}", scale, attr),
         }
     }
@@ -48,7 +49,7 @@ impl From<f32> for BonusValue {
 
 impl From<Attribute> for BonusValue {
     fn from(value: Attribute) -> Self {
-        BonusValue::FromAttribute(value)
+        BonusValue::Attribute(value)
     }
 }
 
