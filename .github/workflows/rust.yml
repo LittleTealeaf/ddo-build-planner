@@ -17,7 +17,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        action: [build, test]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v3
@@ -27,10 +26,14 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-      - name: Run
+      - name: Test
         uses: actions-rs/cargo@v1
         with:
-          command: ${{matrix.action}}
+          command: test
+      - name: Build Release
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
           args: --release
   clippy:
     name: Clippy
