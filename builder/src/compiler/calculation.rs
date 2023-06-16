@@ -38,7 +38,11 @@ impl Compiler {
         match value {
             BonusValue::Value(val) => val,
             BonusValue::Attribute(attribute) => self.get_attribute(&attribute),
-            BonusValue::ScaleAttribute(attribute, scale) => self.get_attribute(&attribute) * scale,
+            BonusValue::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
+            BonusValue::Product(vals) => vals
+                .into_iter()
+                .map(|val| self.calculate_value(val))
+                .product(),
         }
     }
 }

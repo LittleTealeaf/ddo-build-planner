@@ -164,7 +164,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_value(), BonusValue::Value(10f32));
     /// ```
     pub fn get_value(&self) -> BonusValue {
-        self.value
+        self.value.clone()
     }
 
     /// Returns the source of the bonus
@@ -220,7 +220,7 @@ impl Bonus {
         Bonus::new(
             attribute,
             self.bonus_type,
-            self.value,
+            self.value.clone(),
             self.source,
             self.condition.clone(),
         )
@@ -235,7 +235,7 @@ impl Bonus {
     /// attribute::{types::Ability, Attribute}};
     ///
     /// let bonus = Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking,
-    /// BonusValue::FromAttribute(Attribute::Ability(Ability::Constitution)),
+    /// BonusValue::Attribute(Attribute::Ability(Ability::Constitution)),
     /// BonusSource::Attribute(Attribute::Ability(Ability::Wisdom)),
     /// Some(Condition::Has(Attribute::Ability(Ability::Dexterity))));
     ///
