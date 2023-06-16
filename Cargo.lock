@@ -7,7 +7,7 @@ name = "app"
 version = "0.0.1"
 dependencies = [
  "builder",
- "builder-data",
+ "data",
  "roc",
 ]
 
@@ -41,12 +41,13 @@ dependencies = [
  "im",
  "itertools",
  "log",
+ "ron",
  "serde",
  "serde_test",
 ]
 
 [[package]]
-name = "builder-data"
+name = "data"
 version = "0.0.1"
 dependencies = [
  "builder",

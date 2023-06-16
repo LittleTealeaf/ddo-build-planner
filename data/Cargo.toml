@@ -1,5 +1,5 @@
 [package]
-name = "builder-data"
+name = "data"
 edition.workspace = true
 version.workspace = true
 repository.workspace = true
