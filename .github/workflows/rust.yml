@@ -12,11 +12,12 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    name: Build
+  cargo:
+    name: Cargo
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        action: [build, test]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v3
@@ -26,26 +27,11 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-      - name: Build
+      - name: Run
         uses: actions-rs/cargo@v1
         with:
-          command: build
+          command: ${{matrix.action}}
           args: --release
-  test:
-    name: Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout Repository
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          components: clippy
-      - name: Test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
