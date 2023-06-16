@@ -37,8 +37,12 @@ impl Compiler {
     fn calculate_value(&mut self, value: BonusValue) -> f32 {
         match value {
             BonusValue::Value(val) => val,
-            BonusValue::FromAttribute(attribute) => self.get_attribute(&attribute),
-            BonusValue::ScaleAttribute(attribute, scale) => self.get_attribute(&attribute) * scale,
+            BonusValue::Attribute(attribute) => self.get_attribute(&attribute),
+            BonusValue::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
+            BonusValue::Product(vals) => vals
+                .into_iter()
+                .map(|val| self.calculate_value(val))
+                .product(),
         }
     }
 }
