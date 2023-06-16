@@ -1,5 +1,6 @@
 [workspace]
-members = ["builder", "app"]
+members = ["builder", "app", "builder-data", "editor"]
+default-members = ["app"]
 resolver = "2"
 
 [workspace.package]
@@ -8,3 +9,8 @@ repository = "https://www.github.com/LittleTealeaf/ddo-build-planner"
 readme = "./README.md"
 edition = "2021"
 version = "0.0.1"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
