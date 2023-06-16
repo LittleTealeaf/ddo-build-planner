@@ -11,4 +11,8 @@ readme.workspace = true
 [dependencies]
 builder = { path = "../builder/"}
 serde = { version = "1.0.164", features = ["derive"] }
+
+[build-dependencies]
+serde = { version = "1.0.164" }
 ron = "0.8.0"
+builder = { path = "../builder/" }
