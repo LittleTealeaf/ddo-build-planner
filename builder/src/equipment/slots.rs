@@ -3,7 +3,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 /// Describes the item slot that an item is put in
-#[derive(PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
+#[derive(PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 pub enum ItemSlot {
     /// Goggles slot
     Goggles,

@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::Attribute;
+use crate::{attribute::Attribute, equipment::ItemSlot};
 
 /// Dictates the source that a bonus comes from.
 ///
@@ -12,6 +12,8 @@ use crate::attribute::Attribute;
 pub enum BonusSource {
     /// Indicates that the bonus comes from an attribute.
     Attribute(Attribute),
+    /// Indicates that the bonus comes from a particular item slot
+    ItemSlot(ItemSlot),
     /// Dictates any custom bonuses for general uses. When possible, do not use this source
     Custom(u8),
     /// Used for debugging purposes.
@@ -29,6 +31,7 @@ impl Display for BonusSource {
             #[cfg(test)]
             BonusSource::Debug(num) => write!(f, "Debug: {}", num),
             BonusSource::Base => write!(f, "Base"),
+            BonusSource::ItemSlot(slot) => write!(f, "{}", slot),
         }
     }
 }
@@ -42,5 +45,11 @@ impl From<Attribute> for BonusSource {
 impl From<u8> for BonusSource {
     fn from(value: u8) -> Self {
         Self::Custom(value)
+    }
+}
+
+impl From<ItemSlot> for BonusSource {
+    fn from(value: ItemSlot) -> Self {
+        Self::ItemSlot(value)
     }
 }
