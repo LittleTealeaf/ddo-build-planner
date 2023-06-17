@@ -28,7 +28,6 @@ pub mod attribute;
 pub mod bonus;
 pub mod compiler;
 pub mod feat;
-pub mod item;
 pub mod player_class;
 pub mod race;
 pub mod utils;
