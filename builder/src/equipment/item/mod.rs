@@ -7,12 +7,16 @@ use crate::bonus::{Bonus, BonusSource};
 use super::ItemSlot;
 
 pub mod types;
+mod material;
+
+pub use material::*;
 
 /// Describes a single item.
 #[derive(Serialize, Deserialize)]
 pub struct Item {
     name: String,
     slots: Vec<ItemSlot>,
+    material: ItemMaterial,
 }
 
 
