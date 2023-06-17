@@ -21,6 +21,8 @@ pub enum Proficiency {
     MartialWeaponProficiency,
     /// Shield Proficiency
     Shield(ShieldProficiency),
+    /// Rune Arm Proficiency
+    RuneArm,
 }
 
 impl Display for Proficiency {
@@ -30,6 +32,7 @@ impl Display for Proficiency {
             Proficiency::SimpleWeaponProficiency => write!(f, "Simple Weapon Proficiency"),
             Proficiency::MartialWeaponProficiency => write!(f, "Martial Weapon Proficiency"),
             Proficiency::Shield(shield) => write!(f, "{} Shield Proficiency", shield),
+            Proficiency::RuneArm => write!(f, "Rune Arm Proficiency"),
         }
     }
 }
