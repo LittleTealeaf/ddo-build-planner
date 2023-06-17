@@ -8,6 +8,7 @@ use super::ItemSlot;
 
 mod material;
 pub mod types;
+pub mod crafting;
 
 pub use material::*;
 
