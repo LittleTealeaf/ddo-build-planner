@@ -5,14 +5,16 @@ mod deserialize;
 mod source;
 mod traits;
 mod value;
+mod template;
 
 use std::fmt::Display;
 
 use crate::attribute::{flags::Flag, Attribute};
 
+use serde::{Deserialize, Serialize};
 pub use bonus_type::*;
 pub use condition::*;
-use serde::{Deserialize, Serialize};
+pub use template::*;
 pub use source::*;
 pub use traits::*;
 pub use value::*;
