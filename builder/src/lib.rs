@@ -32,3 +32,4 @@ pub mod item;
 pub mod player_class;
 pub mod race;
 pub mod utils;
+pub mod equipment;
