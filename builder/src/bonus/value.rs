@@ -52,7 +52,7 @@ impl Display for BonusValue {
                     val.fmt(f)?;
                 }
 
-                while let Some(val) = iter.next() {
+                for val in iter {
                     write!(f, " + {}", val)?;
                 }
 
@@ -66,7 +66,7 @@ impl Display for BonusValue {
                 if let Some(val) = iter.next() {
                     val.fmt(f)?;
 
-                    while let Some(val) = iter.next() {
+                    for val in iter {
                         write!(f, " * {}", val)?;
                     }
                 }

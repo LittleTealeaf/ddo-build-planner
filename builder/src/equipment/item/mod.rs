@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::bonus::Bonus;
+use crate::bonus::{Bonus, BonusSource};
 
 use super::ItemSlot;
 
@@ -20,7 +20,10 @@ impl Item {
 
 
 
+    /// Returns a list of bonuses based on the slot it comes from
     pub fn get_bonuses(&self, slot: ItemSlot) -> Vec<Bonus> {
+        let _source = BonusSource::from(slot);
+
 
 
         vec![]
