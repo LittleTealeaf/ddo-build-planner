@@ -2,12 +2,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::bonus::{Bonus, BonusSource};
+use crate::bonus::Bonus;
 
 use super::ItemSlot;
 
-pub mod types;
 mod material;
+pub mod types;
 
 pub use material::*;
 
@@ -15,21 +15,8 @@ pub use material::*;
 #[derive(Serialize, Deserialize)]
 pub struct Item {
     name: String,
+    minimum_level: u8,
+    bonses: Vec<Bonus>,
     slots: Vec<ItemSlot>,
     material: ItemMaterial,
-}
-
-
-impl Item {
-
-
-
-    /// Returns a list of bonuses based on the slot it comes from
-    pub fn get_bonuses(&self, slot: ItemSlot) -> Vec<Bonus> {
-        let _source = BonusSource::from(slot);
-
-
-
-        vec![]
-    }
 }
