@@ -19,5 +19,6 @@ pub struct Item {
     minimum_level: u8,
     bonses: Vec<Bonus>,
     slots: Vec<ItemSlot>,
+    anti_slots: Vec<ItemSlot>,
     material: ItemMaterial,
 }

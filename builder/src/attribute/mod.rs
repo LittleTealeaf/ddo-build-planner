@@ -14,6 +14,7 @@ pub use traits::*;
 
 use crate::{
     bonus::{Bonus, CloneBonus},
+    equipment::ItemSlot,
     feat::Feat,
     player_class::PlayerClass,
 };
@@ -93,6 +94,8 @@ pub enum Attribute {
     SpellResistance,
     /// Spell Penetration
     SpellPenetration,
+    /// What the minimum level is for a given item slot
+    MinimumLevel(ItemSlot),
 }
 
 impl Display for Attribute {
@@ -122,6 +125,7 @@ impl Display for Attribute {
             Attribute::Feat(feat) => write!(f, "Feat: {}", feat),
             Attribute::SpellResistance => write!(f, "Spell Resistance"),
             Attribute::SpellPenetration => write!(f, "Spell Penetration"),
+            Attribute::MinimumLevel(slot) => write!(f, "{} Minimum Level", slot),
         }
     }
 }
