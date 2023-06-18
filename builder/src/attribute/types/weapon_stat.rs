@@ -24,6 +24,14 @@ pub enum WeaponStat {
     CriticalMultiplier1920,
     /// Damage Reduction Bypasses that the weapon has
     DamageReductionBypass(DamageReduction),
+    /// How many damage dice to roll
+    DamageDiceCount,
+    /// What size the damage dice are
+    DamageDiceSize,
+    /// The inner bonus to damage dice
+    DamageDiceBonus,
+    /// How much the damage dice are scaled by
+    DamageDiceScalar,
 }
 
 impl Display for WeaponStat {
@@ -37,6 +45,10 @@ impl Display for WeaponStat {
             WeaponStat::CriticalMultiplier1920 => write!(f, "Critical Multiplier (19-20)"),
             WeaponStat::DamageReductionBypass(dr) => write!(f, "{} Bypass", dr),
             WeaponStat::CriticalThreatRange => write!(f, "Critical Threat Range"),
+            WeaponStat::DamageDiceCount => write!(f, "Dice Count"),
+            WeaponStat::DamageDiceSize => write!(f, "Dice Size"),
+            WeaponStat::DamageDiceBonus => write!(f, "Dice Bonus"),
+            WeaponStat::DamageDiceScalar => write!(f, "Damage Scalar"),
         }
     }
 }

@@ -59,38 +59,17 @@ impl CloneBonus for WeaponAttribute {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         let WeaponAttribute(hand, stat) = self;
         matches!(hand, WeaponHand::Both).then(|| {
-            match stat {
-                WeaponStat::Attack => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Attack)),
-                WeaponStat::Damage => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Damage)),
-                WeaponStat::CriticalAttack => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalAttack))
-                }
-                WeaponStat::CriticalDamage => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalDamage))
-                }
-                WeaponStat::CriticalMultiplier => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalMultiplier))
-                }
-                WeaponStat::CriticalMultiplier1920 => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalMultiplier1920))
-                }
-                WeaponStat::DamageReductionBypass(dr) => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::DamageReductionBypass(*dr)))
-                }
-                WeaponStat::CriticalThreatRange => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalThreatRange))
-                }
-            }
-            .map(|stat| {
-                Bonus::new(
-                    stat.into(),
-                    bonus.get_type(),
-                    bonus.get_value(),
-                    bonus.get_source(),
-                    bonus.get_condition(),
-                )
-            })
-            .to_vec()
+            WeaponHand::VALUES
+                .map(|hand| {
+                    Bonus::new(
+                        (hand, *stat).into(),
+                        bonus.get_type(),
+                        bonus.get_value(),
+                        bonus.get_source(),
+                        bonus.get_condition(),
+                    )
+                })
+                .to_vec()
         })
     }
 }
