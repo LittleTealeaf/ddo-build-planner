@@ -8,7 +8,7 @@ pub use option::*;
 
 
 /// Indicates the crafting options able to be crafted on an item.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum ItemCrafting {
     /// Customized Item Crafting
     Custom()
