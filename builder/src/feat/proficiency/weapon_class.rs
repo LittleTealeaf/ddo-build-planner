@@ -1,4 +1,4 @@
-use crate::item::types::WeaponType;
+use crate::equipment::item::types::WeaponType;
 
 /// Proficiency Class for weapons
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
