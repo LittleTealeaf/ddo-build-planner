@@ -60,10 +60,9 @@ jobs:
         with:
           crate: sarif-fmt
       - name: Run rust-clippy
-        run: cargo clippy
-          --no-deps
-          --all-features
-          --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+        run: cargo clippy --all --no-deps --all-features --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+        env:
+          RUSTFLAGS: ""
         continue-on-error: true
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
