@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use super::Alignment;
 
 /// Different types of energy resistance or absorption that the user can have
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum EnergyResistance {
     /// Acid Energy

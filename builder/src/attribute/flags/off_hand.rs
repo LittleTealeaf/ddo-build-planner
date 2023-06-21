@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// Represents the different types of items the character can wield in their off hand
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum OffHandType {
     /// The character is wielding a weapon in their off hand

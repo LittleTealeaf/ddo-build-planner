@@ -7,14 +7,16 @@ use crate::attribute::Attribute;
 /// Represents a value of a [`Bonus`]
 ///
 /// [`Bonus`]: crate::bonus::Bonus
-#[derive(Copy, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum BonusValue {
     /// Just a simple [`f32`] value.
     Value(f32),
     /// Copy the total value of some [`Attribute`].
-    FromAttribute(Attribute),
-    /// Scale some total value of some [`Attribute`] by some value.
-    ScaleAttribute(Attribute, f32),
+    Attribute(Attribute),
+    /// Sums each of the values
+    Sum(Vec<BonusValue>),
+    /// Multiplies each of the values
+    Product(Vec<BonusValue>),
 }
 
 impl BonusValue {
@@ -24,7 +26,13 @@ impl BonusValue {
     /// [`Vec`] with all attributes included.
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
         match self {
-            Self::ScaleAttribute(attr, _) | Self::FromAttribute(attr) => Some(vec![*attr]),
+            Self::Attribute(attribute) => Some(vec![*attribute]),
+            Self::Sum(vals) | Self::Product(vals) => Some(
+                vals.iter()
+                    .filter_map(BonusValue::get_dependencies)
+                    .flatten()
+                    .collect(),
+            ),
             _ => None,
         }
     }
@@ -34,8 +42,37 @@ impl Display for BonusValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             BonusValue::Value(value) => value.fmt(f),
-            BonusValue::FromAttribute(attr) => attr.fmt(f),
-            BonusValue::ScaleAttribute(attr, scale) => write!(f, "{} * {}", scale, attr),
+            BonusValue::Attribute(attr) => attr.fmt(f),
+            BonusValue::Sum(vals) => {
+                write!(f, "(")?;
+
+                let mut iter = vals.iter();
+
+                if let Some(val) = iter.next() {
+                    val.fmt(f)?;
+                }
+
+                while let Some(val) = iter.next() {
+                    write!(f, " + {}", val)?;
+                }
+
+                write!(f, ")")
+            }
+            BonusValue::Product(vals) => {
+                write!(f, "(")?;
+
+                let mut iter = vals.iter();
+
+                if let Some(val) = iter.next() {
+                    val.fmt(f)?;
+
+                    while let Some(val) = iter.next() {
+                        write!(f, " * {}", val)?;
+                    }
+                }
+
+                write!(f, ")")
+            }
         }
     }
 }
@@ -48,12 +85,68 @@ impl From<f32> for BonusValue {
 
 impl From<Attribute> for BonusValue {
     fn from(value: Attribute) -> Self {
-        BonusValue::FromAttribute(value)
+        BonusValue::Attribute(value)
     }
 }
 
-impl From<(Attribute, f32)> for BonusValue {
-    fn from((attribute, scale): (Attribute, f32)) -> Self {
-        BonusValue::ScaleAttribute(attribute, scale)
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn attribute_returns_dependency() {
+        let value = BonusValue::Attribute(Attribute::Debug(3));
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(Some(vec![Attribute::Debug(3)]), dependencies);
+    }
+
+    #[test]
+    fn value_returns_no_dependency() {
+        let value = BonusValue::Value(0f32);
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(None, dependencies);
+    }
+
+    #[test]
+    fn sum_returns_dependencies() {
+        let value = BonusValue::Sum(vec![
+            BonusValue::Attribute(Attribute::Debug(5)),
+            BonusValue::Value(3f32),
+        ]);
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(Some(vec![Attribute::Debug(5)]), dependencies);
+    }
+
+    #[test]
+    fn product_returns_dependencies() {
+        let value = BonusValue::Product(vec![
+            BonusValue::Attribute(Attribute::Debug(5)),
+            BonusValue::Value(3f32),
+        ]);
+        let dependencies = value.get_dependencies();
+
+        assert_eq!(Some(vec![Attribute::Debug(5)]), dependencies);
+    }
+
+    #[test]
+    fn from_attribute() {
+        let value = BonusValue::from(Attribute::Debug(4));
+        assert_eq!(value, BonusValue::Attribute(Attribute::Debug(4)));
+    }
+
+    #[test]
+    fn from_value() {
+        let value = BonusValue::from(3f32);
+
+        assert!({
+            if let BonusValue::Value(val) = value {
+                val == 3f32
+            } else {
+                false
+            }
+        });
     }
 }

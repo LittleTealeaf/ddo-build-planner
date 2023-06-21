@@ -10,7 +10,7 @@ use crate::{
 use super::{WeaponHand, WeaponStat};
 
 /// A WeaponStat that is specifically for a weapon hand.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 

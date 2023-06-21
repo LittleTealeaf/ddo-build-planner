@@ -21,7 +21,7 @@ use super::{
 /// Indicates that the character possesses some flag.
 ///
 /// Flags are most often used for indirect effects, such as "does the character have this toggle", or other traits.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Flag {
     /// Indicates that the user has access to a given toggle.

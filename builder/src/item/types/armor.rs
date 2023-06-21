@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// The different types of armor in the game.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ArmorType {
     /// Cloth Armor

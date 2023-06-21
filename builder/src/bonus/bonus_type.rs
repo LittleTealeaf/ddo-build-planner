@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 /// added. However, bonuses of different [`BonusType`] will stack.
 ///
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum BonusType {
     /// Bonuses that come from [`Attribute::AbilityModifier`]

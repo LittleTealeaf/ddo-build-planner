@@ -8,12 +8,12 @@ use crate::{
         types::Ability,
         Attribute, DefaultBonuses, GetBonuses,
     },
-    bonus::{Bonus, BonusSource, BonusType, Condition},
+    bonus::{Bonus, BonusSource, BonusType, BonusValue, Condition},
     item::types::ShieldType,
 };
 
 /// Represents different attributes that relate to Armor Class
-#[cfg_attr(test, derive(enum_map::Enum))]
+#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ArmorClass {
     /// Flat bonuses to armor class
@@ -63,14 +63,20 @@ impl GetBonuses for ArmorClass {
             ArmorClass::ArmorScalar => Some(vec![Bonus::new(
                 ArmorClass::Bonus.into(),
                 BonusType::Stacking,
-                (Attribute::from(ArmorClass::ArmorBonus), value).into(),
+                BonusValue::Product(vec![
+                    Attribute::from(ArmorClass::ArmorBonus).into(),
+                    value.into(),
+                ]),
                 Attribute::from(ArmorClass::ArmorScalar).into(),
                 None,
             )]),
             ArmorClass::ShieldScalar => Some(vec![Bonus::new(
                 ArmorClass::Bonus.into(),
                 BonusType::Stacking,
-                (Attribute::from(ArmorClass::ShieldBonus), value).into(),
+                BonusValue::Product(vec![
+                    Attribute::from(ArmorClass::ShieldBonus).into(),
+                    value.into(),
+                ]),
                 Attribute::from(ArmorClass::ShieldScalar).into(),
                 None,
             )]),
