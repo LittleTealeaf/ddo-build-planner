@@ -61,8 +61,6 @@ jobs:
           crate: sarif-fmt
       - name: Run rust-clippy
         run: cargo clippy
-          --all
-          --no-deps
           --all-features
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
