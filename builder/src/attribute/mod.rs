@@ -59,6 +59,8 @@ pub enum Attribute {
     AbilityModifier(Ability),
     /// Indicates how many levels the character has of a given class.
     ClassLevel(PlayerClass),
+    /// Levels 20-30
+    EpicLevel,
     /// The different skills available in the game.
     Skill(Skill),
     /// Both simple and complex saving throws.
@@ -122,6 +124,7 @@ impl Display for Attribute {
             Attribute::Feat(feat) => write!(f, "Feat: {}", feat),
             Attribute::SpellResistance => write!(f, "Spell Resistance"),
             Attribute::SpellPenetration => write!(f, "Spell Penetration"),
+            Attribute::EpicLevel => write!(f, "Epic Level"),
         }
     }
 }
