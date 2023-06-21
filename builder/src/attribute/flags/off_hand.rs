@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::item::types::{ShieldType, WeaponType};
+use crate::equipment::item::types::{ShieldType, WeaponType};
 
 /// Represents the different types of items the character can wield in their off hand
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]

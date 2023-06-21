@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
 
-use crate::{bonus::Bonus, item::types::ArmorType, race::Race};
+use crate::{bonus::Bonus, equipment::item::types::ArmorType, race::Race};
 
 use super::{
     toggles::Toggle,
