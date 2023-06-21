@@ -17,6 +17,12 @@ pub enum BonusValue {
     Sum(Vec<BonusValue>),
     /// Multiplies each of the values
     Product(Vec<BonusValue>),
+    /// Returns the minimum value from the set
+    Min(Vec<BonusValue>),
+    /// Returns the maximum value from the set
+    Max(Vec<BonusValue>),
+    /// Floors the inner value to a whole number
+    Floor(Box<BonusValue>),
 }
 
 impl BonusValue {
@@ -27,12 +33,13 @@ impl BonusValue {
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
         match self {
             Self::Attribute(attribute) => Some(vec![*attribute]),
-            Self::Sum(vals) | Self::Product(vals) => Some(
+            Self::Sum(vals) | Self::Product(vals) | Self::Min(vals) | Self::Max(vals) => Some(
                 vals.iter()
                     .filter_map(BonusValue::get_dependencies)
                     .flatten()
                     .collect(),
             ),
+            Self::Floor(val) => val.get_dependencies(),
             _ => None,
         }
     }
@@ -52,7 +59,7 @@ impl Display for BonusValue {
                     val.fmt(f)?;
                 }
 
-                while let Some(val) = iter.next() {
+                for val in iter {
                     write!(f, " + {}", val)?;
                 }
 
@@ -66,13 +73,44 @@ impl Display for BonusValue {
                 if let Some(val) = iter.next() {
                     val.fmt(f)?;
 
-                    while let Some(val) = iter.next() {
+                    for val in iter {
                         write!(f, " * {}", val)?;
                     }
                 }
 
                 write!(f, ")")
             }
+            BonusValue::Min(vals) => {
+                write!(f, "Min(")?;
+
+                let mut iter = vals.iter();
+
+                if let Some(val) = iter.next() {
+                    val.fmt(f)?;
+
+                    for val in iter {
+                        write!(f, ", {}", val)?;
+                    }
+                }
+
+                write!(f, ")")
+            }
+            BonusValue::Max(vals) => {
+                write!(f, "Max(")?;
+
+                let mut iter = vals.iter();
+
+                if let Some(val) = iter.next() {
+                    val.fmt(f)?;
+
+                    for val in iter {
+                        write!(f, ", {}", val)?;
+                    }
+                }
+
+                write!(f, ")")
+            }
+            BonusValue::Floor(val) => write!(f, "Floor({})", val),
         }
     }
 }

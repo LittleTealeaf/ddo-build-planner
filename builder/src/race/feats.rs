@@ -11,7 +11,7 @@ use crate::{
     },
     bonus::{Bonus, BonusType, Condition},
     feat::Feat,
-    item::types::WeaponType,
+    equipment::item::types::WeaponType,
 };
 
 /// Feats granted from different races.

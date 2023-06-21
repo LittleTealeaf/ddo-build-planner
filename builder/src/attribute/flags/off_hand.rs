@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::GetBonuses,
-    item::types::{ShieldType, WeaponType},
+    equipment::item::types::{ShieldType, WeaponType},
 };
 
 /// Represents the different types of items the character can wield in their off hand

@@ -43,6 +43,41 @@ impl Compiler {
                 .into_iter()
                 .map(|val| self.calculate_value(val))
                 .product(),
+            BonusValue::Min(vals) => {
+                let mut iter = vals.into_iter();
+
+                if let Some(first) = iter.next() {
+                    let mut min = self.calculate_value(first);
+
+                    for item in iter {
+                        let val = self.calculate_value(item);
+                        if min > val {
+                            min = val;
+                        }
+                    }
+                    min
+                } else {
+                    0f32
+                }
+            }
+            BonusValue::Max(vals) => {
+                let mut iter = vals.into_iter();
+
+                if let Some(first) = iter.next() {
+                    let mut max = self.calculate_value(first);
+
+                    for item in iter {
+                        let val = self.calculate_value(item);
+                        if max < val {
+                            max = val;
+                        }
+                    }
+                    max
+                } else {
+                    0f32
+                }
+            }
+            BonusValue::Floor(val) => self.calculate_value(*val).floor(),
         }
     }
 }

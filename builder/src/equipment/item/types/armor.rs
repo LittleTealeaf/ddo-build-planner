@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{flags::Flag, types::Sheltering, Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, BonusValue},
 };
 
 /// The different types of armor in the game.
@@ -46,14 +46,14 @@ impl GetBonuses for ArmorType {
             ArmorType::Medium => Some(vec![Bonus::new(
                 Sheltering::Physical.into(),
                 BonusType::Stacking,
-                (Attribute::BaseAttackBonus, 1.5f32).into(),
+                BonusValue::Product(vec![Attribute::BaseAttackBonus.into(), 1.5f32.into()]),
                 Attribute::from(Flag::from(*self)).into(),
                 None,
             )]),
             ArmorType::Heavy => Some(vec![Bonus::new(
                 Sheltering::Physical.into(),
                 BonusType::Stacking,
-                (Attribute::BaseAttackBonus, 2f32).into(),
+                BonusValue::Product(vec![Attribute::BaseAttackBonus.into(), 2f32.into()]),
                 Attribute::from(Flag::from(*self)).into(),
                 None,
             )]),
