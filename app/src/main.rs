@@ -10,9 +10,12 @@ use builder::{
     player_class::PlayerClass,
     race::Race,
 };
+use data::hi_world;
 
 fn main() {
     let mut compiler = Compiler::default();
+
+    println!("{}", hi_world());
 
     println!("Adding Bonuses");
 

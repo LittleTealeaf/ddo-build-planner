@@ -20,6 +20,24 @@
     clippy::missing_errors_doc,
     clippy::missing_panics_doc
 )]
-
-
 //! This crate contains large datasets such as items.
+
+#[allow(unused_imports)]
+use crate::util::include_data;
+
+mod util;
+
+
+pub fn hi_world() -> String {
+    include_data!(data, "test.ron");
+
+    return String::from(data); 
+}
+
+
+// /// Testing something
+// #[test]
+// pub fn test() {
+//     include_data!(test, "test.ron");
+// }
+
