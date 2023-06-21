@@ -17,6 +17,8 @@ pub enum BonusValue {
     Sum(Vec<BonusValue>),
     /// Multiplies each of the values
     Product(Vec<BonusValue>),
+    /// Returns the minimum value from the set
+    Min(Vec<BonusValue>),
 }
 
 impl BonusValue {
@@ -68,6 +70,21 @@ impl Display for BonusValue {
 
                     while let Some(val) = iter.next() {
                         write!(f, " * {}", val)?;
+                    }
+                }
+
+                write!(f, ")")
+            }
+            BonusValue::Min(vals) => {
+                write!(f, "Min(")?;
+
+                let mut iter = vals.iter();
+
+                if let Some(val) = iter.next() {
+                    val.fmt(f)?;
+
+                    for val in iter {
+                        write!(f, ", {}", val)?;
                     }
                 }
 
