@@ -45,7 +45,7 @@ mod errors {
     pub enum Error {
         Environment(VarError),
         Serialize(ron::Error),
-        IOError(std::io::Error),
+        IO(std::io::Error),
     }
 
     impl From<VarError> for Error {
@@ -62,7 +62,7 @@ mod errors {
 
     impl From<std::io::Error> for Error {
         fn from(value: std::io::Error) -> Self {
-            Self::IOError(value)
+            Self::IO(value)
         }
     }
 }
