@@ -9,7 +9,7 @@ pub fn get_test_data() -> Result<String, SpannedError> {
 }
 
 #[test]
-fn test_data_returns() {
+fn test_data_parses() {
     let data = get_test_data();
 
     assert!(data.is_ok());
