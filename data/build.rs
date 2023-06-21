@@ -1,24 +1,13 @@
 use std::{env, fs::File, io::Write, path::Path};
 
-use builder::{
-    attribute::{flags::Flag, types::Ability, Attribute},
-    bonus::{Bonus, BonusSource, BonusType, Condition},
-};
 use errors::Error;
 use serde::Serialize;
 
 fn main() -> Result<(), self::errors::Error> {
-    let test = Bonus::new(
-        Attribute::Ability(Ability::Charisma),
-        BonusType::Quality,
-        4f32.into(),
-        BonusSource::Base,
-        Some(Condition::Has(Attribute::Flag(Flag::Race(
-            builder::race::Race::Drow,
-        )))),
-    );
-
-    write_artifact("test.ron", test)?;
+    write_artifact(
+        "test",
+        String::from("This is test data from the build script"),
+    )?;
 
     Ok(())
 }
@@ -31,9 +20,7 @@ where
 
     let mut file = File::create(path)?;
 
-    let serialized = format!("\"{}\"", ron::to_string(&item)?);
-
-    file.write_all(serialized.as_bytes())?;
+    file.write_all(ron::to_string(&item)?.as_bytes())?;
 
     Ok(())
 }

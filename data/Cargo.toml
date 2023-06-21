@@ -6,13 +6,18 @@ repository.workspace = true
 authors.workspace = true
 readme.workspace = true
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+example = []
 
 [dependencies]
 builder = { path = "../builder/"}
+ron = "0.8.0"
 serde = { version = "1.0.164", features = ["derive"] }
 
 [build-dependencies]
 serde = { version = "1.0.164" }
 ron = "0.8.0"
 builder = { path = "../builder/" }
+
+[dev-dependencies]
+data = { path = ".", features = ["example"] }

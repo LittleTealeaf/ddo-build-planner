@@ -22,16 +22,10 @@
 )]
 //! This crate contains large datasets such as items.
 
-#[allow(unused_imports)]
-use crate::util::include_data;
-
+#[macro_use]
 mod util;
 
-
-/// Demonstration of including data from a resource file
-///
-/// REMOVE BEFORE PRODUCTION
-pub fn hi_world() -> String {
-    include_data!(data, "test.ron");
-    String::from(data)
-}
+#[cfg(feature = "example")]
+mod example;
+#[cfg(feature = "example")]
+pub use example::*;
