@@ -4,6 +4,15 @@ A Cross-Platform Dungeons & Dragons Online Build Planner written in Rust.
 
 The goal of this project is to make a ddo build planner that's blazingly fast, and runs on any system. Relatively high potential of a corredsponding website-based version in the future.
 
+## Installing
+
+While this is in very early stages of development, you are more than welcome to install from source using the following command (after you've set up cargo)
+
+```sh
+cargo install --git github.com/LittleTealeaf/ddo-build-planner app --force
+```
+
+
 ## Building from source
 
 To build from source, you will need to install **Rust** and **Cargo** (and of course **Git**). You can find more information at [rust-lang.org/tools/install](https://www.rust-lang.org/tools/install).
