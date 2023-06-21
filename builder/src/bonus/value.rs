@@ -29,7 +29,7 @@ impl BonusValue {
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
         match self {
             Self::Attribute(attribute) => Some(vec![*attribute]),
-            Self::Sum(vals) | Self::Product(vals) => Some(
+            Self::Sum(vals) | Self::Product(vals) | Self::Min(vals) => Some(
                 vals.iter()
                     .filter_map(BonusValue::get_dependencies)
                     .flatten()
