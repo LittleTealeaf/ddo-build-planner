@@ -33,7 +33,7 @@ where
 
     let serialized = format!("\"{}\"", ron::to_string(&item)?);
 
-    file.write_all(&serialized.as_bytes())?;
+    file.write_all(serialized.as_bytes())?;
 
     Ok(())
 }
@@ -43,20 +43,20 @@ mod errors {
 
     #[derive(Debug)]
     pub enum Error {
-        VarError(VarError),
-        SerializeError(ron::Error),
+        Environment(VarError),
+        Serialize(ron::Error),
         IOError(std::io::Error),
     }
 
     impl From<VarError> for Error {
         fn from(value: VarError) -> Self {
-            Self::VarError(value)
+            Self::Environment(value)
         }
     }
 
     impl From<ron::error::Error> for Error {
         fn from(value: ron::Error) -> Self {
-            Self::SerializeError(value)
+            Self::Serialize(value)
         }
     }
 
