@@ -28,16 +28,10 @@ use crate::util::include_data;
 mod util;
 
 
+/// Demonstration of including data from a resource file
+///
+/// REMOVE BEFORE PRODUCTION
 pub fn hi_world() -> String {
     include_data!(data, "test.ron");
-
-    return String::from(data); 
+    String::from(data)
 }
-
-
-// /// Testing something
-// #[test]
-// pub fn test() {
-//     include_data!(test, "test.ron");
-// }
-
