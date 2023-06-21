@@ -77,6 +77,7 @@ impl Compiler {
                     0f32
                 }
             }
+            BonusValue::Floor(val) => self.calculate_value(*val).floor(),
         }
     }
 }

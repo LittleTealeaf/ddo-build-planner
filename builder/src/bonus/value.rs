@@ -21,6 +21,8 @@ pub enum BonusValue {
     Min(Vec<BonusValue>),
     /// Returns the maximum value from the set
     Max(Vec<BonusValue>),
+    /// Floors the inner value to a whole number
+    Floor(Box<BonusValue>),
 }
 
 impl BonusValue {
@@ -37,6 +39,7 @@ impl BonusValue {
                     .flatten()
                     .collect(),
             ),
+            Self::Floor(val) => val.get_dependencies(),
             _ => None,
         }
     }
@@ -107,6 +110,7 @@ impl Display for BonusValue {
 
                 write!(f, ")")
             }
+            BonusValue::Floor(val) => write!(f, "Floor({})", val),
         }
     }
 }
