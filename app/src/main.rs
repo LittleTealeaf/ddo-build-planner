@@ -6,7 +6,7 @@ use builder::{
     },
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
-    item::types::ShieldType,
+    equipment::item::types::ShieldType,
     player_class::PlayerClass,
     race::Race,
 };

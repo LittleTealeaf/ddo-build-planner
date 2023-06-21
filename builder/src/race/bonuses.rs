@@ -5,7 +5,7 @@ use crate::{
     },
     bonus::{Bonus, BonusType, Condition},
     feat::{Feat, Proficiency},
-    item::types::WeaponType,
+    equipment::item::types::WeaponType,
     race::Race,
 };
 
