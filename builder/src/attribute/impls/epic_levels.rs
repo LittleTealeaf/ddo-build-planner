@@ -11,7 +11,7 @@ impl GetBonuses for _EpicLevel {
         (value > 0f32).then(|| {
             vec![Bonus::new(
                 SavingThrow::All.into(),
-                BonusType::Stacking.into(),
+                BonusType::Stacking,
                 ((value + 1f32) / 2f32).floor().into(),
                 Attribute::EpicLevel.into(),
                 None,
