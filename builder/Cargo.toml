@@ -12,7 +12,7 @@ enum_map = ["enum_ord"]
 editor = ["enum_ord"]
 
 [dependencies]
-itertools = "0.10.5"
+itertools = "0.11.0"
 serde = { version = "1.0.164", features = ["derive"] }
 ron = "0.8.0"
 log = "0.4.19"
