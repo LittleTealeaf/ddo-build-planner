@@ -1,9 +1,9 @@
 use itertools::Itertools;
+use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::Attribute,
     bonus::{BonusValue, Condition},
-    utils::ord::ToGroupOrdMap,
 };
 
 use super::Compiler;
