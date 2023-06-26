@@ -1,9 +1,9 @@
 use itertools::Itertools;
+use utilities::ord::{IntoOrdGroupMap, IntoOrdSet};
 
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, CloneBonus},
-    utils::ord::{ToGroupOrdMap, ToGroupedOrdSet},
 };
 
 use super::{attribute_queue::AttributeQueue, Compiler};
@@ -220,7 +220,7 @@ impl Compiler {
                             }
                             attribute
                         })
-                        .into_grouped_ord_set()
+                        .into_ord_set()
                         .into_iter()
                         .collect_vec();
 
