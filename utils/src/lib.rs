@@ -22,12 +22,8 @@
     clippy::missing_panics_doc
 )]
 
-//! The goal of this crate is to implement all of the build logic, including attributes, breakdowns, enhancements, feats, items, and more
+//! A collection of utility functions used throughout the project.
 
-pub mod attribute;
-pub mod bonus;
-pub mod compiler;
-pub mod feat;
-pub mod equipment;
-pub mod player_class;
-pub mod race;
+
+pub mod ord;
+
