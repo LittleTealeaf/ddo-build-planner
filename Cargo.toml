@@ -1,5 +1,5 @@
 [workspace]
-members = ["builder", "app", "data", "editor", "utilities"]
+members = ["builder", "app", "data", "editor", "utils"]
 default-members = ["app"]
 resolver = "2"
 

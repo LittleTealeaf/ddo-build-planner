@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use utilities::ord::{IntoOrdGroupMap, IntoOrdSet};
+use utils::ord::{IntoOrdGroupMap, IntoOrdSet};
 
 use crate::{
     attribute::Attribute,
