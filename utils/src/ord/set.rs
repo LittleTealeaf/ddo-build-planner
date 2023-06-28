@@ -24,3 +24,31 @@ where
         set
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[derive(Clone, Copy, Ord, PartialOrd, PartialEq, Eq)]
+    enum TestEnum {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+    }
+
+    #[test]
+    fn iterator_into_set() {
+        let items = vec![TestEnum::A, TestEnum::B, TestEnum::B, TestEnum::D];
+
+        let mut set = items.into_iter().into_ord_set();
+
+        assert!(set.contains(&TestEnum::A));
+
+        assert!(set.remove(&TestEnum::B).is_some());
+        assert!(!set.contains(&TestEnum::B));
+        assert!(!set.contains(&TestEnum::C));
+    }
+}

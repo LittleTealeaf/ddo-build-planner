@@ -10,8 +10,8 @@ use crate::{
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
-    feat::Feat,
     equipment::item::types::WeaponType,
+    feat::Feat,
 };
 
 /// Feats granted from different races.

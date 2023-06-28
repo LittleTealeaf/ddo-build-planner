@@ -30,3 +30,45 @@ where
         map
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[derive(Clone, Copy, Ord, PartialOrd, PartialEq, Eq)]
+    enum TestEnum {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+    }
+
+    #[test]
+    fn iters_into_grouped_map() {
+        let values = vec![
+            (TestEnum::A, 1),
+            (TestEnum::B, 2),
+            (TestEnum::C, 3),
+            (TestEnum::C, 4),
+            (TestEnum::D, 5),
+            (TestEnum::D, 5),
+        ];
+
+        let map = values.into_iter().into_grouped_ord_map();
+
+        assert!(map.get(&TestEnum::A).unwrap().contains(&1));
+        assert!(map.get(&TestEnum::B).unwrap().contains(&2));
+        assert!(map.get(&TestEnum::C).unwrap().contains(&3));
+        assert!(map.get(&TestEnum::C).unwrap().contains(&4));
+
+        let items = map.get(&TestEnum::D).unwrap();
+        let mut iter = items.into_iter();
+        assert_eq!(Some(&5), iter.next());
+        assert_eq!(Some(&5), iter.next());
+        assert_eq!(None, iter.next());
+
+        assert!(map.get(&TestEnum::F).is_none());
+    }
+}
