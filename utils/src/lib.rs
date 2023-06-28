@@ -24,6 +24,4 @@
 
 //! A collection of utility functions used throughout the project.
 
-
 pub mod ord;
-
