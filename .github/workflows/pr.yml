@@ -13,6 +13,8 @@ jobs:
   cc:
     name: Conventional Title
     runs-on: ubuntu-latest
+    permissions:
+        statuses: write
     steps:
         - name: Check that title follows Conventional Commits
           uses: aslafy-z/conventional-pr-title-action@v3
