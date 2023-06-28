@@ -51,5 +51,4 @@ mod tests {
         assert!(!set.contains(&TestEnum::B));
         assert!(!set.contains(&TestEnum::C));
     }
-
 }
