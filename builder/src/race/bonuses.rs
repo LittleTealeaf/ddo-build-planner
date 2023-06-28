@@ -4,8 +4,8 @@ use crate::{
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
-    feat::{Feat, Proficiency},
     equipment::item::types::WeaponType,
+    feat::{Feat, Proficiency},
     race::Race,
 };
 
