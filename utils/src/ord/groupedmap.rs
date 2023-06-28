@@ -68,5 +68,7 @@ mod test {
         assert_eq!(Some(&5), iter.next());
         assert_eq!(Some(&5), iter.next());
         assert_eq!(None, iter.next());
+
+        assert!(map.get(&TestEnum::F).is_none());
     }
 }
