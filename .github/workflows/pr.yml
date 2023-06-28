@@ -16,3 +16,5 @@ jobs:
     steps:
         - name: Check that title follows Conventional Commits
           uses: aslafy-z/conventional-pr-title-action@v3
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
