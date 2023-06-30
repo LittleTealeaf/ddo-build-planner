@@ -39,7 +39,6 @@ impl Compiler {
 
 /// Adding or Inserting bonuses into the Compiler
 impl Compiler {
-
     /// Removes all bonuses from a given source from the compiler.
     ///
     /// Achieves this by adding a [`Attribute::Dummy`] bonus, which will remove all bonuses from the same source.
