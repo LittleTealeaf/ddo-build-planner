@@ -13,6 +13,8 @@ use super::SpellPower;
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Skill {
+    /// All Skills
+    All,
     /// Balance Skill
     Balance,
     /// Bluff Skill
@@ -56,8 +58,6 @@ pub enum Skill {
     /// Use Magical Device Skill
     #[serde(rename = "UMD")]
     UseMagicalDevice,
-    /// All Skills
-    All,
 }
 
 impl Skill {
