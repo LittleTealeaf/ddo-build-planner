@@ -11,10 +11,10 @@ use crate::{
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellPower {
-        /// Splits up each bonus into each of the other bonuses.
-        Potency,
-        /// Universal adds universal bonuses to each of the other spell powers
-        Universal,
+    /// Splits up each bonus into each of the other bonuses.
+    Potency,
+    /// Universal adds universal bonuses to each of the other spell powers
+    Universal,
     /// Acid Spell Power
     Acid,
     /// Light Spell Power

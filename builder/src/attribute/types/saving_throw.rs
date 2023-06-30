@@ -18,7 +18,7 @@ use crate::{
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SavingThrow {
-        /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.
+    /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.
     ///
     /// [`Fortitude`]: SavingThrow::Fortitude
     /// [`Reflex`]: SavingThrow::Reflex

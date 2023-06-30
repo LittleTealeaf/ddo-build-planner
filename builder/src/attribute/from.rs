@@ -11,6 +11,12 @@ use super::{
     Attribute,
 };
 
+impl From<&Attribute> for Attribute {
+    fn from(value: &Attribute) -> Self {
+        *value
+    }
+}
+
 impl From<Flag> for Attribute {
     fn from(value: Flag) -> Self {
         Self::Flag(value)
