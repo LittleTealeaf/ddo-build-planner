@@ -13,17 +13,17 @@ use crate::{
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Sheltering {
+    /// Both [`Physical`] and [`Magical`] Sheltering
+    ///
+    /// [`Physical`]: Sheltering::Physical
+    /// [`Magical`]: Sheltering::Magical
+    Both,
     /// Physical Sheltering
     Physical,
     /// Magical Sheltering
     Magical,
     /// Magical Sheltering Cap
     MagicalCap,
-    /// Both [`Physical`] and [`Magical`] Sheltering
-    ///
-    /// [`Physical`]: Sheltering::Physical
-    /// [`Magical`]: Sheltering::Magical
-    Both,
 }
 
 impl CloneBonus for Sheltering {

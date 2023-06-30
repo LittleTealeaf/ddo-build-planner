@@ -6,12 +6,12 @@ use serde::{Deserialize, Serialize};
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponHand {
+        /// Both Hands
+        Both,
     /// The Main Hand
     Main,
     /// The Off Hand
     Off,
-    /// Both Hands
-    Both,
 }
 
 impl WeaponHand {

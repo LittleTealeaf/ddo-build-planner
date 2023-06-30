@@ -18,23 +18,29 @@ use crate::{
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SavingThrow {
+        /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.
+    ///
+    /// [`Fortitude`]: SavingThrow::Fortitude
+    /// [`Reflex`]: SavingThrow::Reflex
+    /// [`Will`]: SavingThrow::Will
+    All,
     /// Fortitude Saving Throw
     Fortitude,
     /// Bonus to Saving Throws against Poison
+    Reflex,
+    /// Bonus to Saving Throws agaisnt Traps
+    Will,
+    /// Bonus to Saving Throws against Enchantments
     Poison,
     /// Bonus to Saving Throws against Diseases
     Disease,
     /// Reflex Saving Throws
-    Reflex,
-    /// Bonus to Saving Throws agaisnt Traps
     Traps,
     /// Bonus to Saving Throws against Spells
     Spell,
     /// Bonus to Saving Throws against Magic
     Magic,
     /// Will Saving Throw
-    Will,
-    /// Bonus to Saving Throws against Enchantments
     Enchantment,
     /// Bonus to Saving Throws against Illusion
     Illusion,
@@ -42,12 +48,6 @@ pub enum SavingThrow {
     Fear,
     /// Bonus to Saving Throws against Curses
     Curse,
-    /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.
-    ///
-    /// [`Fortitude`]: SavingThrow::Fortitude
-    /// [`Reflex`]: SavingThrow::Reflex
-    /// [`Will`]: SavingThrow::Will
-    All,
 }
 
 impl SavingThrow {
