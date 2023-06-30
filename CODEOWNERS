@@ -1,3 +1,4 @@
 .github/**/* @LittleTealeaf
 .devcontainer/**/* @LittleTealeaf
 CODEOWNERS @LittleTealeaf
+Cargo.lock @LittleTealeaf
