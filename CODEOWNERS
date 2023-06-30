@@ -2,4 +2,4 @@
 .devcontainer/**/* @LittleTealeaf
 CODEOWNERS @LittleTealeaf
 Cargo.lock @LittleTealeaf
-**/Cargo.toml
+**/Cargo.toml @LittleTealeaf
