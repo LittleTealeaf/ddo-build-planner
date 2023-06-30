@@ -11,7 +11,7 @@ where
 
 impl<I, K> IntoOrdSet<K> for I
 where
-    I: Iterator<Item = K>,
+    I: IntoIterator<Item = K>,
     K: Ord + Clone,
 {
     fn into_ord_set(self) -> OrdSet<K> {
@@ -44,6 +44,19 @@ mod tests {
         let items = vec![TestEnum::A, TestEnum::B, TestEnum::B, TestEnum::D];
 
         let mut set = items.into_iter().into_ord_set();
+
+        assert!(set.contains(&TestEnum::A));
+
+        assert!(set.remove(&TestEnum::B).is_some());
+        assert!(!set.contains(&TestEnum::B));
+        assert!(!set.contains(&TestEnum::C));
+    }
+
+    #[test]
+    fn vec_into_set() {
+        let items = vec![TestEnum::A, TestEnum::B, TestEnum::B, TestEnum::D];
+
+        let mut set = items.into_ord_set();
 
         assert!(set.contains(&TestEnum::A));
 
