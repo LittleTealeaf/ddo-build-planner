@@ -1,4 +1,9 @@
-use iced::{executor, theme, Application, Command, Settings};
+use iced::{
+    executor, theme,
+    widget::{button, column},
+    Application, Command, Settings,
+};
+use iced_aw::menu::{MenuBar, MenuTree};
 
 fn main() -> iced::Result {
     EditorState::run(Settings::default())
@@ -32,6 +37,24 @@ impl Application for EditorState {
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        "Hello World".into()
+        let menu_file = MenuTree::with_children(
+            button("File"),
+            vec![
+                MenuTree::new(button("Open")),
+                MenuTree::new(button("Close")),
+            ],
+        );
+
+        let menu_help = MenuTree::with_children(
+            button("Help"),
+            vec![
+                MenuTree::new(button("Open")),
+                MenuTree::new(button("Close")),
+            ],
+        );
+
+        let menu_bar = MenuBar::new(vec![menu_file, menu_help]);
+
+        column![menu_bar].into()
     }
 }
