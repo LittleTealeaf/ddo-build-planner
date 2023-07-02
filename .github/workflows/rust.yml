@@ -26,6 +26,11 @@ jobs:
         with:
           toolchain: stable
           components: clippy
+          cache: false
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          key: ${{matrix.os}}
       - name: Build
         uses: actions-rs/cargo@v1
         with:
