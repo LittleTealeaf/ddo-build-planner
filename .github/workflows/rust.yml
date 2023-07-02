@@ -26,16 +26,21 @@ jobs:
         with:
           toolchain: stable
           components: clippy
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all
       - name: Test
         uses: actions-rs/cargo@v1
         with:
           command: test
           args: --all
-      - name: Build Release
+      - name: Build Release Application
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all
+          args: --release
   format:
     name: Format
     runs-on: ubuntu-latest
