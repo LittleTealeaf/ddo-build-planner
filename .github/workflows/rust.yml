@@ -26,16 +26,21 @@ jobs:
         with:
           toolchain: stable
           components: clippy
+          cache: false
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          key: ${{matrix.os}}
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all
       - name: Test
         uses: actions-rs/cargo@v1
         with:
           command: test
           args: --all
-      - name: Build Release
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --all
   format:
     name: Format
     runs-on: ubuntu-latest

@@ -1,37 +1,32 @@
-use std::collections::VecDeque;
-
 use im::OrdSet;
+use itertools::Itertools;
 
 use crate::attribute::{Attribute, TrackAttribute};
 
 #[derive(Default)]
 pub struct AttributeQueue {
     forced: OrdSet<Attribute>,
-    queue: VecDeque<Attribute>,
-    buffer: Vec<Attribute>,
+    queue: OrdSet<Attribute>,
 }
 
 impl AttributeQueue {
     pub fn get_next_attribute(&mut self) -> Option<(Attribute, bool)> {
-        while let Some(attribute) = self.buffer.pop() {
-            if attribute.is_tracked() && !self.queue.contains(&attribute) {
-                self.queue.push_back(attribute);
-            }
-        }
-
-        let attribute = self.queue.pop_front()?;
+        let attribute = self.queue.remove_min()?;
         let forced = self.forced.remove(&attribute).is_some();
         Some((attribute, forced))
     }
 
-    pub fn insert(&mut self, mut attributes: Vec<Attribute>, forced: bool) {
+    pub fn insert(&mut self, attributes: Vec<Attribute>, forced: bool) {
+        let attributes = attributes
+            .into_iter()
+            .filter(Attribute::is_tracked)
+            .collect_vec();
+
         if forced {
-            for attribute in &attributes {
-                self.forced.insert(*attribute);
-            }
+            self.forced.extend(attributes.iter());
         }
 
-        self.buffer.append(&mut attributes);
+        self.queue.extend(attributes.into_iter());
     }
 }
 
