@@ -11,6 +11,8 @@ use crate::{
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Ability {
+    /// All values
+    All,
     /// Represents how strong the character is
     #[serde(rename = "Str")]
     Strength,
@@ -29,8 +31,6 @@ pub enum Ability {
     /// Represents how charismatic the character is.
     #[serde(rename = "Cha")]
     Charisma,
-    /// All values
-    All,
 }
 
 impl Ability {

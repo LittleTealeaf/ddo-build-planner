@@ -39,6 +39,13 @@ impl Compiler {
 
 /// Adding or Inserting bonuses into the Compiler
 impl Compiler {
+    /// Removes all bonuses from a given source from the compiler.
+    ///
+    /// Achieves this by adding a [`Attribute::Dummy`] bonus, which will remove all bonuses from the same source.
+    pub fn remove_source(&mut self, source: BonusSource) {
+        self.add_bonus(Bonus::dummy(source));
+    }
+
     /// Adds a single bonus into the compiler.
     ///
     /// See [`Compiler::add_bonuses`] for implementation details.
@@ -161,9 +168,6 @@ impl Compiler {
                 } else {
                     self.bonuses.insert(attribute, bonuses);
                 }
-                // self.bonuses
-                //     .get_mut_or_default(&attribute)
-                //     .append(&mut bonuses);
             }
 
             // Either check if it's forced, or if the initial value is different from the original
