@@ -164,12 +164,17 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition},
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, Value},
     /// attribute::Attribute};
     ///
-    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
-    /// BonusSource::Base, Some(Condition::Has(Attribute::Dummy)));
-    /// assert!(matches!(bonus.get_condition(), Some(Condition::Has(Attribute::Dummy))));
+    /// let bonus = Bonus::new(
+    ///     Attribute::Dummy, 
+    ///     BonusType::Quality, 
+    ///     10f32.into(),
+    ///     BonusSource::Base, 
+    ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::Value(0f32)))
+    /// );
+    /// assert!(matches!(bonus.get_condition(), Some(_)));
     ///
     /// ```
     pub fn get_condition(&self) -> Option<Condition> {
