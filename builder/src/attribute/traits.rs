@@ -121,7 +121,6 @@ macro_rules! test_default_bonuses {
     };
 }
 
-
 /// Indicates that this type can have some attribute dependnecies
 pub trait AttributeDependencies {
     /// Checks if a given attribute is a dependdency of this object
