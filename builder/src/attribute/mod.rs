@@ -21,6 +21,7 @@ use std::fmt::Display;
 
 use self::{
     flags::Flag,
+    impls::_BaseAttackBonus,
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
@@ -93,6 +94,8 @@ pub enum Attribute {
     SpellResistance,
     /// Spell Penetration
     SpellPenetration,
+    /// Base Attack Bonus
+    BaseAttackBonus,
 }
 
 impl Display for Attribute {
@@ -122,6 +125,7 @@ impl Display for Attribute {
             Attribute::Feat(feat) => write!(f, "Feat: {}", feat),
             Attribute::SpellResistance => write!(f, "Spell Resistance"),
             Attribute::SpellPenetration => write!(f, "Spell Penetration"),
+            Attribute::BaseAttackBonus => write!(f, "Base Attack Bonus"),
         }
     }
 }
@@ -149,6 +153,7 @@ impl Attribute {
             Attribute::ClassLevel(cl) => cl.get_bonuses(value),
             Attribute::Flag(flag) => flag.get_bonuses(value),
             Attribute::Feat(feat) => feat.get_bonuses(value),
+            Attribute::BaseAttackBonus => _BaseAttackBonus.get_bonuses(value),
             _ => None,
         }
     }

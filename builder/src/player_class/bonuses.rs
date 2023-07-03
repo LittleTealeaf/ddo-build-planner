@@ -1,28 +1,75 @@
 use crate::{
-    attribute::{types::Ability, Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
-    player_class::PlayerClass,
+    attribute::{flags::Flag, types::Ability, Attribute, GetBonuses},
+    bonus::{Bonus, BonusType, Condition},
 };
+
+use super::PlayerClass;
 
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        let mut bonuses = vec![Bonus::new(
-            Attribute::CasterLevel((*self).into()),
-            BonusType::Stacking,
-            value.into(),
-            Attribute::from(*self).into(),
-            None,
-        )];
+        (value > 0f32).then(|| {
+            let mut bonuses = self.get_base_attack_bonus(value);
 
-        if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
-            bonuses.append(&mut dc_bonuses);
-        }
+            bonuses.push(Bonus::new(
+                Attribute::CasterLevel((*self).into()),
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(*self).into(),
+                None,
+            ));
 
-        Some(bonuses)
+            if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
+                bonuses.append(&mut dc_bonuses);
+            }
+
+            bonuses
+        })
     }
 }
 
 impl PlayerClass {
+    fn get_base_attack_bonus(&self, value: f32) -> Vec<Bonus> {
+        let bab = match self {
+            Self::Barbarian
+            | Self::Fighter
+            | Self::Paladin
+            | Self::Ranger
+            | Self::DarkHunter
+            | Self::SacredFist => value,
+            Self::Alchemist
+            | Self::Artificer
+            | Self::Bard
+            | Self::Stormsinger
+            | Self::Cleric
+            | Self::DarkApostate
+            | Self::Druid
+            | Self::BlightCaster
+            | Self::FavoredSoul
+            | Self::Monk
+            | Self::Rogue
+            | Self::Warlock
+            | Self::AcolyteOfTheSkin => (value * 0.75f32).floor(),
+            Self::Sorcerer | Self::Wizard => (value * 0.5f32).floor(),
+        };
+
+        vec![
+            Bonus::new(
+                Attribute::BaseAttackBonus,
+                BonusType::Stacking,
+                bab.into(),
+                Attribute::from(*self).into(),
+                Some(Condition::NotHave(Flag::FullBaseAttackBonus.into())),
+            ),
+            Bonus::new(
+                Attribute::BaseAttackBonus,
+                BonusType::Stacking,
+                value.into(),
+                Attribute::from(*self).into(),
+                Some(Condition::Has(Flag::FullBaseAttackBonus.into())),
+            ),
+        ]
+    }
+
     fn get_ability_spell_dc_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Alchemist | Self::Artificer | Self::Wizard => Some(vec![Bonus::new(

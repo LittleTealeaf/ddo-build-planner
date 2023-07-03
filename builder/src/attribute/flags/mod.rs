@@ -41,6 +41,8 @@ pub enum Flag {
 
     /// Wearing Armor Type
     ArmorType(ArmorType),
+    /// Has full base attack bonus
+    FullBaseAttackBonus,
 }
 
 impl Display for Flag {
@@ -53,6 +55,7 @@ impl Display for Flag {
             Flag::OffHandType(off_hand) => write!(f, "{} in the off hand", off_hand),
             Flag::MainHandType(main_hand) => write!(f, "{} in the main hand", main_hand),
             Flag::ArmorType(armor) => write!(f, "Wearing {} Armor", armor),
+            Flag::FullBaseAttackBonus => write!(f, "Full Base Attack Bonus"),
         }
     }
 }
@@ -61,6 +64,8 @@ impl GetBonuses for Flag {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Race(race) => race.get_bonuses(value),
+            Self::ArmorType(armor) => armor.get_bonuses(value),
+            Self::OffHandType(item) => item.get_bonuses(value),
             _ => None,
         }
     }
