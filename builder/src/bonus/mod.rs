@@ -19,7 +19,7 @@ pub use value::*;
 
 /// Represents a given bonus to some [`Attribute`].
 ///
-/// A bonus contains the [`Attribute`], a [`BonusType`], a [`BonusValue`], a [`BonusSource`], and
+/// A bonus contains the [`Attribute`], a [`BonusType`], a [`Value`], a [`BonusSource`], and
 /// an optional [`Condition`].
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(from = "deserialize::DeserializedBonus")]
@@ -29,7 +29,7 @@ pub struct Bonus {
     #[serde(rename = "type")]
     bonus_type: BonusType,
     #[serde(rename = "val")]
-    value: BonusValue,
+    value: Value,
     #[serde(rename = "src")]
     source: BonusSource,
     #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
@@ -56,7 +56,7 @@ impl Bonus {
     pub fn new(
         attribute: Attribute,
         bonus_type: BonusType,
-        value: BonusValue,
+        value: Value,
         source: BonusSource,
         condition: Option<Condition>,
     ) -> Self {
@@ -95,12 +95,12 @@ impl Bonus {
     /// # Example
     ///
     /// ```
-    /// use builder::{bonus::{Bonus, BonusSource, BonusType, BonusValue}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusSource, BonusType, Value}, attribute::Attribute};
     ///
     /// let dummy = Bonus::dummy(BonusSource::Base);
     /// assert_eq!(dummy.get_attribute(), Attribute::Dummy);
     /// assert_eq!(dummy.get_type(), BonusType::Stacking);
-    /// assert_eq!(dummy.get_value(), BonusValue::Value(0f32));
+    /// assert_eq!(dummy.get_value(), Value::Value(0f32));
     /// assert_eq!(dummy.get_source(), BonusSource::Base);
     /// assert!(dummy.get_condition().is_none());
     /// ```
@@ -157,13 +157,13 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder::{bonus::{Bonus, BonusType, BonusSource, BonusValue}, attribute::Attribute};
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
-    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, BonusValue::Value(10f32),
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::Value(10f32),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_value(), BonusValue::Value(10f32));
+    /// assert_eq!(bonus.get_value(), Value::Value(10f32));
     /// ```
-    pub fn get_value(&self) -> BonusValue {
+    pub fn get_value(&self) -> Value {
         self.value.clone()
     }
 
@@ -203,7 +203,7 @@ impl Bonus {
     ///
     /// # Example
     /// ```
-    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, Value},
     /// attribute::{types::Ability, Attribute}};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
@@ -212,7 +212,7 @@ impl Bonus {
     /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
     /// assert_eq!(new_bonus.get_attribute(), Attribute::Ability(Ability::All));
     /// assert_eq!(new_bonus.get_type(), BonusType::Quality);
-    /// assert_eq!(new_bonus.get_value(), BonusValue::Value(10f32));
+    /// assert_eq!(new_bonus.get_value(), Value::Value(10f32));
     /// assert_eq!(new_bonus.get_source(), BonusSource::Base);
     /// assert!(new_bonus.get_condition().is_none());
     /// ```
@@ -231,11 +231,11 @@ impl Bonus {
     /// # Example
     ///
     /// ```
-    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, BonusValue},
+    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, Value},
     /// attribute::{types::Ability, Attribute}};
     ///
     /// let bonus = Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking,
-    /// BonusValue::Attribute(Attribute::Ability(Ability::Constitution)),
+    /// Value::Attribute(Attribute::Ability(Ability::Constitution)),
     /// BonusSource::Attribute(Attribute::Ability(Ability::Wisdom)),
     /// Some(Condition::Has(Attribute::Ability(Ability::Dexterity))));
     ///
@@ -250,12 +250,12 @@ impl Bonus {
     /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Wisdom)));
     /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Strength)));
     /// ```
-    /// Attributes referenced in the [`BonusValue`] (see [`BonusValue::get_dependencies()`]) and
+    /// Attributes referenced in the [`Value`] (see [`Value::get_dependencies()`]) and
     /// [`Condition`] (see [`Condition::get_dependencies()`]) are included. However, the bonus
     /// [`Attribute`] and [`BonusSource`] are not included.
     ///
     ///
-    /// [`BonusValue::get_dependencies()`]: crate::bonus::BonusValue::get_dependencies
+    /// [`Value::get_dependencies()`]: crate::bonus::Value::get_dependencies
     /// [`Condition::get_dependencies()`]: crate::bonus::Condition::get_dependencies
     /// [`Attributes`]: crate::attribute::Attribute
     pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
@@ -292,7 +292,7 @@ mod tests {
         let bonus = Bonus::new(
             Attribute::Ability(Ability::Strength),
             BonusType::Profane,
-            BonusValue::Value(10f32),
+            Value::Value(10f32),
             BonusSource::Debug(3),
             None,
         );

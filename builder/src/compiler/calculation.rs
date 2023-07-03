@@ -3,7 +3,7 @@ use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::Attribute,
-    bonus::{BonusValue, Condition},
+    bonus::{Value, Condition},
 };
 
 use super::Compiler;
@@ -34,16 +34,16 @@ impl Compiler {
         }
     }
 
-    fn calculate_value(&mut self, value: BonusValue) -> f32 {
+    fn calculate_value(&mut self, value: Value) -> f32 {
         match value {
-            BonusValue::Value(val) => val,
-            BonusValue::Attribute(attribute) => self.get_attribute(&attribute),
-            BonusValue::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
-            BonusValue::Product(vals) => vals
+            Value::Value(val) => val,
+            Value::Attribute(attribute) => self.get_attribute(&attribute),
+            Value::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
+            Value::Product(vals) => vals
                 .into_iter()
                 .map(|val| self.calculate_value(val))
                 .product(),
-            BonusValue::Min(vals) => {
+            Value::Min(vals) => {
                 let mut iter = vals.into_iter();
 
                 if let Some(first) = iter.next() {
@@ -60,7 +60,7 @@ impl Compiler {
                     0f32
                 }
             }
-            BonusValue::Max(vals) => {
+            Value::Max(vals) => {
                 let mut iter = vals.into_iter();
 
                 if let Some(first) = iter.next() {
@@ -77,7 +77,7 @@ impl Compiler {
                     0f32
                 }
             }
-            BonusValue::Floor(val) => self.calculate_value(*val).floor(),
+            Value::Floor(val) => self.calculate_value(*val).floor(),
         }
     }
 }

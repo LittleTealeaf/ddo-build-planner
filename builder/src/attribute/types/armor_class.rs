@@ -8,7 +8,7 @@ use crate::{
         types::Ability,
         Attribute, DefaultBonuses, GetBonuses,
     },
-    bonus::{Bonus, BonusSource, BonusType, BonusValue, Condition},
+    bonus::{Bonus, BonusSource, BonusType, Value, Condition},
     equipment::item::types::ShieldType,
 };
 
@@ -63,7 +63,7 @@ impl GetBonuses for ArmorClass {
             ArmorClass::ArmorScalar => Some(vec![Bonus::new(
                 ArmorClass::Bonus.into(),
                 BonusType::Stacking,
-                BonusValue::Product(vec![
+                Value::Product(vec![
                     Attribute::from(ArmorClass::ArmorBonus).into(),
                     value.into(),
                 ]),
@@ -73,7 +73,7 @@ impl GetBonuses for ArmorClass {
             ArmorClass::ShieldScalar => Some(vec![Bonus::new(
                 ArmorClass::Bonus.into(),
                 BonusType::Stacking,
-                BonusValue::Product(vec![
+                Value::Product(vec![
                     Attribute::from(ArmorClass::ShieldBonus).into(),
                     value.into(),
                 ]),

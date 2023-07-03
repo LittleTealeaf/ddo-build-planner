@@ -8,24 +8,24 @@ use crate::attribute::Attribute;
 ///
 /// [`Bonus`]: crate::bonus::Bonus
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-pub enum BonusValue {
+pub enum Value {
     /// Just a simple [`f32`] value.
     Value(f32),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
     /// Sums each of the values
-    Sum(Vec<BonusValue>),
+    Sum(Vec<Value>),
     /// Multiplies each of the values
-    Product(Vec<BonusValue>),
+    Product(Vec<Value>),
     /// Returns the minimum value from the set
-    Min(Vec<BonusValue>),
+    Min(Vec<Value>),
     /// Returns the maximum value from the set
-    Max(Vec<BonusValue>),
+    Max(Vec<Value>),
     /// Floors the inner value to a whole number
-    Floor(Box<BonusValue>),
+    Floor(Box<Value>),
 }
 
-impl BonusValue {
+impl Value {
     /// Returns any dependencies associated with the value.
     ///
     /// In short terms: If the [`BonusValue`] has an [`Attribute`] in it, then this returns a
@@ -35,7 +35,7 @@ impl BonusValue {
             Self::Attribute(attribute) => Some(vec![*attribute]),
             Self::Sum(vals) | Self::Product(vals) | Self::Min(vals) | Self::Max(vals) => Some(
                 vals.iter()
-                    .filter_map(BonusValue::get_dependencies)
+                    .filter_map(Value::get_dependencies)
                     .flatten()
                     .collect(),
             ),
@@ -45,12 +45,12 @@ impl BonusValue {
     }
 }
 
-impl Display for BonusValue {
+impl Display for Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            BonusValue::Value(value) => value.fmt(f),
-            BonusValue::Attribute(attr) => attr.fmt(f),
-            BonusValue::Sum(vals) => {
+            Value::Value(value) => value.fmt(f),
+            Value::Attribute(attr) => attr.fmt(f),
+            Value::Sum(vals) => {
                 write!(f, "(")?;
 
                 let mut iter = vals.iter();
@@ -65,7 +65,7 @@ impl Display for BonusValue {
 
                 write!(f, ")")
             }
-            BonusValue::Product(vals) => {
+            Value::Product(vals) => {
                 write!(f, "(")?;
 
                 let mut iter = vals.iter();
@@ -80,7 +80,7 @@ impl Display for BonusValue {
 
                 write!(f, ")")
             }
-            BonusValue::Min(vals) => {
+            Value::Min(vals) => {
                 write!(f, "Min(")?;
 
                 let mut iter = vals.iter();
@@ -95,7 +95,7 @@ impl Display for BonusValue {
 
                 write!(f, ")")
             }
-            BonusValue::Max(vals) => {
+            Value::Max(vals) => {
                 write!(f, "Max(")?;
 
                 let mut iter = vals.iter();
@@ -110,20 +110,20 @@ impl Display for BonusValue {
 
                 write!(f, ")")
             }
-            BonusValue::Floor(val) => write!(f, "Floor({})", val),
+            Value::Floor(val) => write!(f, "Floor({})", val),
         }
     }
 }
 
-impl From<f32> for BonusValue {
-    fn from(value: f32) -> BonusValue {
-        BonusValue::Value(value)
+impl From<f32> for Value {
+    fn from(value: f32) -> Value {
+        Value::Value(value)
     }
 }
 
-impl From<Attribute> for BonusValue {
+impl From<Attribute> for Value {
     fn from(value: Attribute) -> Self {
-        BonusValue::Attribute(value)
+        Value::Attribute(value)
     }
 }
 
@@ -133,7 +133,7 @@ mod tests {
 
     #[test]
     fn attribute_returns_dependency() {
-        let value = BonusValue::Attribute(Attribute::Debug(3));
+        let value = Value::Attribute(Attribute::Debug(3));
         let dependencies = value.get_dependencies();
 
         assert_eq!(Some(vec![Attribute::Debug(3)]), dependencies);
@@ -141,7 +141,7 @@ mod tests {
 
     #[test]
     fn value_returns_no_dependency() {
-        let value = BonusValue::Value(0f32);
+        let value = Value::Value(0f32);
         let dependencies = value.get_dependencies();
 
         assert_eq!(None, dependencies);
@@ -149,9 +149,9 @@ mod tests {
 
     #[test]
     fn sum_returns_dependencies() {
-        let value = BonusValue::Sum(vec![
-            BonusValue::Attribute(Attribute::Debug(5)),
-            BonusValue::Value(3f32),
+        let value = Value::Sum(vec![
+            Value::Attribute(Attribute::Debug(5)),
+            Value::Value(3f32),
         ]);
         let dependencies = value.get_dependencies();
 
@@ -160,9 +160,9 @@ mod tests {
 
     #[test]
     fn product_returns_dependencies() {
-        let value = BonusValue::Product(vec![
-            BonusValue::Attribute(Attribute::Debug(5)),
-            BonusValue::Value(3f32),
+        let value = Value::Product(vec![
+            Value::Attribute(Attribute::Debug(5)),
+            Value::Value(3f32),
         ]);
         let dependencies = value.get_dependencies();
 
@@ -171,16 +171,16 @@ mod tests {
 
     #[test]
     fn from_attribute() {
-        let value = BonusValue::from(Attribute::Debug(4));
-        assert_eq!(value, BonusValue::Attribute(Attribute::Debug(4)));
+        let value = Value::from(Attribute::Debug(4));
+        assert_eq!(value, Value::Attribute(Attribute::Debug(4)));
     }
 
     #[test]
     fn from_value() {
-        let value = BonusValue::from(3f32);
+        let value = Value::from(3f32);
 
         assert!({
-            if let BonusValue::Value(val) = value {
+            if let Value::Value(val) = value {
                 val == 3f32
             } else {
                 false
