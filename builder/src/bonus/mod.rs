@@ -168,10 +168,10 @@ impl Bonus {
     /// attribute::Attribute};
     ///
     /// let bonus = Bonus::new(
-    ///     Attribute::Dummy, 
-    ///     BonusType::Quality, 
+    ///     Attribute::Dummy,
+    ///     BonusType::Quality,
     ///     10f32.into(),
-    ///     BonusSource::Base, 
+    ///     BonusSource::Base,
     ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::Value(0f32)))
     /// );
     /// assert!(matches!(bonus.get_condition(), Some(_)));

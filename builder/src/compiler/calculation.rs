@@ -29,12 +29,9 @@ impl Compiler {
     fn calculate_value(&mut self, value: &Value) -> f32 {
         match value {
             Value::Value(val) => *val,
-            Value::Attribute(attribute) => self.get_attribute(&attribute),
+            Value::Attribute(attribute) => self.get_attribute(attribute),
             Value::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
-            Value::Product(vals) => vals
-                .into_iter()
-                .map(|val| self.calculate_value(val))
-                .product(),
+            Value::Product(vals) => vals.iter().map(|val| self.calculate_value(val)).product(),
             Value::Min(vals) => {
                 let mut iter = vals.into_iter();
 
