@@ -30,10 +30,10 @@ impl Compiler {
         match value {
             Value::Value(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
-            Value::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
+            Value::Sum(vals) => vals.iter().map(|val| self.calculate_value(val)).sum(),
             Value::Product(vals) => vals.iter().map(|val| self.calculate_value(val)).product(),
             Value::Min(vals) => {
-                let mut iter = vals.into_iter();
+                let mut iter = vals.iter();
 
                 if let Some(first) = iter.next() {
                     let mut min = self.calculate_value(first);
