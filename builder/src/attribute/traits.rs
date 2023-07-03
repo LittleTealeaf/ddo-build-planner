@@ -1,5 +1,7 @@
 use crate::bonus::Bonus;
 
+use super::Attribute;
+
 /// Implements the ability to get bonuses from different [`Attribute`] sub-types.
 ///
 /// The generic type `T` is used as a means of differentiating different bonuses for an
@@ -117,4 +119,11 @@ macro_rules! test_default_bonuses {
             }
         }
     };
+}
+
+
+/// Indicates that this type can have some attribute dependnecies
+pub trait AttributeDependencies {
+    /// Checks if a given attribute is a dependdency of this object
+    fn has_attr_dependency(&self, attribute: Attribute) -> bool;
 }
