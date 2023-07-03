@@ -2,7 +2,7 @@ use itertools::Itertools;
 use utils::ord::{IntoOrdGroupMap, IntoOrdSet};
 
 use crate::{
-    attribute::Attribute,
+    attribute::{Attribute, AttributeDependencies},
     bonus::{Bonus, BonusSource, CloneBonus},
 };
 
@@ -179,8 +179,7 @@ impl Compiler {
                         .get_bonus_iter()
                         .filter_map(|bonus| {
                             bonus
-                                .get_dependencies()?
-                                .contains(&attribute)
+                                .has_attr_dependency(attribute)
                                 .then_some(bonus.get_attribute())
                         })
                         .collect_vec();

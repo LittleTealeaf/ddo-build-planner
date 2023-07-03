@@ -135,7 +135,7 @@ impl GetBonuses for Race {
                     BonusType::Stacking,
                     1f32.into(),
                     Attribute::from(Race::Dwarf).into(),
-                    Some(Condition::Has(Attribute::Feat(Feat::Proficiency(
+                    Some(Condition::has(Attribute::Feat(Feat::Proficiency(
                         Proficiency::MartialWeaponProficiency,
                     )))),
                 ),

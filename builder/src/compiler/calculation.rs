@@ -3,48 +3,37 @@ use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::Attribute,
-    bonus::{BonusValue, Condition},
+    bonus::{Condition, Value},
 };
 
 use super::Compiler;
 
 // Supporting Functions
 impl Compiler {
-    fn check_condition(&mut self, condition: Condition) -> bool {
+    fn check_condition(&mut self, condition: &Condition) -> bool {
+        let check_condition = |cond: &Condition| self.check_condition(cond);
+
         match condition {
-            Condition::Has(attr) => self.get_attribute(&attr) > 0f32,
-            Condition::NotHave(attr) => self.get_attribute(&attr) <= 0f32,
-            Condition::Max(attr, val) => self.get_attribute(&attr) <= val,
-            Condition::Min(attr, val) => self.get_attribute(&attr) >= val,
-            Condition::Eq(attr, val) => self.get_attribute(&attr) == val,
-            Condition::NotEq(attr, val) => self.get_attribute(&attr) != val,
-            Condition::Any(set) => set.into_iter().any(|cond| self.check_condition(cond)),
-            Condition::All(set) => set.into_iter().all(|cond| self.check_condition(cond)),
-            Condition::GreaterThan(a, b) => self.get_attribute(&a) > self.get_attribute(&b),
-            Condition::LessThan(a, b) => self.get_attribute(&a) < self.get_attribute(&b),
-            Condition::EqualTo(a, b) => self.get_attribute(&a) == self.get_attribute(&b),
-            Condition::Not(condition) => !self.check_condition(*condition),
-            Condition::NotAll(conditions) => conditions
-                .into_iter()
-                .any(|cond| !self.check_condition(cond)),
-            Condition::None(conditions) => conditions
-                .into_iter()
-                .all(|cond| !self.check_condition(cond)),
-            Condition::NotEqualTo(a, b) => self.get_attribute(&a) != self.get_attribute(&b),
+            Condition::Not(cond) => self.check_condition(cond),
+            Condition::GreaterThan(a, b) => self.calculate_value(a) > self.calculate_value(b),
+            Condition::LessThan(a, b) => self.calculate_value(a) < self.calculate_value(b),
+            Condition::EqualTo(a, b) => self.calculate_value(a) == self.calculate_value(b),
+            Condition::NotEqualTo(a, b) => self.calculate_value(a) != self.calculate_value(b),
+            Condition::Any(conds) => conds.iter().any(check_condition),
+            Condition::All(conds) => conds.iter().all(check_condition),
+            Condition::NotAny(conds) => !conds.iter().any(check_condition),
+            Condition::NotAll(conds) => !conds.iter().all(check_condition),
         }
     }
 
-    fn calculate_value(&mut self, value: BonusValue) -> f32 {
+    fn calculate_value(&mut self, value: &Value) -> f32 {
         match value {
-            BonusValue::Value(val) => val,
-            BonusValue::Attribute(attribute) => self.get_attribute(&attribute),
-            BonusValue::Sum(vals) => vals.into_iter().map(|val| self.calculate_value(val)).sum(),
-            BonusValue::Product(vals) => vals
-                .into_iter()
-                .map(|val| self.calculate_value(val))
-                .product(),
-            BonusValue::Min(vals) => {
-                let mut iter = vals.into_iter();
+            Value::Value(val) => *val,
+            Value::Attribute(attribute) => self.get_attribute(attribute),
+            Value::Sum(vals) => vals.iter().map(|val| self.calculate_value(val)).sum(),
+            Value::Product(vals) => vals.iter().map(|val| self.calculate_value(val)).product(),
+            Value::Min(vals) => {
+                let mut iter = vals.iter();
 
                 if let Some(first) = iter.next() {
                     let mut min = self.calculate_value(first);
@@ -60,7 +49,7 @@ impl Compiler {
                     0f32
                 }
             }
-            BonusValue::Max(vals) => {
+            Value::Max(vals) => {
                 let mut iter = vals.into_iter();
 
                 if let Some(first) = iter.next() {
@@ -77,7 +66,7 @@ impl Compiler {
                     0f32
                 }
             }
-            BonusValue::Floor(val) => self.calculate_value(*val).floor(),
+            Value::Floor(val) => self.calculate_value(val).floor(),
         }
     }
 }
@@ -180,9 +169,9 @@ impl Compiler {
             .filter_map(|bonus| {
                 bonus
                     .get_condition()
-                    .map(|condition| self.check_condition(condition))
+                    .map(|condition| self.check_condition(&condition))
                     .unwrap_or(true)
-                    .then(|| (bonus.get_type(), self.calculate_value(bonus.get_value())))
+                    .then(|| (bonus.get_type(), self.calculate_value(&bonus.get_value())))
             });
 
         // Collect each type into a vec with EnumBinaryMap
