@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::Attribute;
+use crate::attribute::{Attribute, AttributeDependencies};
 
 /// Represents a value of a [`Bonus`]
 ///
@@ -111,6 +111,19 @@ impl Display for Value {
                 write!(f, ")")
             }
             Value::Floor(val) => write!(f, "Floor({})", val),
+        }
+    }
+}
+
+impl AttributeDependencies for Value {
+    fn has_attr_dependency(&self, attribute: Attribute) -> bool {
+        match self {
+            Value::Value(_) => false,
+            Value::Attribute(attr) => attribute.eq(attr),
+            Value::Min(vals) | Value::Max(vals) | Value::Product(vals) | Value::Sum(vals) => vals
+                .into_iter()
+                .any(|val| val.has_attr_dependency(attribute)),
+            Value::Floor(val) => val.has_attr_dependency(attribute),
         }
     }
 }

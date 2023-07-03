@@ -8,7 +8,7 @@ mod value;
 
 use std::fmt::Display;
 
-use crate::attribute::{flags::Flag, Attribute};
+use crate::attribute::{flags::Flag, Attribute, AttributeDependencies};
 
 pub use bonus_type::*;
 pub use condition::*;
@@ -34,8 +34,6 @@ pub struct Bonus {
     source: BonusSource,
     #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
     condition: Option<Condition>,
-    #[serde(skip)]
-    dependencies: Option<Vec<Attribute>>,
 }
 
 impl Bonus {
@@ -60,31 +58,12 @@ impl Bonus {
         source: BonusSource,
         condition: Option<Condition>,
     ) -> Self {
-        let mut deps = Vec::new();
-
-        if let Some(condition) = &condition {
-            for dep in condition.get_dependencies() {
-                if !deps.contains(&dep) {
-                    deps.push(dep);
-                }
-            }
-        }
-
-        if let Some(value_deps) = value.get_dependencies() {
-            for dep in value_deps {
-                if !deps.contains(&dep) {
-                    deps.push(dep);
-                }
-            }
-        }
-
         Self {
             attribute,
             bonus_type,
             value,
             source,
             condition,
-            dependencies: (!deps.is_empty()).then_some(deps),
         }
     }
 
@@ -225,41 +204,16 @@ impl Bonus {
             self.condition.clone(),
         )
     }
+}
 
-    /// Returns all other [`Attributes`] that this bonus references
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, Value},
-    /// attribute::{types::Ability, Attribute}};
-    ///
-    /// let bonus = Bonus::new(Attribute::Ability(Ability::Strength), BonusType::Stacking,
-    /// Value::Attribute(Attribute::Ability(Ability::Constitution)),
-    /// BonusSource::Attribute(Attribute::Ability(Ability::Wisdom)),
-    /// Some(Condition::Has(Attribute::Ability(Ability::Dexterity))));
-    ///
-    /// let deps = bonus.get_dependencies();
-    ///
-    /// assert!(deps.is_some());
-    /// let dependencies = deps.unwrap();
-    ///
-    /// assert!(dependencies.contains(&Attribute::Ability(Ability::Constitution)));
-    /// assert!(dependencies.contains(&Attribute::Ability(Ability::Dexterity)));
-    ///
-    /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Wisdom)));
-    /// assert!(!dependencies.contains(&Attribute::Ability(Ability::Strength)));
-    /// ```
-    /// Attributes referenced in the [`Value`] (see [`Value::get_dependencies()`]) and
-    /// [`Condition`] (see [`Condition::get_dependencies()`]) are included. However, the bonus
-    /// [`Attribute`] and [`BonusSource`] are not included.
-    ///
-    ///
-    /// [`Value::get_dependencies()`]: crate::bonus::Value::get_dependencies
-    /// [`Condition::get_dependencies()`]: crate::bonus::Condition::get_dependencies
-    /// [`Attributes`]: crate::attribute::Attribute
-    pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
-        self.dependencies.clone()
+impl AttributeDependencies for Bonus {
+    fn has_attr_dependency(&self, attribute: Attribute) -> bool {
+        self.value.has_attr_dependency(attribute)
+            || self
+                .condition
+                .as_ref()
+                .map(|cond| cond.has_attr_dependency(attribute))
+                .unwrap_or(false)
     }
 }
 

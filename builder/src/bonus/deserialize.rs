@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::Attribute;
 
-use super::{Bonus, BonusSource, BonusType, Value, Condition};
+use super::{Bonus, BonusSource, BonusType, Condition, Value};
 
 #[derive(Serialize, Deserialize)]
 pub struct DeserializedBonus {
