@@ -20,4 +20,4 @@ jobs:
           toolchain: stable
           cache: false
       - name: Install Builder
-        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --force
+        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev $GITHUB_SHA
