@@ -2,5 +2,7 @@
 //!
 //! There may not be entries in this module, and that is to be expected as they only add implementations to pre-existing items.
 mod player_class;
+mod epic_levels;
 
 pub use player_class::*;
+pub use epic_levels::*;
