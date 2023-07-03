@@ -196,7 +196,7 @@ impl GetBonuses for RacialFeat {
                         BonusType::Dodge,
                         4f32.into(),
                         Attribute::from(Feat::RacialFeat(RacialFeat::GiantEvasion)).into(),
-                        Some(Condition::Has(
+                        Some(Condition::has(
                             Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant))
                                 .into(),
                         )),
@@ -220,11 +220,11 @@ impl GetBonuses for RacialFeat {
                         1f32.into(),
                         Attribute::from(Feat::RacialFeat(RacialFeat::OrcAndGoblinBonus)).into(),
                         Some(Condition::Any(vec![
-                            Condition::Has(
+                            Condition::has(
                                 Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
                                     .into(),
                             ),
-                            Condition::Has(
+                            Condition::has(
                                 Toggle::Attacking(AttackingTarget::MonsterType(
                                     MonsterType::Goblinoid,
                                 ))
@@ -306,7 +306,7 @@ impl GetBonuses for RacialFeat {
                     Attribute::from(Feat::from(RacialFeat::HalflingThrownWeaponFocus)).into(),
                     Some(Condition::Any(
                         WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::Has(Flag::from(MainHandType::Weapon(wt)).into()))
+                            .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt)).into()))
                             .to_vec(),
                     )),
                 ),
@@ -317,7 +317,7 @@ impl GetBonuses for RacialFeat {
                     Attribute::from(Feat::from(RacialFeat::HalflingThrownWeaponFocus)).into(),
                     Some(Condition::Any(
                         WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::Has(Flag::from(OffHandType::Weapon(wt)).into()))
+                            .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt)).into()))
                             .to_vec(),
                     )),
                 ),
