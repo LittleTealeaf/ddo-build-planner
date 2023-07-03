@@ -55,9 +55,9 @@ impl AttributeDependencies for Condition {
             Condition::Any(conds)
             | Condition::All(conds)
             | Condition::NotAny(conds)
-            | Condition::NotAll(conds) => conds
-                .into_iter()
-                .any(|cond| cond.has_attr_dependency(attribute)),
+            | Condition::NotAll(conds) => {
+                conds.iter().any(|cond| cond.has_attr_dependency(attribute))
+            }
         }
     }
 }

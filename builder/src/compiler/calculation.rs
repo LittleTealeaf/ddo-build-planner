@@ -19,10 +19,10 @@ impl Compiler {
             Condition::LessThan(a, b) => self.calculate_value(a) < self.calculate_value(b),
             Condition::EqualTo(a, b) => self.calculate_value(a) == self.calculate_value(b),
             Condition::NotEqualTo(a, b) => self.calculate_value(a) != self.calculate_value(b),
-            Condition::Any(conds) => conds.into_iter().any(check_condition),
-            Condition::All(conds) => conds.into_iter().all(check_condition),
-            Condition::NotAny(conds) => !conds.into_iter().any(check_condition),
-            Condition::NotAll(conds) => !conds.into_iter().all(check_condition),
+            Condition::Any(conds) => conds.iter().any(check_condition),
+            Condition::All(conds) => conds.iter().all(check_condition),
+            Condition::NotAny(conds) => !conds.iter().any(check_condition),
+            Condition::NotAll(conds) => !conds.iter().all(check_condition),
         }
     }
 

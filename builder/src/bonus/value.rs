@@ -121,7 +121,7 @@ impl AttributeDependencies for Value {
             Value::Value(_) => false,
             Value::Attribute(attr) => attribute.eq(attr),
             Value::Min(vals) | Value::Max(vals) | Value::Product(vals) | Value::Sum(vals) => vals
-                .into_iter()
+                .iter()
                 .any(|val| val.has_attr_dependency(attribute)),
             Value::Floor(val) => val.has_attr_dependency(attribute),
         }
