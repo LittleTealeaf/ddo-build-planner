@@ -1,9 +1,5 @@
 #![allow(dead_code, clippy::must_use_candidate)]
-#![warn(
-    missing_docs,
-    clippy::pedantic,
-    clippy::nursery
-)]
+#![warn(missing_docs, clippy::pedantic, clippy::nursery)]
 
 //! This crate contains large datasets such as items.
 
