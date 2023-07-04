@@ -1,6 +1,5 @@
 //! Helper functions for comparing floats
 
-
 /// Indicates that a type can be said to be equal wthin an error margin
 pub trait ErrorMargin {
     /// Returns `true` if the margin of error is lower than the specified amount
