@@ -228,6 +228,13 @@ impl AttributeDependencies for Bonus {
                 .as_ref()
                 .map_or(false, |cond| cond.has_attr_dependency(attribute))
     }
+
+    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+        self.value.include_attr_dependency(set);
+        if let Some(condition) = &self.condition {
+            condition.include_attr_dependency(set);
+        }
+    }
 }
 
 impl Display for Bonus {
