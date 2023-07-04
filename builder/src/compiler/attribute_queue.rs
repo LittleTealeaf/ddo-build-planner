@@ -10,6 +10,17 @@ pub struct AttributeQueue {
 }
 
 impl AttributeQueue {
+    pub fn initialize(attributes: Vec<Attribute>, forced: bool) -> Self {
+        Self {
+            forced: if forced {
+                OrdSet::from(attributes.clone())
+            } else {
+                OrdSet::default()
+            },
+            queue: OrdSet::from(attributes),
+        }
+    }
+
     pub fn get_next_attribute(&mut self) -> Option<(Attribute, bool)> {
         let attribute = self.queue.remove_min()?;
         let forced = self.forced.remove(&attribute).is_some();
