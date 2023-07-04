@@ -40,7 +40,7 @@ impl Value {
                     .collect(),
             ),
             Self::Floor(val) => val.get_dependencies(),
-            _ => None,
+            Self::Value(_) => None,
         }
     }
 }

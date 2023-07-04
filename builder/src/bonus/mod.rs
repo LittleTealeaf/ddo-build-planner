@@ -52,7 +52,7 @@ impl Bonus {
     /// ```
     /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
     #[must_use]
-    pub fn new(
+    pub const fn new(
         attribute: Attribute,
         bonus_type: BonusType,
         value: Value,
@@ -118,7 +118,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_attribute(), Attribute::Dummy);
     /// ```
     #[must_use]
-    pub fn get_attribute(&self) -> Attribute {
+    pub const fn get_attribute(&self) -> Attribute {
         self.attribute
     }
 
@@ -133,7 +133,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_type(), BonusType::Enhancement);
     /// ```
     #[must_use]
-    pub fn get_type(&self) -> BonusType {
+    pub const fn get_type(&self) -> BonusType {
         self.bonus_type
     }
 
@@ -163,7 +163,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_source(), BonusSource::Base);
     /// ```
     #[must_use]
-    pub fn get_source(&self) -> BonusSource {
+    pub const fn get_source(&self) -> BonusSource {
         self.source
     }
 
