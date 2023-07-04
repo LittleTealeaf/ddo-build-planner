@@ -30,7 +30,7 @@ impl GetBonuses for Feat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
         match self {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
-            _ => None,
+            Self::Proficiency(_) => None,
         }
     }
 }
