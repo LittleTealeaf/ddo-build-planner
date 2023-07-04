@@ -145,7 +145,6 @@ impl Attribute {
                 GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
             }
             Attribute::Weapon(stat) => stat.get_bonuses(value),
-            Attribute::ArmorClass(ac) => ac.get_bonuses(value),
             Attribute::ClassLevel(cl) => cl.get_bonuses(value),
             Attribute::Flag(flag) => flag.get_bonuses(value),
             Attribute::Feat(feat) => feat.get_bonuses(value),
