@@ -24,11 +24,11 @@ pub enum BonusSource {
 impl Display for BonusSource {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            BonusSource::Attribute(attr) => write!(f, "Attribute: {}", attr),
-            BonusSource::Custom(num) => write!(f, "Custom: {}", num),
+            Self::Attribute(attr) => write!(f, "Attribute: {attr}"),
+            Self::Custom(num) => write!(f, "Custom: {num}"),
             #[cfg(test)]
             BonusSource::Debug(num) => write!(f, "Debug: {}", num),
-            BonusSource::Base => write!(f, "Base"),
+            Self::Base => write!(f, "Base"),
         }
     }
 }

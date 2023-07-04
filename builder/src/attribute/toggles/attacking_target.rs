@@ -19,9 +19,9 @@ pub enum AttackingTarget {
 impl Display for AttackingTarget {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            AttackingTarget::Tripped => write!(f, "Tripped Target"),
-            AttackingTarget::MonsterType(monster_type) => monster_type.fmt(f),
-            AttackingTarget::Alignment(alignment) => alignment.fmt(f),
+            Self::Tripped => write!(f, "Tripped Target"),
+            Self::MonsterType(monster_type) => monster_type.fmt(f),
+            Self::Alignment(alignment) => alignment.fmt(f),
         }
     }
 }

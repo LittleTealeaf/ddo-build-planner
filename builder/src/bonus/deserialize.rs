@@ -23,7 +23,7 @@ pub struct DeserializedBonus {
 
 impl From<DeserializedBonus> for Bonus {
     fn from(value: DeserializedBonus) -> Self {
-        Bonus::new(
+        Self::new(
             value.attribute,
             value.bonus_type,
             value.value,

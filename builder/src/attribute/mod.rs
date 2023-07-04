@@ -100,28 +100,28 @@ impl Display for Attribute {
         match self {
             #[cfg(test)]
             Attribute::Debug(val) => write!(f, "Debug {}", val),
-            Attribute::Dummy => write!(f, "Dummy"),
-            Attribute::Ability(ability) => write!(f, "{} Score", ability),
-            Attribute::AbilityModifier(ability) => write!(f, "{} Modifier", ability),
-            Attribute::Skill(skill) => skill.fmt(f),
-            Attribute::Toggle(toggle) => toggle.fmt(f),
-            Attribute::SpellPower(sp) => write!(f, "{} Spell Power", sp),
-            Attribute::SpellCriticalChance(sp) => write!(f, "{} Spell Critical Chance", sp),
-            Attribute::SpellCriticalDamage(sp) => write!(f, "{} Spell Critical Damage", sp),
-            Attribute::SavingThrow(saving_throw) => write!(f, "{} Saving Throw", saving_throw),
-            Attribute::CasterLevel(selector) => write!(f, "{} Caster Level", selector),
-            Attribute::MaxCasterLevel(selector) => write!(f, "{} Max Caster Level", selector),
-            Attribute::SpellDC(selector) => write!(f, "{} Spell DC", selector),
-            Attribute::Weapon(weapon) => weapon.fmt(f),
-            Attribute::ArmorClass(ac) => ac.fmt(f),
-            Attribute::Sheltering(sheltering) => sheltering.fmt(f),
-            Attribute::ClassLevel(cl) => write!(f, "{} Level", cl),
-            Attribute::Flag(fl) => fl.fmt(f),
-            Attribute::EnergyResistance(energy) => write!(f, "{} Resistance", energy),
-            Attribute::EnergyAbsorption(energy) => write!(f, "{} Absorption", energy),
-            Attribute::Feat(feat) => write!(f, "Feat: {}", feat),
-            Attribute::SpellResistance => write!(f, "Spell Resistance"),
-            Attribute::SpellPenetration => write!(f, "Spell Penetration"),
+            Self::Dummy => write!(f, "Dummy"),
+            Self::Ability(ability) => write!(f, "{ability} Score"),
+            Self::AbilityModifier(ability) => write!(f, "{ability} Modifier"),
+            Self::Skill(skill) => skill.fmt(f),
+            Self::Toggle(toggle) => toggle.fmt(f),
+            Self::SpellPower(sp) => write!(f, "{sp} Spell Power"),
+            Self::SpellCriticalChance(sp) => write!(f, "{sp} Spell Critical Chance"),
+            Self::SpellCriticalDamage(sp) => write!(f, "{sp} Spell Critical Damage"),
+            Self::SavingThrow(saving_throw) => write!(f, "{saving_throw} Saving Throw"),
+            Self::CasterLevel(selector) => write!(f, "{selector} Caster Level"),
+            Self::MaxCasterLevel(selector) => write!(f, "{selector} Max Caster Level"),
+            Self::SpellDC(selector) => write!(f, "{selector} Spell DC"),
+            Self::Weapon(weapon) => weapon.fmt(f),
+            Self::ArmorClass(ac) => ac.fmt(f),
+            Self::Sheltering(sheltering) => sheltering.fmt(f),
+            Self::ClassLevel(cl) => write!(f, "{cl} Level"),
+            Self::Flag(fl) => fl.fmt(f),
+            Self::EnergyResistance(energy) => write!(f, "{energy} Resistance"),
+            Self::EnergyAbsorption(energy) => write!(f, "{energy} Absorption"),
+            Self::Feat(feat) => write!(f, "Feat: {feat}"),
+            Self::SpellResistance => write!(f, "Spell Resistance"),
+            Self::SpellPenetration => write!(f, "Spell Penetration"),
         }
     }
 }
@@ -133,21 +133,22 @@ impl Attribute {
     /// [`Attribute::AbilityModifier`] using some formula.
     ///
     /// If an attribute has no bonuses associated with it, then `None` is returned.
+    #[must_use]
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Attribute::Ability(ability) => ability.get_bonuses(value),
-            Attribute::Toggle(toggle) => toggle.get_bonuses(value),
-            Attribute::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
-            Attribute::SpellCriticalChance(sp) => {
+            Self::Ability(ability) => ability.get_bonuses(value),
+            Self::Toggle(toggle) => toggle.get_bonuses(value),
+            Self::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
+            Self::SpellCriticalChance(sp) => {
                 GetBonuses::<_SpellCriticalChance>::get_bonuses(sp, value)
             }
-            Attribute::SpellCriticalDamage(sp) => {
+            Self::SpellCriticalDamage(sp) => {
                 GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
             }
-            Attribute::Weapon(stat) => stat.get_bonuses(value),
-            Attribute::ClassLevel(cl) => cl.get_bonuses(value),
-            Attribute::Flag(flag) => flag.get_bonuses(value),
-            Attribute::Feat(feat) => feat.get_bonuses(value),
+            Self::Weapon(stat) => stat.get_bonuses(value),
+            Self::ClassLevel(cl) => cl.get_bonuses(value),
+            Self::Flag(flag) => flag.get_bonuses(value),
+            Self::Feat(feat) => feat.get_bonuses(value),
             _ => None,
         }
     }

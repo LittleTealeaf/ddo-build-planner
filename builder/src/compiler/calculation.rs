@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use utils::ord::IntoOrdGroupMap;
+use utils::{float::ErrorMargin, ord::IntoOrdGroupMap};
 
 use crate::{
     attribute::Attribute,
@@ -17,8 +17,12 @@ impl Compiler {
             Condition::Not(cond) => self.check_condition(cond),
             Condition::GreaterThan(a, b) => self.calculate_value(a) > self.calculate_value(b),
             Condition::LessThan(a, b) => self.calculate_value(a) < self.calculate_value(b),
-            Condition::EqualTo(a, b) => self.calculate_value(a) == self.calculate_value(b),
-            Condition::NotEqualTo(a, b) => self.calculate_value(a) != self.calculate_value(b),
+            Condition::EqualTo(a, b) => self
+                .calculate_value(a)
+                .within_margin(&self.calculate_value(b)),
+            Condition::NotEqualTo(a, b) => !self
+                .calculate_value(a)
+                .within_margin(&self.calculate_value(b)),
             Condition::Any(conds) => conds.iter().any(check_condition),
             Condition::All(conds) => conds.iter().all(check_condition),
             Condition::NotAny(conds) => !conds.iter().any(check_condition),
@@ -35,7 +39,7 @@ impl Compiler {
             Value::Min(vals) => {
                 let mut iter = vals.iter();
 
-                if let Some(first) = iter.next() {
+                iter.next().map_or(0f32, |first| {
                     let mut min = self.calculate_value(first);
 
                     for item in iter {
@@ -45,14 +49,12 @@ impl Compiler {
                         }
                     }
                     min
-                } else {
-                    0f32
-                }
+                })
             }
             Value::Max(vals) => {
                 let mut iter = vals.iter();
 
-                if let Some(first) = iter.next() {
+                iter.next().map_or(0f32, |first| {
                     let mut max = self.calculate_value(first);
 
                     for item in iter {
@@ -62,9 +64,7 @@ impl Compiler {
                         }
                     }
                     max
-                } else {
-                    0f32
-                }
+                })
             }
             Value::Floor(val) => self.calculate_value(val).floor(),
         }
@@ -169,8 +169,7 @@ impl Compiler {
             .filter_map(|bonus| {
                 bonus
                     .get_condition()
-                    .map(|condition| self.check_condition(&condition))
-                    .unwrap_or(true)
+                    .map_or(true, |condition| self.check_condition(&condition))
                     .then(|| (bonus.get_type(), self.calculate_value(&bonus.get_value())))
             });
 

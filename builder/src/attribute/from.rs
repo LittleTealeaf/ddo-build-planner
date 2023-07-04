@@ -11,8 +11,8 @@ use super::{
     Attribute,
 };
 
-impl From<&Attribute> for Attribute {
-    fn from(value: &Attribute) -> Self {
+impl From<&Self> for Attribute {
+    fn from(value: &Self) -> Self {
         *value
     }
 }
@@ -37,7 +37,7 @@ impl From<Toggle> for Attribute {
 
 impl From<Ability> for Attribute {
     fn from(value: Ability) -> Self {
-        Attribute::Ability(value)
+        Self::Ability(value)
     }
 }
 
@@ -55,7 +55,7 @@ impl From<Immunity> for Attribute {
 
 impl From<SavingThrow> for Attribute {
     fn from(value: SavingThrow) -> Self {
-        Attribute::SavingThrow(value)
+        Self::SavingThrow(value)
     }
 }
 
@@ -67,13 +67,13 @@ impl From<Sheltering> for Attribute {
 
 impl From<Skill> for Attribute {
     fn from(value: Skill) -> Self {
-        Attribute::Skill(value)
+        Self::Skill(value)
     }
 }
 
 impl From<WeaponAttribute> for Attribute {
     fn from(value: WeaponAttribute) -> Self {
-        Attribute::Weapon(value)
+        Self::Weapon(value)
     }
 }
 
@@ -85,7 +85,7 @@ impl From<Proficiency> for Attribute {
 
 impl From<Feat> for Attribute {
     fn from(value: Feat) -> Self {
-        Attribute::Feat(value)
+        Self::Feat(value)
     }
 }
 

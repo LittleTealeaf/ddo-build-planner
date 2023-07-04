@@ -19,9 +19,9 @@ pub enum ShieldProficiency {
 impl Display for ShieldProficiency {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ShieldProficiency::Shield => write!(f, "Shield"),
-            ShieldProficiency::TowerShield => write!(f, "Tower Shield"),
-            ShieldProficiency::Orb => write!(f, "Orb"),
+            Self::Shield => write!(f, "Shield"),
+            Self::TowerShield => write!(f, "Tower Shield"),
+            Self::Orb => write!(f, "Orb"),
         }
     }
 }

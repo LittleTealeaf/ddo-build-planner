@@ -1,5 +1,8 @@
 use itertools::Itertools;
-use utils::ord::{IntoOrdGroupMap, IntoOrdSet};
+use utils::{
+    float::ErrorMargin,
+    ord::{IntoOrdGroupMap, IntoOrdSet},
+};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -103,9 +106,9 @@ impl Compiler {
     /// Any [`Bonus`] already in the [`Compiler`] with the same [`BonusSource`] as any [`Bonus`]
     /// being added will be removed.
     ///
-    /// In the example above, We first added bonus to the SpellResistance equal to `10f32`. We
+    /// In the example above, We first added bonus to the `SpellResistance` equal to `10f32`. We
     /// verified that the compiler calculated that bonus to equal `10f32`. Next, we added a bonus
-    /// *from the same source* to SpellResistance equal to `5f32`. Because the two bonuses share a
+    /// *from the same source* to `SpellResistance` equal to `5f32`. Because the two bonuses share a
     /// [`BonusSource`], adding the second [`Bonus`] will remove the first [`Bonus`].
     ///
     ///
@@ -149,16 +152,11 @@ impl Compiler {
         // Fetch the next attribute from the queue
         while let Some((attribute, force_update)) = attribute_queue.get_next_attribute() {
             let initial_value = {
-                if let Some(value) = self.cache.remove(&attribute) {
-                    // First try to REMOVE it from the cache
-                    value
-                } else if force_update {
-                    // Otherwise, if it's a forced update, return 0f32
-                    0f32
-                } else {
-                    // Since we're not forcing, we need to check the difference, so calcualte the value
-                    self.calculate_attribute(&attribute).unwrap_or(0f32)
-                }
+                self.cache
+                    .remove(&attribute)
+                    .or_else(|| force_update.then_some(0f32))
+                    .or_else(|| self.calculate_attribute(&attribute))
+                    .unwrap_or(0f32)
             };
 
             // If there are any new bonuses, add those
@@ -171,7 +169,8 @@ impl Compiler {
             }
 
             // Either check if it's forced, or if the initial value is different from the original
-            if force_update || initial_value != self.get_attribute(&attribute) {
+            // if force_update || initial_value == self.get_attribute(&attribute) {
+            if force_update || initial_value.within_margin(&self.get_attribute(&attribute)) {
                 // Add any attributes with this attribute as a dependant into the iterator
                 {
                     // First get the attributes that have this attribute as a dependant
