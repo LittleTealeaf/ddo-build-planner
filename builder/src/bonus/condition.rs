@@ -59,6 +59,24 @@ impl AttributeDependencies for Condition {
             }
         }
     }
+
+    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+        match self {
+            Self::Not(cond) => cond.include_attr_dependency(set),
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::NotEqualTo(a, b) => {
+                a.include_attr_dependency(set);
+                b.include_attr_dependency(set);
+            }
+            Self::Any(conds) | Self::All(conds) | Self::NotAny(conds) | Self::NotAll(conds) => {
+                for cond in conds {
+                    cond.include_attr_dependency(set);
+                }
+            }
+        }
+    }
 }
 
 impl Display for Condition {

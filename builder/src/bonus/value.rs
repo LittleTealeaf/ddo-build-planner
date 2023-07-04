@@ -126,6 +126,21 @@ impl AttributeDependencies for Value {
             Self::Floor(val) => val.has_attr_dependency(attribute),
         }
     }
+
+    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+        match self {
+            Self::Value(_) => {}
+            Self::Attribute(attr) => {
+                set.insert(*attr);
+            }
+            Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
+                for val in vals {
+                    val.include_attr_dependency(set);
+                }
+            }
+            Self::Floor(val) => val.include_attr_dependency(set),
+        }
+    }
 }
 
 impl From<f32> for Value {
