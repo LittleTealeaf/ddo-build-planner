@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use utils::{ord::IntoOrdGroupMap, float::ErrorMargin};
+use utils::{float::ErrorMargin, ord::IntoOrdGroupMap};
 
 use crate::{
     attribute::Attribute,
@@ -17,8 +17,12 @@ impl Compiler {
             Condition::Not(cond) => self.check_condition(cond),
             Condition::GreaterThan(a, b) => self.calculate_value(a) > self.calculate_value(b),
             Condition::LessThan(a, b) => self.calculate_value(a) < self.calculate_value(b),
-            Condition::EqualTo(a, b) => self.calculate_value(a).within_margin(&self.calculate_value(b)),
-            Condition::NotEqualTo(a,b) => !self.calculate_value(a).within_margin(&self.calculate_value(b)),
+            Condition::EqualTo(a, b) => self
+                .calculate_value(a)
+                .within_margin(&self.calculate_value(b)),
+            Condition::NotEqualTo(a, b) => !self
+                .calculate_value(a)
+                .within_margin(&self.calculate_value(b)),
             Condition::Any(conds) => conds.iter().any(check_condition),
             Condition::All(conds) => conds.iter().all(check_condition),
             Condition::NotAny(conds) => !conds.iter().any(check_condition),
