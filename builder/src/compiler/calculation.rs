@@ -169,8 +169,7 @@ impl Compiler {
             .filter_map(|bonus| {
                 bonus
                     .get_condition()
-                    .map(|condition| self.check_condition(&condition))
-                    .unwrap_or(true)
+                    .map_or(true, |condition| self.check_condition(&condition))
                     .then(|| (bonus.get_type(), self.calculate_value(&bonus.get_value())))
             });
 

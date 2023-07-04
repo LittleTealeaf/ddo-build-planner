@@ -19,9 +19,9 @@ pub enum OffHandType {
 impl Display for OffHandType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            OffHandType::Weapon(weapon) => weapon.fmt(f),
-            OffHandType::Shield(shield) => shield.fmt(f),
-            OffHandType::RuneArm => write!(f, "Rune Arm"),
+            Self::Weapon(weapon) => weapon.fmt(f),
+            Self::Shield(shield) => shield.fmt(f),
+            Self::RuneArm => write!(f, "Rune Arm"),
         }
     }
 }

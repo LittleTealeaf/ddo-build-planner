@@ -46,13 +46,13 @@ pub enum Flag {
 impl Display for Flag {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Flag::HasToggle(toggle) => write!(f, "Has {} Toggle", toggle),
-            Flag::Race(race) => write!(f, "{} Race", race),
-            Flag::Immunity(immunity) => write!(f, "{} Immunity", immunity),
-            Flag::Alignment(alignment) => write!(f, "Is {}", alignment),
-            Flag::OffHandType(off_hand) => write!(f, "{} in the off hand", off_hand),
-            Flag::MainHandType(main_hand) => write!(f, "{} in the main hand", main_hand),
-            Flag::ArmorType(armor) => write!(f, "Wearing {} Armor", armor),
+            Self::HasToggle(toggle) => write!(f, "Has {toggle} Toggle"),
+            Self::Race(race) => write!(f, "{race} Race"),
+            Self::Immunity(immunity) => write!(f, "{immunity} Immunity"),
+            Self::Alignment(alignment) => write!(f, "Is {alignment}"),
+            Self::OffHandType(off_hand) => write!(f, "{off_hand} in the off hand"),
+            Self::MainHandType(main_hand) => write!(f, "{main_hand} in the main hand"),
+            Self::ArmorType(armor) => write!(f, "Wearing {armor} Armor"),
         }
     }
 }

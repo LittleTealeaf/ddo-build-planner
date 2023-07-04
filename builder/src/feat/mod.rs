@@ -20,8 +20,8 @@ pub enum Feat {
 impl Display for Feat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Feat::RacialFeat(feat) => feat.fmt(f),
-            Feat::Proficiency(prof) => prof.fmt(f),
+            Self::RacialFeat(feat) => feat.fmt(f),
+            Self::Proficiency(prof) => prof.fmt(f),
         }
     }
 }
@@ -29,7 +29,7 @@ impl Display for Feat {
 impl GetBonuses for Feat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
         match self {
-            Feat::RacialFeat(feat) => feat.get_bonuses(value),
+            Self::RacialFeat(feat) => feat.get_bonuses(value),
             _ => None,
         }
     }

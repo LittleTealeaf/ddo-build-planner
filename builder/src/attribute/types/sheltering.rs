@@ -47,10 +47,10 @@ impl CloneBonus for Sheltering {
 impl Display for Sheltering {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Sheltering::Physical => write!(f, "Physical Sheltering"),
-            Sheltering::Magical => write!(f, "Magical Sheltering"),
-            Sheltering::MagicalCap => write!(f, "Magical Sheltering Cap"),
-            Sheltering::Both => write!(f, "Sheltering"),
+            Self::Physical => write!(f, "Physical Sheltering"),
+            Self::Magical => write!(f, "Magical Sheltering"),
+            Self::MagicalCap => write!(f, "Magical Sheltering Cap"),
+            Self::Both => write!(f, "Sheltering"),
         }
     }
 }

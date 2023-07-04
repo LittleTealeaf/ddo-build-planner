@@ -28,9 +28,9 @@ pub enum Toggle {
 impl Display for Toggle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Toggle::Blocking => write!(f, "Blocking"),
-            Toggle::InReaper => write!(f, "In Reaper"),
-            Toggle::Attacking(target) => write!(f, "Attacking {} Target", target),
+            Self::Blocking => write!(f, "Blocking"),
+            Self::InReaper => write!(f, "In Reaper"),
+            Self::Attacking(target) => write!(f, "Attacking {target} Target"),
         }
     }
 }

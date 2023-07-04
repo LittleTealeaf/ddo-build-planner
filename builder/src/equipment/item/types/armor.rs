@@ -19,10 +19,10 @@ pub enum ArmorType {
 impl Display for ArmorType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ArmorType::Cloth => write!(f, "Cloth"),
-            ArmorType::Light => write!(f, "Light"),
-            ArmorType::Medium => write!(f, "Medium"),
-            ArmorType::Heavy => write!(f, "Heavy"),
+            Self::Cloth => write!(f, "Cloth"),
+            Self::Light => write!(f, "Light"),
+            Self::Medium => write!(f, "Medium"),
+            Self::Heavy => write!(f, "Heavy"),
         }
     }
 }

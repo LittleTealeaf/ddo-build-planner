@@ -35,7 +35,7 @@ impl Value {
             Self::Attribute(attribute) => Some(vec![*attribute]),
             Self::Sum(vals) | Self::Product(vals) | Self::Min(vals) | Self::Max(vals) => Some(
                 vals.iter()
-                    .filter_map(Value::get_dependencies)
+                    .filter_map(Self::get_dependencies)
                     .flatten()
                     .collect(),
             ),
@@ -48,9 +48,9 @@ impl Value {
 impl Display for Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Value::Value(value) => value.fmt(f),
-            Value::Attribute(attr) => attr.fmt(f),
-            Value::Sum(vals) => {
+            Self::Value(value) => value.fmt(f),
+            Self::Attribute(attr) => attr.fmt(f),
+            Self::Sum(vals) => {
                 write!(f, "(")?;
 
                 let mut iter = vals.iter();
@@ -60,12 +60,12 @@ impl Display for Value {
                 }
 
                 for val in iter {
-                    write!(f, " + {}", val)?;
+                    write!(f, " + {val}")?;
                 }
 
                 write!(f, ")")
             }
-            Value::Product(vals) => {
+            Self::Product(vals) => {
                 write!(f, "(")?;
 
                 let mut iter = vals.iter();
@@ -74,13 +74,13 @@ impl Display for Value {
                     val.fmt(f)?;
 
                     for val in iter {
-                        write!(f, " * {}", val)?;
+                        write!(f, " * {val}")?;
                     }
                 }
 
                 write!(f, ")")
             }
-            Value::Min(vals) => {
+            Self::Min(vals) => {
                 write!(f, "Min(")?;
 
                 let mut iter = vals.iter();
@@ -89,13 +89,13 @@ impl Display for Value {
                     val.fmt(f)?;
 
                     for val in iter {
-                        write!(f, ", {}", val)?;
+                        write!(f, ", {val}")?;
                     }
                 }
 
                 write!(f, ")")
             }
-            Value::Max(vals) => {
+            Self::Max(vals) => {
                 write!(f, "Max(")?;
 
                 let mut iter = vals.iter();
@@ -104,13 +104,13 @@ impl Display for Value {
                     val.fmt(f)?;
 
                     for val in iter {
-                        write!(f, ", {}", val)?;
+                        write!(f, ", {val}")?;
                     }
                 }
 
                 write!(f, ")")
             }
-            Value::Floor(val) => write!(f, "Floor({})", val),
+            Self::Floor(val) => write!(f, "Floor({val})"),
         }
     }
 }
@@ -118,25 +118,25 @@ impl Display for Value {
 impl AttributeDependencies for Value {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool {
         match self {
-            Value::Value(_) => false,
-            Value::Attribute(attr) => attribute.eq(attr),
-            Value::Min(vals) | Value::Max(vals) | Value::Product(vals) | Value::Sum(vals) => {
+            Self::Value(_) => false,
+            Self::Attribute(attr) => attribute.eq(attr),
+            Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
-            Value::Floor(val) => val.has_attr_dependency(attribute),
+            Self::Floor(val) => val.has_attr_dependency(attribute),
         }
     }
 }
 
 impl From<f32> for Value {
-    fn from(value: f32) -> Value {
-        Value::Value(value)
+    fn from(value: f32) -> Self {
+        Self::Value(value)
     }
 }
 
 impl From<Attribute> for Value {
     fn from(value: Attribute) -> Self {
-        Value::Attribute(value)
+        Self::Attribute(value)
     }
 }
 

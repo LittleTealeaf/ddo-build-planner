@@ -26,10 +26,10 @@ pub enum SpellSelector {
 impl Display for SpellSelector {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SpellSelector::SpellPower(sp) => write!(f, "{} Spell Power", sp),
-            SpellSelector::School(school) => write!(f, "{} Spell School", school),
-            SpellSelector::Class(cl) => write!(f, "{} Spells", cl),
-            SpellSelector::All => write!(f, "All Spells"),
+            Self::SpellPower(sp) => write!(f, "{sp} Spell Power"),
+            Self::School(school) => write!(f, "{school} Spell School"),
+            Self::Class(cl) => write!(f, "{cl} Spells"),
+            Self::All => write!(f, "All Spells"),
         }
     }
 }

@@ -43,16 +43,16 @@ pub enum ArmorClass {
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ArmorClass::Bonus => write!(f, "Armor Class"),
-            ArmorClass::ArmorBonus => write!(f, "Armor AC"),
-            ArmorClass::ShieldBonus => write!(f, "Shield AC"),
-            ArmorClass::ArmorScalar => write!(f, "% Armor AC"),
-            ArmorClass::ShieldScalar => write!(f, "% Shield AC"),
-            ArmorClass::Scalar => write!(f, "% Armor Class"),
-            ArmorClass::NaturalArmor => write!(f, "Natural Armor"),
-            ArmorClass::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus"),
-            ArmorClass::ArmorMaxDexBonus => write!(f, "Armor Max Dex Bonus"),
-            ArmorClass::ShieldMaxDexBonus => write!(f, "Tower Shield Max Dex Bonus"),
+            Self::Bonus => write!(f, "Armor Class"),
+            Self::ArmorBonus => write!(f, "Armor AC"),
+            Self::ShieldBonus => write!(f, "Shield AC"),
+            Self::ArmorScalar => write!(f, "% Armor AC"),
+            Self::ShieldScalar => write!(f, "% Shield AC"),
+            Self::Scalar => write!(f, "% Armor Class"),
+            Self::NaturalArmor => write!(f, "Natural Armor"),
+            Self::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus"),
+            Self::ArmorMaxDexBonus => write!(f, "Armor Max Dex Bonus"),
+            Self::ShieldMaxDexBonus => write!(f, "Tower Shield Max Dex Bonus"),
         }
     }
 }
@@ -74,18 +74,18 @@ impl DefaultBonuses for ArmorClass {
         vec![
             // Armor class bonus scaled
             Bonus::new(
-                ArmorClass::Bonus.into(),
+                Self::Bonus.into(),
                 BonusType::Stacking,
                 Value::Sum(vec![
                     Value::Product(vec![
-                        Attribute::from(ArmorClass::ArmorBonus).into(),
-                        Attribute::from(ArmorClass::ArmorScalar).into(),
+                        Attribute::from(Self::ArmorBonus).into(),
+                        Attribute::from(Self::ArmorScalar).into(),
                     ]),
                     Value::Product(vec![
-                        Attribute::from(ArmorClass::ShieldBonus).into(),
-                        Attribute::from(ArmorClass::ShieldScalar).into(),
+                        Attribute::from(Self::ShieldBonus).into(),
+                        Attribute::from(Self::ShieldScalar).into(),
                     ]),
-                    Attribute::from(ArmorClass::NaturalArmor).into(),
+                    Attribute::from(Self::NaturalArmor).into(),
                 ]),
                 BonusSource::Base,
                 None,
@@ -93,59 +93,59 @@ impl DefaultBonuses for ArmorClass {
             // Armor class bonus scaled from shield
             // Max Dex Bonus from armor
             Bonus::new(
-                Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
+                Attribute::ArmorClass(Self::CalculatedMaxDexBonus),
                 BonusType::Stacking,
-                Attribute::ArmorClass(ArmorClass::ArmorMaxDexBonus).into(),
+                Attribute::ArmorClass(Self::ArmorMaxDexBonus).into(),
                 BonusSource::Base,
                 Some(Condition::All(vec![
                     is_wearing_armor(),
                     Condition::NotAll(vec![
                         is_wielding_tower_shield(),
                         Condition::GreaterThan(
-                            Attribute::from(ArmorClass::ArmorMaxDexBonus).into(),
-                            Attribute::from(ArmorClass::ShieldMaxDexBonus).into(),
+                            Attribute::from(Self::ArmorMaxDexBonus).into(),
+                            Attribute::from(Self::ShieldMaxDexBonus).into(),
                         ),
                     ]),
                 ])),
             ),
             // Max dex bonus from shield
             Bonus::new(
-                Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
+                Attribute::ArmorClass(Self::CalculatedMaxDexBonus),
                 BonusType::Stacking,
-                Attribute::ArmorClass(ArmorClass::ShieldMaxDexBonus).into(),
+                Attribute::ArmorClass(Self::ShieldMaxDexBonus).into(),
                 BonusSource::Base,
                 Some(Condition::All(vec![
                     is_wielding_tower_shield(),
                     Condition::NotAll(vec![
                         is_wearing_armor(),
                         Condition::GreaterThan(
-                            Attribute::from(ArmorClass::ShieldMaxDexBonus).into(),
-                            Attribute::from(ArmorClass::ArmorMaxDexBonus).into(),
+                            Attribute::from(Self::ShieldMaxDexBonus).into(),
+                            Attribute::from(Self::ArmorMaxDexBonus).into(),
                         ),
                     ]),
                 ])),
             ),
             // If there is a max dex bonus
             Bonus::new(
-                ArmorClass::Bonus.into(),
+                Self::Bonus.into(),
                 BonusType::AbilityModifier,
                 Value::Min(vec![
                     Attribute::AbilityModifier(Ability::Dexterity).into(),
-                    Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus).into(),
+                    Attribute::ArmorClass(Self::CalculatedMaxDexBonus).into(),
                 ]),
                 BonusSource::Base,
                 Some(Condition::has(Attribute::ArmorClass(
-                    ArmorClass::CalculatedMaxDexBonus,
+                    Self::CalculatedMaxDexBonus,
                 ))),
             ),
             // If there is not a max dex bonus
             Bonus::new(
-                ArmorClass::Bonus.into(),
+                Self::Bonus.into(),
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Dexterity).into(),
                 BonusSource::Base,
                 Some(Condition::not_have(
-                    ArmorClass::CalculatedMaxDexBonus.into(),
+                    Self::CalculatedMaxDexBonus.into(),
                 )),
             ),
         ]

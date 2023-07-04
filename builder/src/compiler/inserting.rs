@@ -103,9 +103,9 @@ impl Compiler {
     /// Any [`Bonus`] already in the [`Compiler`] with the same [`BonusSource`] as any [`Bonus`]
     /// being added will be removed.
     ///
-    /// In the example above, We first added bonus to the SpellResistance equal to `10f32`. We
+    /// In the example above, We first added bonus to the `SpellResistance` equal to `10f32`. We
     /// verified that the compiler calculated that bonus to equal `10f32`. Next, we added a bonus
-    /// *from the same source* to SpellResistance equal to `5f32`. Because the two bonuses share a
+    /// *from the same source* to `SpellResistance` equal to `5f32`. Because the two bonuses share a
     /// [`BonusSource`], adding the second [`Bonus`] will remove the first [`Bonus`].
     ///
     ///

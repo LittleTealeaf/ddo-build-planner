@@ -89,33 +89,33 @@ pub enum BonusType {
 impl Display for BonusType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            BonusType::AbilityModifier => write!(f, "Ability Modifier"),
-            BonusType::ActionBoost => write!(f, "Action Boost"),
-            BonusType::Alchemical => write!(f, "Alchemical"),
-            BonusType::Artifact => write!(f, "Artifact"),
-            BonusType::Competence => write!(f, "Competence"),
-            BonusType::Deflection => write!(f, "Deflection"),
-            BonusType::Enhancement => write!(f, "Enhancement"),
-            BonusType::Epic => write!(f, "Epic"),
-            BonusType::Exceptional => write!(f, "Exceptional"),
-            BonusType::Feat => write!(f, "Feat"),
-            BonusType::Festive => write!(f, "Festive"),
-            BonusType::Insightful => write!(f, "Insightful"),
-            BonusType::Legendary => write!(f, "Legendary"),
-            BonusType::Morale => write!(f, "Morale"),
-            BonusType::Music => write!(f, "Music"),
-            BonusType::Primal => write!(f, "Primal"),
-            BonusType::Profane => write!(f, "Profane"),
-            BonusType::Quality => write!(f, "Quality"),
-            BonusType::Sacred => write!(f, "Sacred"),
-            BonusType::Shield => write!(f, "Shield"),
-            BonusType::Size => write!(f, "Size"),
-            BonusType::Stacking => write!(f, "Stacking"),
-            BonusType::Spooky => write!(f, "Spooky"),
-            BonusType::Standard => write!(f, "Standard"),
-            BonusType::Racial => write!(f, "Racial"),
-            BonusType::Dodge => write!(f, "Dodge"),
-            BonusType::Luck => write!(f, "Luck"),
+            Self::AbilityModifier => write!(f, "Ability Modifier"),
+            Self::ActionBoost => write!(f, "Action Boost"),
+            Self::Alchemical => write!(f, "Alchemical"),
+            Self::Artifact => write!(f, "Artifact"),
+            Self::Competence => write!(f, "Competence"),
+            Self::Deflection => write!(f, "Deflection"),
+            Self::Enhancement => write!(f, "Enhancement"),
+            Self::Epic => write!(f, "Epic"),
+            Self::Exceptional => write!(f, "Exceptional"),
+            Self::Feat => write!(f, "Feat"),
+            Self::Festive => write!(f, "Festive"),
+            Self::Insightful => write!(f, "Insightful"),
+            Self::Legendary => write!(f, "Legendary"),
+            Self::Morale => write!(f, "Morale"),
+            Self::Music => write!(f, "Music"),
+            Self::Primal => write!(f, "Primal"),
+            Self::Profane => write!(f, "Profane"),
+            Self::Quality => write!(f, "Quality"),
+            Self::Sacred => write!(f, "Sacred"),
+            Self::Shield => write!(f, "Shield"),
+            Self::Size => write!(f, "Size"),
+            Self::Stacking => write!(f, "Stacking"),
+            Self::Spooky => write!(f, "Spooky"),
+            Self::Standard => write!(f, "Standard"),
+            Self::Racial => write!(f, "Racial"),
+            Self::Dodge => write!(f, "Dodge"),
+            Self::Luck => write!(f, "Luck"),
         }
     }
 }
@@ -140,7 +140,7 @@ impl BonusType {
     /// ```
     ///
     /// [`Stacking`]: BonusType::Stacking
-    pub fn is_stacking(&self) -> bool {
+    #[must_use] pub fn is_stacking(&self) -> bool {
         matches!(self, Self::Stacking)
     }
 }

@@ -33,16 +33,16 @@ pub enum DamageReduction {
 impl Display for DamageReduction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DamageReduction::Adamantine => write!(f, "Adamantine"),
-            DamageReduction::Byeshk => write!(f, "Byeshk"),
-            DamageReduction::ColdIron => write!(f, "Cold Iron"),
-            DamageReduction::Crystal => write!(f, "Crystal"),
-            DamageReduction::Mithral => write!(f, "Mithral"),
-            DamageReduction::Silver => write!(f, "Silver"),
-            DamageReduction::Bludgeon => write!(f, "Bludgeon"),
-            DamageReduction::Pierce => write!(f, "Pierce"),
-            DamageReduction::Slash => write!(f, "Slash"),
-            DamageReduction::Alignment(alignment) => alignment.fmt(f),
+            Self::Adamantine => write!(f, "Adamantine"),
+            Self::Byeshk => write!(f, "Byeshk"),
+            Self::ColdIron => write!(f, "Cold Iron"),
+            Self::Crystal => write!(f, "Crystal"),
+            Self::Mithral => write!(f, "Mithral"),
+            Self::Silver => write!(f, "Silver"),
+            Self::Bludgeon => write!(f, "Bludgeon"),
+            Self::Pierce => write!(f, "Pierce"),
+            Self::Slash => write!(f, "Slash"),
+            Self::Alignment(alignment) => alignment.fmt(f),
         }
     }
 }

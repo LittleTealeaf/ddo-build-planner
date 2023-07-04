@@ -21,11 +21,11 @@ pub enum Alignment {
 impl Display for Alignment {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Alignment::Good => write!(f, "Good"),
-            Alignment::Evil => write!(f, "Evil"),
-            Alignment::Neutral => write!(f, "Neutral"),
-            Alignment::Lawful => write!(f, "Lawful"),
-            Alignment::Chaotic => write!(f, "Chaotic"),
+            Self::Good => write!(f, "Good"),
+            Self::Evil => write!(f, "Evil"),
+            Self::Neutral => write!(f, "Neutral"),
+            Self::Lawful => write!(f, "Lawful"),
+            Self::Chaotic => write!(f, "Chaotic"),
         }
     }
 }
