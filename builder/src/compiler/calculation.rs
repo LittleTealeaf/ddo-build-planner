@@ -50,7 +50,7 @@ impl Compiler {
                 }
             }
             Value::Max(vals) => {
-                let mut iter = vals.into_iter();
+                let mut iter = vals.iter();
 
                 if let Some(first) = iter.next() {
                     let mut max = self.calculate_value(first);
