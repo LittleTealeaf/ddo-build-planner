@@ -12,17 +12,17 @@ use crate::{
 use super::RacialFeat;
 
 impl Race {
-    fn ability_modifier(&self, ability: Ability, value: f32) -> Bonus {
+    fn ability_modifier(self, ability: Ability, value: f32) -> Bonus {
         Bonus::new(
             Attribute::Ability(ability),
             BonusType::Stacking,
             value.into(),
-            Attribute::from(*self).into(),
+            Attribute::from(self).into(),
             None,
         )
     }
 
-    fn bonus_feat<T>(&self, feat: T) -> Bonus
+    fn bonus_feat<T>(self, feat: T) -> Bonus
     where
         Feat: From<T>,
     {
@@ -30,7 +30,7 @@ impl Race {
             Feat::from(feat).into(),
             BonusType::Stacking,
             1f32.into(),
-            Attribute::from(*self).into(),
+            Attribute::from(self).into(),
             None,
         )
     }
