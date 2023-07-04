@@ -150,9 +150,7 @@ impl CloneBonus for SpellPower {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         Some(
             match bonus.get_attribute() {
-                Attribute::SpellPower(Self::Potency) => {
-                    Some(Self::ALL.map(Attribute::SpellPower))
-                }
+                Attribute::SpellPower(Self::Potency) => Some(Self::ALL.map(Attribute::SpellPower)),
                 Attribute::SpellCriticalChance(Self::Potency) => {
                     Some(Self::ALL.map(Attribute::SpellCriticalChance))
                 }

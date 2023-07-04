@@ -140,7 +140,8 @@ impl BonusType {
     /// ```
     ///
     /// [`Stacking`]: BonusType::Stacking
-    #[must_use] pub fn is_stacking(&self) -> bool {
+    #[must_use]
+    pub fn is_stacking(&self) -> bool {
         matches!(self, Self::Stacking)
     }
 }

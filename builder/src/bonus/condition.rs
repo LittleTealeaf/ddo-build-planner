@@ -32,12 +32,14 @@ pub enum Condition {
 /// Generator functions to abstract away stndard conditions
 impl Condition {
     /// Requires that the character has some attribute
-    #[must_use] pub fn has(attribute: Attribute) -> Self {
+    #[must_use]
+    pub fn has(attribute: Attribute) -> Self {
         Self::GreaterThan(attribute.into(), 0f32.into())
     }
 
     /// Requires that the character does not have some attribute
-    #[must_use] pub fn not_have(attribute: Attribute) -> Self {
+    #[must_use]
+    pub fn not_have(attribute: Attribute) -> Self {
         Self::EqualTo(attribute.into(), 0f32.into())
     }
 }
@@ -52,10 +54,7 @@ impl AttributeDependencies for Condition {
             | Self::NotEqualTo(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
-            Self::Any(conds)
-            | Self::All(conds)
-            | Self::NotAny(conds)
-            | Self::NotAll(conds) => {
+            Self::Any(conds) | Self::All(conds) | Self::NotAny(conds) | Self::NotAll(conds) => {
                 conds.iter().any(|cond| cond.has_attr_dependency(attribute))
             }
         }

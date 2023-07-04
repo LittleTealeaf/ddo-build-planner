@@ -209,12 +209,11 @@ impl GetBonuses for Race {
                 self.ability_modifier(Ability::Intelligence, -2f32),
                 self.ability_modifier(Ability::Charisma, -2f32),
             ]),
-            Self::Human => None,
             Self::Morninglord => Some(vec![
                 self.ability_modifier(Ability::Intelligence, 2f32),
                 self.ability_modifier(Ability::Constitution, -2f32),
             ]),
-            Self::PurpleDragonKnight => None,
+            Self::PurpleDragonKnight | Self::Human => None,
             Self::Razorclaw => Some(vec![
                 self.ability_modifier(Ability::Strength, 2f32),
                 self.ability_modifier(Ability::Intelligence, -2f32),
@@ -227,8 +226,9 @@ impl GetBonuses for Race {
                 self.ability_modifier(Ability::Dexterity, 2f32),
                 self.ability_modifier(Ability::Intelligence, -2f32),
             ]),
-            Self::Tabaxi => Some(vec![self.ability_modifier(Ability::Dexterity, 2f32)]),
-            Self::Trailblazer => Some(vec![self.ability_modifier(Ability::Dexterity, 2f32)]),
+            Self::Tabaxi | Self::Trailblazer => {
+                Some(vec![self.ability_modifier(Ability::Dexterity, 2f32)])
+            }
             Self::Tiefling => Some(vec![
                 self.ability_modifier(Ability::Charisma, 2f32),
                 Bonus::new(

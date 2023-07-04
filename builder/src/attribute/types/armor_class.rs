@@ -144,9 +144,7 @@ impl DefaultBonuses for ArmorClass {
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Dexterity).into(),
                 BonusSource::Base,
-                Some(Condition::not_have(
-                    Self::CalculatedMaxDexBonus.into(),
-                )),
+                Some(Condition::not_have(Self::CalculatedMaxDexBonus.into())),
             ),
         ]
     }

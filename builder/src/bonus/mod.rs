@@ -51,7 +51,8 @@ impl Bonus {
     /// Attribute::Dummy.into(), None);
     /// ```
     /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
-    #[must_use] pub fn new(
+    #[must_use]
+    pub fn new(
         attribute: Attribute,
         bonus_type: BonusType,
         value: Value,
@@ -83,7 +84,8 @@ impl Bonus {
     /// assert_eq!(dummy.get_source(), BonusSource::Base);
     /// assert!(dummy.get_condition().is_none());
     /// ```
-    #[must_use] pub fn dummy(source: BonusSource) -> Self {
+    #[must_use]
+    pub fn dummy(source: BonusSource) -> Self {
         Self::new(
             Attribute::Dummy,
             BonusType::Stacking,
@@ -94,7 +96,8 @@ impl Bonus {
     }
 
     /// Returns a bonus that gives the character some [`Flag`].
-    #[must_use] pub fn flag(flag: Flag, source: BonusSource) -> Self {
+    #[must_use]
+    pub fn flag(flag: Flag, source: BonusSource) -> Self {
         Self::new(
             Attribute::Flag(flag),
             BonusType::Stacking,
@@ -114,7 +117,8 @@ impl Bonus {
     /// BonusSource::Base, None);
     /// assert_eq!(bonus.get_attribute(), Attribute::Dummy);
     /// ```
-    #[must_use] pub fn get_attribute(&self) -> Attribute {
+    #[must_use]
+    pub fn get_attribute(&self) -> Attribute {
         self.attribute
     }
 
@@ -128,7 +132,8 @@ impl Bonus {
     /// BonusSource::Base, None);
     /// assert_eq!(bonus.get_type(), BonusType::Enhancement);
     /// ```
-    #[must_use] pub fn get_type(&self) -> BonusType {
+    #[must_use]
+    pub fn get_type(&self) -> BonusType {
         self.bonus_type
     }
 
@@ -142,7 +147,8 @@ impl Bonus {
     /// BonusSource::Base, None);
     /// assert_eq!(bonus.get_value(), Value::Value(10f32));
     /// ```
-    #[must_use] pub fn get_value(&self) -> Value {
+    #[must_use]
+    pub fn get_value(&self) -> Value {
         self.value.clone()
     }
 
@@ -156,7 +162,8 @@ impl Bonus {
     /// BonusSource::Base, None);
     /// assert_eq!(bonus.get_source(), BonusSource::Base);
     /// ```
-    #[must_use] pub fn get_source(&self) -> BonusSource {
+    #[must_use]
+    pub fn get_source(&self) -> BonusSource {
         self.source
     }
 
@@ -177,7 +184,8 @@ impl Bonus {
     /// assert!(matches!(bonus.get_condition(), Some(_)));
     ///
     /// ```
-    #[must_use] pub fn get_condition(&self) -> Option<Condition> {
+    #[must_use]
+    pub fn get_condition(&self) -> Option<Condition> {
         self.condition.clone()
     }
 
@@ -200,7 +208,8 @@ impl Bonus {
     /// assert_eq!(new_bonus.get_source(), BonusSource::Base);
     /// assert!(new_bonus.get_condition().is_none());
     /// ```
-    #[must_use] pub fn clone_into_attribute(&self, attribute: Attribute) -> Self {
+    #[must_use]
+    pub fn clone_into_attribute(&self, attribute: Attribute) -> Self {
         Self::new(
             attribute,
             self.bonus_type,
