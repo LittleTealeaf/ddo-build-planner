@@ -1,5 +1,8 @@
 use itertools::Itertools;
-use utils::ord::{IntoOrdGroupMap, IntoOrdSet};
+use utils::{
+    float::ErrorMargin,
+    ord::{IntoOrdGroupMap, IntoOrdSet},
+};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -149,16 +152,11 @@ impl Compiler {
         // Fetch the next attribute from the queue
         while let Some((attribute, force_update)) = attribute_queue.get_next_attribute() {
             let initial_value = {
-                if let Some(value) = self.cache.remove(&attribute) {
-                    // First try to REMOVE it from the cache
-                    value
-                } else if force_update {
-                    // Otherwise, if it's a forced update, return 0f32
-                    0f32
-                } else {
-                    // Since we're not forcing, we need to check the difference, so calcualte the value
-                    self.calculate_attribute(&attribute).unwrap_or(0f32)
-                }
+                self.cache
+                    .remove(&attribute)
+                    .or_else(|| force_update.then_some(0f32))
+                    .or_else(|| self.calculate_attribute(&attribute))
+                    .unwrap_or(0f32)
             };
 
             // If there are any new bonuses, add those
@@ -171,7 +169,8 @@ impl Compiler {
             }
 
             // Either check if it's forced, or if the initial value is different from the original
-            if force_update || initial_value != self.get_attribute(&attribute) {
+            // if force_update || initial_value == self.get_attribute(&attribute) {
+            if force_update || initial_value.within_margin(&self.get_attribute(&attribute)) {
                 // Add any attributes with this attribute as a dependant into the iterator
                 {
                     // First get the attributes that have this attribute as a dependant
