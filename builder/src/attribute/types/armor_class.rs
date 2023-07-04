@@ -6,7 +6,7 @@ use crate::{
     attribute::{
         flags::{Flag, OffHandType},
         types::Ability,
-        Attribute, DefaultBonuses, GetBonuses,
+        Attribute, DefaultBonuses,
     },
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     equipment::item::types::{ArmorType, ShieldType},
@@ -57,41 +57,6 @@ impl Display for ArmorClass {
     }
 }
 
-impl GetBonuses for ArmorClass {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            ArmorClass::ArmorScalar => Some(vec![Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::Stacking,
-                Value::Product(vec![
-                    Attribute::from(ArmorClass::ArmorBonus).into(),
-                    value.into(),
-                ]),
-                Attribute::from(ArmorClass::ArmorScalar).into(),
-                None,
-            )]),
-            ArmorClass::ShieldScalar => Some(vec![Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::Stacking,
-                Value::Product(vec![
-                    Attribute::from(ArmorClass::ShieldBonus).into(),
-                    value.into(),
-                ]),
-                Attribute::from(ArmorClass::ShieldScalar).into(),
-                None,
-            )]),
-            ArmorClass::NaturalArmor => Some(vec![Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::Stacking,
-                value.into(),
-                Attribute::from(ArmorClass::NaturalArmor).into(),
-                None,
-            )]),
-            _ => None,
-        }
-    }
-}
-
 fn is_wearing_armor() -> Condition {
     Condition::Any(vec![
         Condition::has(Flag::ArmorType(ArmorType::Light).into()),
@@ -107,6 +72,26 @@ fn is_wielding_tower_shield() -> Condition {
 impl DefaultBonuses for ArmorClass {
     fn get_default_bonuses() -> Vec<Bonus> {
         vec![
+            // Armor class bonus scaled
+            Bonus::new(
+                ArmorClass::Bonus.into(),
+                BonusType::Stacking,
+                Value::Sum(vec![
+                    Value::Product(vec![
+                        Attribute::from(ArmorClass::ArmorBonus).into(),
+                        Attribute::from(ArmorClass::ArmorScalar).into(),
+                    ]),
+                    Value::Product(vec![
+                        Attribute::from(ArmorClass::ShieldBonus).into(),
+                        Attribute::from(ArmorClass::ShieldScalar).into(),
+                    ]),
+                    Attribute::from(ArmorClass::NaturalArmor).into(),
+                ]),
+                BonusSource::Base,
+                None,
+            ),
+            // Armor class bonus scaled from shield
+            // Max Dex Bonus from armor
             Bonus::new(
                 Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
                 BonusType::Stacking,
@@ -123,6 +108,7 @@ impl DefaultBonuses for ArmorClass {
                     ]),
                 ])),
             ),
+            // Max dex bonus from shield
             Bonus::new(
                 Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
                 BonusType::Stacking,
