@@ -86,12 +86,12 @@ impl Skill {
         Self::UseMagicalDevice,
     ];
 
-    fn spell_power_bonus(&self, sp: SpellPower, value: f32) -> Bonus {
+    fn spell_power_bonus(self, sp: SpellPower, value: f32) -> Bonus {
         Bonus::new(
             Attribute::SpellPower(sp),
             BonusType::Stacking,
             value.into(),
-            Attribute::Skill(*self).into(),
+            Attribute::Skill(self).into(),
             None,
         )
     }

@@ -44,7 +44,7 @@ impl Ability {
         Self::Charisma,
     ];
 
-    fn modifier_bonus<T>(&self, attribute: T, value: f32) -> Bonus
+    fn modifier_bonus<T>(self, attribute: T, value: f32) -> Bonus
     where
         Attribute: From<T>,
     {
@@ -52,7 +52,7 @@ impl Ability {
             attribute.into(),
             BonusType::AbilityModifier,
             value.into(),
-            Attribute::AbilityModifier(*self).into(),
+            Attribute::AbilityModifier(self).into(),
             None,
         )
     }
