@@ -10,7 +10,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  BRANCH: ${{github.base_ref || github.ref_name}}
+  BRANCH: ${{github.head_ref || github.ref_name}}
 
 jobs:
   cargo:
