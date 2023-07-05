@@ -54,8 +54,8 @@ jobs:
           toolchain: stable
           cache: false
       - name: Install Builder
-        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}}
-  
+        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} --branch ${{github.ref_type == 'branch' && format('--branch {0}', github.ref_name) || (github.ref_type == 'tag' && format('--tag {0}', github.ref_name) || '')}}
+
   format:
     name: Format
     runs-on: ubuntu-latest
