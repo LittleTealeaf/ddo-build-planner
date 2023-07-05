@@ -10,6 +10,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  BRANCH: ${{github.head_ref || github.ref_name}}
 
 jobs:
   cargo:
@@ -54,7 +55,7 @@ jobs:
           toolchain: stable
           cache: false
       - name: Install Builder
-        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} ${{github.ref_type == 'branch' && format('--branch {0}', github.head_ref) || (github.ref_type == 'tag' && format('--tag {0}', github.ref_name) || '')}}
+        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} --branch ${{env.BRANCH}}
 
   format:
     name: Format
