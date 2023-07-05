@@ -41,6 +41,21 @@ jobs:
         with:
           command: test
           args: --all
+  install:
+    name: Install from Git
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          cache: false
+      - name: Install Builder
+        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} ${{github.ref_type == 'branch' && format('--branch {0}', github.head_ref) || (github.ref_type == 'tag' && format('--tag {0}', github.ref_name) || '')}}
+
   format:
     name: Format
     runs-on: ubuntu-latest
