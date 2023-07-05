@@ -125,26 +125,20 @@ impl DefaultBonuses for ArmorClass {
                     ]),
                 ])),
             ),
-            // If there is a max dex bonus
             Bonus::new(
                 Self::Bonus.into(),
                 BonusType::AbilityModifier,
-                Value::Min(vec![
-                    Attribute::AbilityModifier(Ability::Dexterity).into(),
-                    Attribute::ArmorClass(Self::CalculatedMaxDexBonus).into(),
-                ]),
+                Value::If(
+                    Condition::has(Attribute::ArmorClass(Self::CalculatedMaxDexBonus)).into(),
+                    Value::Min(vec![
+                        Attribute::AbilityModifier(Ability::Dexterity).into(),
+                        Attribute::ArmorClass(Self::CalculatedMaxDexBonus).into(),
+                    ])
+                    .into(),
+                    Value::from(Attribute::AbilityModifier(Ability::Dexterity)).into(),
+                ),
                 BonusSource::Base,
-                Some(Condition::has(Attribute::ArmorClass(
-                    Self::CalculatedMaxDexBonus,
-                ))),
-            ),
-            // If there is not a max dex bonus
-            Bonus::new(
-                Self::Bonus.into(),
-                BonusType::AbilityModifier,
-                Attribute::AbilityModifier(Ability::Dexterity).into(),
-                BonusSource::Base,
-                Some(Condition::not_have(Self::CalculatedMaxDexBonus.into())),
+                None,
             ),
         ]
     }
