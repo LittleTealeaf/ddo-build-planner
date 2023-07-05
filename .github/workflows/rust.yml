@@ -13,8 +13,8 @@ env:
   BRANCH: ${{github.head_ref || github.ref_name}}
 
 jobs:
-  cargo:
-    name: Cargo
+  test:
+    name: Test
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -32,11 +32,6 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           key: ${{matrix.os}}
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all
       - name: Test
         uses: actions-rs/cargo@v1
         with:
@@ -56,7 +51,6 @@ jobs:
           cache: false
       - name: Install Builder
         run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} --branch ${{env.BRANCH}}
-
   format:
     name: Format
     runs-on: ubuntu-latest
@@ -103,3 +97,10 @@ jobs:
         with:
           sarif_file: rust-clippy-results.sarif
           wait-for-processing: true
+  finish:
+    name: Finish Checks
+    needs: [clippy, test, install, format]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Finish Checks
+        run: echo "Checks Finnished"
