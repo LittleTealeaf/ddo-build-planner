@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
 
+use super::Condition;
+
 /// Represents a value of a [`Bonus`]
 ///
 /// [`Bonus`]: crate::bonus::Bonus
@@ -23,26 +25,8 @@ pub enum Value {
     Max(Vec<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
-}
-
-impl Value {
-    /// Returns any dependencies associated with the value.
-    ///
-    /// In short terms: If the [`BonusValue`] has an [`Attribute`] in it, then this returns a
-    /// [`Vec`] with all attributes included.
-    pub fn get_dependencies(&self) -> Option<Vec<Attribute>> {
-        match self {
-            Self::Attribute(attribute) => Some(vec![*attribute]),
-            Self::Sum(vals) | Self::Product(vals) | Self::Min(vals) | Self::Max(vals) => Some(
-                vals.iter()
-                    .filter_map(Self::get_dependencies)
-                    .flatten()
-                    .collect(),
-            ),
-            Self::Floor(val) => val.get_dependencies(),
-            Self::Value(_) => None,
-        }
-    }
+    /// If [`Condition`] then [`Value`] else [`Value`]
+    If(Box<Condition>, Box<Value>, Box<Value>),
 }
 
 impl Display for Value {
@@ -111,6 +95,9 @@ impl Display for Value {
                 write!(f, ")")
             }
             Self::Floor(val) => write!(f, "Floor({val})"),
+            Self::If(cond, if_true, if_false) => {
+                write!(f, "If ({cond}) then {if_true} else {if_false}")
+            }
         }
     }
 }
@@ -124,6 +111,11 @@ impl AttributeDependencies for Value {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
             Self::Floor(val) => val.has_attr_dependency(attribute),
+            Self::If(cond, if_true, if_false) => {
+                cond.has_attr_dependency(attribute)
+                    || if_true.has_attr_dependency(attribute)
+                    || if_false.has_attr_dependency(attribute)
+            }
         }
     }
 
@@ -139,6 +131,11 @@ impl AttributeDependencies for Value {
                 }
             }
             Self::Floor(val) => val.include_attr_dependency(set),
+            Self::If(cond, if_true, if_false) => {
+                cond.include_attr_dependency(set);
+                if_true.include_attr_dependency(set);
+                if_false.include_attr_dependency(set);
+            }
         }
     }
 }
@@ -159,43 +156,7 @@ impl From<Attribute> for Value {
 mod tests {
     use super::*;
 
-    #[test]
-    fn attribute_returns_dependency() {
-        let value = Value::Attribute(Attribute::Debug(3));
-        let dependencies = value.get_dependencies();
-
-        assert_eq!(Some(vec![Attribute::Debug(3)]), dependencies);
-    }
-
-    #[test]
-    fn value_returns_no_dependency() {
-        let value = Value::Value(0f32);
-        let dependencies = value.get_dependencies();
-
-        assert_eq!(None, dependencies);
-    }
-
-    #[test]
-    fn sum_returns_dependencies() {
-        let value = Value::Sum(vec![
-            Value::Attribute(Attribute::Debug(5)),
-            Value::Value(3f32),
-        ]);
-        let dependencies = value.get_dependencies();
-
-        assert_eq!(Some(vec![Attribute::Debug(5)]), dependencies);
-    }
-
-    #[test]
-    fn product_returns_dependencies() {
-        let value = Value::Product(vec![
-            Value::Attribute(Attribute::Debug(5)),
-            Value::Value(3f32),
-        ]);
-        let dependencies = value.get_dependencies();
-
-        assert_eq!(Some(vec![Attribute::Debug(5)]), dependencies);
-    }
+    // TODO: Add tests for dependencies
 
     #[test]
     fn from_attribute() {
