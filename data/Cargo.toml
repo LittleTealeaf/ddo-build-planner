@@ -12,10 +12,10 @@ example = []
 [dependencies]
 builder = { path = "../builder/"}
 ciborium = "0.2.1"
-serde = { version = "1.0.166", features = ["derive"] }
+serde = { version = "1.0.167", features = ["derive"] }
 
 [build-dependencies]
-serde = { version = "1.0.166" }
+serde = { version = "1.0.167" }
 ron = "0.8.0"
 ciborium = "0.2.1"
 builder = { path = "../builder/" }
