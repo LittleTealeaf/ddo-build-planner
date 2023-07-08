@@ -6,12 +6,12 @@ use super::{attribute_queue::AttributeQueue, Compiler};
 impl Compiler {
     /// Removes all bonuses from a given source from the compiler
     pub fn remove_source(&mut self, source: BonusSource) {
-        self.add_bonuses(vec![Bonus::dummy(source)])
+        self.add_bonuses(vec![Bonus::dummy(source)]);
     }
 
     /// Adds a single bonus to the compiler
     pub fn add_bonus(&mut self, bonus: Bonus) {
-        self.add_bonuses(vec![bonus])
+        self.add_bonuses(vec![bonus]);
     }
 }
 
