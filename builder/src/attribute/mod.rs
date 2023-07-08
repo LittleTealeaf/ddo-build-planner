@@ -99,7 +99,7 @@ impl Display for Attribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             #[cfg(test)]
-            Attribute::Debug(val) => write!(f, "Debug {}", val),
+            Self::Debug(val) => write!(f, "Debug {val}"),
             Self::Dummy => write!(f, "Dummy"),
             Self::Ability(ability) => write!(f, "{ability} Score"),
             Self::AbilityModifier(ability) => write!(f, "{ability} Modifier"),
@@ -227,7 +227,7 @@ mod tests {
         fn get_all_attributes() -> impl Iterator<Item = Attribute> {
             let max = Attribute::LENGTH;
 
-            (0..max).map(|item| Attribute::from_usize(item))
+            (0..max).map(Attribute::from_usize)
         }
 
         #[test]
@@ -245,8 +245,7 @@ mod tests {
                 let name = attr.to_string();
                 assert!(
                     !unique_names.contains(&name),
-                    "Duplicate Name Found: {}",
-                    attr
+                    "Duplicate Name Found: {attr}"
                 );
                 unique_names.insert(name);
             });

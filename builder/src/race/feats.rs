@@ -350,8 +350,7 @@ mod tests {
                     let expected = BonusSource::Attribute(Attribute::Feat(Feat::RacialFeat(feat)));
                     assert_eq!(
                         source, expected,
-                        "Expected [{}], found [{}]",
-                        expected, source
+                        "Expected [{expected}], found [{source}]"
                     );
                 }
             }

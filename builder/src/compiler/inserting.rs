@@ -18,7 +18,7 @@ impl Compiler {
     pub fn add_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
         expand_cloned_bonuses(&mut bonuses);
 
-        let mut attribute_queue =
+        let _attribute_queue =
             AttributeQueue::initialize(bonuses.iter().map(Bonus::get_attribute).collect(), false);
     }
 }
