@@ -20,7 +20,6 @@ impl Compiler {
 
         let mut attribute_queue =
             AttributeQueue::initialize(bonuses.iter().map(Bonus::get_attribute).collect(), false);
-
     }
 }
 
