@@ -348,10 +348,7 @@ mod tests {
                 for bonus in bonuses {
                     let source = bonus.get_source();
                     let expected = BonusSource::Attribute(Attribute::Feat(Feat::RacialFeat(feat)));
-                    assert_eq!(
-                        source, expected,
-                        "Expected [{expected}], found [{source}]"
-                    );
+                    assert_eq!(source, expected, "Expected [{expected}], found [{source}]");
                 }
             }
         }
