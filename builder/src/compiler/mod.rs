@@ -3,6 +3,7 @@
 //! [`Bonuses`]: crate::bonus::Bonus
 
 mod attribute_queue;
+mod buffer;
 mod calculation;
 mod inserting;
 

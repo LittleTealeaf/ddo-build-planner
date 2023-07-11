@@ -1,6 +1,6 @@
 use crate::bonus::{Bonus, BonusSource, CloneBonus};
 
-use super::{attribute_queue::AttributeQueue, Compiler};
+use super::Compiler;
 
 /// Proxy Functions for Adding Bonuses
 impl Compiler {
@@ -20,9 +20,6 @@ impl Compiler {
     /// Adds multiple bonuses to the compiler
     pub fn add_bonuses(&mut self, mut bonuses: Vec<Bonus>) {
         expand_cloned_bonuses(&mut bonuses);
-
-        let _attribute_queue =
-            AttributeQueue::initialize(bonuses.iter().map(Bonus::get_attribute).collect(), false);
     }
 }
 
