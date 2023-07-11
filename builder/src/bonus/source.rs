@@ -27,7 +27,7 @@ impl Display for BonusSource {
             Self::Attribute(attr) => write!(f, "Attribute: {attr}"),
             Self::Custom(num) => write!(f, "Custom: {num}"),
             #[cfg(test)]
-            BonusSource::Debug(num) => write!(f, "Debug: {}", num),
+            Self::Debug(num) => write!(f, "Debug: {num}"),
             Self::Base => write!(f, "Base"),
         }
     }
