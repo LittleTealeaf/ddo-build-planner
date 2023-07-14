@@ -93,6 +93,6 @@ fn main() {
     ]);
 
     for (attr, val) in compiler.get_all_attributes() {
-        println!("{}: {}", attr, val);
+        println!("{attr}: {val}");
     }
 }
