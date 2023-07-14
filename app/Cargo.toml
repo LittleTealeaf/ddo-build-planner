@@ -5,6 +5,10 @@ version.workspace = true
 repository.workspace = true
 authors.workspace = true
 readme.workspace = true
+description.workspace = true
+categories.workspace = true
+license-file.workspace = true
+keywords.workspace = true
 
 [dependencies]
 builder = { path = "../builder/" }
