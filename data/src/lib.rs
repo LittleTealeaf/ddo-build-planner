@@ -1,4 +1,4 @@
-#![warn(missing_docs, clippy::pedantic, clippy::nursery)]
+#![warn(missing_docs)]
 #![allow(
     dead_code,
     clippy::must_use_candidate,
