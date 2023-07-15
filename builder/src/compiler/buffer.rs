@@ -34,13 +34,15 @@ impl Buffer {
     {
         let by_source = bonuses
             .flat_map(|bonus| {
-                let mut bonuses = bonus
-                    .get_attribute()
-                    .clone_bonus(&bonus)
-                    .unwrap_or_default();
-                bonuses.push(bonus);
-                bonuses
+                [
+                    bonus
+                        .get_attribute()
+                        .clone_bonus(&bonus)
+                        .unwrap_or_default(),
+                    vec![bonus],
+                ]
             })
+            .flatten()
             .filter_map(|bonus| {
                 bonus
                     .get_attribute()
