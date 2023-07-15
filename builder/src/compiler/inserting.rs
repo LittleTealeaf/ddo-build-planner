@@ -61,10 +61,8 @@ impl Compiler {
                 let value = self.get_attribute(&attribute);
 
                 if let Some(bonuses) = attribute.get_bonuses(value) {
-                    self.children.insert(
-                        source,
-                        bonuses.iter().map(Bonus::get_attribute).collect(),
-                    );
+                    self.children
+                        .insert(source, bonuses.iter().map(Bonus::get_attribute).collect());
 
                     buffer.insert_bonuses(bonuses.into_iter(), false);
                 }
