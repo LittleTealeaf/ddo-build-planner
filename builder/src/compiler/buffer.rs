@@ -1,28 +1,47 @@
-use im::OrdSet;
+use im::{OrdMap, OrdSet};
 use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::{Attribute, TrackAttribute},
-    bonus::{Bonus, BonusSource},
+    bonus::{Bonus, BonusSource, CloneBonus},
 };
 
 #[derive(Default)]
 pub struct Buffer {
-    bonuses: Vec<Bonus>,
-    sources: OrdSet<BonusSource>,
+    bonuses: OrdMap<BonusSource, Vec<Bonus>>,
     attributes: OrdSet<Attribute>,
     forced: OrdSet<Attribute>,
 }
 
+// PERF: Use the "children" design like the actual compiler does
+
 impl Buffer {
-    pub fn insert<T>(&mut self, bonuses: T, forced: bool)
+    pub fn insert_attributes<T>(&mut self, attributes: T, forced: bool)
+    where
+        T: Iterator<Item = Attribute>,
+    {
+        for attribute in attributes {
+            self.attributes.insert(attribute);
+            if forced {
+                self.forced.insert(attribute);
+            }
+        }
+    }
+
+    pub fn insert_bonuses<T>(&mut self, bonuses: T, forced: bool)
     where
         T: Iterator<Item = Bonus>,
     {
-        // This is getting a lot more complicated, because we also need to include a way for
-        // attributes to be checked without having any bonuses attached to them
-
-        let groued_by_source = bonuses
+        let by_source = bonuses
+            .map(|bonus| {
+                let mut bonuses = bonus
+                    .get_attribute()
+                    .clone_bonus(&bonus)
+                    .unwrap_or_default();
+                bonuses.push(bonus);
+                bonuses
+            })
+            .flatten()
             .filter_map(|bonus| {
                 bonus
                     .get_attribute()
@@ -31,20 +50,38 @@ impl Buffer {
             })
             .into_grouped_ord_map();
 
-        for (source, bonuses) in groued_by_source {
-            if self.sources.insert(source).is_some() {
-                self.bonuses.retain(|bonus| bonus.get_source().ne(&source))
+        for (source, bonuses) in by_source {
+            for bonus in &bonuses {
+                let attribute = bonus.get_attribute();
+                self.attributes.insert(attribute);
+                if forced {
+                    self.forced.insert(attribute);
+                }
             }
 
-            bonuses
+            self.bonuses.insert(source, bonuses);
+        }
+    }
+
+    pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {
+        loop {
+            let attribute = self.attributes.remove_min()?;
+            let forced = self.forced.remove(&attribute).is_some();
+            let bonuses = self
+                .bonuses
                 .iter()
-                .map(|bonus| bonus.get_attribute())
-                .for_each(|attribute| {
-                    self.attributes.insert(attribute);
-                    if forced {
-                        self.forced.insert(attribute);
-                    }
-                });
+                .map(|(_, bonuses)| {
+                    bonuses
+                        .iter()
+                        .filter(|bonus| bonus.get_attribute().eq(&attribute))
+                        .map(|bonus| bonus.clone())
+                })
+                .flatten()
+                .collect::<Vec<Bonus>>();
+
+            if forced || !bonuses.is_empty() {
+                return Some((attribute, bonuses, forced));
+            }
         }
     }
 }
