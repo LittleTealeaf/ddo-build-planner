@@ -33,7 +33,7 @@ impl Buffer {
         T: Iterator<Item = Bonus>,
     {
         let by_source = bonuses
-            .map(|bonus| {
+            .flat_map(|bonus| {
                 let mut bonuses = bonus
                     .get_attribute()
                     .clone_bonus(&bonus)
@@ -41,7 +41,6 @@ impl Buffer {
                 bonuses.push(bonus);
                 bonuses
             })
-            .flatten()
             .filter_map(|bonus| {
                 bonus
                     .get_attribute()
@@ -70,13 +69,12 @@ impl Buffer {
             let bonuses = self
                 .bonuses
                 .iter()
-                .map(|(_, bonuses)| {
+                .flat_map(|(_, bonuses)| {
                     bonuses
                         .iter()
                         .filter(|bonus| bonus.get_attribute().eq(&attribute))
-                        .map(|bonus| bonus.clone())
+                        .cloned()
                 })
-                .flatten()
                 .collect::<Vec<Bonus>>();
 
             if forced || !bonuses.is_empty() {

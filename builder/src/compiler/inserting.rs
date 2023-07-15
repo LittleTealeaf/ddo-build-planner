@@ -63,7 +63,7 @@ impl Compiler {
                 if let Some(bonuses) = attribute.get_bonuses(value) {
                     self.children.insert(
                         source,
-                        bonuses.iter().map(|bonus| bonus.get_attribute()).collect(),
+                        bonuses.iter().map(Bonus::get_attribute).collect(),
                     );
 
                     buffer.insert_bonuses(bonuses.into_iter(), false);
@@ -78,7 +78,7 @@ impl Compiler {
     fn remove_by_source(&mut self, source: BonusSource) {
         if let Some(children) = self.children.get(&source) {
             for child in children {
-                if let Some(set) = self.bonuses.get_mut(&child) {
+                if let Some(set) = self.bonuses.get_mut(child) {
                     let items = set.iter().enumerate();
 
                     let indexes = items
