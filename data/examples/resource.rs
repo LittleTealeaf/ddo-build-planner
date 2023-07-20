@@ -1,4 +1,4 @@
-use data::get_test_data;
+use data::example::get_test_data;
 
 pub fn main() {
     let data = get_test_data().unwrap();

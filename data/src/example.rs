@@ -1,4 +1,6 @@
-use crate::util::ParseError;
+//! Example Data used for tests and demonstrations
+
+use crate::ParseError;
 
 /// Returns example data created from build.rs
 ///

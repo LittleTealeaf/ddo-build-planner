@@ -8,10 +8,17 @@
 
 //! This crate contains large datasets such as items.
 
-#[macro_use]
-mod util;
+macro_rules! include_data {
+    ($type: ident, $file: expr) => {
+        ciborium::from_reader::<$type, _>(
+            include_str!(concat!(env!("OUT_DIR"), "/", $file)).as_bytes(),
+        )
+    };
+}
+
+#[allow(dead_code)]
+/// Errror that is returned if the data could not be parsed
+pub type ParseError = ciborium::de::Error<std::io::Error>;
 
 #[cfg(feature = "example")]
-mod example;
-#[cfg(feature = "example")]
-pub use example::*;
+pub mod example;

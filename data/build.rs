@@ -1,9 +1,8 @@
-use std::{env, fs::File, path::Path};
+use std::{env, fs::File, io, path::Path};
 
-use errors::Error;
 use serde::Serialize;
 
-fn main() -> Result<(), self::errors::Error> {
+fn main() -> Result<(), BuildError> {
     write_artifact(
         "test",
         String::from("This is test data from the build script"),
@@ -12,7 +11,7 @@ fn main() -> Result<(), self::errors::Error> {
     Ok(())
 }
 
-fn write_artifact<T>(name: &str, item: T) -> Result<(), Error>
+fn write_artifact<T>(name: &str, item: T) -> Result<(), BuildError>
 where
     T: Serialize,
 {
@@ -22,46 +21,37 @@ where
 
     ciborium::into_writer(&item, file)?;
 
-    // file.write_all(ron::to_string(&item)?.as_bytes())?;
-
     Ok(())
 }
 
-mod errors {
-    use std::env::VarError;
+#[derive(Debug)]
+enum BuildError {
+    Environment(env::VarError),
+    Ron(ron::Error),
+    IO(io::Error),
+    Ciborium(ciborium::ser::Error<std::io::Error>),
+}
 
-    #[derive(Debug)]
-    pub enum Error {
-        Environment(VarError),
-        Serialize(ron::Error),
-        IO(std::io::Error),
-        Value(String),
+impl From<env::VarError> for BuildError {
+    fn from(value: env::VarError) -> Self {
+        Self::Environment(value)
     }
+}
 
-    impl From<VarError> for Error {
-        fn from(value: VarError) -> Self {
-            Self::Environment(value)
-        }
+impl From<ron::Error> for BuildError {
+    fn from(value: ron::Error) -> Self {
+        Self::Ron(value)
     }
+}
 
-    impl From<ron::error::Error> for Error {
-        fn from(value: ron::Error) -> Self {
-            Self::Serialize(value)
-        }
+impl From<io::Error> for BuildError {
+    fn from(value: io::Error) -> Self {
+        Self::IO(value)
     }
+}
 
-    impl From<std::io::Error> for Error {
-        fn from(value: std::io::Error) -> Self {
-            Self::IO(value)
-        }
-    }
-
-    impl From<ciborium::ser::Error<std::io::Error>> for Error {
-        fn from(value: ciborium::ser::Error<std::io::Error>) -> Self {
-            match value {
-                ciborium::ser::Error::Io(io) => Self::IO(io),
-                ciborium::ser::Error::Value(val) => Self::Value(val),
-            }
-        }
+impl From<ciborium::ser::Error<std::io::Error>> for BuildError {
+    fn from(value: ciborium::ser::Error<std::io::Error>) -> Self {
+        Self::Ciborium(value)
     }
 }
