@@ -5,6 +5,8 @@ use iced::{
 };
 use iced_aw::menu::{MenuBar, MenuTree};
 
+mod git;
+
 fn main() -> iced::Result {
     EditorState::run(Settings::default())
 }
