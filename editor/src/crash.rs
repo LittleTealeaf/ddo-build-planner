@@ -1,10 +1,10 @@
 use iced::{
     widget::{button, column, container, text},
-    window, Application, Command, Element, Length,
+    window, Application, Element, Length,
 };
 use utils::iced::{HandleMessage, HandleView};
 
-use crate::{Editor, Message};
+use crate::Editor;
 
 #[derive(Debug)]
 pub enum Crash {
@@ -13,12 +13,12 @@ pub enum Crash {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum CrashMessage {
+pub enum Message {
     CloseApplication,
 }
 
-impl From<CrashMessage> for Message {
-    fn from(value: CrashMessage) -> Self {
+impl From<Message> for crate::Message {
+    fn from(value: Message) -> Self {
         Self::CrashMessage(value)
     }
 }
@@ -31,7 +31,7 @@ impl HandleView<Editor> for Crash {
         container(column(vec![
             text("Oh no! It Crashed!").into(),
             button("Close")
-                .on_press(CrashMessage::CloseApplication.into())
+                .on_press(Message::CloseApplication.into())
                 .into(),
         ]))
         .width(Length::Fill)
@@ -43,14 +43,14 @@ impl HandleView<Editor> for Crash {
 }
 
 impl HandleMessage<Editor> for Crash {
-    type Message = CrashMessage;
+    type Message = Message;
 
     fn update(
         &mut self,
         message: Self::Message,
     ) -> iced::Command<<Editor as Application>::Message> {
         match message {
-            CrashMessage::CloseApplication => window::close(),
+            Message::CloseApplication => window::close(),
         }
     }
 }

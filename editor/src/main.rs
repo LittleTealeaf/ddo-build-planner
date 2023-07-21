@@ -1,4 +1,4 @@
-use crash::{Crash, CrashMessage};
+use crash::Crash;
 use git::open_git_repository;
 use git2::Repository;
 use iced::{
@@ -27,7 +27,7 @@ pub struct State {
 #[derive(Debug, Clone)]
 pub enum Message {
     CustomCrash(String),
-    CrashMessage(CrashMessage),
+    CrashMessage(crash::Message),
 }
 
 impl Application for Editor {
