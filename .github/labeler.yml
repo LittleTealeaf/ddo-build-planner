@@ -1,0 +1,17 @@
+app:
+- app/**
+
+builder:
+- builder/**
+
+data:
+- data/**
+
+editor:
+- editor/**
+
+utils:
+- utils/**
+
+github:
+- .github/**
