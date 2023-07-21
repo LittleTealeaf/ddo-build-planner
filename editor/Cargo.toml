@@ -11,6 +11,6 @@ readme.workspace = true
 [dependencies]
 builder = { path = "../builder/", features = ["enum_map"]}
 roc = "0.0.0"
-serde = { version = "1.0.173" }
+serde = { version = "1.0.174" }
 iced = "0.9"
 iced_aw = "0.5"
