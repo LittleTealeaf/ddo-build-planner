@@ -70,8 +70,8 @@ impl Application for Editor {
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
         match self {
-            Editor::Crashed(crash) => crash.view(),
-            Editor::Loaded(_state) => container(column(vec![
+            Self::Crashed(crash) => crash.view(),
+            Self::Loaded(_state) => container(column(vec![
                 text("Hi world, it loaded".to_string()).into(),
                 button("Cause Crash")
                     .on_press(Message::CustomCrash("I Crashed".to_string()))
