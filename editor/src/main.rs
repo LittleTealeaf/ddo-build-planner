@@ -1,60 +1,87 @@
+use crash::{Crash, CrashMessage};
+use git::open_git_repository;
+use git2::Repository;
 use iced::{
     executor, theme,
-    widget::{button, column},
-    Application, Command, Settings,
+    widget::{button, column, container, text},
+    Application, Command, Length, Settings,
 };
-use iced_aw::menu::{MenuBar, MenuTree};
+use utils::iced::{HandleMessage, HandleView};
+
+mod crash;
+mod git;
 
 fn main() -> iced::Result {
-    EditorState::run(Settings::default())
+    Editor::run(Settings::default())
 }
 
-#[derive(Debug)]
-struct EditorState {}
+pub enum Editor {
+    Crashed(Crash),
+    Loaded(State),
+}
 
-#[derive(Debug, Clone, Copy)]
-enum EditorMessage {}
+pub struct State {
+    repository: Repository,
+}
 
-impl Application for EditorState {
+#[derive(Debug, Clone)]
+pub enum Message {
+    CustomCrash(String),
+    CrashMessage(CrashMessage),
+}
+
+impl Application for Editor {
     type Executor = executor::Default;
 
-    type Message = EditorMessage;
+    type Message = Message;
 
     type Theme = theme::Theme;
 
     type Flags = ();
 
-    fn new(_: Self::Flags) -> (Self, iced::Command<Self::Message>) {
-        (Self {}, Command::none())
+    fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
+        let repository = match open_git_repository() {
+            Err(e) => Self::Crashed(e.into()),
+            Ok(repository) => Self::Loaded(State { repository }),
+        };
+
+        (repository, Command::none())
     }
 
     fn title(&self) -> String {
-        String::from("Hello World")
+        "Editor".to_string()
     }
 
-    fn update(&mut self, _message: Self::Message) -> iced::Command<Self::Message> {
-        Command::none()
+    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+        match message {
+            Message::CustomCrash(crash_message) => {
+                *self = Self::Crashed(Crash::SimpleError(crash_message));
+                Command::none()
+            }
+            Message::CrashMessage(message) => {
+                if let Self::Crashed(crash) = self {
+                    crash.update(message)
+                } else {
+                    Command::none()
+                }
+            }
+        }
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        let menu_file = MenuTree::with_children(
-            button("File"),
-            vec![
-                MenuTree::new(button("Open")),
-                MenuTree::new(button("Close")),
-            ],
-        );
-
-        let menu_help = MenuTree::with_children(
-            button("Help"),
-            vec![
-                MenuTree::new(button("Open")),
-                MenuTree::new(button("Close")),
-            ],
-        );
-
-        let menu_bar = MenuBar::new(vec![menu_file, menu_help]);
-
-        column![menu_bar].into()
+        match self {
+            Editor::Crashed(crash) => crash.view(),
+            Editor::Loaded(_state) => container(column(vec![
+                text("Hi world, it loaded".to_string()).into(),
+                button("Cause Crash")
+                    .on_press(Message::CustomCrash("I Crashed".to_string()))
+                    .into(),
+            ]))
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
+            .into(),
+        }
     }
 }

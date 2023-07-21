@@ -9,3 +9,6 @@
 
 pub mod float;
 pub mod ord;
+
+#[cfg(feature = "iced")]
+pub mod iced;

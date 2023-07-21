@@ -12,5 +12,6 @@ readme.workspace = true
 builder = { path = "../builder/", features = ["enum_map"]}
 roc = "0.0.0"
 serde = { version = "1.0.174" }
-iced = "0.9"
-iced_aw = "0.5"
+iced = {version = "0.9", features = ["tokio"]}
+git2 = "0.17.2"
+utils = { path = "../utils/", features = ["iced"] }
