@@ -12,12 +12,13 @@ where
 }
 
 /// Provides the ability to handle messages forwarded from the application.
-pub trait HandleMessage<App> where App: Application {
+pub trait HandleMessage<App>
+where
+    App: Application,
+{
     /// The type of the messages here
     type Message: Debug + Send;
 
-
     /// Update method to consume the messages
     fn update(&mut self, message: Self::Message) -> Command<App::Message>;
-
 }
