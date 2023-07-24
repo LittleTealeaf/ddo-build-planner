@@ -6,9 +6,11 @@ use iced::{
 };
 use libs::git::GitRepo;
 use utils::iced::{HandleMessage, HandleView};
+use crate::message::Message;
 
 mod components;
 mod libs;
+mod message;
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -23,11 +25,6 @@ pub struct State {
     repository: GitRepo,
 }
 
-#[derive(Debug, Clone)]
-pub enum Message {
-    CustomCrash(String),
-    CrashMessage(components::crash::Message),
-}
 
 impl Application for Editor {
     type Executor = executor::Default;

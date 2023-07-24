@@ -17,12 +17,6 @@ pub enum Message {
     CloseApplication,
 }
 
-impl From<Message> for crate::Message {
-    fn from(value: Message) -> Self {
-        Self::CrashMessage(value)
-    }
-}
-
 impl HandleView<Editor> for Crash {
     fn view(
         &self,
