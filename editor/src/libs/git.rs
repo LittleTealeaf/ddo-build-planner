@@ -10,6 +10,15 @@ impl GitRepo {
             repo: Repository::open(include_str!(concat!(env!("OUT_DIR"), "/repo_path")))?,
         })
     }
+
+    pub fn is_original_remote(&self) -> Result<bool, git2::Error> {
+        Ok(self
+            .repo
+            .find_remote("origin")?
+            .url()
+            .map(|url| url.contains("LittleTealeaf/ddo-build-planner"))
+            .unwrap_or(false))
+    }
 }
 
 #[cfg(test)]
