@@ -1,6 +1,6 @@
 use iced::{
     widget::{button, column, container, text},
-    window, Application, Element, Length,
+    window, Application, Element, Length, Renderer,
 };
 use utils::iced::{HandleMessage, HandleView};
 
@@ -26,7 +26,7 @@ impl From<Message> for crate::Message {
 impl HandleView<Editor> for Crash {
     fn view(
         &self,
-    ) -> Element<'_, <Editor as Application>::Message, iced::Renderer<<Editor as Application>::Theme>>
+    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
     {
         container(column(vec![
             text("Oh no! It Crashed!").into(),

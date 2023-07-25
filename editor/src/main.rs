@@ -1,15 +1,14 @@
-use crash::Crash;
-use git::open_git_repository;
-use git2::Repository;
+use components::crash::Crash;
 use iced::{
     executor, theme,
     widget::{button, column, container, text},
     Application, Command, Length, Settings,
 };
-use utils::iced::{HandleMessage, HandleView};
+use libs::git::GitRepo;
+use utils::iced::{HandleMessageOld, HandleView};
 
-mod crash;
-mod git;
+mod components;
+mod libs;
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -21,13 +20,13 @@ pub enum Editor {
 }
 
 pub struct State {
-    repository: Repository,
+    repository: GitRepo,
 }
 
 #[derive(Debug, Clone)]
 pub enum Message {
     CustomCrash(String),
-    CrashMessage(crash::Message),
+    CrashMessage(components::crash::Message),
 }
 
 impl Application for Editor {
@@ -40,7 +39,7 @@ impl Application for Editor {
     type Flags = ();
 
     fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
-        let repository = match open_git_repository() {
+        let repository = match GitRepo::open() {
             Err(e) => Self::Crashed(e.into()),
             Ok(repository) => Self::Loaded(State { repository }),
         };
