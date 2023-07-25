@@ -5,7 +5,7 @@ use iced::{
     Application, Command, Length, Settings,
 };
 use libs::git::GitRepo;
-use utils::iced::{HandleMessageOld, HandleView};
+use utils::iced::{HandleMessage, HandleView};
 
 mod components;
 mod libs;
