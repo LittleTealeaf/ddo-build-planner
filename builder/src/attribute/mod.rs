@@ -194,7 +194,8 @@ impl Attribute {
             Ability::get_default_bonuses(),
             SavingThrow::get_default_bonuses(),
             SpellPower::get_default_bonuses(),
-            ArmorClass::get_default_bonuses()
+            ArmorClass::get_default_bonuses(),
+            Skill::get_default_bonuses()
         )
     }
 }
