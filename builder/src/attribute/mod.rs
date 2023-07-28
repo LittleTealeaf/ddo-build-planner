@@ -187,18 +187,15 @@ impl TrackAttribute for Attribute {
     }
 }
 
-impl DefaultBonuses for Attribute {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
-            Ability::get_default_bonuses(),
-            ArmorClass::get_default_bonuses(),
-            SavingThrow::get_default_bonuses(),
-            Skill::get_default_bonuses(),
-            SpellPower::get_default_bonuses(),
-        ]
-        .into_iter()
-        .flatten()
-        .collect()
+impl Attribute {
+    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compilerr.
+    pub fn get_default_bonuses() -> impl Iterator<Item = Bonus> {
+        Ability::get_default_bonuses()
+            .into_iter()
+            .chain(SavingThrow::get_default_bonuses())
+            .chain(Skill::get_default_bonuses())
+            .chain(SpellPower::get_default_bonuses())
+            .chain(ArmorClass::get_default_bonuses())
     }
 }
 

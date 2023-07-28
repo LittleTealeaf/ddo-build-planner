@@ -73,18 +73,18 @@ impl GetBonuses for Ability {
 }
 
 impl DefaultBonuses for Ability {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        Self::VALUES
-            .map(|ability| {
-                Bonus::new(
-                    Attribute::Ability(ability),
-                    BonusType::Stacking,
-                    8f32.into(),
-                    BonusSource::Base,
-                    None,
-                )
-            })
-            .to_vec()
+    type Iterator = [Bonus; 6];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        Self::VALUES.map(|ability| {
+            Bonus::new(
+                Attribute::Ability(ability),
+                BonusType::Stacking,
+                8f32.into(),
+                BonusSource::Base,
+                None,
+            )
+        })
     }
 }
 

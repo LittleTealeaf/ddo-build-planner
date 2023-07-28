@@ -182,8 +182,10 @@ macro_rules! skill_ability_bonus {
 }
 
 impl DefaultBonuses for Skill {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+    type Iterator = [Bonus; 21];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        [
             skill_ability_bonus!(Dexterity, Balance),
             skill_ability_bonus!(Charisma, Bluff),
             skill_ability_bonus!(Constitution, Concentration),

@@ -98,8 +98,10 @@ impl CloneBonus for SavingThrow {
 }
 
 impl DefaultBonuses for SavingThrow {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+    type Iterator = [Bonus; 3];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        [
             Bonus::new(
                 Self::Reflex.into(),
                 BonusType::AbilityModifier,
