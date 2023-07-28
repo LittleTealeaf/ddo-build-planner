@@ -104,6 +104,8 @@ pub trait TrackAttribute {
 ///
 /// [`Compilers`]: crate::compiler::Compiler
 pub trait DefaultBonuses {
+    /// The type of iterable that will be returned by the function.
+    /// As default bonuses are static, the prefered return type is some form of array
     type Iterator: IntoIterator<Item = Bonus>;
 
     /// Returns the default bonuses, if there are any
