@@ -52,7 +52,7 @@ impl Compiler {
 
             if forced || initial_value.within_margin(&self.get_attribute(&attribute)) {
                 // Add all dependants to the buffer
-                buffer.insert_attributes(self.get_dependants(attribute), true);
+                buffer.insert_attributes(self.get_dependants(attribute));
 
                 let source: BonusSource = attribute.into();
 

@@ -16,15 +16,14 @@ pub struct Buffer {
 // PERF: Use the "children" design like the actual compiler does
 
 impl Buffer {
-    pub fn insert_attributes<T>(&mut self, attributes: T, forced: bool)
+    /// Inserts attributes into the queue. All attributes are forced as no bonuses are included
+    pub fn insert_attributes<T>(&mut self, attributes: T)
     where
         T: Iterator<Item = Attribute>,
     {
         for attribute in attributes {
             self.attributes.insert(attribute);
-            if forced {
-                self.forced.insert(attribute);
-            }
+            self.forced.insert(attribute);
         }
     }
 
