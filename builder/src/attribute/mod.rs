@@ -136,7 +136,6 @@ impl Attribute {
     #[must_use]
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Self::Ability(ability) => ability.get_bonuses(value),
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
             Self::SpellCriticalChance(sp) => {

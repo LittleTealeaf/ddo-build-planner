@@ -1,5 +1,6 @@
+use im::OrdSet;
 use itertools::Itertools;
-use utils::{float::ErrorMargin, ord::IntoOrdSet};
+use utils::float::ErrorMargin;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -28,17 +29,19 @@ impl Compiler {
     where
         I: IntoIterator<Item = Bonus>,
     {
-        let (sources, bonuses): (Vec<_>, Vec<_>) = bonuses
-            .into_iter()
-            .map(|bonus| (bonus.get_source(), bonus))
-            .unzip();
+        let mut sources = OrdSet::new();
 
-        for source in sources.into_ord_set() {
-            self.remove_by_source(source);
-        }
+        let bonuses = bonuses.into_iter().map(|bonus| {
+            sources.insert(bonus.get_source());
+            bonus
+        });
 
         let mut buffer = Buffer::default();
-        buffer.insert_bonuses(bonuses.into_iter(), true);
+        buffer.insert_bonuses(bonuses, true);
+
+        for source in sources {
+            self.remove_by_source(source);
+        }
 
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
@@ -64,7 +67,7 @@ impl Compiler {
                     self.children
                         .insert(source, bonuses.iter().map(Bonus::get_attribute).collect());
 
-                    buffer.insert_bonuses(bonuses.into_iter(), false);
+                    buffer.insert_bonuses(bonuses, false);
                 }
             }
         }
@@ -112,5 +115,22 @@ impl Compiler {
                 .has_attr_dependency(attribute)
                 .then_some(bonus.get_attribute())
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{attribute::{types::Ability, Attribute}, compiler::Compiler};
+
+    #[test]
+    fn get_dependants_for_default_bonuses() {
+        // This assumes that there is a default bonus that links the Dexterity Score to the Dexterity Modifier
+
+        let compiler = Compiler::default();
+
+        let bonuses = compiler
+            .get_dependants(Attribute::Ability(Ability::Dexterity))
+            .collect::<Vec<_>>();
+        assert!(bonuses.len() > 0);
     }
 }
