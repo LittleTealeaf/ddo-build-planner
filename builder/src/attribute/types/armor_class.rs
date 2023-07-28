@@ -70,8 +70,10 @@ fn is_wielding_tower_shield() -> Condition {
 }
 
 impl DefaultBonuses for ArmorClass {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+    type Iterator = [Bonus; 4];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        [
             // Armor class bonus scaled
             Bonus::new(
                 Self::Bonus.into(),

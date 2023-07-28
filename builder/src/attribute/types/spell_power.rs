@@ -186,8 +186,10 @@ macro_rules! from_skill {
 }
 
 impl DefaultBonuses for SpellPower {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+    type Iterator = [Bonus; 10];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        [
             from_skill!(Heal, Positive),
             from_skill!(Heal, Negative),
             from_skill!(Perform, Sonic),
