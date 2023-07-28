@@ -188,7 +188,7 @@ impl TrackAttribute for Attribute {
 }
 
 impl Attribute {
-    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compilerr.
+    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compiler.
     pub fn get_default_bonuses() -> impl Iterator<Item = Bonus> {
         Ability::get_default_bonuses()
             .into_iter()
