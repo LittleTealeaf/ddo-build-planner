@@ -22,4 +22,4 @@ enum-map = {version = "2.6.0", features = ["serde"], optional = true}
 
 [dev-dependencies]
 builder = { path = ".", features = ["enum_ord"] }
-serde_test = "1.0.174"
+serde_test = "1.0.176"
