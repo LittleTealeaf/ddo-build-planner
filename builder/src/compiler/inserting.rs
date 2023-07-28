@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use utils::float::ErrorMargin;
+use utils::{float::ErrorMargin, ord::IntoOrdSet};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -33,7 +33,7 @@ impl Compiler {
             .map(|bonus| (bonus.get_source(), bonus))
             .unzip();
 
-        for source in sources {
+        for source in sources.into_ord_set() {
             self.remove_by_source(source);
         }
 
