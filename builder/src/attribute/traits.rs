@@ -104,8 +104,10 @@ pub trait TrackAttribute {
 ///
 /// [`Compilers`]: crate::compiler::Compiler
 pub trait DefaultBonuses {
+    type Iterator: IntoIterator<Item = Bonus>;
+
     /// Returns the default bonuses, if there are any
-    fn get_default_bonuses() -> Vec<Bonus>;
+    fn get_default_bonuses() -> Self::Iterator;
 }
 
 #[cfg(test)]

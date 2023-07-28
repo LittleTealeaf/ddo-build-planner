@@ -11,7 +11,7 @@ use im::OrdMap;
 pub use inserting::*;
 
 use crate::{
-    attribute::{Attribute, DefaultBonuses},
+    attribute::Attribute,
     bonus::{Bonus, BonusSource},
 };
 
@@ -61,7 +61,7 @@ impl Default for Compiler {
             children: OrdMap::new(),
         };
 
-        new.add_bonuses(Attribute::get_default_bonuses());
+        new.add_bonuses(Attribute::get_default_bonuses().collect());
 
         new
     }
