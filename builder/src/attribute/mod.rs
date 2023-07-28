@@ -99,7 +99,7 @@ impl Display for Attribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             #[cfg(test)]
-            Attribute::Debug(val) => write!(f, "Debug {}", val),
+            Self::Debug(val) => write!(f, "Debug {val}"),
             Self::Dummy => write!(f, "Dummy"),
             Self::Ability(ability) => write!(f, "{ability} Score"),
             Self::AbilityModifier(ability) => write!(f, "{ability} Modifier"),
@@ -136,7 +136,6 @@ impl Attribute {
     #[must_use]
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Self::Ability(ability) => ability.get_bonuses(value),
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
             Self::SpellCriticalChance(sp) => {
@@ -188,7 +187,7 @@ impl TrackAttribute for Attribute {
 }
 
 impl Attribute {
-    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compilerr.
+    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compiler.
     pub fn get_default_bonuses() -> impl Iterator<Item = Bonus> {
         Ability::get_default_bonuses()
             .into_iter()
@@ -224,7 +223,7 @@ mod tests {
         fn get_all_attributes() -> impl Iterator<Item = Attribute> {
             let max = Attribute::LENGTH;
 
-            (0..max).map(|item| Attribute::from_usize(item))
+            (0..max).map(Attribute::from_usize)
         }
 
         #[test]
@@ -242,8 +241,7 @@ mod tests {
                 let name = attr.to_string();
                 assert!(
                     !unique_names.contains(&name),
-                    "Duplicate Name Found: {}",
-                    attr
+                    "Duplicate Name Found: {attr}"
                 );
                 unique_names.insert(name);
             });

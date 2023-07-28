@@ -2,7 +2,7 @@
 //!
 //! [`Bonuses`]: crate::bonus::Bonus
 
-mod attribute_queue;
+mod buffer;
 mod calculation;
 mod inserting;
 
@@ -61,7 +61,7 @@ impl Default for Compiler {
             children: OrdMap::new(),
         };
 
-        new.add_bonuses(Attribute::get_default_bonuses().collect());
+        new.add_bonuses(Attribute::get_default_bonuses());
 
         new
     }

@@ -3,8 +3,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
-    bonus::{Bonus, BonusSource, BonusType, CloneBonus},
+    attribute::{Attribute, DefaultBonuses, TrackAttribute},
+    bonus::{Bonus, BonusSource, BonusType, CloneBonus, Value},
 };
 
 /// The different abilities that a character has
@@ -58,33 +58,34 @@ impl Ability {
     }
 }
 
-impl GetBonuses for Ability {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (!matches!(self, Self::All)).then(|| {
-            vec![Bonus::new(
-                Attribute::AbilityModifier(*self),
-                BonusType::Stacking,
-                ((value - 10f32) / 2f32).floor().into(),
-                Attribute::Ability(*self).into(),
-                None,
-            )]
-        })
-    }
-}
-
 impl DefaultBonuses for Ability {
-    type Iterator = [Bonus; 6];
+    type Iterator = std::iter::Flatten<std::array::IntoIter<[Bonus; 2], 6>>;
 
     fn get_default_bonuses() -> Self::Iterator {
-        Self::VALUES.map(|ability| {
-            Bonus::new(
-                Attribute::Ability(ability),
-                BonusType::Stacking,
-                8f32.into(),
-                BonusSource::Base,
-                None,
-            )
-        })
+        Self::VALUES
+            .map(|ability| {
+                [
+                    Bonus::new(
+                        Attribute::Ability(ability),
+                        BonusType::Stacking,
+                        8f32.into(),
+                        BonusSource::Base,
+                        None,
+                    ),
+                    Bonus::new(
+                        Attribute::AbilityModifier(ability),
+                        BonusType::Stacking,
+                        Value::Floor(Box::new(Value::Product(vec![
+                            Value::Sum(vec![Attribute::Ability(ability).into(), (-10f32).into()]),
+                            0.5f32.into(),
+                        ]))),
+                        BonusSource::Base,
+                        None,
+                    ),
+                ]
+            })
+            .into_iter()
+            .flatten()
     }
 }
 
