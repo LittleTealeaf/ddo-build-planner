@@ -14,7 +14,7 @@ editor = ["enum_ord"]
 [dependencies]
 utils = { path = "../utils/" }
 itertools = "0.11.0"
-serde = { version = "1.0.174", features = ["derive"] }
+serde = { version = "1.0.175", features = ["derive"] }
 ron = "0.8.0"
 log = "0.4.19"
 im = "15.1.0"
@@ -22,4 +22,4 @@ enum-map = {version = "2.6.0", features = ["serde"], optional = true}
 
 [dev-dependencies]
 builder = { path = ".", features = ["enum_ord"] }
-serde_test = "1.0.174"
+serde_test = "1.0.176"
