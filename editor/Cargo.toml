@@ -12,5 +12,5 @@ readme.workspace = true
 builder = { path = "../builder/", features = ["enum_map"]}
 roc = "0.0.0"
 serde = { version = "1.0.179" }
-iced = "0.9"
+iced = "0.10"
 iced_aw = "0.5"
