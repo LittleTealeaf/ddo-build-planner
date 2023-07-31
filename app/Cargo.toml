@@ -11,7 +11,7 @@ readme.workspace = true
 [dependencies]
 builder = { path = "../builder/" }
 data = { path = "../data/" }
-iced = "0.9.0"
+iced = "0.10.0"
 roc = "0.0.0"
 
 [[bin]]
