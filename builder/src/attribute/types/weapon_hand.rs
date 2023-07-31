@@ -22,9 +22,9 @@ impl WeaponHand {
 impl Display for WeaponHand {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            WeaponHand::Main => write!(f, "Main"),
-            WeaponHand::Off => write!(f, "Off"),
-            WeaponHand::Both => write!(f, "Both"),
+            Self::Main => write!(f, "Main"),
+            Self::Off => write!(f, "Off"),
+            Self::Both => write!(f, "Both"),
         }
     }
 }

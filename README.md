@@ -9,7 +9,7 @@ The goal of this project is to make a ddo build planner that's blazingly fast, a
 While this is in very early stages of development, you are more than welcome to install from source using the following command (after you've set up cargo)
 
 ```sh
-cargo install --git github.com/LittleTealeaf/ddo-build-planner app --force
+cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --force
 ```
 
 

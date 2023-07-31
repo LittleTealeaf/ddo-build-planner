@@ -17,8 +17,8 @@ pub enum MainHandType {
 impl Display for MainHandType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            MainHandType::Wand => write!(f, "Wand"),
-            MainHandType::Weapon(weapon) => weapon.fmt(f),
+            Self::Wand => write!(f, "Wand"),
+            Self::Weapon(weapon) => weapon.fmt(f),
         }
     }
 }

@@ -6,18 +6,16 @@ use crate::{
     attribute::{
         flags::{Flag, OffHandType},
         types::Ability,
-        Attribute, DefaultBonuses, GetBonuses,
+        Attribute, DefaultBonuses,
     },
-    bonus::{Bonus, BonusSource, BonusType, BonusValue, Condition},
-    equipment::item::types::ShieldType,
+    bonus::{Bonus, BonusSource, BonusType, Condition, Value},
+    equipment::item::types::{ArmorType, ShieldType},
 };
 
 /// Represents different attributes that relate to Armor Class
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ArmorClass {
-    /// Flat bonuses to armor class
-    Bonus,
     /// Bonuses to armor class from armor
     ArmorBonus,
     /// Bonuses to armor class from shields
@@ -26,145 +24,123 @@ pub enum ArmorClass {
     ArmorScalar,
     /// Scaling for [`ArmorClass::ShieldBonus`]
     ShieldScalar,
-    /// Scaling for [`ArmorClass::Bonus`]
-    Scalar,
     /// Natural Armor
     NaturalArmor,
-    /// Calculated Max Dex Bonus
-    ///
-    /// DO NOT MANUALLY ADD BONUSES TO THIS ATTRIBUTE.
-    CalculatedMaxDexBonus,
     /// Max Dex Bonus for Armor
     ArmorMaxDexBonus,
     /// Max Dex Bonus for Tower Shield
     ShieldMaxDexBonus,
+    /// Calculated Max Dex Bonus
+    ///
+    /// DO NOT MANUALLY ADD BONUSES TO THIS ATTRIBUTE.
+    CalculatedMaxDexBonus,
+    /// Flat bonuses to armor class
+    Bonus,
+    /// Scaling for [`ArmorClass::Bonus`]
+    Scalar,
 }
 
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ArmorClass::Bonus => write!(f, "Armor Class"),
-            ArmorClass::ArmorBonus => write!(f, "Armor AC"),
-            ArmorClass::ShieldBonus => write!(f, "Shield AC"),
-            ArmorClass::ArmorScalar => write!(f, "% Armor AC"),
-            ArmorClass::ShieldScalar => write!(f, "% Shield AC"),
-            ArmorClass::Scalar => write!(f, "% Armor Class"),
-            ArmorClass::NaturalArmor => write!(f, "Natural Armor"),
-            ArmorClass::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus"),
-            ArmorClass::ArmorMaxDexBonus => write!(f, "Armor Max Dex Bonus"),
-            ArmorClass::ShieldMaxDexBonus => write!(f, "Tower Shield Max Dex Bonus"),
+            Self::Bonus => write!(f, "Armor Class"),
+            Self::ArmorBonus => write!(f, "Armor AC"),
+            Self::ShieldBonus => write!(f, "Shield AC"),
+            Self::ArmorScalar => write!(f, "% Armor AC"),
+            Self::ShieldScalar => write!(f, "% Shield AC"),
+            Self::Scalar => write!(f, "% Armor Class"),
+            Self::NaturalArmor => write!(f, "Natural Armor"),
+            Self::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus"),
+            Self::ArmorMaxDexBonus => write!(f, "Armor Max Dex Bonus"),
+            Self::ShieldMaxDexBonus => write!(f, "Tower Shield Max Dex Bonus"),
         }
     }
 }
 
-impl GetBonuses for ArmorClass {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
-            ArmorClass::ArmorScalar => Some(vec![Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::Stacking,
-                BonusValue::Product(vec![
-                    Attribute::from(ArmorClass::ArmorBonus).into(),
-                    value.into(),
-                ]),
-                Attribute::from(ArmorClass::ArmorScalar).into(),
-                None,
-            )]),
-            ArmorClass::ShieldScalar => Some(vec![Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::Stacking,
-                BonusValue::Product(vec![
-                    Attribute::from(ArmorClass::ShieldBonus).into(),
-                    value.into(),
-                ]),
-                Attribute::from(ArmorClass::ShieldScalar).into(),
-                None,
-            )]),
-            ArmorClass::NaturalArmor => Some(vec![Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::Stacking,
-                value.into(),
-                Attribute::from(ArmorClass::NaturalArmor).into(),
-                None,
-            )]),
-            _ => None,
-        }
-    }
+fn is_wearing_armor() -> Condition {
+    Condition::Any(vec![
+        Condition::has(Flag::ArmorType(ArmorType::Light).into()),
+        Condition::has(Flag::ArmorType(ArmorType::Medium).into()),
+        Condition::has(Flag::ArmorType(ArmorType::Heavy).into()),
+    ])
 }
 
-// TODO: Impelemnt
-const IS_WEARING_ARMOR: Condition = Condition::Any(vec![]);
-
-const IS_WIELDING_SHIELD: Condition = Condition::Has(Attribute::Flag(Flag::OffHandType(
-    OffHandType::Shield(ShieldType::TowerShield),
-)));
+fn is_wielding_tower_shield() -> Condition {
+    Condition::has(Flag::OffHandType(OffHandType::Shield(ShieldType::TowerShield)).into())
+}
 
 impl DefaultBonuses for ArmorClass {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+    type Iterator = [Bonus; 4];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        [
+            // Armor class bonus scaled
             Bonus::new(
-                Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
+                Self::Bonus.into(),
                 BonusType::Stacking,
-                Attribute::ArmorClass(ArmorClass::ArmorMaxDexBonus).into(),
+                Value::Sum(vec![
+                    Value::Product(vec![
+                        Attribute::from(Self::ArmorBonus).into(),
+                        Attribute::from(Self::ArmorScalar).into(),
+                    ]),
+                    Value::Product(vec![
+                        Attribute::from(Self::ShieldBonus).into(),
+                        Attribute::from(Self::ShieldScalar).into(),
+                    ]),
+                    Attribute::from(Self::NaturalArmor).into(),
+                ]),
+                BonusSource::Base,
+                None,
+            ),
+            // Armor class bonus scaled from shield
+            // Max Dex Bonus from armor
+            Bonus::new(
+                Attribute::ArmorClass(Self::CalculatedMaxDexBonus),
+                BonusType::Stacking,
+                Attribute::ArmorClass(Self::ArmorMaxDexBonus).into(),
                 BonusSource::Base,
                 Some(Condition::All(vec![
-                    IS_WEARING_ARMOR,
+                    is_wearing_armor(),
                     Condition::NotAll(vec![
-                        IS_WIELDING_SHIELD,
+                        is_wielding_tower_shield(),
                         Condition::GreaterThan(
-                            ArmorClass::ArmorMaxDexBonus.into(),
-                            ArmorClass::ShieldMaxDexBonus.into(),
+                            Attribute::from(Self::ArmorMaxDexBonus).into(),
+                            Attribute::from(Self::ShieldMaxDexBonus).into(),
+                        ),
+                    ]),
+                ])),
+            ),
+            // Max dex bonus from shield
+            Bonus::new(
+                Attribute::ArmorClass(Self::CalculatedMaxDexBonus),
+                BonusType::Stacking,
+                Attribute::ArmorClass(Self::ShieldMaxDexBonus).into(),
+                BonusSource::Base,
+                Some(Condition::All(vec![
+                    is_wielding_tower_shield(),
+                    Condition::NotAll(vec![
+                        is_wearing_armor(),
+                        Condition::GreaterThan(
+                            Attribute::from(Self::ShieldMaxDexBonus).into(),
+                            Attribute::from(Self::ArmorMaxDexBonus).into(),
                         ),
                     ]),
                 ])),
             ),
             Bonus::new(
-                Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
-                BonusType::Stacking,
-                Attribute::ArmorClass(ArmorClass::ShieldMaxDexBonus).into(),
-                BonusSource::Base,
-                Some(Condition::All(vec![
-                    IS_WIELDING_SHIELD,
-                    Condition::NotAll(vec![
-                        IS_WEARING_ARMOR,
-                        Condition::GreaterThan(
-                            ArmorClass::ShieldMaxDexBonus.into(),
-                            ArmorClass::ArmorMaxDexBonus.into(),
-                        ),
-                    ]),
-                ])),
-            ),
-            // If max dex bonus is higher than value
-            Bonus::new(
-                ArmorClass::Bonus.into(),
+                Self::Bonus.into(),
                 BonusType::AbilityModifier,
-                Attribute::Ability(Ability::Dexterity).into(),
+                Value::If(
+                    Condition::has(Attribute::ArmorClass(Self::CalculatedMaxDexBonus)).into(),
+                    Value::Min(vec![
+                        Attribute::AbilityModifier(Ability::Dexterity).into(),
+                        Attribute::ArmorClass(Self::CalculatedMaxDexBonus).into(),
+                    ])
+                    .into(),
+                    Value::from(Attribute::AbilityModifier(Ability::Dexterity)).into(),
+                ),
                 BonusSource::Base,
-                Some(Condition::Any(vec![
-                    Condition::NotHave(ArmorClass::CalculatedMaxDexBonus.into()),
-                    Condition::LessThan(
-                        Attribute::Ability(Ability::Dexterity),
-                        Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
-                    ),
-                    Condition::EqualTo(
-                        Attribute::Ability(Ability::Dexterity),
-                        Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
-                    ),
-                ])),
-            ),
-            // If max dex bonus is lower than value
-            Bonus::new(
-                ArmorClass::Bonus.into(),
-                BonusType::AbilityModifier,
-                Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus).into(),
-                BonusSource::Base,
-                Some(Condition::All(vec![
-                    Condition::Has(ArmorClass::CalculatedMaxDexBonus.into()),
-                    Condition::GreaterThan(
-                        Attribute::Ability(Ability::Dexterity),
-                        Attribute::ArmorClass(ArmorClass::CalculatedMaxDexBonus),
-                    ),
-                ])),
+                None,
             ),
         ]
     }

@@ -6,14 +6,15 @@ on:
   pull_request:
     branches: ["main"]
   schedule:
-    - cron: "28 13 * * 1"
+    - cron: "28 13 * * *"
 
 env:
   CARGO_TERM_COLOR: always
+  BRANCH: ${{github.head_ref || github.ref_name}}
 
 jobs:
-  cargo:
-    name: Cargo
+  test:
+    name: Test
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -31,16 +32,25 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           key: ${{matrix.os}}
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all
       - name: Test
         uses: actions-rs/cargo@v1
         with:
           command: test
           args: --all
+  install:
+    name: Install from Git
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          cache: false
+      - name: Install Builder
+        run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} --branch ${{env.BRANCH}}
   format:
     name: Format
     runs-on: ubuntu-latest
@@ -61,6 +71,8 @@ jobs:
       contents: read
       security-events: write
       actions: read
+    env:
+      RUSTFLAGS: -D warnings -D clippy::complexity -D clippy::pedantic -D clippy::nursery
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -78,12 +90,41 @@ jobs:
         with:
           crate: sarif-fmt
       - name: Run rust-clippy
-        run: cargo clippy --all --no-deps --all-features --message-format=json | uniq | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
-        env:
-          RUSTFLAGS: ""
+        run: cargo clippy --all --no-deps --all-features --message-format=json | sort | uniq | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: rust-clippy-results.sarif
           wait-for-processing: true
+  cargo-lock:
+    name: Cargo Lock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all
+      - name: Check if Cargo.lock changed
+        id: verify-changed-files
+        uses: tj-actions/verify-changed-files@v16
+        with:
+          files: |
+            Cargo.lock
+      - name: Fail if Cargo.lock changed
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: exit 1
+  finish:
+    name: Finish Checks
+    needs: [clippy, test, install, format, cargo-lock]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Finish Checks
+        run: echo "Checks Finnished"

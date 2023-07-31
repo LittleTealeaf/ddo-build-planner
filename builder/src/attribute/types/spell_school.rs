@@ -41,14 +41,14 @@ impl SpellSchool {
 impl Display for SpellSchool {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SpellSchool::Abjuration => write!(f, "Abjuration"),
-            SpellSchool::Conjuration => write!(f, "Conjuration"),
-            SpellSchool::Divination => write!(f, "Divination"),
-            SpellSchool::Enchantment => write!(f, "Enchantment"),
-            SpellSchool::Evocation => write!(f, "Evocation"),
-            SpellSchool::Illusion => write!(f, "Illusion"),
-            SpellSchool::Necromancy => write!(f, "Necromancy"),
-            SpellSchool::Transmutation => write!(f, "Transmutation"),
+            Self::Abjuration => write!(f, "Abjuration"),
+            Self::Conjuration => write!(f, "Conjuration"),
+            Self::Divination => write!(f, "Divination"),
+            Self::Enchantment => write!(f, "Enchantment"),
+            Self::Evocation => write!(f, "Evocation"),
+            Self::Illusion => write!(f, "Illusion"),
+            Self::Necromancy => write!(f, "Necromancy"),
+            Self::Transmutation => write!(f, "Transmutation"),
         }
     }
 }

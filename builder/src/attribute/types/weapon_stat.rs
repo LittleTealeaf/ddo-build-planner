@@ -29,14 +29,14 @@ pub enum WeaponStat {
 impl Display for WeaponStat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            WeaponStat::Attack => write!(f, "Attack"),
-            WeaponStat::Damage => write!(f, "Damage"),
-            WeaponStat::CriticalAttack => write!(f, "Critical Attack"),
-            WeaponStat::CriticalDamage => write!(f, "Critical Damage"),
-            WeaponStat::CriticalMultiplier => write!(f, "Critical Multiplier"),
-            WeaponStat::CriticalMultiplier1920 => write!(f, "Critical Multiplier (19-20)"),
-            WeaponStat::DamageReductionBypass(dr) => write!(f, "{} Bypass", dr),
-            WeaponStat::CriticalThreatRange => write!(f, "Critical Threat Range"),
+            Self::Attack => write!(f, "Attack"),
+            Self::Damage => write!(f, "Damage"),
+            Self::CriticalAttack => write!(f, "Critical Attack"),
+            Self::CriticalDamage => write!(f, "Critical Damage"),
+            Self::CriticalMultiplier => write!(f, "Critical Multiplier"),
+            Self::CriticalMultiplier1920 => write!(f, "Critical Multiplier (19-20)"),
+            Self::DamageReductionBypass(dr) => write!(f, "{dr} Bypass"),
+            Self::CriticalThreatRange => write!(f, "Critical Threat Range"),
         }
     }
 }

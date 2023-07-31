@@ -23,13 +23,13 @@ impl GetBonuses for PlayerClass {
 }
 
 impl PlayerClass {
-    fn get_ability_spell_dc_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
+    fn get_ability_spell_dc_bonuses(self, _: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Alchemist | Self::Artificer | Self::Wizard => Some(vec![Bonus::new(
-                Attribute::SpellDC((*self).into()),
+                Attribute::SpellDC(self.into()),
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Intelligence).into(),
-                Attribute::from(*self).into(),
+                Attribute::from(self).into(),
                 None,
             )]),
             Self::Sorcerer
@@ -37,34 +37,34 @@ impl PlayerClass {
             | Self::Stormsinger
             | Self::Warlock
             | Self::AcolyteOfTheSkin => Some(vec![Bonus::new(
-                Attribute::SpellDC((*self).into()),
+                Attribute::SpellDC(self.into()),
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Charisma).into(),
-                Attribute::from(*self).into(),
+                Attribute::from(self).into(),
                 None,
             )]),
             Self::Cleric | Self::DarkApostate | Self::Druid | Self::BlightCaster => {
                 Some(vec![Bonus::new(
-                    Attribute::SpellDC((*self).into()),
+                    Attribute::SpellDC(self.into()),
                     BonusType::AbilityModifier,
                     Attribute::AbilityModifier(Ability::Wisdom).into(),
-                    Attribute::from(*self).into(),
+                    Attribute::from(self).into(),
                     None,
                 )])
             }
             Self::FavoredSoul => Some(vec![
                 Bonus::new(
-                    Attribute::SpellDC((*self).into()),
+                    Attribute::SpellDC(self.into()),
                     BonusType::AbilityModifier,
                     Attribute::AbilityModifier(Ability::Wisdom).into(),
-                    Attribute::from(*self).into(),
+                    Attribute::from(self).into(),
                     None,
                 ),
                 Bonus::new(
-                    Attribute::SpellDC((*self).into()),
+                    Attribute::SpellDC(self.into()),
                     BonusType::AbilityModifier,
                     Attribute::AbilityModifier(Ability::Charisma).into(),
-                    Attribute::from(*self).into(),
+                    Attribute::from(self).into(),
                     None,
                 ),
             ]),

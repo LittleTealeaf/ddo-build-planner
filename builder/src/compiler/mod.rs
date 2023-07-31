@@ -2,7 +2,7 @@
 //!
 //! [`Bonuses`]: crate::bonus::Bonus
 
-mod attribute_queue;
+mod buffer;
 mod calculation;
 mod inserting;
 
@@ -11,13 +11,13 @@ use im::OrdMap;
 pub use inserting::*;
 
 use crate::{
-    attribute::{Attribute, DefaultBonuses},
+    attribute::Attribute,
     bonus::{Bonus, BonusSource},
 };
 
 /// Compiles and calculates attribut values from a set of [`Bonus`] entries.
 ///
-/// Internally, this uses [`OrdMap`] to efficiently store bonuses in a HashMap structure without the need of deriving [`Hash`].
+/// Internally, this uses [`OrdMap`] to efficiently store bonuses in a `HashMap` structure without the need of deriving [`Hash`].
 ///
 /// This will handle any bonuses that different attributes may give (such as [`Attribute::Ability`] giving bonuses to [`Attribute::AbilityModifier`]), as well as cloned bonuses (such as [`Ability::All`] being split off into each of the abilities)
 ///

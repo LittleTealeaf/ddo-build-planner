@@ -3,8 +3,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
-    bonus::{Bonus, BonusSource, BonusType, CloneBonus},
+    attribute::{Attribute, DefaultBonuses, TrackAttribute},
+    bonus::{Bonus, BonusSource, BonusType, CloneBonus, Value},
 };
 
 /// The different abilities that a character has
@@ -35,16 +35,16 @@ pub enum Ability {
 
 impl Ability {
     /// Represents the 6 different values that [`Ability`] can be (without [`Ability::All`])
-    pub const VALUES: [Ability; 6] = [
-        Ability::Strength,
-        Ability::Dexterity,
-        Ability::Constitution,
-        Ability::Intelligence,
-        Ability::Wisdom,
-        Ability::Charisma,
+    pub const VALUES: [Self; 6] = [
+        Self::Strength,
+        Self::Dexterity,
+        Self::Constitution,
+        Self::Intelligence,
+        Self::Wisdom,
+        Self::Charisma,
     ];
 
-    fn modifier_bonus<T>(&self, attribute: T, value: f32) -> Bonus
+    fn modifier_bonus<T>(self, attribute: T, value: f32) -> Bonus
     where
         Attribute: From<T>,
     {
@@ -52,39 +52,40 @@ impl Ability {
             attribute.into(),
             BonusType::AbilityModifier,
             value.into(),
-            Attribute::AbilityModifier(*self).into(),
+            Attribute::AbilityModifier(self).into(),
             None,
         )
     }
 }
 
-impl GetBonuses for Ability {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (!matches!(self, Self::All)).then(|| {
-            vec![Bonus::new(
-                Attribute::AbilityModifier(*self),
-                BonusType::Stacking,
-                ((value - 10f32) / 2f32).floor().into(),
-                Attribute::Ability(*self).into(),
-                None,
-            )]
-        })
-    }
-}
-
 impl DefaultBonuses for Ability {
-    fn get_default_bonuses() -> Vec<Bonus> {
+    type Iterator = std::iter::Flatten<std::array::IntoIter<[Bonus; 2], 6>>;
+
+    fn get_default_bonuses() -> Self::Iterator {
         Self::VALUES
             .map(|ability| {
-                Bonus::new(
-                    Attribute::Ability(ability),
-                    BonusType::Stacking,
-                    8f32.into(),
-                    BonusSource::Base,
-                    None,
-                )
+                [
+                    Bonus::new(
+                        Attribute::Ability(ability),
+                        BonusType::Stacking,
+                        8f32.into(),
+                        BonusSource::Base,
+                        None,
+                    ),
+                    Bonus::new(
+                        Attribute::AbilityModifier(ability),
+                        BonusType::Stacking,
+                        Value::Floor(Box::new(Value::Product(vec![
+                            Value::Sum(vec![Attribute::Ability(ability).into(), (-10f32).into()]),
+                            0.5f32.into(),
+                        ]))),
+                        BonusSource::Base,
+                        None,
+                    ),
+                ]
             })
-            .to_vec()
+            .into_iter()
+            .flatten()
     }
 }
 
@@ -109,13 +110,13 @@ impl CloneBonus for Ability {
 impl Display for Ability {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Ability::Strength => write!(f, "Strength"),
-            Ability::Dexterity => write!(f, "Dexterity"),
-            Ability::Constitution => write!(f, "Constitution"),
-            Ability::Intelligence => write!(f, "Intelligence"),
-            Ability::Wisdom => write!(f, "Wisdom"),
-            Ability::Charisma => write!(f, "Charisma"),
-            Ability::All => write!(f, "All"),
+            Self::Strength => write!(f, "Strength"),
+            Self::Dexterity => write!(f, "Dexterity"),
+            Self::Constitution => write!(f, "Constitution"),
+            Self::Intelligence => write!(f, "Intelligence"),
+            Self::Wisdom => write!(f, "Wisdom"),
+            Self::Charisma => write!(f, "Charisma"),
+            Self::All => write!(f, "All"),
         }
     }
 }

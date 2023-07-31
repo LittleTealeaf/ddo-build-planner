@@ -2,98 +2,78 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::Attribute;
+use crate::attribute::{Attribute, AttributeDependencies};
+
+use super::Value;
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum Condition {
-    /// Negates a condition
+    /// Requires that a condition is not true
     Not(Box<Condition>),
-    /// Requires that an attribute has an above 0 value
-    Has(Attribute),
-    /// Requires that an attribute is either zero or below
-    NotHave(Attribute),
-    /// Requires that an attribute has at most some value
-    Max(Attribute, f32),
-    /// Requires that an attribute has at least some value
-    Min(Attribute, f32),
-    /// Requires that an attribute is exactly some value
-    Eq(Attribute, f32),
-    /// Requires that an attribute is not equal to some value
-    NotEq(Attribute, f32),
-    /// Requires that an attribute is greater than another attribute
-    GreaterThan(Attribute, Attribute),
-    /// Requires that an attribute is less than another attribute
-    LessThan(Attribute, Attribute),
-    /// Requires that an attribute is equal to another attribute
-    EqualTo(Attribute, Attribute),
-    /// Requires that an attribute is not equal to another attribute
-    NotEqualTo(Attribute, Attribute),
-    /// Requires any of the provided conditions
+    /// Requires that one value is greater than the next value
+    GreaterThan(Value, Value),
+    /// Requires that one value is less than the next value
+    LessThan(Value, Value),
+    /// Requires that one value is equal to another value
+    EqualTo(Value, Value),
+    /// Requires that one value is not equal to another value
+    NotEqualTo(Value, Value),
+    /// Requires that some of the conditions are true
     Any(Vec<Condition>),
-    /// Requires all of the provided conditions
+    /// Requires that all of the conditions are true
     All(Vec<Condition>),
-    /// Requires that not all of the provided conditions are true
+    /// Requires that all of the conditions are false
+    NotAny(Vec<Condition>),
+    /// Requires that some of the conditions are false
     NotAll(Vec<Condition>),
-    /// Requires that none of the provided conditions are true
-    None(Vec<Condition>),
 }
 
-/// Implements different constructors to make building conditions easier.
+/// Generator functions to abstract away stndard conditions
 impl Condition {
-    /// Creates a condition that checks that any of the provided attributes are present.
-    ///
-    ///
-    /// Returns a [`Condition::Any`] with a list of [`Condition::Has`] conditions for each of the provided attributes.
-    pub fn has_any(attributes: Vec<Attribute>) -> Condition {
-        Condition::Any(attributes.into_iter().map(Condition::Has).collect())
+    /// Requires that the character has some attribute
+    #[must_use]
+    pub fn has(attribute: Attribute) -> Self {
+        Self::GreaterThan(attribute.into(), 0f32.into())
     }
 
-    /// Creates a condition that checks that all of the provided attributes are present.
-    ///
-    /// Returns a [`Condition::All`] with a list of [`Condition::Has`] conditions for each of the provided attributes.
-    pub fn has_all(attributes: Vec<Attribute>) -> Condition {
-        Condition::All(attributes.into_iter().map(Condition::Has).collect())
-    }
-
-    /// Creates a condition that checks that none of the provided attributes are present.
-    ///
-    /// Returns a [`Condition::All`] with a list of [`Condition::NotHave`] conditions for each of the provided attributes.
-    pub fn not_have_any(attributes: Vec<Attribute>) -> Condition {
-        Condition::All(attributes.into_iter().map(Condition::NotHave).collect())
-    }
-
-    /// Creates a condition that checks that at least one of the provided arguments is not present.
-    ///
-    /// Returns a [`Condition::Any`] with a list of [`Condition::NotHave`] conditions for each of the provided attributes.
-    pub fn not_have_all(attributes: Vec<Attribute>) -> Condition {
-        Condition::Any(attributes.into_iter().map(Condition::NotHave).collect())
+    /// Requires that the character does not have some attribute
+    #[must_use]
+    pub fn not_have(attribute: Attribute) -> Self {
+        Self::EqualTo(attribute.into(), 0f32.into())
     }
 }
 
-/// Methods that can be called from a condition.
-impl Condition {
-    /// Returns any dependant condition
-    pub fn get_dependencies(&self) -> Vec<Attribute> {
+impl AttributeDependencies for Condition {
+    fn has_attr_dependency(&self, attribute: Attribute) -> bool {
         match self {
-            Condition::Not(condition) => condition.get_dependencies(),
-            Condition::GreaterThan(a, b)
-            | Condition::LessThan(a, b)
-            | Condition::EqualTo(a, b)
-            | Condition::NotEqualTo(a, b) => {
-                vec![*a, *b]
+            Self::Not(cond) => cond.has_attr_dependency(attribute),
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::NotEqualTo(a, b) => {
+                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
-            Condition::Has(attr)
-            | Condition::NotHave(attr)
-            | Condition::Max(attr, _)
-            | Condition::Min(attr, _)
-            | Condition::Eq(attr, _)
-            | Condition::NotEq(attr, _) => vec![*attr],
-            Condition::Any(conds)
-            | Condition::All(conds)
-            | Condition::NotAll(conds)
-            | Condition::None(conds) => {
-                conds.iter().flat_map(Condition::get_dependencies).collect()
+            Self::Any(conds) | Self::All(conds) | Self::NotAny(conds) | Self::NotAll(conds) => {
+                conds.iter().any(|cond| cond.has_attr_dependency(attribute))
+            }
+        }
+    }
+
+    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+        match self {
+            Self::Not(cond) => cond.include_attr_dependency(set),
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::NotEqualTo(a, b) => {
+                a.include_attr_dependency(set);
+                b.include_attr_dependency(set);
+            }
+            Self::Any(conds) | Self::All(conds) | Self::NotAny(conds) | Self::NotAll(conds) => {
+                for cond in conds {
+                    cond.include_attr_dependency(set);
+                }
             }
         }
     }
@@ -102,21 +82,15 @@ impl Condition {
 impl Display for Condition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Condition::Not(condition) => write!(f, "Not {}", *condition),
-            Condition::Has(attr) => write!(f, "Has {}", attr),
-            Condition::NotHave(attr) => write!(f, "Does not have {}", attr),
-            Condition::Max(attr, value) => write!(f, "{} is at most {}", attr, value),
-            Condition::Min(attr, value) => write!(f, "{} is at least {}", attr, value),
-            Condition::Eq(attr, value) => write!(f, "{} is {}", attr, value),
-            Condition::NotEq(attr, value) => write!(f, "{} is not {}", attr, value),
-            Condition::GreaterThan(a, b) => write!(f, "{} is greater than {}", a, b),
-            Condition::LessThan(a, b) => write!(f, "{} is less than {}", a, b),
-            Condition::EqualTo(a, b) => write!(f, "{} is equal to {}", a, b),
-            Condition::NotEqualTo(a, b) => write!(f, "{} is not equal to {}", a, b),
-            Condition::Any(conditions) => write!(f, "Any of {:?}", conditions),
-            Condition::All(conditions) => write!(f, "All of {:?}", conditions),
-            Condition::NotAll(conditions) => write!(f, "Not all of {:?}", conditions),
-            Condition::None(conditions) => write!(f, "None of {:?}", conditions),
+            Self::Not(condition) => write!(f, "Not {}", *condition),
+            Self::GreaterThan(a, b) => write!(f, "{a} is greater than {b}"),
+            Self::LessThan(a, b) => write!(f, "{a} is less than {b}"),
+            Self::EqualTo(a, b) => write!(f, "{a} is equal to {b}"),
+            Self::NotEqualTo(a, b) => write!(f, "{a} is not equal to {b}"),
+            Self::Any(conditions) => write!(f, "Any of {conditions:?}"),
+            Self::All(conditions) => write!(f, "All of {conditions:?}"),
+            Self::NotAll(conditions) => write!(f, "Not all of {conditions:?}"),
+            Self::NotAny(conditions) => write!(f, "Not any of {conditions:?}"),
         }
     }
 }

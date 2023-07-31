@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::Attribute;
 
-use super::{Bonus, BonusSource, BonusType, BonusValue, Condition};
+use super::{Bonus, BonusSource, BonusType, Condition, Value};
 
 #[derive(Serialize, Deserialize)]
 pub struct DeserializedBonus {
@@ -14,7 +14,7 @@ pub struct DeserializedBonus {
     #[serde(rename = "type")]
     bonus_type: BonusType,
     #[serde(rename = "val")]
-    value: BonusValue,
+    value: Value,
     #[serde(rename = "src")]
     source: BonusSource,
     #[serde(rename = "cond")]
@@ -23,7 +23,7 @@ pub struct DeserializedBonus {
 
 impl From<DeserializedBonus> for Bonus {
     fn from(value: DeserializedBonus) -> Self {
-        Bonus::new(
+        Self::new(
             value.attribute,
             value.bonus_type,
             value.value,

@@ -62,19 +62,19 @@ impl SavingThrow {
 impl Display for SavingThrow {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SavingThrow::Fortitude => write!(f, "Fortitude"),
-            SavingThrow::Poison => write!(f, "Poison"),
-            SavingThrow::Disease => write!(f, "Disease"),
-            SavingThrow::Reflex => write!(f, "Reflex"),
-            SavingThrow::Traps => write!(f, "Traps"),
-            SavingThrow::Spell => write!(f, "Spell"),
-            SavingThrow::Magic => write!(f, "Magic"),
-            SavingThrow::Will => write!(f, "Will"),
-            SavingThrow::Enchantment => write!(f, "Enchantment"),
-            SavingThrow::Illusion => write!(f, "Illusion"),
-            SavingThrow::Fear => write!(f, "Fear"),
-            SavingThrow::Curse => write!(f, "Curse"),
-            SavingThrow::All => write!(f, "All"),
+            Self::Fortitude => write!(f, "Fortitude"),
+            Self::Poison => write!(f, "Poison"),
+            Self::Disease => write!(f, "Disease"),
+            Self::Reflex => write!(f, "Reflex"),
+            Self::Traps => write!(f, "Traps"),
+            Self::Spell => write!(f, "Spell"),
+            Self::Magic => write!(f, "Magic"),
+            Self::Will => write!(f, "Will"),
+            Self::Enchantment => write!(f, "Enchantment"),
+            Self::Illusion => write!(f, "Illusion"),
+            Self::Fear => write!(f, "Fear"),
+            Self::Curse => write!(f, "Curse"),
+            Self::All => write!(f, "All"),
         }
     }
 }
@@ -98,24 +98,26 @@ impl CloneBonus for SavingThrow {
 }
 
 impl DefaultBonuses for SavingThrow {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+    type Iterator = [Bonus; 3];
+
+    fn get_default_bonuses() -> Self::Iterator {
+        [
             Bonus::new(
-                SavingThrow::Reflex.into(),
+                Self::Reflex.into(),
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Dexterity).into(),
                 BonusSource::Base,
                 None,
             ),
             Bonus::new(
-                SavingThrow::Fortitude.into(),
+                Self::Fortitude.into(),
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Constitution).into(),
                 BonusSource::Base,
                 None,
             ),
             Bonus::new(
-                SavingThrow::Will.into(),
+                Self::Will.into(),
                 BonusType::AbilityModifier,
                 Attribute::AbilityModifier(Ability::Wisdom).into(),
                 BonusSource::Base,

@@ -33,16 +33,16 @@ pub enum EnergyResistance {
 impl Display for EnergyResistance {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            EnergyResistance::Acid => write!(f, "Acid"),
-            EnergyResistance::Cold => write!(f, "Cold"),
-            EnergyResistance::Electric => write!(f, "Electric"),
-            EnergyResistance::Fire => write!(f, "Fire"),
-            EnergyResistance::Force => write!(f, "Force"),
-            EnergyResistance::Light => write!(f, "Light"),
-            EnergyResistance::Negative => write!(f, "Negative"),
-            EnergyResistance::Poison => write!(f, "Poison"),
-            EnergyResistance::Sonic => write!(f, "Sonic"),
-            EnergyResistance::Alignment(alignment) => alignment.fmt(f),
+            Self::Acid => write!(f, "Acid"),
+            Self::Cold => write!(f, "Cold"),
+            Self::Electric => write!(f, "Electric"),
+            Self::Fire => write!(f, "Fire"),
+            Self::Force => write!(f, "Force"),
+            Self::Light => write!(f, "Light"),
+            Self::Negative => write!(f, "Negative"),
+            Self::Poison => write!(f, "Poison"),
+            Self::Sonic => write!(f, "Sonic"),
+            Self::Alignment(alignment) => alignment.fmt(f),
         }
     }
 }

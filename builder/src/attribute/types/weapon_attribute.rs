@@ -9,15 +9,15 @@ use crate::{
 
 use super::{WeaponHand, WeaponStat};
 
-/// A WeaponStat that is specifically for a weapon hand.
+/// A `WeaponStat` that is specifically for a weapon hand.
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
 impl Display for WeaponAttribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let WeaponAttribute(hand, stat) = self;
-        write!(f, "{}-Hand {}", hand, stat)
+        let Self(hand, stat) = self;
+        write!(f, "{hand}-Hand {stat}")
     }
 }
 
@@ -36,7 +36,7 @@ impl From<(WeaponHand, WeaponStat)> for Attribute {
 impl GetBonuses for WeaponAttribute {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            WeaponAttribute(hand, WeaponStat::CriticalMultiplier) => Some(vec![Bonus::new(
+            Self(hand, WeaponStat::CriticalMultiplier) => Some(vec![Bonus::new(
                 (*hand, WeaponStat::CriticalMultiplier1920).into(),
                 BonusType::Stacking,
                 value.into(),
@@ -50,14 +50,14 @@ impl GetBonuses for WeaponAttribute {
 
 impl TrackAttribute for WeaponAttribute {
     fn is_tracked(&self) -> bool {
-        let WeaponAttribute(hand, _) = self;
+        let Self(hand, _) = self;
         !matches!(hand, WeaponHand::Both)
     }
 }
 
 impl CloneBonus for WeaponAttribute {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
-        let WeaponAttribute(hand, stat) = self;
+        let Self(hand, stat) = self;
         matches!(hand, WeaponHand::Both).then(|| {
             match stat {
                 WeaponStat::Attack => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Attack)),
