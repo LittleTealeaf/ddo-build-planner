@@ -37,7 +37,7 @@ use crate::{
 ///     compiler::Compiler
 /// };
 ///
-/// let mut compiler = Compiler::default();
+/// let mut compiler = Compiler::new();
 ///
 /// compiler.add_bonus(Bonus::new(Attribute::Sheltering(Sheltering::Magical), BonusType::Stacking, 5f32.into(), BonusSource::Custom(0), None));
 ///
@@ -53,8 +53,9 @@ pub struct Compiler {
     children: OrdMap<BonusSource, Vec<Attribute>>,
 }
 
-impl Default for Compiler {
-    fn default() -> Self {
+impl Compiler {
+    /// Creates a new instance of the compiler and inserts all default bonuses.
+    pub fn new() -> Self {
         let mut new = Self {
             bonuses: OrdMap::new(),
             cache: OrdMap::new(),

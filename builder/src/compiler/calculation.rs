@@ -101,7 +101,7 @@ impl Compiler {
     ///     }
     /// };
     ///
-    /// let mut compiler = Compiler::default();
+    /// let mut compiler = Compiler::new();
     /// assert!(compiler.get_attribute(&Attribute::SpellResistance) == 0f32);
     ///
     /// // Note that attributes like Ability Scores are automatically inserted on creation.
@@ -157,7 +157,7 @@ impl Compiler {
     ///     }
     /// };
     ///
-    /// let mut compiler = Compiler::default();
+    /// let mut compiler = Compiler::new();
     /// assert_eq!(None, compiler.calculate_attribute(&Attribute::SpellResistance));
     ///
     /// // Note that attributes like Ability Scores are automatically inserted on creation.

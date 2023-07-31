@@ -8,7 +8,7 @@ use builder::{
 
 #[test]
 fn test_first_life_healer() {
-    let mut compiler = Compiler::default();
+    let mut compiler = Compiler::new();
     // +8 Stat Tome
     compiler.add_bonus(Bonus::new(
         Ability::All.into(),

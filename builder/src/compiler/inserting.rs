@@ -129,7 +129,7 @@ mod tests {
     fn get_dependants_for_default_bonuses() {
         // This assumes that there is a default bonus that links the Dexterity Score to the Dexterity Modifier
 
-        let compiler = Compiler::default();
+        let compiler = Compiler::new();
 
         let bonuses = compiler
             .get_dependants(Attribute::Ability(Ability::Dexterity))

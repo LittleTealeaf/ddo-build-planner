@@ -12,7 +12,7 @@ use builder::{
 };
 
 fn main() {
-    let mut compiler = Compiler::default();
+    let mut compiler = Compiler::new();
 
     println!("Adding Bonuses");
 
