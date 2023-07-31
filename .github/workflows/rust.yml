@@ -112,13 +112,13 @@ jobs:
         with:
           command: build
           args: --all
-      - name: Check if Cargo.lock did not change
+      - name: Check if Cargo.lock changed
         id: verify-changed-files
         uses: tj-actions/verify-changed-files@v16
         with:
           files: |
             Cargo.lock
-      - name: Fail if Cargo.lock is changed
+      - name: Fail if Cargo.lock changed
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: exit 1
   finish:
