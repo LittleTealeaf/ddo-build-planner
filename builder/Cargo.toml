@@ -16,7 +16,7 @@ utils = { path = "../utils/" }
 itertools = "0.11.0"
 serde = { version = "1.0.183", features = ["derive"] }
 ron = "0.8.0"
-log = "0.4.19"
+log = "0.4.20"
 im = "15.1.0"
 enum-map = {version = "2.6.1", features = ["serde"], optional = true}
 
