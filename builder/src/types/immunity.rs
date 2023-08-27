@@ -10,13 +10,16 @@ pub enum Immunity {
     Sleep,
     /// Immunity to Fear
     Fear,
+    /// Immuntiy to most forms of knockdown
+    Knockdown,
 }
 
 impl Display for Immunity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Sleep => write!(f, "Sleep"),
-            Self::Fear => write!(f, "Fear"),
+            Immunity::Sleep => write!(f, "Sleep"),
+            Immunity::Fear => write!(f, "Fear"),
+            Immunity::Knockdown => write!(f, "Knockdown"),
         }
     }
 }
