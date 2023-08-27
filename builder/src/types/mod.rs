@@ -8,3 +8,4 @@ macro_rules! module {
 }
 
 module!(ability);
+module!(skill);

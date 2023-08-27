@@ -4,7 +4,7 @@ pub mod impls;
 pub mod selectors;
 pub mod toggles;
 mod traits;
-pub mod types;
+pub mod type_bonuses;
 
 mod from;
 
@@ -17,7 +17,7 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     player_class::PlayerClass,
-    types::Ability,
+    types::{Ability, Skill},
 };
 use std::fmt::Display;
 
@@ -25,8 +25,8 @@ use self::{
     flags::Flag,
     selectors::SpellSelector,
     toggles::Toggle,
-    types::{
-        ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower, WeaponAttribute,
+    type_bonuses::{
+        ArmorClass, EnergyResistance, SavingThrow, Sheltering,  SpellPower, WeaponAttribute,
         _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },
 };

@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::types::{Alignment, MonsterType};
+use crate::attribute::type_bonuses::{Alignment, MonsterType};
 
 /// Indicates that the character is attacking / fighting a certain type
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]

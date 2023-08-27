@@ -178,7 +178,7 @@ macro_rules! from_skill {
         Bonus::new(
             $crate::attribute::Attribute::SpellPower(SpellPower::$sp),
             BonusType::Stacking,
-            $crate::attribute::Attribute::Skill($crate::attribute::types::Skill::$skill).into(),
+            $crate::attribute::Attribute::Skill($crate::types::Skill::$skill).into(),
             $crate::bonus::BonusSource::Base,
             None,
         )

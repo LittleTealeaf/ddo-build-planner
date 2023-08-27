@@ -6,12 +6,12 @@ use crate::{
     attribute::{
         flags::{Flag, MainHandType, OffHandType},
         toggles::{AttackingTarget, Toggle},
-        types::{ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat},
+        type_bonuses::{ArmorClass, Immunity, MonsterType, SavingThrow, WeaponHand, WeaponStat},
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
-    feat::Feat,
+    feat::Feat, types::Skill,
 };
 
 /// Feats granted from different races.
