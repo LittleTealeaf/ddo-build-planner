@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use super::Alignment;
+use crate::types::Alignment;
 
 /// Indicates a type of Damage Reduction that something might have
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]

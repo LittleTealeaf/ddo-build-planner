@@ -2,7 +2,6 @@
 //!
 //! [`Attribute`]: crate::attribute::Attribute
 mod ability;
-mod alignment;
 mod armor_class;
 mod damage_reduction;
 mod energy_resistance;
@@ -17,7 +16,6 @@ mod weapon_hand;
 mod weapon_stat;
 
 pub use ability::*;
-pub use alignment::*;
 pub use armor_class::*;
 pub use damage_reduction::*;
 pub use energy_resistance::*;
