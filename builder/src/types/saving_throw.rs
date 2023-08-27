@@ -102,3 +102,40 @@ impl Display for SavingThrow {
         }
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn primary_has_no_parent() {
+        assert!(SavingThrow::Fortitude.get_parent().is_none());
+        assert!(SavingThrow::Reflex.get_parent().is_none());
+        assert!(SavingThrow::Will.get_parent().is_none());
+    }
+
+    #[test]
+    fn all_has_no_parent() {
+        assert!(SavingThrow::All.get_parent().is_none());
+    }
+
+    #[test]
+    fn secondaries_have_correct_parent() {
+        let list = [
+            (SavingThrow::Poison, SavingThrow::Fortitude),
+            (SavingThrow::Disease, SavingThrow::Fortitude),
+            (SavingThrow::Traps, SavingThrow::Reflex),
+            (SavingThrow::Spell, SavingThrow::Reflex),
+            (SavingThrow::Magic, SavingThrow::Reflex),
+            (SavingThrow::Enchantment, SavingThrow::Will),
+            (SavingThrow::Illusion, SavingThrow::Will),
+            (SavingThrow::Fear, SavingThrow::Will),
+            (SavingThrow::Curse, SavingThrow::Will)
+        ];
+
+        for (secondary, primary) in list {
+            assert_eq!(secondary.get_parent(), Some(primary));
+        }
+    }
+}
