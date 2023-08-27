@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 
 /// The different abilities that a character has
@@ -24,4 +26,18 @@ pub enum Ability {
     /// Represents how charismatic the character is.
     #[serde(rename = "Cha")]
     Charisma,
+}
+
+impl Display for Ability {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Strength => write!(f, "Strength"),
+            Self::Dexterity => write!(f, "Dexterity"),
+            Self::Constitution => write!(f, "Constitution"),
+            Self::Intelligence => write!(f, "Intelligence"),
+            Self::Wisdom => write!(f, "Wisdom"),
+            Self::Charisma => write!(f, "Charisma"),
+            Self::All => write!(f, "All"),
+        }
+    }
 }

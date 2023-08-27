@@ -1,3 +1,11 @@
 //! Contains all of the various types within Dungeons & Dragons: Online
 
-pub mod ability;
+macro_rules! module {
+    ($module: ident) => {
+       mod $module; 
+       pub use $module::*;
+    };
+}
+
+module!(ability);
+

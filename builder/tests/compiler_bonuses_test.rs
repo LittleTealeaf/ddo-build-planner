@@ -3,7 +3,7 @@
 use builder::{
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
-    types::ability::Ability,
+    types::Ability,
 };
 
 #[test]

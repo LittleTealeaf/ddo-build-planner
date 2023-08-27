@@ -172,7 +172,7 @@ macro_rules! skill_ability_bonus {
             $crate::attribute::Attribute::Skill(Skill::$skill).into(),
             $crate::bonus::BonusType::AbilityModifier,
             $crate::attribute::Attribute::AbilityModifier(
-                $crate::types::ability::Ability::$ability,
+                $crate::types::Ability::$ability,
             )
             .into(),
             $crate::bonus::BonusSource::Base,

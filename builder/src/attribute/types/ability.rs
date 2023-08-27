@@ -1,9 +1,7 @@
-use std::fmt::Display;
-
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusSource, BonusType, CloneBonus, Value},
-    types::ability::Ability,
+    types::Ability,
 };
 
 impl Ability {
@@ -77,20 +75,6 @@ impl CloneBonus for Ability {
                 })
                 .to_vec()
         })
-    }
-}
-
-impl Display for Ability {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Strength => write!(f, "Strength"),
-            Self::Dexterity => write!(f, "Dexterity"),
-            Self::Constitution => write!(f, "Constitution"),
-            Self::Intelligence => write!(f, "Intelligence"),
-            Self::Wisdom => write!(f, "Wisdom"),
-            Self::Charisma => write!(f, "Charisma"),
-            Self::All => write!(f, "All"),
-        }
     }
 }
 

@@ -120,7 +120,7 @@ impl Compiler {
 
 #[cfg(test)]
 mod tests {
-    use crate::{attribute::Attribute, compiler::Compiler, types::ability::Ability};
+    use crate::{attribute::Attribute, compiler::Compiler, types::Ability};
 
     #[test]
     fn get_dependants_for_default_bonuses() {

@@ -17,7 +17,7 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     player_class::PlayerClass,
-    types::ability::Ability,
+    types::Ability,
 };
 use std::fmt::Display;
 

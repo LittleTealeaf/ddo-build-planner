@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusSource, BonusType, CloneBonus},
-    types::ability::Ability,
+    types::Ability,
 };
 
 /// The different saving throws that a character can have bonuses to

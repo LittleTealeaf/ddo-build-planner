@@ -9,7 +9,7 @@ use crate::{
     },
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     equipment::item::types::{ArmorType, ShieldType},
-    types::ability::Ability,
+    types::Ability,
 };
 
 /// Represents different attributes that relate to Armor Class

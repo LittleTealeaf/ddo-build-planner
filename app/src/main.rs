@@ -9,7 +9,7 @@ use builder::{
     equipment::item::types::ShieldType,
     player_class::PlayerClass,
     race::Race,
-    types::ability::Ability,
+    types::Ability,
 };
 
 fn main() {

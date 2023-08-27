@@ -257,7 +257,7 @@ impl Display for Bonus {
 
 #[cfg(test)]
 mod tests {
-    use crate::types::ability::Ability;
+    use crate::types::Ability;
 
     use super::*;
 
