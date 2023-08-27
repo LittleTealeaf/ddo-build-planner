@@ -1,7 +1,7 @@
 use builder::{
     attribute::{
-        flags::OffHandType,
         bonuses::{ArmorClass, WeaponHand, WeaponStat},
+        flags::OffHandType,
         Attribute,
     },
     bonus::{Bonus, BonusSource, BonusType},

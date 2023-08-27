@@ -13,8 +13,8 @@ use std::fmt::Display;
 use crate::{bonus::Bonus, equipment::item::types::ArmorType, race::Race};
 
 use super::{
-    toggles::Toggle,
     bonuses::{Alignment, Immunity},
+    toggles::Toggle,
     GetBonuses,
 };
 

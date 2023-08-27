@@ -1,10 +1,10 @@
 //! Represents each attribute that a character can have
+pub mod bonuses;
 pub mod flags;
 pub mod impls;
 pub mod selectors;
 pub mod toggles;
 mod traits;
-pub mod bonuses;
 
 mod from;
 
@@ -22,13 +22,13 @@ use crate::{
 use std::fmt::Display;
 
 use self::{
+    bonuses::{
+        ArmorClass, EnergyResistance, SavingThrow, Sheltering, SpellPower, WeaponAttribute,
+        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
+    },
     flags::Flag,
     selectors::SpellSelector,
     toggles::Toggle,
-    bonuses::{
-        ArmorClass, EnergyResistance, SavingThrow, Sheltering,  SpellPower, WeaponAttribute,
-        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
-    },
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
