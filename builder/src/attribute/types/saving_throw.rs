@@ -3,8 +3,9 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{types::Ability, Attribute, DefaultBonuses, TrackAttribute},
+    attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusSource, BonusType, CloneBonus},
+    types::ability::Ability,
 };
 
 /// The different saving throws that a character can have bonuses to

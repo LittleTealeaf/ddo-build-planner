@@ -1,9 +1,9 @@
 // This tests the compiler with a large set of bonuses
 
 use builder::{
-    attribute::types::Ability,
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
+    types::ability::Ability,
 };
 
 #[test]

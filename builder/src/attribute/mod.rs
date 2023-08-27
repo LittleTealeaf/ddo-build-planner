@@ -17,6 +17,7 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     player_class::PlayerClass,
+    types::ability::Ability,
 };
 use std::fmt::Display;
 
@@ -25,8 +26,8 @@ use self::{
     selectors::SpellSelector,
     toggles::Toggle,
     types::{
-        Ability, ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower,
-        WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
+        ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower, WeaponAttribute,
+        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },
 };
 

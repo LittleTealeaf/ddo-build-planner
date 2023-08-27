@@ -1,7 +1,7 @@
 use builder::{
     attribute::{
         flags::OffHandType,
-        types::{Ability, ArmorClass, WeaponHand, WeaponStat},
+        types::{ArmorClass, WeaponHand, WeaponStat},
         Attribute,
     },
     bonus::{Bonus, BonusSource, BonusType},
@@ -9,6 +9,7 @@ use builder::{
     equipment::item::types::ShieldType,
     player_class::PlayerClass,
     race::Race,
+    types::ability::Ability,
 };
 
 fn main() {

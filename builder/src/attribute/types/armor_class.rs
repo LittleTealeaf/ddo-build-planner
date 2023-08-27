@@ -5,11 +5,11 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{
         flags::{Flag, OffHandType},
-        types::Ability,
         Attribute, DefaultBonuses,
     },
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     equipment::item::types::{ArmorType, ShieldType},
+    types::ability::Ability,
 };
 
 /// Represents different attributes that relate to Armor Class

@@ -1,12 +1,13 @@
 use crate::{
     attribute::{
-        types::{Ability, EnergyResistance, Immunity, SavingThrow, Skill},
+        types::{EnergyResistance, Immunity, SavingThrow, Skill},
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::{Feat, Proficiency},
     race::Race,
+    types::ability::Ability,
 };
 
 use super::RacialFeat;
