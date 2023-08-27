@@ -4,7 +4,7 @@ pub mod impls;
 pub mod selectors;
 pub mod toggles;
 mod traits;
-pub mod type_bonuses;
+pub mod bonuses;
 
 mod from;
 
@@ -25,7 +25,7 @@ use self::{
     flags::Flag,
     selectors::SpellSelector,
     toggles::Toggle,
-    type_bonuses::{
+    bonuses::{
         ArmorClass, EnergyResistance, SavingThrow, Sheltering,  SpellPower, WeaponAttribute,
         _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },

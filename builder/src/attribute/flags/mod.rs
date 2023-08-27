@@ -14,7 +14,7 @@ use crate::{bonus::Bonus, equipment::item::types::ArmorType, race::Race};
 
 use super::{
     toggles::Toggle,
-    type_bonuses::{Alignment, Immunity},
+    bonuses::{Alignment, Immunity},
     GetBonuses,
 };
 

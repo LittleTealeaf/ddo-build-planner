@@ -6,7 +6,7 @@ use crate::{
     attribute::{
         flags::{Flag, MainHandType, OffHandType},
         toggles::{AttackingTarget, Toggle},
-        type_bonuses::{ArmorClass, Immunity, MonsterType, SavingThrow, WeaponHand, WeaponStat},
+        bonuses::{ArmorClass, Immunity, MonsterType, SavingThrow, WeaponHand, WeaponStat},
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},

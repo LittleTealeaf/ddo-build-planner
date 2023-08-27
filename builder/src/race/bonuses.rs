@@ -1,6 +1,6 @@
 use crate::{
     attribute::{
-        type_bonuses::{EnergyResistance, Immunity, SavingThrow, },
+        bonuses::{EnergyResistance, Immunity, SavingThrow, },
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},

@@ -3,7 +3,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::type_bonuses::{SpellPower, SpellSchool},
+    attribute::bonuses::{SpellPower, SpellSchool},
     player_class::PlayerClass,
 };
 

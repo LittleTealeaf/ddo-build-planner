@@ -8,7 +8,7 @@ use crate::{
 use super::{
     flags::Flag,
     toggles::Toggle,
-    type_bonuses::{ArmorClass, Immunity, SavingThrow, Sheltering, WeaponAttribute},
+    bonuses::{ArmorClass, Immunity, SavingThrow, Sheltering, WeaponAttribute},
     Attribute,
 };
 
