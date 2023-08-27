@@ -51,7 +51,36 @@ impl SavingThrow {
     /// [`Fortitude`]: SavingThrow::Fortitude
     /// [`Reflex`]: SavingThrow::Reflex
     /// [`Will`]: SavingThrow::Will
-    pub const CORE_SAVING_THROWS: [Self; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
+    pub const PRIMARY: [Self; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
+
+    /// All secondary saving throws
+    pub const SECONDARY: [Self; 9] = [
+        Self::Poison,
+        Self::Disease,
+        Self::Traps,
+        Self::Spell,
+        Self::Magic,
+        Self::Enchantment,
+        Self::Illusion,
+        Self::Fear,
+        Self::Curse,
+    ];
+
+    /// Gets the parent saving throw.
+    ///
+    /// For example, The [`Illusion`] saving throw is a subsidary of [`Will`], thus [`Will`] is the
+    /// parent saving throw.
+    ///
+    /// Saving Throws that do not have parents, such as primary saving throws ([`Fortitude`],
+    /// [`Reflex`], or [`Will`]) or [`All`] will return None
+    pub fn get_parent(&self) -> Option<Self> {
+        match self {
+            Self::Poison | Self::Disease => Some(Self::Fortitude),
+            Self::Traps | Self::Spell | Self::Magic => Some(Self::Reflex),
+            Self::Enchantment | Self::Illusion | Self::Fear | Self::Curse => Some(Self::Will),
+            _ => None,
+        }
+    }
 }
 
 impl Display for SavingThrow {

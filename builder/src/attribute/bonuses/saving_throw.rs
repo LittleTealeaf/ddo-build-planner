@@ -7,7 +7,7 @@ use crate::{
 impl CloneBonus for SavingThrow {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
-            Self::CORE_SAVING_THROWS
+            Self::PRIMARY
                 .map(|st| {
                     Bonus::new(
                         st.into(),
