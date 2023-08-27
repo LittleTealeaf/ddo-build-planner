@@ -12,7 +12,7 @@ use crate::{
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::Feat,
-    types::{Skill, SavingThrow},
+    types::{SavingThrow, Skill},
 };
 
 /// Feats granted from different races.

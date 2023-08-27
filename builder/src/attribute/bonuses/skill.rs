@@ -7,31 +7,6 @@ use crate::{
 use super::SpellPower;
 
 impl Skill {
-    /// Returns every possible value of [`Skill`] except for [`Skill::All`]
-    pub const VALUES: [Self; 21] = [
-        Self::Balance,
-        Self::Bluff,
-        Self::Concentration,
-        Self::Diplomacy,
-        Self::DisableDevice,
-        Self::Haggle,
-        Self::Heal,
-        Self::Hide,
-        Self::Intimidate,
-        Self::Jump,
-        Self::Listen,
-        Self::MoveSilently,
-        Self::OpenLock,
-        Self::Perform,
-        Self::Repair,
-        Self::Search,
-        Self::Spellcraft,
-        Self::Spot,
-        Self::Swim,
-        Self::Tumble,
-        Self::UseMagicalDevice,
-    ];
-
     fn spell_power_bonus(self, sp: SpellPower, value: f32) -> Bonus {
         Bonus::new(
             Attribute::SpellPower(sp),
@@ -46,7 +21,7 @@ impl Skill {
 impl CloneBonus for Skill {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
-            Self::VALUES
+            Self::SKILLS
                 .map(|skill| {
                     Bonus::new(
                         skill.into(),
@@ -125,7 +100,7 @@ mod tests {
 
     #[test]
     fn skills_are_tracked() {
-        for skill in Skill::VALUES {
+        for skill in Skill::SKILLS {
             assert!(skill.is_tracked());
             assert!(Attribute::from(skill).is_tracked());
         }

@@ -7,7 +7,7 @@ use crate::{
     equipment::item::types::WeaponType,
     feat::{Feat, Proficiency},
     race::Race,
-    types::{Ability, Skill, SavingThrow},
+    types::{Ability, SavingThrow, Skill},
 };
 
 use super::RacialFeat;

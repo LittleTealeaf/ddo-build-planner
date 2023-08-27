@@ -2,7 +2,6 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-
 /// Different skills that the character can have.
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -54,6 +53,36 @@ pub enum Skill {
     UseMagicalDevice,
 }
 
+impl Skill {
+    /// All valid skills
+    ///
+    /// This does not include the [`All`] entry
+    ///
+    /// [`All`]: Skill::All
+    pub const SKILLS: [Self; 21] = [
+        Self::Balance,
+        Self::Bluff,
+        Self::Concentration,
+        Self::Diplomacy,
+        Self::DisableDevice,
+        Self::Haggle,
+        Self::Heal,
+        Self::Hide,
+        Self::Intimidate,
+        Self::Jump,
+        Self::Listen,
+        Self::MoveSilently,
+        Self::OpenLock,
+        Self::Perform,
+        Self::Repair,
+        Self::Search,
+        Self::Spellcraft,
+        Self::Spot,
+        Self::Swim,
+        Self::Tumble,
+        Self::UseMagicalDevice,
+    ];
+}
 
 impl Display for Skill {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -83,4 +112,3 @@ impl Display for Skill {
         }
     }
 }
-
