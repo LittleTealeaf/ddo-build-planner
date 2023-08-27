@@ -51,7 +51,7 @@ impl SavingThrow {
     /// [`Fortitude`]: SavingThrow::Fortitude
     /// [`Reflex`]: SavingThrow::Reflex
     /// [`Will`]: SavingThrow::Will
-    pub const CORE_SAVING_THROWS: [SavingThrow; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
+    pub const CORE_SAVING_THROWS: [Self; 3] = [Self::Fortitude, Self::Reflex, Self::Will];
 }
 
 impl Display for SavingThrow {
