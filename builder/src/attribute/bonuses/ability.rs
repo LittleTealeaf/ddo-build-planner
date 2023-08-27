@@ -5,16 +5,6 @@ use crate::{
 };
 
 impl Ability {
-    /// Represents the 6 different values that [`Ability`] can be (without [`Ability::All`])
-    pub const VALUES: [Self; 6] = [
-        Self::Strength,
-        Self::Dexterity,
-        Self::Constitution,
-        Self::Intelligence,
-        Self::Wisdom,
-        Self::Charisma,
-    ];
-
     fn modifier_bonus<T>(self, attribute: T, value: f32) -> Bonus
     where
         Attribute: From<T>,
@@ -33,7 +23,7 @@ impl DefaultBonuses for Ability {
     type Iterator = std::iter::Flatten<std::array::IntoIter<[Bonus; 2], 6>>;
 
     fn get_default_bonuses() -> Self::Iterator {
-        Self::VALUES
+        Self::ABILITIES
             .map(|ability| {
                 [
                     Bonus::new(
@@ -63,7 +53,7 @@ impl DefaultBonuses for Ability {
 impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
-            Self::VALUES
+            Self::ABILITIES
                 .map(|ability| {
                     Bonus::new(
                         ability.into(),
@@ -101,7 +91,7 @@ mod tests {
 
     #[test]
     fn abilities_are_tracked() {
-        for ability in Ability::VALUES {
+        for ability in Ability::ABILITIES {
             assert!(ability.is_tracked());
             assert!(Attribute::Ability(ability).is_tracked());
             assert!(Attribute::AbilityModifier(ability).is_tracked());

@@ -28,6 +28,22 @@ pub enum Ability {
     Charisma,
 }
 
+impl Ability {
+    /// All abilities in the game.
+    ///
+    /// Does not include [`All`]
+    ///
+    /// [`All`]: Ability::All
+    pub const ABILITIES: [Self; 6] = [
+        Self::Strength,
+        Self::Dexterity,
+        Self::Constitution,
+        Self::Intelligence,
+        Self::Wisdom,
+        Self::Charisma
+    ];
+}
+
 impl Display for Ability {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
