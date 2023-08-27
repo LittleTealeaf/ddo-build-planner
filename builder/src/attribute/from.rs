@@ -2,11 +2,11 @@ use crate::{
     feat::{Feat, Proficiency},
     player_class::PlayerClass,
     race::Race,
-    types::{Ability, SavingThrow, Skill},
+    types::{Ability, Immunity, SavingThrow, Skill},
 };
 
 use super::{
-    bonuses::{ArmorClass, Immunity, Sheltering, WeaponAttribute},
+    bonuses::{ArmorClass, Sheltering, WeaponAttribute},
     flags::Flag,
     toggles::Toggle,
     Attribute,

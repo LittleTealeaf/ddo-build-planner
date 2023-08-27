@@ -8,5 +8,6 @@ public_modules!(
     spell_school,
     saving_throw,
     alignment,
-    damage_type
+    damage_type,
+    immunity
 );
