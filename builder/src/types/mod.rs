@@ -2,10 +2,9 @@
 
 macro_rules! module {
     ($module: ident) => {
-       mod $module; 
-       pub use $module::*;
+        mod $module;
+        pub use $module::*;
     };
 }
 
 module!(ability);
-
