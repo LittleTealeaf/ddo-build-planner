@@ -2,10 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    attribute::bonuses::{SpellPower, SpellSchool},
-    player_class::PlayerClass,
-};
+use crate::{attribute::bonuses::SpellPower, player_class::PlayerClass, types::SpellSchool};
 
 /// Specifies the spell, type of spell, spell class.
 ///

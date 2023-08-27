@@ -9,4 +9,4 @@ macro_rules! public_modules {
     };
 }
 
-public_modules!(ability, skill);
+public_modules!(ability, skill, spell_school);
