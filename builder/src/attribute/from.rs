@@ -2,7 +2,7 @@ use crate::{
     feat::{Feat, Proficiency},
     player_class::PlayerClass,
     race::Race,
-    types::{Ability, Immunity, SavingThrow, Skill, Sheltering},
+    types::{Ability, Immunity, SavingThrow, Sheltering, Skill},
 };
 
 use super::{
