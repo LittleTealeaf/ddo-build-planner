@@ -1,87 +1,8 @@
-use std::fmt::Display;
-
-use serde::{Deserialize, Serialize};
-
 use crate::{
     attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
+    types::SpellPower,
 };
-
-/// The different spell power types used for spell damage
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
-pub enum SpellPower {
-    /// Splits up each bonus into each of the other bonuses.
-    Potency,
-    /// Universal adds universal bonuses to each of the other spell powers
-    Universal,
-    /// Acid Spell Power
-    Acid,
-    /// Light Spell Power
-    Light,
-    /// Cold Spell Power
-    Cold,
-    /// Electric Spell Power
-    Electric,
-    /// Fire Spell Power
-    Fire,
-    /// Force Spell Power
-    Force,
-    /// Negative Spell Power
-    Negative,
-    /// Poison Spell Power
-    Poison,
-    /// Positive Spell Power
-    Positive,
-    /// Repair Spell Power
-    Repair,
-    /// Rust Spell Power
-    Rust,
-    /// Sonic Spell Power
-    Sonic,
-}
-
-impl SpellPower {
-    /// All of the spell power types except for [`Potency`] and [`Universal`]
-    ///
-    /// [`Potency`]: SpellPower::Potency
-    /// [`Universal`]: SpellPower::Universal
-    pub const ALL: [Self; 12] = [
-        Self::Acid,
-        Self::Light,
-        Self::Cold,
-        Self::Electric,
-        Self::Fire,
-        Self::Force,
-        Self::Negative,
-        Self::Poison,
-        Self::Positive,
-        Self::Repair,
-        Self::Rust,
-        Self::Sonic,
-    ];
-}
-
-impl Display for SpellPower {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Acid => write!(f, "Acid"),
-            Self::Light => write!(f, "Light"),
-            Self::Cold => write!(f, "Cold"),
-            Self::Electric => write!(f, "Electric"),
-            Self::Fire => write!(f, "Fire"),
-            Self::Force => write!(f, "Force"),
-            Self::Negative => write!(f, "Negative"),
-            Self::Poison => write!(f, "Poison"),
-            Self::Positive => write!(f, "Positive"),
-            Self::Repair => write!(f, "Repair"),
-            Self::Rust => write!(f, "Rust"),
-            Self::Sonic => write!(f, "Sonic"),
-            Self::Universal => write!(f, "Universal"),
-            Self::Potency => write!(f, "Potency"),
-        }
-    }
-}
 
 /// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellPower`]
 pub struct _SpellPower;
@@ -89,7 +10,7 @@ pub struct _SpellPower;
 impl GetBonuses<_SpellPower> for SpellPower {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
         matches!(self, Self::Universal).then(|| {
-            Self::ALL
+            Self::SPELL_POWERS
                 .map(|sp| {
                     Bonus::new(
                         Attribute::SpellPower(sp),
@@ -110,7 +31,7 @@ pub struct _SpellCriticalChance;
 impl GetBonuses<_SpellCriticalChance> for SpellPower {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         matches!(self, Self::Universal).then(|| {
-            Self::ALL
+            Self::SPELL_POWERS
                 .map(|sp| {
                     Bonus::new(
                         Attribute::SpellCriticalChance(sp),
@@ -131,7 +52,7 @@ pub struct _SpellCriticalDamage;
 impl GetBonuses<_SpellCriticalDamage> for SpellPower {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         matches!(self, Self::Universal).then(|| {
-            Self::ALL
+            Self::SPELL_POWERS
                 .map(|sp| {
                     Bonus::new(
                         Attribute::SpellCriticalDamage(sp),
@@ -150,12 +71,14 @@ impl CloneBonus for SpellPower {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         Some(
             match bonus.get_attribute() {
-                Attribute::SpellPower(Self::Potency) => Some(Self::ALL.map(Attribute::SpellPower)),
+                Attribute::SpellPower(Self::Potency) => {
+                    Some(Self::SPELL_POWERS.map(Attribute::SpellPower))
+                }
                 Attribute::SpellCriticalChance(Self::Potency) => {
-                    Some(Self::ALL.map(Attribute::SpellCriticalChance))
+                    Some(Self::SPELL_POWERS.map(Attribute::SpellCriticalChance))
                 }
                 Attribute::SpellCriticalDamage(Self::Potency) => {
-                    Some(Self::ALL.map(Attribute::SpellCriticalDamage))
+                    Some(Self::SPELL_POWERS.map(Attribute::SpellCriticalDamage))
                 }
                 _ => None,
             }?
@@ -176,7 +99,9 @@ impl CloneBonus for SpellPower {
 macro_rules! from_skill {
     ($skill: ident, $sp: ident) => {
         Bonus::new(
-            $crate::attribute::Attribute::SpellPower(SpellPower::$sp),
+            $crate::attribute::Attribute::SpellPower($crate::types::SpellPower::from(
+                $crate::types::DamageType::$sp,
+            )),
             BonusType::Stacking,
             $crate::attribute::Attribute::Skill($crate::types::Skill::$skill).into(),
             $crate::bonus::BonusSource::Base,
@@ -228,7 +153,7 @@ mod test {
 
     #[test]
     fn spell_powers_are_tracked() {
-        for sp in SpellPower::ALL {
+        for sp in SpellPower::SPELL_POWERS {
             assert!(sp.is_tracked());
             assert!(Attribute::SpellPower(sp).is_tracked());
             assert!(Attribute::SpellCriticalChance(sp).is_tracked());

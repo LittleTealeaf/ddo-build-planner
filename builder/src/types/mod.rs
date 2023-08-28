@@ -9,5 +9,8 @@ public_modules!(
     saving_throw,
     alignment,
     damage_type,
-    immunity
+    immunity,
+    spell_power,
+    spell_selector,
+    sheltering
 );

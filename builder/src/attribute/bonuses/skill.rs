@@ -1,10 +1,8 @@
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
-    types::Skill,
+    types::{Skill, SpellPower},
 };
-
-use super::SpellPower;
 
 impl Skill {
     fn spell_power_bonus(self, sp: SpellPower, value: f32) -> Bonus {
