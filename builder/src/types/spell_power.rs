@@ -45,8 +45,8 @@ impl Display for SpellPower {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Universal => write!(f, "Universal Spell Power"),
-            SpellPower::Potency => write!(f, "Potency"),
-            SpellPower::Damage(damage) => write!(f, "{damage} Spell Power"),
+            Self::Potency => write!(f, "Potency"),
+            Self::Damage(damage) => write!(f, "{damage} Spell Power"),
         }
     }
 }
