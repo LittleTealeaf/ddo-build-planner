@@ -16,14 +16,13 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     player_class::PlayerClass,
-    types::{Ability, SavingThrow, Sheltering, Skill, SpellPower, SpellSelector, DamageType},
+    types::{Ability, DamageType, SavingThrow, Sheltering, Skill, SpellPower, SpellSelector},
 };
 use std::fmt::Display;
 
 use self::{
     bonuses::{
-        ArmorClass, WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage,
-        _SpellPower,
+        ArmorClass, WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
     },
     flags::Flag,
     toggles::Toggle,
