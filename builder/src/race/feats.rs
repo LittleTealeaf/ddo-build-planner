@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{
-        bonuses::MonsterType,
         flags::{Flag, MainHandType, OffHandType},
         toggles::{AttackingTarget, Toggle},
         Attribute, GetBonuses,
@@ -12,7 +11,7 @@ use crate::{
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::Feat,
-    types::{ArmorClass, Immunity, SavingThrow, Skill, WeaponHand, WeaponStat},
+    types::{ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat},
 };
 
 /// Feats granted from different races.

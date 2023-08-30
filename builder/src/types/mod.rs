@@ -15,5 +15,6 @@ public_modules!(
     sheltering,
     weapon_stat,
     weapon_hand,
-    armor_class
+    armor_class,
+    monster_type
 );
