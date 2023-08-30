@@ -72,7 +72,7 @@ impl Display for DamageType {
             Self::Light => write!(f, "Light"),
             Self::Untyped => write!(f, "Untyped"),
             Self::Magical => write!(f, "Magical"),
-            Self::Aligned(alignment) => alignment.fmt(f)
+            Self::Aligned(alignment) => write!(f, "{alignment} aligned"),
         }
     }
 }
