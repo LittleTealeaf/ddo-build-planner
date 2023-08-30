@@ -1,11 +1,11 @@
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    attribute::types::{SpellPower, SpellSchool},
-    player_class::PlayerClass,
-};
+use crate::{types::SpellSchool};
+
+use super::{SpellPower, PlayerClass};
 
 /// Specifies the spell, type of spell, spell class.
 ///

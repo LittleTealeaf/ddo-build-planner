@@ -1,10 +1,9 @@
 //! Represents each attribute that a character can have
+pub mod bonuses;
 pub mod flags;
 pub mod impls;
-pub mod selectors;
 pub mod toggles;
 mod traits;
-pub mod types;
 
 mod from;
 
@@ -16,18 +15,17 @@ pub use traits::*;
 use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
-    player_class::PlayerClass,
+    types::{
+        Ability, ArmorClass, DamageType, PlayerClass, SavingThrow, Sheltering, Skill, SpellPower,
+        SpellSelector,
+    },
 };
 use std::fmt::Display;
 
 use self::{
+    bonuses::{WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower},
     flags::Flag,
-    selectors::SpellSelector,
     toggles::Toggle,
-    types::{
-        Ability, ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower,
-        WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
-    },
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
@@ -87,9 +85,9 @@ pub enum Attribute {
     /// Physical or Magical Sheltering
     Sheltering(Sheltering),
     /// Damage reduced from energy sources
-    EnergyResistance(EnergyResistance),
+    Resistance(DamageType),
     /// % Damage reduced from energy sources
-    EnergyAbsorption(EnergyResistance),
+    Absorption(DamageType),
     /// Spell Resistance
     SpellResistance,
     /// Spell Penetration
@@ -118,8 +116,8 @@ impl Display for Attribute {
             Self::Sheltering(sheltering) => sheltering.fmt(f),
             Self::ClassLevel(cl) => write!(f, "{cl} Level"),
             Self::Flag(fl) => fl.fmt(f),
-            Self::EnergyResistance(energy) => write!(f, "{energy} Resistance"),
-            Self::EnergyAbsorption(energy) => write!(f, "{energy} Absorption"),
+            Self::Resistance(energy) => write!(f, "{energy} Resistance"),
+            Self::Absorption(energy) => write!(f, "{energy} Absorption"),
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
             Self::SpellResistance => write!(f, "Spell Resistance"),
             Self::SpellPenetration => write!(f, "Spell Penetration"),

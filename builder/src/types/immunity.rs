@@ -10,6 +10,8 @@ pub enum Immunity {
     Sleep,
     /// Immunity to Fear
     Fear,
+    /// Immuntiy to most forms of knockdown
+    Knockdown,
 }
 
 impl Display for Immunity {
@@ -17,6 +19,7 @@ impl Display for Immunity {
         match self {
             Self::Sleep => write!(f, "Sleep"),
             Self::Fear => write!(f, "Fear"),
+            Self::Knockdown => write!(f, "Knockdown"),
         }
     }
 }

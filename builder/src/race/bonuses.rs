@@ -1,12 +1,9 @@
 use crate::{
-    attribute::{
-        types::{Ability, EnergyResistance, Immunity, SavingThrow, Skill},
-        Attribute, GetBonuses,
-    },
+    attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::{Feat, Proficiency},
-    race::Race,
+    types::{Ability, DamageType, Immunity, Race, SavingThrow, Skill},
 };
 
 use super::RacialFeat;
@@ -63,21 +60,21 @@ impl GetBonuses for Race {
                     None,
                 ),
                 Bonus::new(
-                    Attribute::EnergyResistance(EnergyResistance::Cold),
+                    Attribute::Resistance(DamageType::Cold),
                     BonusType::Stacking,
                     5f32.into(),
                     Attribute::from(Self::Aasimar).into(),
                     None,
                 ),
                 Bonus::new(
-                    Attribute::EnergyResistance(EnergyResistance::Acid),
+                    Attribute::Resistance(DamageType::Acid),
                     BonusType::Stacking,
                     5f32.into(),
                     Attribute::from(Self::Aasimar).into(),
                     None,
                 ),
                 Bonus::new(
-                    Attribute::EnergyResistance(EnergyResistance::Electric),
+                    Attribute::Resistance(DamageType::Electric),
                     BonusType::Stacking,
                     5f32.into(),
                     Attribute::from(Self::Aasimar).into(),

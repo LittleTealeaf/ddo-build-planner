@@ -1,14 +1,9 @@
 use builder::{
-    attribute::{
-        flags::OffHandType,
-        types::{Ability, ArmorClass, WeaponHand, WeaponStat},
-        Attribute,
-    },
+    attribute::{flags::OffHandType, Attribute},
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
     equipment::item::types::ShieldType,
-    player_class::PlayerClass,
-    race::Race,
+    types::{Ability, ArmorClass, PlayerClass, Race, WeaponHand, WeaponStat},
 };
 
 fn main() {
