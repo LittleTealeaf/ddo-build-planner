@@ -3,7 +3,6 @@
 //! [`Attribute`]: crate::attribute::Attribute
 mod ability;
 mod armor_class;
-mod damage_reduction;
 mod energy_resistance;
 mod monster_type;
 mod saving_throw;
@@ -14,7 +13,6 @@ mod weapon_attribute;
 
 pub use ability::*;
 pub use armor_class::*;
-pub use damage_reduction::*;
 pub use energy_resistance::*;
 pub use monster_type::*;
 pub use saving_throw::*;

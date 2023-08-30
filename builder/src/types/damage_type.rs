@@ -2,6 +2,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+use super::Alignment;
+
 /// Describes different types of damage possible in Dungeons & Dragons Online
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -42,6 +44,8 @@ pub enum DamageType {
     Alignment,
     /// Light Damage
     Light,
+    /// Specific Alignment Damage
+    Aligned(Alignment),
     /// Untyped Damage
     Untyped,
 }
@@ -68,6 +72,7 @@ impl Display for DamageType {
             Self::Light => write!(f, "Light"),
             Self::Untyped => write!(f, "Untyped"),
             Self::Magical => write!(f, "Magical"),
+            Self::Aligned(alignment) => alignment.fmt(f)
         }
     }
 }
