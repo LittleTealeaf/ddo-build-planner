@@ -112,3 +112,20 @@ impl Display for Skill {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use im::OrdSet;
+
+    use super::*;
+
+    fn no_repeats_in_skills() {
+        let mut set = OrdSet::new();
+
+        for skill in Skill::SKILLS {
+            assert!(!set.contains(&skill));
+            set.insert(skill);
+        }
+    }
+}
