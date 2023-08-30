@@ -2,15 +2,10 @@ use crate::{
     feat::{Feat, Proficiency},
     player_class::PlayerClass,
     race::Race,
-    types::{Ability, Immunity, SavingThrow, Sheltering, Skill},
+    types::{Ability, ArmorClass, Immunity, SavingThrow, Sheltering, Skill},
 };
 
-use super::{
-    bonuses::{ArmorClass, WeaponAttribute},
-    flags::Flag,
-    toggles::Toggle,
-    Attribute,
-};
+use super::{bonuses::WeaponAttribute, flags::Flag, toggles::Toggle, Attribute};
 
 impl From<&Self> for Attribute {
     fn from(value: &Self) -> Self {

@@ -14,5 +14,6 @@ public_modules!(
     spell_selector,
     sheltering,
     weapon_stat,
-    weapon_hand
+    weapon_hand,
+    armor_class
 );

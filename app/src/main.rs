@@ -1,11 +1,11 @@
 use builder::{
-    attribute::{bonuses::ArmorClass, flags::OffHandType, Attribute},
+    attribute::{flags::OffHandType, Attribute},
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
     equipment::item::types::ShieldType,
     player_class::PlayerClass,
     race::Race,
-    types::{Ability, WeaponHand, WeaponStat},
+    types::{Ability, ArmorClass, WeaponHand, WeaponStat},
 };
 
 fn main() {
