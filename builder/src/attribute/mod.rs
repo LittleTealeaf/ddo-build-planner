@@ -16,13 +16,13 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     player_class::PlayerClass,
-    types::{Ability, SavingThrow, Sheltering, Skill, SpellPower, SpellSelector},
+    types::{Ability, SavingThrow, Sheltering, Skill, SpellPower, SpellSelector, DamageType},
 };
 use std::fmt::Display;
 
 use self::{
     bonuses::{
-        ArmorClass, EnergyResistance, WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage,
+        ArmorClass, WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage,
         _SpellPower,
     },
     flags::Flag,
@@ -86,9 +86,9 @@ pub enum Attribute {
     /// Physical or Magical Sheltering
     Sheltering(Sheltering),
     /// Damage reduced from energy sources
-    EnergyResistance(EnergyResistance),
+    Resistance(DamageType),
     /// % Damage reduced from energy sources
-    EnergyAbsorption(EnergyResistance),
+    Absorption(DamageType),
     /// Spell Resistance
     SpellResistance,
     /// Spell Penetration
@@ -117,8 +117,8 @@ impl Display for Attribute {
             Self::Sheltering(sheltering) => sheltering.fmt(f),
             Self::ClassLevel(cl) => write!(f, "{cl} Level"),
             Self::Flag(fl) => fl.fmt(f),
-            Self::EnergyResistance(energy) => write!(f, "{energy} Resistance"),
-            Self::EnergyAbsorption(energy) => write!(f, "{energy} Absorption"),
+            Self::Resistance(energy) => write!(f, "{energy} Resistance"),
+            Self::Absorption(energy) => write!(f, "{energy} Absorption"),
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
             Self::SpellResistance => write!(f, "Spell Resistance"),
             Self::SpellPenetration => write!(f, "Spell Penetration"),
