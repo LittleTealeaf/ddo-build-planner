@@ -29,12 +29,10 @@ use crate::{
 /// use builder::{
 ///     attribute::{
 ///         Attribute,
-///         bonuses::{
-///             Sheltering
-///         }
 ///     },
 ///     bonus::{Bonus, BonusSource, Condition, BonusType},
 ///     compiler::Compiler,
+///     types::Sheltering,
 /// };
 ///
 /// let mut compiler = Compiler::default();
