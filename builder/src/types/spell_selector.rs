@@ -3,9 +3,9 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{player_class::PlayerClass, types::SpellSchool};
+use crate::{types::SpellSchool};
 
-use super::SpellPower;
+use super::{SpellPower, PlayerClass};
 
 /// Specifies the spell, type of spell, spell class.
 ///

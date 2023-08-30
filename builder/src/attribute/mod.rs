@@ -15,9 +15,9 @@ pub use traits::*;
 use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
-    player_class::PlayerClass,
     types::{
-        Ability, ArmorClass, DamageType, SavingThrow, Sheltering, Skill, SpellPower, SpellSelector,
+        Ability, ArmorClass, DamageType, PlayerClass, SavingThrow, Sheltering, Skill, SpellPower,
+        SpellSelector,
     },
 };
 use std::fmt::Display;

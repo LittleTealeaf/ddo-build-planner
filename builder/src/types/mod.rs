@@ -16,5 +16,7 @@ public_modules!(
     weapon_stat,
     weapon_hand,
     armor_class,
-    monster_type
+    monster_type,
+    player_class,
+    player_race
 );
