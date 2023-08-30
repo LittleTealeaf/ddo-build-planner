@@ -11,8 +11,6 @@ mod sheltering;
 mod skill;
 mod spell_power;
 mod weapon_attribute;
-mod weapon_hand;
-mod weapon_stat;
 
 pub use ability::*;
 pub use armor_class::*;
@@ -24,5 +22,3 @@ pub use sheltering::*;
 pub use skill::*;
 pub use spell_power::*;
 pub use weapon_attribute::*;
-pub use weapon_hand::*;
-pub use weapon_stat::*;

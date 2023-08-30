@@ -12,5 +12,7 @@ public_modules!(
     immunity,
     spell_power,
     spell_selector,
-    sheltering
+    sheltering,
+    weapon_stat,
+    weapon_hand
 );

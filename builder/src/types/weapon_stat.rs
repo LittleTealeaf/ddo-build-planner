@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use super::DamageReduction;
+use crate::attribute::bonuses::DamageReduction;
 
 /// Different stats that can be applied to a particular weapon
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
