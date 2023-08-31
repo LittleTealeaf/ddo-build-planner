@@ -53,7 +53,7 @@ impl Compiler {
 
             self.insert_bonuses(attribute, bonuses);
 
-            if forced || initial_value.within_margin(&self.get_attribute(&attribute)) {
+            if forced || !initial_value.within_margin(&self.get_attribute(&attribute)) {
                 // Add all dependants to the buffer
                 buffer.insert_attributes(self.get_dependants(attribute));
 
@@ -120,10 +120,7 @@ impl Compiler {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        attribute::{types::Ability, Attribute},
-        compiler::Compiler,
-    };
+    use crate::{attribute::Attribute, compiler::Compiler, types::Ability};
 
     #[test]
     fn get_dependants_for_default_bonuses() {

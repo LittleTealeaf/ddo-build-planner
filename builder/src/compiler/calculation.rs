@@ -97,8 +97,8 @@ impl Compiler {
     ///     compiler::Compiler,
     ///     attribute::{
     ///         Attribute,
-    ///         types::Ability
-    ///     }
+    ///     },
+    ///     types::Ability
     /// };
     ///
     /// let mut compiler = Compiler::default();
@@ -153,8 +153,8 @@ impl Compiler {
     ///     compiler::Compiler,
     ///     attribute::{
     ///         Attribute,
-    ///         types::Ability
-    ///     }
+    ///     },
+    ///     types::Ability
     /// };
     ///
     /// let mut compiler = Compiler::default();
