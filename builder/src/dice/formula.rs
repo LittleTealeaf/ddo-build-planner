@@ -4,7 +4,7 @@ use super::Dice;
 
 pub enum DiceFormula<T>
 where
-    T: PartialOrd + Ord + PartialEq + Eq,
+    T: Ord,
 {
     Variable(T),
     Dice(Dice),
@@ -12,7 +12,7 @@ where
 
 impl<T> DiceFormula<T>
 where
-    T: PartialOrd + Ord + Clone + Copy,
+    T: Ord,
 {
     pub fn to_dice(self, variables: OrdMap<T, f32>) -> Result<Dice, ConvertFormulaError<T>> {
         match self {
