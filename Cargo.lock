@@ -246,6 +246,7 @@ dependencies = [
  "im",
  "itertools",
  "log",
+ "rand",
  "ron",
  "serde",
  "serde_test",

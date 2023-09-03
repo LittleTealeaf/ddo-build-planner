@@ -11,9 +11,9 @@
 pub mod attribute;
 pub mod bonus;
 pub mod compiler;
+pub mod dice;
 pub mod equipment;
 pub mod feat;
 pub mod player_class;
 pub mod race;
 pub mod types;
-pub mod dice;
