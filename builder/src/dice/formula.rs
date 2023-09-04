@@ -60,14 +60,14 @@ where
             Self::Variable(variable) => Ok(Dice::Value(
                 variables
                     .get(&variable)
-                    .map(|var| *var)
+                    .cloned()
                     .ok_or(ConvertDiceError::MissingVariable(variable))?,
             )),
             Self::Roll { count, sides } => Ok(Dice::Roll { count, sides }),
             Self::VariableCountRoll { count, sides } => Ok(Dice::Roll {
                 count: variables
                     .get(&count)
-                    .map(|var| *var)
+                    .cloned()
                     .ok_or(ConvertDiceError::MissingVariable(count))?
                     .floor() as u16,
                 sides,
@@ -76,19 +76,19 @@ where
                 count,
                 sides: variables
                     .get(&sides)
-                    .map(|var| *var)
+                    .cloned()
                     .ok_or(ConvertDiceError::MissingVariable(sides))?
                     .floor() as u16,
             }),
             Self::VariableRoll { count, sides } => Ok(Dice::Roll {
                 count: variables
                     .get(&count)
-                    .map(|var| *var)
+                    .cloned()
                     .ok_or(ConvertDiceError::MissingVariable(count))?
                     .floor() as u16,
                 sides: variables
                     .get(&sides)
-                    .map(|var| *var)
+                    .cloned()
                     .ok_or(ConvertDiceError::MissingVariable(sides))?
                     .floor() as u16,
             }),
