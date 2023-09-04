@@ -129,12 +129,8 @@ where
                     write!(f, "{first}")?;
 
                     for item in iter {
-                        write!(f, " + {item}")
+                        write!(f, " + {item}")?;
                     }
-
-                    // while let Some(item) = iter.next() {
-                    //     write!(f, " + {item}")?;
-                    // }
                 }
 
                 Ok(())
