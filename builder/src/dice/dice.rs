@@ -24,7 +24,7 @@ impl Dice {
     pub fn minimum(&self) -> f32 {
         match self {
             Self::Value(value) => *value,
-            Self::Roll { count, sides: _ } => *count as f32,
+            Self::Roll { count, sides: _ } => f32::from(*count),
             Self::Sum(values) => values.iter().map(Self::minimum).sum(),
             Self::Product(values) => values.iter().map(Self::minimum).product(),
         }
@@ -34,7 +34,7 @@ impl Dice {
     pub fn maximum(&self) -> f32 {
         match self {
             Self::Value(value) => *value,
-            Self::Roll { count, sides } => (count * sides) as f32,
+            Self::Roll { count, sides } => f32::from(count * sides),
             Self::Sum(values) => values.iter().map(Self::minimum).sum(),
             Self::Product(values) => values.iter().map(Self::minimum).product(),
         }
@@ -53,7 +53,7 @@ impl Dice {
                     total += rng.gen_range(1..=*sides);
                 }
 
-                total as f32
+                f32::from(total)
             }
             Self::Sum(values) => values.iter().map(Self::roll).sum(),
             Self::Product(values) => values.iter().map(Self::roll).product(),
@@ -80,14 +80,14 @@ impl Display for Dice {
                 Ok(())
             }
             Self::Product(values) => {
-                let mut iter = values.iter();
-
-                fn requires_scope(entry: &Dice) -> bool {
+                const fn requires_scope(entry: &Dice) -> bool {
                     matches!(
                         entry,
                         Dice::Roll { count: _, sides: _ } | Dice::Product(_) | Dice::Sum(_)
                     )
                 }
+
+                let mut iter = values.iter();
 
                 if let Some(first) = iter.next() {
                     if requires_scope(first) {

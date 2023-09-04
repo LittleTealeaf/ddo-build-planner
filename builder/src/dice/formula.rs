@@ -136,9 +136,7 @@ where
                 Ok(())
             }
             Self::Product(values) => {
-                let mut iter = values.iter();
-
-                fn requires_scope<T>(entry: &DiceFormula<T>) -> bool
+                const fn requires_scope<T>(entry: &DiceFormula<T>) -> bool
                 where
                     T: Ord,
                 {
@@ -149,6 +147,8 @@ where
                             | DiceFormula::Sum(_)
                     )
                 }
+
+                let mut iter = values.iter();
 
                 if let Some(first) = iter.next() {
                     if requires_scope(first) {
