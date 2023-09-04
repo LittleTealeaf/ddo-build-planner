@@ -54,6 +54,11 @@ where
 {
     /// Attempts to convert a [`DiceFormula`] into a [`Dice`] object, provided a set of variables
     /// to insert into the placeholder locations
+    ///
+    /// # Errors
+    /// Returns a [`ConvertDiceError`] if the following occurs:
+    /// - [`ConvertDiceError::MissingVariable`]: A variable used within the formula is not
+    /// specified in the map.
     pub fn to_dice(self, variables: &OrdMap<T, f32>) -> Result<Dice, ConvertDiceError<T>> {
         match self {
             Self::Value(value) => Ok(Dice::Value(value)),
