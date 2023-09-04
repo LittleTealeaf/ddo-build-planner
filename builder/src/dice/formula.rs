@@ -69,7 +69,8 @@ where
                     .get(&count)
                     .copied()
                     .ok_or(ConvertDiceError::MissingVariable(count))?
-                    .floor() as u16,
+                    .floor()
+                    .abs() as u16,
                 sides,
             }),
             Self::VariableSizeRoll { count, sides } => Ok(Dice::Roll {
@@ -78,19 +79,22 @@ where
                     .get(&sides)
                     .copied()
                     .ok_or(ConvertDiceError::MissingVariable(sides))?
-                    .floor() as u16,
+                    .floor()
+                    .abs() as u16,
             }),
             Self::VariableRoll { count, sides } => Ok(Dice::Roll {
                 count: variables
                     .get(&count)
                     .copied()
                     .ok_or(ConvertDiceError::MissingVariable(count))?
-                    .floor() as u16,
+                    .floor()
+                    .abs() as u16,
                 sides: variables
                     .get(&sides)
                     .copied()
                     .ok_or(ConvertDiceError::MissingVariable(sides))?
-                    .floor() as u16,
+                    .floor()
+                    .abs() as u16,
             }),
             Self::Sum(values) => {
                 let mut dice_values = Vec::new();
