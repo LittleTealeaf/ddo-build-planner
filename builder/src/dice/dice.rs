@@ -9,9 +9,9 @@ pub enum Dice {
     /// The result of a roll
     Roll {
         /// The number of dice rolled
-        count: u32,
+        count: u16,
         /// The number of sides on the dice
-        sides: u32,
+        sides: u16,
     },
     /// The sum of several sub-components
     Sum(Vec<Dice>),
@@ -72,7 +72,7 @@ impl Display for Dice {
                 if let Some(first) = iter.next() {
                     write!(f, "{first}")?;
 
-                    while let Some(item) = iter.next() {
+                    for item in iter {
                         write!(f, " + {item}")?;
                     }
                 }
@@ -96,7 +96,7 @@ impl Display for Dice {
                         write!(f, "{first}")?;
                     }
 
-                    while let Some(item) = iter.next() {
+                    for item in iter {
                         if requires_scope(item) {
                             write!(f, " * [{item}]")?;
                         } else {

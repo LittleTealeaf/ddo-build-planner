@@ -17,21 +17,21 @@ where
     /// A fully defined dice
     Roll {
         /// The number of dice being rolled
-        count: u32,
+        count: u16,
         /// The nubmer of sides on the dice
-        sides: u32,
+        sides: u16,
     },
     /// A dice where the count is a variable
     VariableCountRoll {
         /// The number of dice being rolled
         count: T,
         /// The nubmer of sides on the dice
-        sides: u32,
+        sides: u16,
     },
     /// A dice where the size is variable
     VariableSizeRoll {
         /// The number of dice being rolled
-        count: u32,
+        count: u16,
         /// The nubmer of sides on the dice
         sides: T,
     },
@@ -69,7 +69,7 @@ where
                     .get(&count)
                     .map(|var| *var)
                     .ok_or(ConvertDiceError::MissingVariable(count))?
-                    .floor() as u32,
+                    .floor() as u16,
                 sides,
             }),
             Self::VariableSizeRoll { count, sides } => Ok(Dice::Roll {
@@ -78,19 +78,19 @@ where
                     .get(&sides)
                     .map(|var| *var)
                     .ok_or(ConvertDiceError::MissingVariable(sides))?
-                    .floor() as u32,
+                    .floor() as u16,
             }),
             Self::VariableRoll { count, sides } => Ok(Dice::Roll {
                 count: variables
                     .get(&count)
                     .map(|var| *var)
                     .ok_or(ConvertDiceError::MissingVariable(count))?
-                    .floor() as u32,
+                    .floor() as u16,
                 sides: variables
                     .get(&sides)
                     .map(|var| *var)
                     .ok_or(ConvertDiceError::MissingVariable(sides))?
-                    .floor() as u32,
+                    .floor() as u16,
             }),
             Self::Sum(values) => {
                 let mut dice_values = Vec::new();
@@ -128,9 +128,13 @@ where
                 if let Some(first) = iter.next() {
                     write!(f, "{first}")?;
 
-                    while let Some(item) = iter.next() {
-                        write!(f, " + {item}")?;
+                    for item in iter {
+                        write!(f, " + {item}")
                     }
+
+                    // while let Some(item) = iter.next() {
+                    //     write!(f, " + {item}")?;
+                    // }
                 }
 
                 Ok(())
@@ -157,7 +161,7 @@ where
                         write!(f, "{first}")?;
                     }
 
-                    while let Some(item) = iter.next() {
+                    for item in iter {
                         if requires_scope(item) {
                             write!(f, " * [{item}]")?;
                         } else {
