@@ -1,5 +1,7 @@
 use itertools::Itertools;
-use utils::{float::ErrorMargin, ord::IntoOrdGroupMap};
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
+use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::Attribute,
@@ -17,12 +19,8 @@ impl Compiler {
             Condition::Not(cond) => self.check_condition(cond),
             Condition::GreaterThan(a, b) => self.calculate_value(a) > self.calculate_value(b),
             Condition::LessThan(a, b) => self.calculate_value(a) < self.calculate_value(b),
-            Condition::EqualTo(a, b) => self
-                .calculate_value(a)
-                .within_margin(&self.calculate_value(b)),
-            Condition::NotEqualTo(a, b) => !self
-                .calculate_value(a)
-                .within_margin(&self.calculate_value(b)),
+            Condition::EqualTo(a, b) => self.calculate_value(a).eq(&self.calculate_value(b)),
+            Condition::NotEqualTo(a, b) => !self.calculate_value(a).eq(&self.calculate_value(b)),
             Condition::Any(conds) => conds.iter().any(check_condition),
             Condition::All(conds) => conds.iter().all(check_condition),
             Condition::NotAny(conds) => !conds.iter().any(check_condition),
@@ -30,7 +28,7 @@ impl Compiler {
         }
     }
 
-    fn calculate_value(&mut self, value: &Value) -> f32 {
+    fn calculate_value(&mut self, value: &Value) -> Decimal {
         match value {
             Value::Value(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
@@ -39,7 +37,7 @@ impl Compiler {
             Value::Min(vals) => {
                 let mut iter = vals.iter();
 
-                iter.next().map_or(0f32, |first| {
+                iter.next().map_or(dec!(0), |first| {
                     let mut min = self.calculate_value(first);
 
                     for item in iter {
@@ -54,7 +52,7 @@ impl Compiler {
             Value::Max(vals) => {
                 let mut iter = vals.iter();
 
-                iter.next().map_or(0f32, |first| {
+                iter.next().map_or(dec!(0), |first| {
                     let mut max = self.calculate_value(first);
 
                     for item in iter {
@@ -114,14 +112,14 @@ impl Compiler {
     /// ```
     ///
     /// [`Compiler::calculate_attribute`]: crate::compiler::Compiler::calculate_attribute()
-    pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
+    pub fn get_attribute(&mut self, attribute: &Attribute) -> Decimal {
         // First try the cache
         if let Some(value) = self.cache.get(attribute) {
             return *value;
         }
 
         // Otherwise, calculate the value
-        let value = self.calculate_attribute(attribute).unwrap_or(0f32);
+        let value = self.calculate_attribute(attribute).unwrap_or(dec!(0));
         // store in cache
         self.cache.insert(*attribute, value);
 
@@ -130,7 +128,7 @@ impl Compiler {
     }
 
     /// Returns all attributes that have bonuses in the compiler.
-    pub fn get_all_attributes(&mut self) -> Vec<(Attribute, f32)> {
+    pub fn get_all_attributes(&mut self) -> Vec<(Attribute, Decimal)> {
         let attributes = self.bonuses.iter().map(|(key, _)| *key).collect_vec();
         attributes
             .into_iter()
@@ -170,7 +168,7 @@ impl Compiler {
     /// ```
     ///
     /// [`Condition::get_attribute`]: crate::compiler::Compiler::get_attribute()
-    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<f32> {
+    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         // Collect valid bonuses that pass their conditions into a list of (type, value) tuples
         let valid_bonuses = self
             .bonuses
@@ -189,7 +187,7 @@ impl Compiler {
 
         // flatten each type into a number
         let final_values = map.into_iter().map(|(bonus_type, mut items)| {
-            let mut value = items.pop().unwrap_or(0f32);
+            let mut value = items.pop().unwrap_or(dec!(0));
             if bonus_type.is_stacking() {
                 for item in items {
                     value += item;

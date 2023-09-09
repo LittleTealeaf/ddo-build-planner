@@ -1,3 +1,6 @@
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
+
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusSource, BonusType, CloneBonus, Value},
@@ -5,7 +8,7 @@ use crate::{
 };
 
 impl Ability {
-    fn modifier_bonus<T>(self, attribute: T, value: f32) -> Bonus
+    fn modifier_bonus<T>(self, attribute: T, value: Decimal) -> Bonus
     where
         Attribute: From<T>,
     {
@@ -29,7 +32,7 @@ impl DefaultBonuses for Ability {
                     Bonus::new(
                         Attribute::Ability(ability),
                         BonusType::Stacking,
-                        8f32.into(),
+                        dec!(8.0).into(),
                         BonusSource::Base,
                         None,
                     ),
@@ -37,8 +40,8 @@ impl DefaultBonuses for Ability {
                         Attribute::AbilityModifier(ability),
                         BonusType::Stacking,
                         Value::Floor(Box::new(Value::Product(vec![
-                            Value::Sum(vec![Attribute::Ability(ability).into(), (-10f32).into()]),
-                            0.5f32.into(),
+                            Value::Sum(vec![Attribute::Ability(ability).into(), dec!(-10).into()]),
+                            dec!(0.5).into(),
                         ]))),
                         BonusSource::Base,
                         None,

@@ -6,6 +6,7 @@ mod off_hand;
 
 pub use main_hand::*;
 pub use off_hand::*;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
@@ -58,7 +59,7 @@ impl Display for Flag {
 }
 
 impl GetBonuses for Flag {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         match self {
             Self::Race(race) => race.get_bonuses(value),
             _ => None,

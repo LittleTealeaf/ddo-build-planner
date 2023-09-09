@@ -4,6 +4,7 @@ mod attacking_target;
 
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::bonus::Bonus;
@@ -36,7 +37,7 @@ impl Display for Toggle {
 }
 
 impl GetBonuses for Toggle {
-    fn get_bonuses(&self, _value: f32) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, _value: Decimal) -> Option<Vec<Bonus>> {
         None
     }
 }

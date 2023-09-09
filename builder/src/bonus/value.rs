@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
@@ -11,8 +12,8 @@ use super::Condition;
 /// [`Bonus`]: crate::bonus::Bonus
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Value {
-    /// Just a simple [`f32`] value.
-    Value(f32),
+    /// Just a simple [`Decimal`] value.
+    Value(Decimal),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
     /// Sums each of the values
@@ -160,8 +161,8 @@ impl AttributeDependencies for Value {
     }
 }
 
-impl From<f32> for Value {
-    fn from(value: f32) -> Self {
+impl From<Decimal> for Value {
+    fn from(value: Decimal) -> Self {
         Self::Value(value)
     }
 }
@@ -174,6 +175,8 @@ impl From<Attribute> for Value {
 
 #[cfg(test)]
 mod tests {
+    use rust_decimal_macros::dec;
+
     use super::*;
 
     // TODO: Add tests for dependencies
@@ -186,11 +189,11 @@ mod tests {
 
     #[test]
     fn from_value() {
-        let value = Value::from(3f32);
+        let value = Value::from(dec!(3));
 
         assert!({
             if let Value::Value(val) = value {
-                val == 3f32
+                val == dec!(3)
             } else {
                 false
             }
@@ -205,7 +208,7 @@ mod tests {
 
             #[test]
             fn value() {
-                let value = Value::Value(10f32);
+                let value = Value::Value(dec!(10));
 
                 assert!(!value.has_attr_dependency(Attribute::Debug(0)));
             }
@@ -220,7 +223,7 @@ mod tests {
 
             #[test]
             fn sum() {
-                let value = Value::Sum(vec![Attribute::Debug(0).into(), 10f32.into()]);
+                let value = Value::Sum(vec![Attribute::Debug(0).into(), dec!(10).into()]);
 
                 assert!(value.has_attr_dependency(Attribute::Debug(0)));
                 assert!(!value.has_attr_dependency(Attribute::Debug(1)));
@@ -228,7 +231,7 @@ mod tests {
 
             #[test]
             fn product() {
-                let value = Value::Product(vec![Attribute::Debug(0).into(), 10f32.into()]);
+                let value = Value::Product(vec![Attribute::Debug(0).into(), dec!(10).into()]);
 
                 assert!(value.has_attr_dependency(Attribute::Debug(0)));
                 assert!(!value.has_attr_dependency(Attribute::Debug(1)));
@@ -236,7 +239,7 @@ mod tests {
 
             #[test]
             fn min() {
-                let value = Value::Min(vec![Attribute::Debug(0).into(), 10f32.into()]);
+                let value = Value::Min(vec![Attribute::Debug(0).into(), dec!(10).into()]);
 
                 assert!(value.has_attr_dependency(Attribute::Debug(0)));
                 assert!(!value.has_attr_dependency(Attribute::Debug(1)));
@@ -263,7 +266,7 @@ mod tests {
             #[test]
             fn if_value() {
                 let value = Value::If {
-                    condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into())
+                    condition: Condition::GreaterThan(Attribute::Debug(0).into(), dec!(1).into())
                         .into(),
                     if_true: Value::from(Attribute::Debug(1)).into(),
                     if_false: Value::from(Attribute::Debug(2)).into(),
@@ -281,7 +284,7 @@ mod tests {
 
             #[test]
             fn value() {
-                let value = Value::Value(10f32);
+                let value = Value::Value(dec!(10));
                 let deps = value.get_attr_dependencies();
 
                 assert!(!deps.contains(&Attribute::Debug(0)));
@@ -299,7 +302,7 @@ mod tests {
 
             #[test]
             fn sum() {
-                let value = Value::Sum(vec![Attribute::Debug(0).into(), 10f32.into()]);
+                let value = Value::Sum(vec![Attribute::Debug(0).into(), dec!(10).into()]);
 
                 let deps = value.get_attr_dependencies();
 
@@ -309,7 +312,7 @@ mod tests {
 
             #[test]
             fn product() {
-                let value = Value::Product(vec![Attribute::Debug(0).into(), 10f32.into()]);
+                let value = Value::Product(vec![Attribute::Debug(0).into(), dec!(10).into()]);
 
                 let deps = value.get_attr_dependencies();
 
@@ -319,7 +322,7 @@ mod tests {
 
             #[test]
             fn min() {
-                let value = Value::Min(vec![Attribute::Debug(0).into(), 10f32.into()]);
+                let value = Value::Min(vec![Attribute::Debug(0).into(), dec!(10).into()]);
 
                 let deps = value.get_attr_dependencies();
 
@@ -352,7 +355,7 @@ mod tests {
             #[test]
             fn if_value() {
                 let value = Value::If {
-                    condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into())
+                    condition: Condition::GreaterThan(Attribute::Debug(0).into(), dec!(1).into())
                         .into(),
                     if_true: Value::from(Attribute::Debug(1)).into(),
                     if_false: Value::from(Attribute::Debug(2)).into(),

@@ -1,4 +1,5 @@
 use im::OrdSet;
+use rust_decimal::Decimal;
 
 use crate::bonus::Bonus;
 
@@ -79,7 +80,7 @@ pub trait GetBonuses<T = ()> {
     ///
     /// If there are no bonuses, for this object, this returns [`None`]. If there are bonuses, then
     /// a vector of each [`Bonus`] is returned.
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>>;
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>>;
 }
 
 // TODO: More detailed documentation

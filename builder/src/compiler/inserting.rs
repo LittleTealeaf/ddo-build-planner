@@ -1,6 +1,6 @@
 use im::OrdSet;
 use itertools::Itertools;
-use utils::float::ErrorMargin;
+use rust_decimal_macros::dec;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -47,13 +47,13 @@ impl Compiler {
             let initial_value = self
                 .cache
                 .remove(&attribute)
-                .or_else(|| forced.then_some(0f32))
+                .or_else(|| forced.then_some(dec!(0)))
                 .or_else(|| self.calculate_attribute(&attribute))
-                .unwrap_or(0f32);
+                .unwrap_or(dec!(0));
 
             self.insert_bonuses(attribute, bonuses);
 
-            if forced || !initial_value.within_margin(&self.get_attribute(&attribute)) {
+            if forced || !initial_value.eq(&self.get_attribute(&attribute)) {
                 // Add all dependants to the buffer
                 buffer.insert_attributes(self.get_dependants(attribute));
 

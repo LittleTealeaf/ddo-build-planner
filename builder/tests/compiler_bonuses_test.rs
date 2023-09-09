@@ -5,6 +5,7 @@ use builder::{
     compiler::Compiler,
     types::Ability,
 };
+use rust_decimal_macros::dec;
 
 #[test]
 fn test_first_life_healer() {
@@ -13,7 +14,7 @@ fn test_first_life_healer() {
     compiler.add_bonus(Bonus::new(
         Ability::All.into(),
         BonusType::Stacking,
-        8f32.into(),
+        dec!(8).into(),
         BonusSource::Custom(0),
         None,
     ));
@@ -23,21 +24,21 @@ fn test_first_life_healer() {
         Bonus::new(
             Ability::Constitution.into(),
             BonusType::Stacking,
-            10f32.into(),
+            dec!(10).into(),
             BonusSource::Custom(1),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Stacking,
-            6f32.into(),
+            dec!(6).into(),
             BonusSource::Custom(1),
             None,
         ),
         Bonus::new(
             Ability::Charisma.into(),
             BonusType::Stacking,
-            8f32.into(),
+            dec!(8).into(),
             BonusSource::Custom(1),
             None,
         ),
@@ -47,7 +48,7 @@ fn test_first_life_healer() {
     compiler.add_bonus(Bonus::new(
         Ability::Constitution.into(),
         BonusType::Stacking,
-        8f32.into(),
+        dec!(8).into(),
         BonusSource::Custom(2),
         None,
     ));

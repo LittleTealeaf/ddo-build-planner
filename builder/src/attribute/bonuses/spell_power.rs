@@ -1,3 +1,5 @@
+use rust_decimal::Decimal;
+
 use crate::{
     attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
@@ -8,7 +10,7 @@ use crate::{
 pub struct _SpellPower;
 
 impl GetBonuses<_SpellPower> for SpellPower {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
         matches!(self, Self::Universal).then(|| {
             Self::SPELL_POWERS
                 .map(|sp| {
@@ -29,7 +31,7 @@ impl GetBonuses<_SpellPower> for SpellPower {
 pub struct _SpellCriticalChance;
 
 impl GetBonuses<_SpellCriticalChance> for SpellPower {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         matches!(self, Self::Universal).then(|| {
             Self::SPELL_POWERS
                 .map(|sp| {
@@ -50,7 +52,7 @@ impl GetBonuses<_SpellCriticalChance> for SpellPower {
 pub struct _SpellCriticalDamage;
 
 impl GetBonuses<_SpellCriticalDamage> for SpellPower {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         matches!(self, Self::Universal).then(|| {
             Self::SPELL_POWERS
                 .map(|sp| {

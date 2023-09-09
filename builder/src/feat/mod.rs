@@ -1,6 +1,7 @@
 //! Feats that a character can have.
 mod proficiency;
 pub use proficiency::*;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
@@ -27,7 +28,7 @@ impl Display for Feat {
 }
 
 impl GetBonuses for Feat {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
         match self {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
             Self::Proficiency(_) => None,
@@ -52,11 +53,12 @@ mod tests {
     use super::*;
 
     use enum_map::Enum;
+    use rust_decimal_macros::dec;
 
     #[test]
     fn zero_bonus_returns_none() {
         for feat in (0..Feat::LENGTH).map(Feat::from_usize) {
-            assert!(feat.get_bonuses(0f32).is_none());
+            assert!(feat.get_bonuses(dec!(0)).is_none());
         }
     }
 }

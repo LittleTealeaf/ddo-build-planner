@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
@@ -34,13 +35,13 @@ impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
     pub fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(attribute.into(), 0f32.into())
+        Self::GreaterThan(attribute.into(), dec!(0).into())
     }
 
     /// Requires that the character does not have some attribute
     #[must_use]
     pub fn not_have(attribute: Attribute) -> Self {
-        Self::EqualTo(attribute.into(), 0f32.into())
+        Self::EqualTo(attribute.into(), dec!(0).into())
     }
 }
 

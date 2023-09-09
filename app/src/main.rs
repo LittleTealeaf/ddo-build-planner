@@ -5,6 +5,7 @@ use builder::{
     equipment::item::types::ShieldType,
     types::{Ability, ArmorClass, PlayerClass, Race, WeaponHand, WeaponStat},
 };
+use rust_decimal_macros::dec;
 
 fn main() {
     let mut compiler = Compiler::default();
@@ -14,7 +15,7 @@ fn main() {
     compiler.add_bonuses(vec![Bonus::new(
         Ability::All.into(),
         BonusType::Stacking,
-        10f32.into(),
+        dec!(10).into(),
         BonusSource::Custom(10),
         None,
     )]);
@@ -23,7 +24,7 @@ fn main() {
         Bonus::new(
             PlayerClass::FavoredSoul.into(),
             BonusType::Stacking,
-            10f32.into(),
+            dec!(10).into(),
             0.into(),
             None,
         ),
@@ -32,49 +33,49 @@ fn main() {
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ShieldMaxDexBonus),
             BonusType::Stacking,
-            5f32.into(),
+            dec!(5).into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ArmorMaxDexBonus),
             BonusType::Stacking,
-            10f32.into(),
+            dec!(10).into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::All.into(),
             BonusType::Stacking,
-            8f32.into(),
+            dec!(8).into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Dexterity.into(),
             BonusType::Stacking,
-            20f32.into(),
+            dec!(20).into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Intelligence.into(),
             BonusType::Stacking,
-            20f32.into(),
+            dec!(20).into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Enhancement,
-            20f32.into(),
+            dec!(20).into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Insightful,
-            10f32.into(),
+            dec!(10).into(),
             1.into(),
             None,
         ),

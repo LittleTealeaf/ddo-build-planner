@@ -88,6 +88,8 @@ impl Buffer {
 
 #[cfg(test)]
 mod tests {
+    use rust_decimal_macros::dec;
+
     use crate::bonus::BonusType;
 
     use super::*;
@@ -120,7 +122,7 @@ mod tests {
             [Bonus::new(
                 Attribute::Debug(3),
                 BonusType::Stacking,
-                10f32.into(),
+                dec!(10).into(),
                 BonusSource::Debug(0),
                 None,
             )],
@@ -139,14 +141,14 @@ mod tests {
                 Bonus::new(
                     Attribute::Debug(3),
                     BonusType::Stacking,
-                    10f32.into(),
+                    dec!(10).into(),
                     BonusSource::Debug(0),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Debug(3),
                     BonusType::Stacking,
-                    10f32.into(),
+                    dec!(10).into(),
                     BonusSource::Debug(1),
                     None,
                 ),
@@ -169,7 +171,7 @@ mod tests {
             [Bonus::new(
                 Attribute::Debug(3),
                 BonusType::Stacking,
-                10f32.into(),
+                dec!(10).into(),
                 BonusSource::Debug(2),
                 None,
             )],
@@ -180,7 +182,7 @@ mod tests {
             [Bonus::new(
                 Attribute::Debug(3),
                 BonusType::Stacking,
-                10f32.into(),
+                dec!(10).into(),
                 BonusSource::Debug(0),
                 None,
             )],

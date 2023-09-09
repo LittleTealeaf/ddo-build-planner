@@ -9,6 +9,7 @@ mod inserting;
 pub use calculation::*;
 use im::OrdMap;
 pub use inserting::*;
+use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
@@ -47,7 +48,7 @@ use crate::{
 /// [`Ability::All`]: crate::attribute::types::Ability::All
 pub struct Compiler {
     bonuses: OrdMap<Attribute, Vec<Bonus>>,
-    cache: OrdMap<Attribute, f32>,
+    cache: OrdMap<Attribute, Decimal>,
     children: OrdMap<BonusSource, Vec<Attribute>>,
 }
 

@@ -12,6 +12,7 @@ use crate::attribute::{flags::Flag, Attribute, AttributeDependencies};
 
 pub use bonus_type::*;
 pub use condition::*;
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 pub use source::*;
 pub use traits::*;
@@ -89,7 +90,7 @@ impl Bonus {
         Self::new(
             Attribute::Dummy,
             BonusType::Stacking,
-            0f32.into(),
+            dec!(0).into(),
             source,
             None,
         )
@@ -101,7 +102,7 @@ impl Bonus {
         Self::new(
             Attribute::Flag(flag),
             BonusType::Stacking,
-            1f32.into(),
+            dec!(1).into(),
             source,
             None,
         )
@@ -266,7 +267,7 @@ mod tests {
         let bonus = Bonus::new(
             Attribute::Ability(Ability::Strength),
             BonusType::Profane,
-            Value::Value(10f32),
+            Value::Value(dec!(10)),
             BonusSource::Debug(3),
             None,
         );

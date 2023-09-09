@@ -1,3 +1,5 @@
+use rust_decimal::Decimal;
+
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
@@ -5,7 +7,7 @@ use crate::{
 };
 
 impl GetBonuses for PlayerClass {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
         let mut bonuses = vec![Bonus::new(
             Attribute::CasterLevel((*self).into()),
             BonusType::Stacking,
@@ -23,7 +25,7 @@ impl GetBonuses for PlayerClass {
 }
 
 impl PlayerClass {
-    fn get_ability_spell_dc_bonuses(self, _: f32) -> Option<Vec<Bonus>> {
+    fn get_ability_spell_dc_bonuses(self, _: Decimal) -> Option<Vec<Bonus>> {
         match self {
             Self::Alchemist | Self::Artificer | Self::Wizard => Some(vec![Bonus::new(
                 Attribute::SpellDC(self.into()),
