@@ -67,8 +67,12 @@ impl Compiler {
                 })
             }
             Value::Floor(val) => self.calculate_value(val).floor(),
-            Value::If(cond, if_true, if_false) => {
-                if self.check_condition(cond) {
+            Value::If {
+                condition,
+                if_true,
+                if_false,
+            } => {
+                if self.check_condition(condition) {
                     self.calculate_value(if_true)
                 } else {
                     self.calculate_value(if_false)
