@@ -25,8 +25,16 @@ pub enum Value {
     Max(Vec<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
-    /// If [`Condition`] then [`Value`] else [`Value`]
-    If(Box<Condition>, Box<Value>, Box<Value>),
+
+    /// Returns `if_true` if `condition` is true, otherwise returns `if_false`
+    If {
+        /// The condition needed to be checked
+        condition: Box<Condition>,
+        /// The value to return if the condition returns true
+        if_true: Box<Value>,
+        /// The value to return if the condition returns false
+        if_false: Box<Value>,
+    },
 }
 
 impl Display for Value {
@@ -95,8 +103,12 @@ impl Display for Value {
                 write!(f, ")")
             }
             Self::Floor(val) => write!(f, "Floor({val})"),
-            Self::If(cond, if_true, if_false) => {
-                write!(f, "If ({cond}) then {if_true} else {if_false}")
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => {
+                write!(f, "If ({condition}) then {if_true} else {if_false}")
             }
         }
     }
@@ -111,8 +123,12 @@ impl AttributeDependencies for Value {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
             Self::Floor(val) => val.has_attr_dependency(attribute),
-            Self::If(cond, if_true, if_false) => {
-                cond.has_attr_dependency(attribute)
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => {
+                condition.has_attr_dependency(attribute)
                     || if_true.has_attr_dependency(attribute)
                     || if_false.has_attr_dependency(attribute)
             }
@@ -131,8 +147,12 @@ impl AttributeDependencies for Value {
                 }
             }
             Self::Floor(val) => val.include_attr_dependency(set),
-            Self::If(cond, if_true, if_false) => {
-                cond.include_attr_dependency(set);
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => {
+                condition.include_attr_dependency(set);
                 if_true.include_attr_dependency(set);
                 if_false.include_attr_dependency(set);
             }
@@ -242,11 +262,12 @@ mod tests {
 
             #[test]
             fn if_value() {
-                let value = Value::If(
-                    Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into()).into(),
-                    Value::from(Attribute::Debug(1)).into(),
-                    Value::from(Attribute::Debug(2)).into(),
-                );
+                let value = Value::If {
+                    condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into())
+                        .into(),
+                    if_true: Value::from(Attribute::Debug(1)).into(),
+                    if_false: Value::from(Attribute::Debug(2)).into(),
+                };
 
                 assert!(value.has_attr_dependency(Attribute::Debug(0)));
                 assert!(value.has_attr_dependency(Attribute::Debug(1)));
@@ -330,11 +351,12 @@ mod tests {
 
             #[test]
             fn if_value() {
-                let value = Value::If(
-                    Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into()).into(),
-                    Value::from(Attribute::Debug(1)).into(),
-                    Value::from(Attribute::Debug(2)).into(),
-                );
+                let value = Value::If {
+                    condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into())
+                        .into(),
+                    if_true: Value::from(Attribute::Debug(1)).into(),
+                    if_false: Value::from(Attribute::Debug(2)).into(),
+                };
 
                 let deps = value.get_attr_dependencies();
 
