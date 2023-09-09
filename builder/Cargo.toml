@@ -18,7 +18,7 @@ serde = { version = "1.0.188", features = ["derive"] }
 ron = "0.8.1"
 log = "0.4.20"
 im = "15.1.0"
-enum-map = { version = "2.6.1", features = ["serde"], optional = true }
+enum-map = { version = "2.6.2", features = ["serde"], optional = true }
 rust_decimal = { version = "1.32.0" }
 rust_decimal_macros = { version = "1.32.0" }
 
