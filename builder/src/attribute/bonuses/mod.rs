@@ -3,6 +3,7 @@
 //! [`Attribute`]: crate::attribute::Attribute
 mod ability;
 mod armor_class;
+mod player_class;
 mod saving_throw;
 mod sheltering;
 mod skill;
@@ -11,6 +12,7 @@ mod weapon_attribute;
 
 pub use ability::*;
 pub use armor_class::*;
+pub use player_class::*;
 pub use saving_throw::*;
 pub use sheltering::*;
 pub use skill::*;
