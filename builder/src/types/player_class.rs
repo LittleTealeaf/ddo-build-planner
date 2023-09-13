@@ -50,6 +50,33 @@ pub enum PlayerClass {
     AcolyteOfTheSkin,
 }
 
+impl PlayerClass {
+    /// All valid classes currently in the game
+    pub const CLASSES: [Self; 21] = [
+        Self::Alchemist,
+        Self::Artificer,
+        Self::Barbarian,
+        Self::Fighter,
+        Self::Monk,
+        Self::Rogue,
+        Self::Sorcerer,
+        Self::Wizard,
+        Self::FavoredSoul,
+        Self::Bard,
+        Self::Stormsinger,
+        Self::Cleric,
+        Self::DarkApostate,
+        Self::Druid,
+        Self::BlightCaster,
+        Self::Paladin,
+        Self::SacredFist,
+        Self::Ranger,
+        Self::DarkHunter,
+        Self::Warlock,
+        Self::AcolyteOfTheSkin,
+    ];
+}
+
 impl Display for PlayerClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

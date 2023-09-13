@@ -1,18 +1,15 @@
 //! Subsidary types used to specify [`Attribute`] values.
 //!
 //! [`Attribute`]: crate::attribute::Attribute
-mod ability;
-mod armor_class;
-mod saving_throw;
-mod sheltering;
-mod skill;
-mod spell_power;
-mod weapon_attribute;
 
-pub use ability::*;
-pub use armor_class::*;
-pub use saving_throw::*;
-pub use sheltering::*;
-pub use skill::*;
-pub use spell_power::*;
-pub use weapon_attribute::*;
+use utils::public_modules;
+public_modules!(
+    ability,
+    armor_class,
+    player_class,
+    saving_throw,
+    sheltering,
+    skill,
+    spell_power,
+    weapon_attribute
+);
