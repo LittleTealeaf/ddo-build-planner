@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl GetBonuses for PlayerClass {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         let mut bonuses = vec![Bonus::new(
             Attribute::CasterLevel((*self).into()),
             BonusType::Stacking,
@@ -53,6 +53,25 @@ impl PlayerClass {
                 self.ability_bonus_to_spell_dc(Ability::Charisma),
             ]),
             _ => None,
+        }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn all_classes_have_valid_bonuses() {
+        for player_class in PlayerClass::CLASSES {
+            for i in 0..=20 {
+                let mut sum = 0f32;
+                for _ in 0..i {
+                    sum += 1f32;
+                }
+                player_class.get_bonuses(sum);
+            }
         }
     }
 }

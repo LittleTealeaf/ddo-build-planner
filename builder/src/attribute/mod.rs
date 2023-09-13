@@ -2,6 +2,7 @@
 pub mod bonuses;
 pub mod flags;
 pub mod toggles;
+mod macros;
 mod traits;
 
 mod from;
