@@ -58,7 +58,7 @@ impl PlayerClass {
         Self::Barbarian,
         Self::Fighter,
         Self::Monk,
-        Self::        Rogue,
+        Self::Rogue,
         Self::Sorcerer,
         Self::Wizard,
         Self::FavoredSoul,
@@ -71,9 +71,9 @@ impl PlayerClass {
         Self::Paladin,
         Self::SacredFist,
         Self::Ranger,
-        Self::        DarkHunter,
-        Self::      Warlock,
-        Self::       AcolyteOfTheSkin,
+        Self::DarkHunter,
+        Self::Warlock,
+        Self::AcolyteOfTheSkin,
     ];
 }
 
