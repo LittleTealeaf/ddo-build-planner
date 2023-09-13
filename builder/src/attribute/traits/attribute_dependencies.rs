@@ -1,5 +1,5 @@
-use im::OrdSet;
 use crate::attribute::Attribute;
+use im::OrdSet;
 
 /// Indicates that this type can have some attribute dependnecies
 pub trait AttributeDependencies {

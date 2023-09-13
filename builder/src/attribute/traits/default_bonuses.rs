@@ -1,4 +1,3 @@
-
 // TODO: more detailed documentation
 
 use crate::bonus::Bonus;

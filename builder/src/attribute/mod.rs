@@ -1,8 +1,8 @@
 //! Represents each attribute that a character can have
 pub mod bonuses;
 pub mod flags;
-pub mod toggles;
 mod macros;
+pub mod toggles;
 mod traits;
 
 mod from;

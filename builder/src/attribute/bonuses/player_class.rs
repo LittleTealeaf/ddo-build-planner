@@ -57,7 +57,6 @@ impl PlayerClass {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

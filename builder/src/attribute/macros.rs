@@ -12,4 +12,3 @@ macro_rules! test_default_bonuses {
         }
     };
 }
-
