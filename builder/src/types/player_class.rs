@@ -78,7 +78,7 @@ impl PlayerClass {
 
     /// Returns the parent player class, if any. That is, if the class is an archetype of another
     /// class, this will return the parent class. Otherwise, this will return [`None`]
-    pub fn get_parent_class(&self) -> Option<Self> {
+    pub const fn get_parent_class(&self) -> Option<Self> {
         match self {
             Self::AcolyteOfTheSkin => Some(Self::Warlock),
             Self::DarkHunter => Some(Self::Ranger),
