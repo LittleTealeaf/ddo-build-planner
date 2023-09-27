@@ -1,3 +1,4 @@
 //! Utility functions used for types that implement the [`Ord`] trait
-mod groupedmap;
-pub use groupedmap::*;
+
+use crate::public_modules;
+public_modules!(groupedmap);
