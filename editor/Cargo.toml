@@ -13,4 +13,3 @@ builder = { path = "../builder/", features = ["enum_map"]}
 roc = "0.0.0"
 serde = { version = "1.0.188" }
 iced = "0.10.0"
-iced_aw = "0.7.0"
