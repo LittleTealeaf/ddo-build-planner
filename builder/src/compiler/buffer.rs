@@ -1,5 +1,7 @@
-use im::{OrdMap, OrdSet};
-use utils::ord::IntoOrdGroupMap;
+use std::{cmp::Reverse, collections::BinaryHeap};
+
+use im::OrdSet;
+use itertools::Itertools;
 
 use crate::{
     attribute::{Attribute, TrackAttribute},
@@ -8,12 +10,10 @@ use crate::{
 
 #[derive(Default)]
 pub struct Buffer {
-    bonuses: OrdMap<BonusSource, Vec<Bonus>>,
-    attributes: OrdSet<Attribute>,
+    attributes: BinaryHeap<Reverse<Attribute>>,
     forced: OrdSet<Attribute>,
+    bonuses: Vec<Bonus>,
 }
-
-// PERF: Use the "children" design like the actual compiler does
 
 impl Buffer {
     /// Inserts attributes into the queue. All attributes are forced as no bonuses are included
@@ -22,7 +22,7 @@ impl Buffer {
         T: IntoIterator<Item = Attribute>,
     {
         for attribute in attributes {
-            self.attributes.insert(attribute);
+            self.attributes.push(Reverse(attribute));
             self.forced.insert(attribute);
         }
     }
@@ -31,7 +31,7 @@ impl Buffer {
     where
         T: IntoIterator<Item = Bonus>,
     {
-        let by_source = bonuses
+        let bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
                 [
@@ -43,52 +43,73 @@ impl Buffer {
                 ]
             })
             .flatten()
-            .filter_map(|bonus| {
-                bonus
-                    .get_attribute()
-                    .is_tracked()
-                    .then_some((bonus.get_source(), bonus))
-            })
-            .into_grouped_ord_map();
+            .filter(|bonus| bonus.get_attribute().is_tracked())
+            .collect_vec();
 
-        for (source, bonuses) in by_source {
-            for bonus in &bonuses {
-                let attribute = bonus.get_attribute();
-                self.attributes.insert(attribute);
-                if forced {
-                    self.forced.insert(attribute);
-                }
+        let sources: OrdSet<BonusSource> = bonuses.iter().map(|bonus| bonus.get_source()).collect();
+
+        // Remove any residing bonuses from any of the provided sources
+        {
+            let indexes: Vec<usize> = self
+                .bonuses
+                .iter()
+                .enumerate()
+                .filter_map(|(index, bonus)| sources.contains(&bonus.get_source()).then_some(index))
+                .rev()
+                .collect();
+            for index in indexes {
+                self.bonuses.swap_remove(index);
+            }
+        }
+
+        // Handles adding attributes to respective sets
+        {
+            let attributes: OrdSet<Attribute> = bonuses.iter().map(Bonus::get_attribute).collect();
+
+            if forced {
+                self.forced.extend(&mut attributes.iter().cloned())
             }
 
-            self.bonuses.insert(source, bonuses);
+            self.attributes
+                .extend(&mut attributes.into_iter().map(|attribute| Reverse(attribute)));
         }
+
+        // Add all bonuses to the bonuses list
+        self.bonuses.extend(bonuses.into_iter());
     }
 
     pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {
-        loop {
-            let attribute = self.attributes.remove_min()?;
-            let forced = self.forced.remove(&attribute).is_some();
-            let bonuses = self
-                .bonuses
-                .iter()
-                .flat_map(|(_, bonuses)| {
-                    bonuses
-                        .iter()
-                        .filter(|bonus| bonus.get_attribute().eq(&attribute))
-                        .cloned()
-                })
-                .collect::<Vec<Bonus>>();
+        while let Some(Reverse(attribute)) = self.attributes.pop() {
+            // let is_forced = self.forced.remove(&attribute).is_some();
+            let bonuses = {
+                let indexes = self
+                    .bonuses
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(index, bonus)| {
+                        bonus.get_attribute().eq(&attribute).then_some(index)
+                    })
+                    .rev()
+                    .collect_vec();
+                indexes
+                    .into_iter()
+                    .map(|index| self.bonuses.swap_remove(index))
+                    .collect_vec()
+            };
 
-            if forced || !bonuses.is_empty() {
+            let forced = self.forced.remove(&attribute).is_some();
+
+            if forced || bonuses.len() > 0 {
                 return Some((attribute, bonuses, forced));
             }
         }
+        None
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::bonus::BonusType;
+    use crate::bonus::{BonusSource, BonusType};
 
     use super::*;
 
