@@ -215,4 +215,32 @@ mod tests {
         assert_eq!(bonuses.len(), 2);
         assert!(forced);
     }
+
+    #[test]
+    fn popping_removes_bonuses() {
+        let mut buffer = Buffer::default();
+
+        buffer.insert_bonuses(
+            [Bonus::new(
+                Attribute::Debug(3),
+                BonusType::Stacking,
+                10f32.into(),
+                BonusSource::Debug(0),
+                None,
+            )],
+            true,
+        );
+
+        let value = buffer.pop();
+        assert!(value.is_some());
+        let (_, bonuses, _) = value.unwrap();
+        assert_eq!(bonuses.len(), 1);
+
+        buffer.insert_attributes([Attribute::Debug(3)]);
+
+        let value = buffer.pop();
+        assert!(value.is_some());
+        let (_, bonuses, _) = value.unwrap();
+        assert!(bonuses.is_empty());
+    }
 }
