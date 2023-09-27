@@ -46,7 +46,7 @@ impl Buffer {
             .filter(|bonus| bonus.get_attribute().is_tracked())
             .collect_vec();
 
-        let sources: OrdSet<BonusSource> = bonuses.iter().map(|bonus| bonus.get_source()).collect();
+        let sources: OrdSet<BonusSource> = bonuses.iter().map(Bonus::get_source).collect();
 
         // Remove any residing bonuses from any of the provided sources
         {
@@ -67,15 +67,15 @@ impl Buffer {
             let attributes: OrdSet<Attribute> = bonuses.iter().map(Bonus::get_attribute).collect();
 
             if forced {
-                self.forced.extend(&mut attributes.iter().cloned())
+                self.forced.extend(&mut attributes.iter().copied());
             }
 
             self.attributes
-                .extend(&mut attributes.into_iter().map(|attribute| Reverse(attribute)));
+                .extend(&mut attributes.into_iter().map(Reverse));
         }
 
         // Add all bonuses to the bonuses list
-        self.bonuses.extend(bonuses.into_iter());
+        self.bonuses.extend(bonuses);
     }
 
     pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {
@@ -99,7 +99,7 @@ impl Buffer {
 
             let forced = self.forced.remove(&attribute).is_some();
 
-            if forced || bonuses.len() > 0 {
+            if forced || !bonuses.is_empty() {
                 return Some((attribute, bonuses, forced));
             }
         }
