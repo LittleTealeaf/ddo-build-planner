@@ -1,8 +1,4 @@
-use iced::{
-    executor, theme,
-    widget::{button, column},
-    Application, Command, Settings,
-};
+use iced::{executor, theme, Application, Command, Settings};
 
 fn main() -> iced::Result {
     EditorState::run(Settings::default())
