@@ -72,7 +72,7 @@ jobs:
       security-events: write
       actions: read
     env:
-      RUSTFLAGS: -D warnings -D clippy::complexity -D clippy::pedantic -D clippy::nursery -D clippy::cargo
+      RUSTFLAGS: -D warnings -D clippy::complexity -D clippy::pedantic -D clippy::nursery
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
