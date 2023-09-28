@@ -5,6 +5,11 @@ version.workspace = true
 repository.workspace = true
 authors.workspace = true
 readme.workspace = true
+description.workspace = true
+categories.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+
 
 [dependencies]
 im = "15.1.0"

@@ -5,10 +5,15 @@ resolver = "2"
 
 [workspace.package]
 authors = ["LittleTealeaf"]
+description = "A Cross-Platform Dungeons & Dragons Online Build Planner written in Rust."
+categories = ["ddo", "builder", "rust"]
+keywords = ["ddo", "dungeons & dragons online", "builder", "planner"]
 repository = "https://www.github.com/LittleTealeaf/ddo-build-planner"
 readme = "./README.md"
+license-file = "LICENSE"
 edition = "2021"
 version = "0.0.1"
+
 
 [profile.release]
 lto = true
