@@ -1,32 +1,31 @@
 //! Represents each attribute that a character can have
+pub mod bonuses;
 pub mod flags;
-pub mod impls;
-pub mod selectors;
+mod macros;
 pub mod toggles;
 mod traits;
-pub mod types;
 
 mod from;
 
 pub use from::*;
+use itertools::chain;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
 
 use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
-    player_class::PlayerClass,
+    types::{
+        Ability, ArmorClass, DamageType, PlayerClass, SavingThrow, Sheltering, Skill, SpellPower,
+        SpellSelector,
+    },
 };
 use std::fmt::Display;
 
 use self::{
+    bonuses::{WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower},
     flags::Flag,
-    selectors::SpellSelector,
     toggles::Toggle,
-    types::{
-        Ability, ArmorClass, EnergyResistance, SavingThrow, Sheltering, Skill, SpellPower,
-        WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
-    },
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
@@ -86,9 +85,9 @@ pub enum Attribute {
     /// Physical or Magical Sheltering
     Sheltering(Sheltering),
     /// Damage reduced from energy sources
-    EnergyResistance(EnergyResistance),
+    Resistance(DamageType),
     /// % Damage reduced from energy sources
-    EnergyAbsorption(EnergyResistance),
+    Absorption(DamageType),
     /// Spell Resistance
     SpellResistance,
     /// Spell Penetration
@@ -99,7 +98,7 @@ impl Display for Attribute {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             #[cfg(test)]
-            Attribute::Debug(val) => write!(f, "Debug {}", val),
+            Self::Debug(val) => write!(f, "Debug {val}"),
             Self::Dummy => write!(f, "Dummy"),
             Self::Ability(ability) => write!(f, "{ability} Score"),
             Self::AbilityModifier(ability) => write!(f, "{ability} Modifier"),
@@ -117,8 +116,8 @@ impl Display for Attribute {
             Self::Sheltering(sheltering) => sheltering.fmt(f),
             Self::ClassLevel(cl) => write!(f, "{cl} Level"),
             Self::Flag(fl) => fl.fmt(f),
-            Self::EnergyResistance(energy) => write!(f, "{energy} Resistance"),
-            Self::EnergyAbsorption(energy) => write!(f, "{energy} Absorption"),
+            Self::Resistance(energy) => write!(f, "{energy} Resistance"),
+            Self::Absorption(energy) => write!(f, "{energy} Absorption"),
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
             Self::SpellResistance => write!(f, "Spell Resistance"),
             Self::SpellPenetration => write!(f, "Spell Penetration"),
@@ -136,7 +135,6 @@ impl Attribute {
     #[must_use]
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
-            Self::Ability(ability) => ability.get_bonuses(value),
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
             Self::SpellCriticalChance(sp) => {
@@ -187,18 +185,16 @@ impl TrackAttribute for Attribute {
     }
 }
 
-impl DefaultBonuses for Attribute {
-    fn get_default_bonuses() -> Vec<Bonus> {
-        vec![
+impl Attribute {
+    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compiler.
+    pub fn get_default_bonuses() -> impl Iterator<Item = Bonus> {
+        chain!(
             Ability::get_default_bonuses(),
-            ArmorClass::get_default_bonuses(),
             SavingThrow::get_default_bonuses(),
-            Skill::get_default_bonuses(),
             SpellPower::get_default_bonuses(),
-        ]
-        .into_iter()
-        .flatten()
-        .collect()
+            ArmorClass::get_default_bonuses(),
+            Skill::get_default_bonuses()
+        )
     }
 }
 
@@ -227,7 +223,7 @@ mod tests {
         fn get_all_attributes() -> impl Iterator<Item = Attribute> {
             let max = Attribute::LENGTH;
 
-            (0..max).map(|item| Attribute::from_usize(item))
+            (0..max).map(Attribute::from_usize)
         }
 
         #[test]
@@ -245,8 +241,7 @@ mod tests {
                 let name = attr.to_string();
                 assert!(
                     !unique_names.contains(&name),
-                    "Duplicate Name Found: {}",
-                    attr
+                    "Duplicate Name Found: {attr}"
                 );
                 unique_names.insert(name);
             });

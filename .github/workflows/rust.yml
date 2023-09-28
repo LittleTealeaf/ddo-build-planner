@@ -20,7 +20,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout Repository
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -55,7 +55,7 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout Repository
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -75,7 +75,7 @@ jobs:
       RUSTFLAGS: -D warnings -D clippy::complexity -D clippy::pedantic -D clippy::nursery -D clippy::cargo
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
@@ -97,9 +97,33 @@ jobs:
         with:
           sarif_file: rust-clippy-results.sarif
           wait-for-processing: true
+  cargo-lock:
+    name: Cargo Lock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all
+      - name: Check if Cargo.lock changed
+        id: verify-changed-files
+        uses: tj-actions/verify-changed-files@v16
+        with:
+          files: |
+            Cargo.lock
+      - name: Fail if Cargo.lock changed
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: exit 1
   finish:
     name: Finish Checks
-    needs: [clippy, test, install, format]
+    needs: [clippy, test, install, format, cargo-lock]
     runs-on: ubuntu-latest
     steps:
       - name: Finish Checks

@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use super::DamageReduction;
+use super::DamageType;
 
 /// Different stats that can be applied to a particular weapon
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
@@ -22,8 +22,8 @@ pub enum WeaponStat {
     CriticalMultiplier,
     /// THe damage multiplier of the weapon on critical hits on a 19-20
     CriticalMultiplier1920,
-    /// Damage Reduction Bypasses that the weapon has
-    DamageReductionBypass(DamageReduction),
+    /// Damage Types
+    DamageType(DamageType),
 }
 
 impl Display for WeaponStat {
@@ -35,14 +35,15 @@ impl Display for WeaponStat {
             Self::CriticalDamage => write!(f, "Critical Damage"),
             Self::CriticalMultiplier => write!(f, "Critical Multiplier"),
             Self::CriticalMultiplier1920 => write!(f, "Critical Multiplier (19-20)"),
-            Self::DamageReductionBypass(dr) => write!(f, "{dr} Bypass"),
+            Self::DamageType(damage_type) => write!(f, "{damage_type} Damage"),
             Self::CriticalThreatRange => write!(f, "Critical Threat Range"),
         }
     }
 }
 
-impl From<DamageReduction> for WeaponStat {
-    fn from(value: DamageReduction) -> Self {
-        Self::DamageReductionBypass(value)
+impl From<DamageType> for WeaponStat {
+    fn from(value: DamageType) -> Self {
+        Self::DamageType(value)
     }
 }
+

@@ -10,13 +10,13 @@ use serde::{Deserialize, Serialize};
 
 use std::fmt::Display;
 
-use crate::{bonus::Bonus, equipment::item::types::ArmorType, race::Race};
-
-use super::{
-    toggles::Toggle,
-    types::{Alignment, Immunity},
-    GetBonuses,
+use crate::{
+    bonus::Bonus,
+    equipment::item::types::ArmorType,
+    types::{Alignment, Immunity, Race},
 };
+
+use super::{toggles::Toggle, GetBonuses};
 
 /// Indicates that the character possesses some flag.
 ///

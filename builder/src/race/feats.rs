@@ -6,12 +6,12 @@ use crate::{
     attribute::{
         flags::{Flag, MainHandType, OffHandType},
         toggles::{AttackingTarget, Toggle},
-        types::{ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat},
         Attribute, GetBonuses,
     },
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::Feat,
+    types::{ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat},
 };
 
 /// Feats granted from different races.
@@ -348,11 +348,7 @@ mod tests {
                 for bonus in bonuses {
                     let source = bonus.get_source();
                     let expected = BonusSource::Attribute(Attribute::Feat(Feat::RacialFeat(feat)));
-                    assert_eq!(
-                        source, expected,
-                        "Expected [{}], found [{}]",
-                        expected, source
-                    );
+                    assert_eq!(source, expected, "Expected [{expected}], found [{source}]");
                 }
             }
         }

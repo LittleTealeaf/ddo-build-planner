@@ -1,15 +1,14 @@
 // This tests the compiler with a large set of bonuses
 
 use builder::{
-    attribute::types::Ability,
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
+    types::Ability,
 };
 
 #[test]
 fn test_first_life_healer() {
     let mut compiler = Compiler::default();
-
     // +8 Stat Tome
     compiler.add_bonus(Bonus::new(
         Ability::All.into(),

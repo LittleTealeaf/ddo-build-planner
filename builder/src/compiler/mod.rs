@@ -2,7 +2,7 @@
 //!
 //! [`Bonuses`]: crate::bonus::Bonus
 
-mod attribute_queue;
+mod buffer;
 mod calculation;
 mod inserting;
 
@@ -11,7 +11,7 @@ use im::OrdMap;
 pub use inserting::*;
 
 use crate::{
-    attribute::{Attribute, DefaultBonuses},
+    attribute::Attribute,
     bonus::{Bonus, BonusSource},
 };
 
@@ -29,12 +29,10 @@ use crate::{
 /// use builder::{
 ///     attribute::{
 ///         Attribute,
-///         types::{
-///             Sheltering
-///         }
 ///     },
 ///     bonus::{Bonus, BonusSource, Condition, BonusType},
-///     compiler::Compiler
+///     compiler::Compiler,
+///     types::Sheltering,
 /// };
 ///
 /// let mut compiler = Compiler::default();
