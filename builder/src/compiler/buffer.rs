@@ -80,7 +80,6 @@ impl Buffer {
 
     pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {
         while let Some(Reverse(attribute)) = self.attributes.pop() {
-            // let is_forced = self.forced.remove(&attribute).is_some();
             let bonuses = {
                 let indexes = self
                     .bonuses
