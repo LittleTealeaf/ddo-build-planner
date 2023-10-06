@@ -42,175 +42,173 @@ pub enum SkillFocus {
 
 impl GetBonuses for SkillFocus {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        (value > 0.0)
-            .then(|| match self {
-                Self::Focus(skill) => Some(vec![Bonus::new(
-                    Attribute::Skill(*skill),
-                    BonusType::Stacking,
-                    3f32.into(),
-                    Attribute::Feat(Feat::SkillFocus(Self::Focus(*skill))).into(),
-                    None,
-                )]),
-                Self::Acrobatic => Some(vec![
-                    Bonus::new(
-                        Attribute::Skill(Skill::Jump),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Acrobatic)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Tumble),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Acrobatic)).into(),
-                        None,
-                    ),
-                ]),
-                Self::Alertness => Some(vec![
-                    Bonus::new(
-                        Attribute::Skill(Skill::Listen),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Alertness)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Spot),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Alertness)).into(),
-                        None,
-                    ),
-                ]),
-                Self::Athletic => Some(vec![
-                    Bonus::new(
-                        Attribute::Skill(Skill::Balance),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Athletic)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Swim),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Athletic)).into(),
-                        None,
-                    ),
-                ]),
-                Self::Bullheaded => Some(vec![
-                    Bonus::new(
-                        Attribute::SavingThrow(SavingThrow::Will),
-                        BonusType::Stacking,
-                        1f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Bullheaded)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Intimidate),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Bullheaded)).into(),
-                        None,
-                    ),
-                ]),
-                Self::Discipline => Some(vec![
-                    Bonus::new(
-                        Attribute::SavingThrow(SavingThrow::Will),
-                        BonusType::Stacking,
-                        1f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Discipline)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Concentration),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Discipline)).into(),
-                        None,
-                    ),
-                ]),
-                Self::LuckOfHeroes => Some(vec![Bonus::new(
-                    Attribute::SavingThrow(SavingThrow::All),
+        (value > 0.0).then(|| match self {
+            Self::Focus(skill) => vec![Bonus::new(
+                Attribute::Skill(*skill),
+                BonusType::Stacking,
+                3f32.into(),
+                Attribute::Feat(Feat::SkillFocus(Self::Focus(*skill))).into(),
+                None,
+            )],
+            Self::Acrobatic => vec![
+                Bonus::new(
+                    Attribute::Skill(Skill::Jump),
                     BonusType::Stacking,
                     2f32.into(),
-                    Attribute::Feat(Feat::SkillFocus(Self::LuckOfHeroes)).into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Acrobatic)).into(),
                     None,
-                )]),
-                Self::Negotiator => Some(vec![
-                    Bonus::new(
-                        Attribute::Skill(Skill::Diplomacy),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Negotiator)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Haggle),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Negotiator)).into(),
-                        None,
-                    ),
-                ]),
-                Self::ResistPoison => Some(vec![Bonus::new(
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Tumble),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Acrobatic)).into(),
+                    None,
+                ),
+            ],
+            Self::Alertness => vec![
+                Bonus::new(
+                    Attribute::Skill(Skill::Listen),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Alertness)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Spot),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Alertness)).into(),
+                    None,
+                ),
+            ],
+            Self::Athletic => vec![
+                Bonus::new(
+                    Attribute::Skill(Skill::Balance),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Athletic)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Swim),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Athletic)).into(),
+                    None,
+                ),
+            ],
+            Self::Bullheaded => vec![
+                Bonus::new(
+                    Attribute::SavingThrow(SavingThrow::Will),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Bullheaded)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Intimidate),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Bullheaded)).into(),
+                    None,
+                ),
+            ],
+            Self::Discipline => vec![
+                Bonus::new(
+                    Attribute::SavingThrow(SavingThrow::Will),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Discipline)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Concentration),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Discipline)).into(),
+                    None,
+                ),
+            ],
+            Self::LuckOfHeroes => vec![Bonus::new(
+                Attribute::SavingThrow(SavingThrow::All),
+                BonusType::Stacking,
+                2f32.into(),
+                Attribute::Feat(Feat::SkillFocus(Self::LuckOfHeroes)).into(),
+                None,
+            )],
+            Self::Negotiator => vec![
+                Bonus::new(
+                    Attribute::Skill(Skill::Diplomacy),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Negotiator)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Haggle),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Negotiator)).into(),
+                    None,
+                ),
+            ],
+            Self::ResistPoison => vec![Bonus::new(
+                Attribute::SavingThrow(SavingThrow::Poison),
+                BonusType::Stacking,
+                4f32.into(),
+                Attribute::Feat(Feat::SkillFocus(Self::ResistPoison)).into(),
+                None,
+            )],
+            Self::SelfSufficient => vec![
+                Bonus::new(
+                    Attribute::Skill(Skill::Heal),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::SelfSufficient)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::Repair),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::SelfSufficient)).into(),
+                    None,
+                ),
+            ],
+            Self::SnakeBlood => vec![
+                Bonus::new(
+                    Attribute::SavingThrow(SavingThrow::Reflex),
+                    BonusType::Stacking,
+                    1f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::SnakeBlood)).into(),
+                    None,
+                ),
+                Bonus::new(
                     Attribute::SavingThrow(SavingThrow::Poison),
                     BonusType::Stacking,
-                    4f32.into(),
-                    Attribute::Feat(Feat::SkillFocus(Self::ResistPoison)).into(),
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::SnakeBlood)).into(),
                     None,
-                )]),
-                Self::SelfSufficient => Some(vec![
-                    Bonus::new(
-                        Attribute::Skill(Skill::Heal),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::SelfSufficient)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::Repair),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::SelfSufficient)).into(),
-                        None,
-                    ),
-                ]),
-                Self::SnakeBlood => Some(vec![
-                    Bonus::new(
-                        Attribute::SavingThrow(SavingThrow::Reflex),
-                        BonusType::Stacking,
-                        1f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::SnakeBlood)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::SavingThrow(SavingThrow::Poison),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::SnakeBlood)).into(),
-                        None,
-                    ),
-                ]),
-                Self::Stealthy => Some(vec![
-                    Bonus::new(
-                        Attribute::Skill(Skill::Hide),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Stealthy)).into(),
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::Skill(Skill::MoveSilently),
-                        BonusType::Stacking,
-                        2f32.into(),
-                        Attribute::Feat(Feat::SkillFocus(Self::Stealthy)).into(),
-                        None,
-                    ),
-                ]),
-            })
-            .unwrap_or(None)
+                ),
+            ],
+            Self::Stealthy => vec![
+                Bonus::new(
+                    Attribute::Skill(Skill::Hide),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Stealthy)).into(),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Skill(Skill::MoveSilently),
+                    BonusType::Stacking,
+                    2f32.into(),
+                    Attribute::Feat(Feat::SkillFocus(Self::Stealthy)).into(),
+                    None,
+                ),
+            ],
+        })
     }
 }
 
