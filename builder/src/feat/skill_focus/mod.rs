@@ -12,18 +12,31 @@ use super::Feat;
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]
+/// Feats that show up under the "Skill Focus" Tab
 pub enum SkillFocus {
+    /// Proides a +3 bonus to a specifc skill
     Focus(Skill),
+    /// Provides a +2 bonus to Jump and Tumble
     Acrobatic,
+    /// Provides a +2 bonus to Listen and Spot
     Alertness,
+    /// Provides a +2 bonus to Balance and Swim
     Athletic,
+    /// Provides a +1 bonus to Will and a +2 bonus to Intimidate
     Bullheaded,
+    /// Provides a +1 bonus to Will and a +2 bonus to Concentration
     Discipline,
+    /// Provides a +1 bonus to all saves
     LuckOfHeroes,
+    /// Provides a +2 bonus to diplomacy and haggle
     Negotiator,
+    /// Provides a +4 bonus to saves against poison
     ResistPoison,
+    /// Provides a +2 bonus to Heal and Repair
     SelfSufficient,
+    /// Provides a +1 bonus to Reflex and +2 bonus to saves against poison
     SnakeBlood,
+    /// Provides a +2 bonus to Hide and Move Silently
     Stealthy,
 }
 
