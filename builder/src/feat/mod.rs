@@ -1,7 +1,8 @@
 //! Feats that a character can have.
-mod proficiency;
-pub use proficiency::*;
+public_modules!(proficiency, skill_focus, spellcasting);
+
 use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 use std::fmt::Display;
 
@@ -15,6 +16,11 @@ pub enum Feat {
     RacialFeat(RacialFeat),
     /// Proficiencies for Weapons or Armor
     Proficiency(Proficiency),
+    /// Skill Focus
+    SkillFocus(SkillFocus),
+    /// Spell Focus Feats
+    Spellcasting(SpellcastingFeat),
+    // SpellFocus(SpellFocusFeat),
 }
 
 impl Display for Feat {
@@ -22,6 +28,8 @@ impl Display for Feat {
         match self {
             Self::RacialFeat(feat) => feat.fmt(f),
             Self::Proficiency(prof) => prof.fmt(f),
+            Self::SkillFocus(feat) => feat.fmt(f),
+            Self::Spellcasting(feat) => feat.fmt(f),
         }
     }
 }
@@ -31,6 +39,8 @@ impl GetBonuses for Feat {
         match self {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
             Self::Proficiency(_) => None,
+            Self::SkillFocus(feat) => feat.get_bonuses(value),
+            Self::Spellcasting(feat) => feat.get_bonuses(value),
         }
     }
 }
