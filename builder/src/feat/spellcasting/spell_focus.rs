@@ -5,10 +5,11 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType},
-    types::{SpellSchool, SpellSelector},
+    types::{SpellSchool, SpellSelector}, feat::Feat,
 };
 
-use super::Feat;
+use super::SpellcastingFeat;
+
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Serialize, Deserialize, Debug)]
@@ -27,7 +28,7 @@ impl GetBonuses for SpellFocusFeat {
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
                 1f32.into(),
-                BonusSource::Attribute(Attribute::Feat(Feat::SpellFocus(*self))),
+                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(SpellcastingFeat::SpellFocus(*self)))),
                 None,
             )],
         })

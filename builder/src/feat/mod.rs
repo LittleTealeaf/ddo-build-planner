@@ -1,5 +1,5 @@
 //! Feats that a character can have.
-public_modules!(proficiency, skill_focus, spell_focus);
+public_modules!(proficiency, skill_focus, spellcasting);
 
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
@@ -19,7 +19,8 @@ pub enum Feat {
     /// Skill Focus
     SkillFocus(SkillFocus),
     /// Spell Focus Feats
-    SpellFocus(SpellFocusFeat),
+    Spellcasting(SpellcastingFeat),
+    // SpellFocus(SpellFocusFeat),
 }
 
 impl Display for Feat {
@@ -28,7 +29,7 @@ impl Display for Feat {
             Self::RacialFeat(feat) => feat.fmt(f),
             Self::Proficiency(prof) => prof.fmt(f),
             Self::SkillFocus(feat) => feat.fmt(f),
-            Self::SpellFocus(focus) => focus.fmt(f),
+            Self::Spellcasting(feat) => feat.fmt(f),
         }
     }
 }
@@ -39,7 +40,7 @@ impl GetBonuses for Feat {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
             Self::Proficiency(_) => None,
             Self::SkillFocus(feat) => feat.get_bonuses(value),
-            Self::SpellFocus(focus) => focus.get_bonuses(value),
+            Self::Spellcasting(feat) => feat.get_bonuses(value),
         }
     }
 }
