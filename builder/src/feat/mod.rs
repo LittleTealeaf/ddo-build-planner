@@ -17,7 +17,7 @@ pub enum Feat {
     /// Proficiencies for Weapons or Armor
     Proficiency(Proficiency),
     /// Skill Focus
-    SkillFocus(SkillFocusFeat),
+    SkillFocus(SkillFocus),
 }
 
 impl Display for Feat {
@@ -35,7 +35,7 @@ impl GetBonuses for Feat {
         match self {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
             Self::Proficiency(_) => None,
-            Self::SkillFocus(feat) => feat.get_bonuses(value)
+            Self::SkillFocus(feat) => feat.get_bonuses(value),
         }
     }
 }
