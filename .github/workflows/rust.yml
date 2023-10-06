@@ -32,7 +32,7 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           key: ${{matrix.os}}
-      - name: Test
+      - name: Build Release
         uses: actions-rs/cargo@v1
         with:
           command: test
