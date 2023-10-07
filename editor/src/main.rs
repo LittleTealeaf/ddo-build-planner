@@ -19,7 +19,7 @@ impl Application for EditorState {
 
     type Flags = ();
 
-    fn new(_: Self::Flags) -> (Self, iced::Command<Self::Message>) {
+    fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
         (Self {}, Command::none())
     }
 
