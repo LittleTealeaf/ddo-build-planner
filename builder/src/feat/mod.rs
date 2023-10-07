@@ -48,9 +48,8 @@ impl GetBonuses for Feat {
 impl GetFeatRequirement for Feat {
     fn get_feat_requirements(&self) -> Option<FeatRequirement> {
         match self {
-            Feat::Proficiency(_) => None,
-            Feat::SkillFocus(feat) => feat.get_feat_requirements(),
-            Feat::Spellcasting(feat) => feat.get_feat_requirements(),
+            Self::SkillFocus(feat) => feat.get_feat_requirements(),
+            Self::Spellcasting(feat) => feat.get_feat_requirements(),
             _ => None,
         }
     }
