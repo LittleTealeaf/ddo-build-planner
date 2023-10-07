@@ -8,7 +8,7 @@ use crate::{
     types::{SavingThrow, Skill},
 };
 
-use super::Feat;
+use super::{Feat, GetFeatRequirement, FeatRequirement};
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]
@@ -228,5 +228,11 @@ impl Display for SkillFocus {
             Self::Stealthy => write!(f, "Stealthy"),
             Self::Alertness => write!(f, "Alertness"),
         }
+    }
+}
+
+impl GetFeatRequirement for SkillFocus {
+    fn get_feat_requirements(&self) -> Option<FeatRequirement> {
+        None
     }
 }

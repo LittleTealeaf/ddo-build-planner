@@ -5,11 +5,11 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType},
-    types::{SpellSchool, SpellSelector}, feat::Feat,
+    feat::{Feat, FeatRequirement, GetFeatRequirement},
+    types::{PlayerClass, SpellSchool, SpellSelector},
 };
 
 use super::SpellcastingFeat;
-
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Serialize, Deserialize, Debug)]
@@ -28,10 +28,41 @@ impl GetBonuses for SpellFocusFeat {
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
                 1f32.into(),
-                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(SpellcastingFeat::SpellFocus(*self)))),
+                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(
+                    SpellcastingFeat::SpellFocus(*self),
+                ))),
                 None,
             )],
         })
+    }
+}
+
+impl GetFeatRequirement for SpellFocusFeat {
+    fn get_feat_requirements(&self) -> Option<FeatRequirement> {
+        match self {
+            Self::SpellFocus(_) => Some(FeatRequirement::Any(vec![
+                FeatRequirement::ClassLevel(PlayerClass::Alchemist, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Artificer, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Bard, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Stormsinger, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Cleric, 1),
+                FeatRequirement::ClassLevel(PlayerClass::DarkApostate, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Druid, 1),
+                FeatRequirement::ClassLevel(PlayerClass::BlightCaster, 1),
+                FeatRequirement::ClassLevel(PlayerClass::FavoredSoul, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Sorcerer, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Wizard, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Warlock, 1),
+                FeatRequirement::ClassLevel(PlayerClass::AcolyteOfTheSkin, 1),
+                FeatRequirement::ClassLevel(PlayerClass::Paladin, 4),
+                FeatRequirement::ClassLevel(PlayerClass::SacredFist, 4),
+                FeatRequirement::ClassLevel(PlayerClass::Ranger, 4),
+                FeatRequirement::ClassLevel(PlayerClass::DarkHunter, 4),
+            ])),
+            Self::GreaterSpellFocus(school) => Some(FeatRequirement::Feat(Feat::Spellcasting(
+                SpellcastingFeat::SpellFocus(Self::SpellFocus(*school)),
+            ))),
+        }
     }
 }
 
