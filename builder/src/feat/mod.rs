@@ -1,5 +1,5 @@
 //! Feats that a character can have.
-public_modules!(proficiency, skill_focus, spellcasting);
+public_modules!(proficiency, skill_focus, spellcasting, requirements);
 
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
@@ -41,6 +41,16 @@ impl GetBonuses for Feat {
             Self::Proficiency(_) => None,
             Self::SkillFocus(feat) => feat.get_bonuses(value),
             Self::Spellcasting(feat) => feat.get_bonuses(value),
+        }
+    }
+}
+
+impl GetFeatRequirement for Feat {
+    fn get_feat_requirements(&self) -> Option<FeatRequirement> {
+        match self {
+            Self::SkillFocus(feat) => feat.get_feat_requirements(),
+            Self::Spellcasting(feat) => feat.get_feat_requirements(),
+            _ => None,
         }
     }
 }

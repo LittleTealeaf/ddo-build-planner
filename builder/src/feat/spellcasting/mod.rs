@@ -5,6 +5,8 @@ use utils::public_modules;
 
 use crate::attribute::GetBonuses;
 
+use super::GetFeatRequirement;
+
 public_modules!(spell_focus);
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
@@ -19,6 +21,14 @@ impl GetBonuses for SpellcastingFeat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
         match self {
             Self::SpellFocus(focus) => focus.get_bonuses(value),
+        }
+    }
+}
+
+impl GetFeatRequirement for SpellcastingFeat {
+    fn get_feat_requirements(&self) -> Option<super::FeatRequirement> {
+        match self {
+            Self::SpellFocus(focus) => focus.get_feat_requirements(),
         }
     }
 }
