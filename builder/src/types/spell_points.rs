@@ -39,7 +39,7 @@ impl DefaultBonuses for SpellPoints {
     fn get_default_bonuses() -> Self::Iterator {
         [
             Bonus::new(
-                Attribute::SpellPoints(SpellPoints::Base),
+                Attribute::SpellPoints(Self::Base),
                 BonusType::Stacking,
                 Value::Product(vec![
                     Attribute::SpellPoints(Self::Scaled).into(),
