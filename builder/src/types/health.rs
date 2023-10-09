@@ -33,25 +33,14 @@ impl DefaultBonuses for Health {
     fn get_default_bonuses() -> Self::Iterator {
         [
             Bonus::new(
-                Attribute::Health(Health::BaseModifier),
-                BonusType::Stacking,
-                1f32.into(),
-                BonusSource::Base,
-                None,
-            ),
-            Bonus::new(
-                Attribute::Health(Health::Modifier),
-                BonusType::Stacking,
-                1f32.into(),
-                BonusSource::Base,
-                None,
-            ),
-            Bonus::new(
                 Attribute::Health(Health::Bonus),
                 BonusType::Stacking,
                 Value::Product(vec![
                     Attribute::Health(Health::Base).into(),
-                    Attribute::Health(Health::BaseModifier).into(),
+                    Value::Sum(vec![
+                        Attribute::Health(Health::BaseModifier).into(),
+                        1f32.into(),
+                    ]),
                 ]),
                 BonusSource::Base,
                 None,
@@ -61,7 +50,10 @@ impl DefaultBonuses for Health {
                 BonusType::Stacking,
                 Value::Product(vec![
                     Attribute::Health(Health::Bonus).into(),
-                    Attribute::Health(Health::Modifier).into(),
+                    Value::Sum(vec![
+                        Attribute::Health(Health::Modifier).into(),
+                        1f32.into(),
+                    ]),
                 ]),
                 BonusSource::Base,
                 None,
@@ -69,5 +61,5 @@ impl DefaultBonuses for Health {
         ]
     }
 
-    type Iterator = [Bonus; 4];
+    type Iterator = [Bonus; 2];
 }
