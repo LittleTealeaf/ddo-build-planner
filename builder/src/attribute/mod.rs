@@ -17,7 +17,7 @@ use crate::{
     feat::Feat,
     types::{
         Ability, ArmorClass, DamageType, PlayerClass, SavingThrow, Sheltering, Skill, SpellPower,
-        SpellSelector,
+        SpellSelector, Health,
     },
 };
 use std::fmt::Display;
@@ -92,6 +92,8 @@ pub enum Attribute {
     SpellResistance,
     /// Spell Penetration
     SpellPenetration,
+    /// Health
+    Health(Health)
 }
 
 impl Display for Attribute {
@@ -121,6 +123,7 @@ impl Display for Attribute {
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
             Self::SpellResistance => write!(f, "Spell Resistance"),
             Self::SpellPenetration => write!(f, "Spell Penetration"),
+            Self::Health(health) => health.fmt(f)
         }
     }
 }
@@ -193,7 +196,8 @@ impl Attribute {
             SavingThrow::get_default_bonuses(),
             SpellPower::get_default_bonuses(),
             ArmorClass::get_default_bonuses(),
-            Skill::get_default_bonuses()
+            Skill::get_default_bonuses(),
+            Health::get_default_bonuses()
         )
     }
 }
