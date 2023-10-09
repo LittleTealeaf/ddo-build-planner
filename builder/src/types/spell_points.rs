@@ -13,7 +13,7 @@ use super::PlayerClass;
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
 /// Different types of bonsues to spell points
 pub enum SpellPoints {
-    /// Bonuses that can be scaled based on the number of Favored Soul or Sorcorer levels you have
+    /// Bonuses that can be scaled based on the number of Favored Soul or Sorcerer levels you have
     Scaled,
     /// Regular bonuses to spell points
     #[default]
