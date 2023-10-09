@@ -18,5 +18,7 @@ public_modules!(
     armor_class,
     monster_type,
     player_class,
-    player_race
+    player_race,
+    health,
+    spell_points
 );

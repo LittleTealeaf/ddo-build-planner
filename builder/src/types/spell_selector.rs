@@ -3,7 +3,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{types::SpellSchool};
+use crate::types::SpellSchool;
 
 use super::{SpellPower, PlayerClass};
 
