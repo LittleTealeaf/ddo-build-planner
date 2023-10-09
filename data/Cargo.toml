@@ -15,13 +15,12 @@ example = []
 
 [dependencies]
 builder = { path = "../builder/"}
-ciborium = "0.2.1"
 serde = { version = "1.0.188", features = ["derive"] }
+ron = "0.8.1"
 
 [build-dependencies]
 serde = { version = "1.0.188" }
 ron = "0.8.1"
-ciborium = "0.2.1"
 builder = { path = "../builder/" }
 
 [dev-dependencies]
