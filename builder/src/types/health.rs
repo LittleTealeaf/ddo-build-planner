@@ -8,12 +8,19 @@ use crate::{
 };
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
+/// Indicates bonuses to hit points, or health
 pub enum Health {
+    /// Base hit points, prior to any bonuses from combat style feats
     Base,
+    /// Bonuses from combat style feats
     BaseModifier,
+    /// Bonus hit points, this is the standard one
+    #[default]
     Bonus,
+    /// Final modifier over all hit points
     Modifier,
+    /// Total hit points
     Total,
 }
 
