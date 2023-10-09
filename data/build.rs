@@ -1,4 +1,4 @@
-use std::{env, fs::File, path::Path};
+use std::{env, fs::File, io::Write, path::Path};
 
 use errors::Error;
 use serde::Serialize;
@@ -18,11 +18,9 @@ where
 {
     let path = Path::new(&env::var("OUT_DIR")?).join(name);
 
-    let file = File::create(path)?;
+    let mut file = File::create(path)?;
 
-    ciborium::into_writer(&item, file)?;
-
-    // file.write_all(ron::to_string(&item)?.as_bytes())?;
+    file.write_all(ron::to_string(&item)?.as_bytes())?;
 
     Ok(())
 }
@@ -35,7 +33,6 @@ mod errors {
         Environment(VarError),
         Serialize(ron::Error),
         IO(std::io::Error),
-        Value(String),
     }
 
     impl From<VarError> for Error {
@@ -53,15 +50,6 @@ mod errors {
     impl From<std::io::Error> for Error {
         fn from(value: std::io::Error) -> Self {
             Self::IO(value)
-        }
-    }
-
-    impl From<ciborium::ser::Error<std::io::Error>> for Error {
-        fn from(value: ciborium::ser::Error<std::io::Error>) -> Self {
-            match value {
-                ciborium::ser::Error::Io(io) => Self::IO(io),
-                ciborium::ser::Error::Value(val) => Self::Value(val),
-            }
         }
     }
 }
