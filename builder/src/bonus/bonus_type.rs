@@ -44,6 +44,8 @@ pub enum BonusType {
     Feat,
     /// Festive bonus
     Festive,
+    /// Fortune bonus
+    Fortune,
     /// Insightful bonus
     Insightful,
     /// Legendary bonus
@@ -100,6 +102,7 @@ impl Display for BonusType {
             Self::Exceptional => write!(f, "Exceptional"),
             Self::Feat => write!(f, "Feat"),
             Self::Festive => write!(f, "Festive"),
+            Self::Fortune => write!(f, "Fortune"),
             Self::Insightful => write!(f, "Insightful"),
             Self::Legendary => write!(f, "Legendary"),
             Self::Morale => write!(f, "Morale"),
