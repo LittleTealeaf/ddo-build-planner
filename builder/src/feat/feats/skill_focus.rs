@@ -5,10 +5,8 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
-    types::{SavingThrow, Skill},
+    types::{SavingThrow, Skill}, feat::{Feat, GetFeatRequirement, FeatRequirement},
 };
-
-use super::{Feat, GetFeatRequirement, FeatRequirement};
 
 #[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]

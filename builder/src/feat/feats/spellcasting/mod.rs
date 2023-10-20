@@ -3,9 +3,10 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
-use crate::attribute::GetBonuses;
-
-use super::GetFeatRequirement;
+use crate::{
+    attribute::GetBonuses,
+    feat::{FeatRequirement, GetFeatRequirement},
+};
 
 public_modules!(spell_focus);
 
@@ -26,7 +27,7 @@ impl GetBonuses for SpellcastingFeat {
 }
 
 impl GetFeatRequirement for SpellcastingFeat {
-    fn get_feat_requirements(&self) -> Option<super::FeatRequirement> {
+    fn get_feat_requirements(&self) -> Option<FeatRequirement> {
         match self {
             Self::SpellFocus(focus) => focus.get_feat_requirements(),
         }

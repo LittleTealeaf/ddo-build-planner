@@ -1,5 +1,5 @@
 //! Feats that a character can have.
-public_modules!(proficiency, skill_focus, spellcasting, requirements);
+public_modules!(feats, requirements);
 
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
