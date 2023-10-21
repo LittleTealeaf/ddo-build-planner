@@ -22,13 +22,12 @@ pub enum Condition {
     /// Requires that all of the conditions are true
     All(Vec<Self>),
     /// Insert a constant value
-    #[cfg(feature = "debug")]
-    Debug(bool),
+    Constant(bool),
 }
 
 impl From<bool> for Condition {
     fn from(value: bool) -> Self {
-        Self::Debug(value)
+        Self::Constant(value)
     }
 }
 
@@ -100,10 +99,8 @@ impl Display for Condition {
             Self::EqualTo(a, b) => write!(f, "{a} is equal to {b}"),
             Self::Any(conditions) => write!(f, "Any of {conditions:?}"),
             Self::All(conditions) => write!(f, "All of {conditions:?}"),
-            #[cfg(feature = "debug")]
-            Self::Debug(true) => write!(f, "True"),
-            #[cfg(feature = "debug")]
-            Self::Debug(false) => write!(f, "False"),
+            Self::Constant(true) => write!(f, "True"),
+            Self::Constant(false) => write!(f, "False"),
         }
     }
 }

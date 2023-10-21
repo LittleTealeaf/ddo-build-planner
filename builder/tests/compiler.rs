@@ -132,7 +132,7 @@ mod calculate {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 Value::If {
-                    condition: Box::new(Condition::Debug(true)),
+                    condition: Box::new(Condition::Constant(true)),
                     if_true: Box::new(Value::Value(10f32)),
                     if_false: Box::new(Value::Value(20f32)),
                 },
@@ -146,7 +146,7 @@ mod calculate {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 Value::If {
-                    condition: Box::new(Condition::Debug(false)),
+                    condition: Box::new(Condition::Constant(false)),
                     if_true: Box::new(Value::Value(10f32)),
                     if_false: Box::new(Value::Value(20f32)),
                 },
@@ -183,8 +183,8 @@ mod condition {
 
     #[test]
     fn not() {
-        test_condition(Condition::Not(Box::new(Condition::Debug(true))), false);
-        test_condition(Condition::Not(Box::new(Condition::Debug(false))), true);
+        test_condition(Condition::Not(Box::new(Condition::Constant(true))), false);
+        test_condition(Condition::Not(Box::new(Condition::Constant(false))), true);
     }
 
     #[test]
@@ -212,25 +212,25 @@ mod condition {
     fn any() {
         test_condition(
             Condition::Any(vec![
-                Condition::Debug(true),
-                Condition::Debug(false),
-                Condition::Debug(false),
+                Condition::Constant(true),
+                Condition::Constant(false),
+                Condition::Constant(false),
             ]),
             true,
         );
         test_condition(
             Condition::Any(vec![
-                Condition::Debug(false),
-                Condition::Debug(false),
-                Condition::Debug(false),
+                Condition::Constant(false),
+                Condition::Constant(false),
+                Condition::Constant(false),
             ]),
             false,
         );
         test_condition(
             Condition::Any(vec![
-                Condition::Debug(true),
-                Condition::Debug(true),
-                Condition::Debug(true),
+                Condition::Constant(true),
+                Condition::Constant(true),
+                Condition::Constant(true),
             ]),
             true,
         );
@@ -240,25 +240,25 @@ mod condition {
     fn all() {
         test_condition(
             Condition::All(vec![
-                Condition::Debug(true),
-                Condition::Debug(false),
-                Condition::Debug(false),
+                Condition::Constant(true),
+                Condition::Constant(false),
+                Condition::Constant(false),
             ]),
             false,
         );
         test_condition(
             Condition::All(vec![
-                Condition::Debug(false),
-                Condition::Debug(false),
-                Condition::Debug(false),
+                Condition::Constant(false),
+                Condition::Constant(false),
+                Condition::Constant(false),
             ]),
             false,
         );
         test_condition(
             Condition::All(vec![
-                Condition::Debug(true),
-                Condition::Debug(true),
-                Condition::Debug(true),
+                Condition::Constant(true),
+                Condition::Constant(true),
+                Condition::Constant(true),
             ]),
             true,
         );
@@ -266,11 +266,11 @@ mod condition {
 
     #[test]
     fn const_true() {
-        test_condition(Condition::Debug(true), true);
+        test_condition(Condition::Constant(true), true);
     }
 
     #[test]
     fn const_false() {
-        test_condition(Condition::Debug(false), false);
+        test_condition(Condition::Constant(false), false);
     }
 }
