@@ -1,5 +1,5 @@
 use crate::{
-    feat::{Proficiency, Feat},
+    feat::{Feat, Proficiency},
     types::{Ability, ArmorClass, Immunity, PlayerClass, Race, SavingThrow, Sheltering, Skill},
 };
 
