@@ -52,7 +52,7 @@ impl DefaultBonuses for ArmorClass {
                 BonusSource::Base,
                 Some(Condition::All(vec![
                     is_wearing_armor(),
-                    Condition::NotAll(vec![
+                    Condition::not_all(vec![
                         is_wielding_tower_shield(),
                         Condition::GreaterThan(
                             Attribute::from(Self::ArmorMaxDexBonus).into(),
@@ -69,7 +69,7 @@ impl DefaultBonuses for ArmorClass {
                 BonusSource::Base,
                 Some(Condition::All(vec![
                     is_wielding_tower_shield(),
-                    Condition::NotAll(vec![
+                    Condition::not_all(vec![
                         is_wearing_armor(),
                         Condition::GreaterThan(
                             Attribute::from(Self::ShieldMaxDexBonus).into(),

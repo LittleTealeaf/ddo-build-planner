@@ -248,38 +248,6 @@ mod condition {
     }
 
     #[test]
-    fn not_any() {
-        test_condition(
-            Condition::NotAny(vec![Condition::True, Condition::False, Condition::False]),
-            false,
-        );
-        test_condition(
-            Condition::NotAny(vec![Condition::False, Condition::False, Condition::False]),
-            true,
-        );
-        test_condition(
-            Condition::NotAny(vec![Condition::True, Condition::True, Condition::True]),
-            false,
-        );
-    }
-
-    #[test]
-    fn not_all() {
-        test_condition(
-            Condition::NotAll(vec![Condition::True, Condition::False, Condition::False]),
-            true,
-        );
-        test_condition(
-            Condition::NotAll(vec![Condition::False, Condition::False, Condition::False]),
-            true,
-        );
-        test_condition(
-            Condition::NotAll(vec![Condition::True, Condition::True, Condition::True]),
-            false,
-        );
-    }
-
-    #[test]
     fn const_true() {
         test_condition(Condition::True, true);
     }
