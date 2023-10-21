@@ -27,6 +27,20 @@ pub enum Condition {
     NotAny(Vec<Condition>),
     /// Requires that some of the conditions are false
     NotAll(Vec<Condition>),
+    /// Always True
+    True,
+    /// Always False
+    False,
+}
+
+impl From<bool> for Condition {
+    fn from(value: bool) -> Self {
+        if value {
+            Self::True
+        } else {
+            Self::False
+        }
+    }
 }
 
 /// Generator functions to abstract away stndard conditions
@@ -57,6 +71,7 @@ impl AttributeDependencies for Condition {
             Self::Any(conds) | Self::All(conds) | Self::NotAny(conds) | Self::NotAll(conds) => {
                 conds.iter().any(|cond| cond.has_attr_dependency(attribute))
             }
+            _ => false,
         }
     }
 
@@ -75,6 +90,7 @@ impl AttributeDependencies for Condition {
                     cond.include_attr_dependency(set);
                 }
             }
+            _ => {}
         }
     }
 }
@@ -91,6 +107,8 @@ impl Display for Condition {
             Self::All(conditions) => write!(f, "All of {conditions:?}"),
             Self::NotAll(conditions) => write!(f, "Not all of {conditions:?}"),
             Self::NotAny(conditions) => write!(f, "Not any of {conditions:?}"),
+            Self::True => write!(f, "True"),
+            Self::False => write!(f, "False"),
         }
     }
 }
