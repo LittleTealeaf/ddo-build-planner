@@ -22,7 +22,8 @@ impl Compiler {
                 .within_margin(&self.calculate_value(b)),
             Condition::Any(conds) => conds.iter().any(check_condition),
             Condition::All(conds) => conds.iter().all(check_condition),
-            Condition::Constant(value) => *value
+            #[cfg(feature = "debug")]
+            Condition::Debug(value) => *value,
         }
     }
 
