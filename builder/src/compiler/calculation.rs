@@ -27,6 +27,8 @@ impl Compiler {
             Condition::All(conds) => conds.iter().all(check_condition),
             Condition::NotAny(conds) => !conds.iter().any(check_condition),
             Condition::NotAll(conds) => !conds.iter().all(check_condition),
+            Condition::True => true,
+            Condition::False => false,
         }
     }
 
@@ -205,5 +207,167 @@ impl Compiler {
         });
 
         Some(final_values.sum())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod calculate {
+        use crate::bonus::{Bonus, BonusSource, BonusType};
+
+        use super::*;
+
+        fn test_bonuses<const L: usize>(bonuses: [Bonus; L], expected: f32) {
+            let mut compiler = Compiler::default();
+            compiler.add_bonuses(bonuses);
+            let value = compiler.get_attribute(&Attribute::Debug(0));
+            assert!(
+                value.within_margin(&expected),
+                "Expected {}, found {}",
+                expected,
+                value
+            );
+        }
+
+        #[test]
+        fn value() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::Value(10f32),
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                10f32,
+            );
+        }
+
+        #[test]
+        fn attribute() {
+            test_bonuses(
+                [
+                    Bonus::new(
+                        Attribute::Debug(0),
+                        BonusType::Stacking,
+                        Value::Attribute(Attribute::Debug(1)),
+                        BonusSource::Debug(0),
+                        None,
+                    ),
+                    Bonus::new(
+                        Attribute::Debug(0),
+                        BonusType::Stacking,
+                        Value::Value(10f32),
+                        BonusSource::Debug(0),
+                        None,
+                    ),
+                ],
+                10f32,
+            );
+        }
+
+        #[test]
+        fn sum() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::Sum(vec![Value::Value(6f32), Value::Value(5f32)]),
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                11f32,
+            );
+        }
+
+        #[test]
+        fn product() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::Product(vec![Value::Value(6f32), Value::Value(5f32)]),
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                30f32,
+            );
+        }
+
+        #[test]
+        fn min() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::Min(vec![Value::Value(6f32), Value::Value(5f32)]),
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                5f32,
+            );
+        }
+
+        #[test]
+        fn max() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::Max(vec![Value::Value(6f32), Value::Value(5f32)]),
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                6f32,
+            );
+        }
+
+        #[test]
+        fn floor() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::Floor(Box::new(Value::Value(10.5f32))),
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                10f32,
+            );
+        }
+
+        #[test]
+        fn condition() {
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::If {
+                        condition: Box::new(Condition::True),
+                        if_true: Box::new(Value::Value(10f32)),
+                        if_false: Box::new(Value::Value(20f32)),
+                    },
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                10f32,
+            );
+            test_bonuses(
+                [Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    Value::If {
+                        condition: Box::new(Condition::False),
+                        if_true: Box::new(Value::Value(10f32)),
+                        if_false: Box::new(Value::Value(20f32)),
+                    },
+                    BonusSource::Debug(0),
+                    None,
+                )],
+                20f32,
+            );
+        }
     }
 }
