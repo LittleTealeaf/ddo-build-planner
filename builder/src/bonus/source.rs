@@ -15,7 +15,7 @@ pub enum BonusSource {
     /// Dictates any custom bonuses for general uses. When possible, do not use this source
     Custom(u8),
     /// Used for debugging purposes.
-    #[cfg(test)]
+    #[cfg(feature = "debug")]
     Debug(u8),
     /// Only used for initial values
     Base,
@@ -26,7 +26,7 @@ impl Display for BonusSource {
         match self {
             Self::Attribute(attr) => write!(f, "Attribute: {attr}"),
             Self::Custom(num) => write!(f, "Custom: {num}"),
-            #[cfg(test)]
+            #[cfg(feature = "debug")]
             Self::Debug(num) => write!(f, "Debug: {num}"),
             Self::Base => write!(f, "Base"),
         }

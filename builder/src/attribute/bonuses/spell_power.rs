@@ -136,7 +136,7 @@ impl TrackAttribute for SpellPower {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use crate::test_default_bonuses;
 
     use super::*;

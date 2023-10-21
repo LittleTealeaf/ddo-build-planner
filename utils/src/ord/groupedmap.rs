@@ -32,7 +32,7 @@ where
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
 
     #[derive(Clone, Copy, Ord, PartialOrd, PartialEq, Eq)]
