@@ -209,13 +209,6 @@ mod condition {
     }
 
     #[test]
-    fn not_equal_to() {
-        test_condition(Condition::NotEqualTo(10f32.into(), 5f32.into()), true);
-        test_condition(Condition::NotEqualTo(5f32.into(), 10f32.into()), true);
-        test_condition(Condition::NotEqualTo(10f32.into(), 10f32.into()), false);
-    }
-
-    #[test]
     fn any() {
         test_condition(
             Condition::Any(vec![Condition::True, Condition::False, Condition::False]),

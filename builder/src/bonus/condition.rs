@@ -17,8 +17,6 @@ pub enum Condition {
     LessThan(Value, Value),
     /// Requires that one value is equal to another value
     EqualTo(Value, Value),
-    /// Requires that one value is not equal to another value
-    NotEqualTo(Value, Value),
     /// Requires that some of the conditions are true
     Any(Vec<Condition>),
     /// Requires that all of the conditions are true
@@ -60,16 +58,18 @@ impl Condition {
     pub fn not_all(conditions: Vec<Condition>) -> Self {
         Self::Not(Box::new(Self::All(conditions)))
     }
+
+    /// Requires that one value is not equal to the other value
+    pub fn not_eq(a: Value, b: Value) -> Self {
+        Self::Not(Box::new(Self::EqualTo(a, b)))
+    }
 }
 
 impl AttributeDependencies for Condition {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool {
         match self {
             Self::Not(cond) => cond.has_attr_dependency(attribute),
-            Self::GreaterThan(a, b)
-            | Self::LessThan(a, b)
-            | Self::EqualTo(a, b)
-            | Self::NotEqualTo(a, b) => {
+            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
             Self::Any(conds) | Self::All(conds) => {
@@ -82,10 +82,7 @@ impl AttributeDependencies for Condition {
     fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
         match self {
             Self::Not(cond) => cond.include_attr_dependency(set),
-            Self::GreaterThan(a, b)
-            | Self::LessThan(a, b)
-            | Self::EqualTo(a, b)
-            | Self::NotEqualTo(a, b) => {
+            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
                 a.include_attr_dependency(set);
                 b.include_attr_dependency(set);
             }
@@ -102,11 +99,10 @@ impl AttributeDependencies for Condition {
 impl Display for Condition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Not(condition) => write!(f, "Not {}", *condition),
+            Self::Not(condition) => write!(f, "Not ({})", *condition),
             Self::GreaterThan(a, b) => write!(f, "{a} is greater than {b}"),
             Self::LessThan(a, b) => write!(f, "{a} is less than {b}"),
             Self::EqualTo(a, b) => write!(f, "{a} is equal to {b}"),
-            Self::NotEqualTo(a, b) => write!(f, "{a} is not equal to {b}"),
             Self::Any(conditions) => write!(f, "Any of {conditions:?}"),
             Self::All(conditions) => write!(f, "All of {conditions:?}"),
             Self::True => write!(f, "True"),
