@@ -1,10 +1,40 @@
 use builder::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Condition, Value},
+    bonus::{Bonus, BonusSource, BonusType, Condition, Value},
 };
 
 mod has_dependency {
+
     use super::*;
+
+    #[test]
+    fn gets_value_dependency() {
+        let bonus = Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            Value::Attribute(Attribute::Debug(1)),
+            BonusSource::Debug(0),
+            None,
+        );
+
+        assert!(bonus.has_attr_dependency(Attribute::Debug(1)));
+        assert!(!bonus.has_attr_dependency(Attribute::Debug(2)));
+    }
+
+    #[test]
+    fn gets_conditional_dependency() {
+        let bonus = Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            Value::Value(10f32),
+            BonusSource::Debug(0),
+            Some(Condition::has(Attribute::Debug(1))),
+        );
+
+        assert!(bonus.has_attr_dependency(Attribute::Debug(1)));
+        assert!(!bonus.has_attr_dependency(Attribute::Debug(2)));
+    }
+
     mod value {
         use super::*;
 
