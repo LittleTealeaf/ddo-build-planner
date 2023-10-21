@@ -14,7 +14,7 @@ keywords.workspace = true
 enum_ord = ["dep:enum-map"]
 enum_map = ["enum_ord"]
 editor = ["enum_ord"]
-debug = []
+debug = ["utils:debug"]
 
 [dependencies]
 utils = { path = "../utils/" }
@@ -23,7 +23,7 @@ serde = { version = "1.0.189", features = ["derive"] }
 ron = "0.8.1"
 log = "0.4.20"
 im = "15.1.0"
-enum-map = {version = "2.6.3", features = ["serde"], optional = true}
+enum-map = { version = "2.6.3", features = ["serde"], optional = true }
 
 [dev-dependencies]
 builder = { path = ".", features = ["enum_ord", "debug"] }

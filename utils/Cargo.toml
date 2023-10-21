@@ -10,6 +10,8 @@ categories.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 
+[features]
+debug = []
 
 [dependencies]
 im = "15.1.0"
