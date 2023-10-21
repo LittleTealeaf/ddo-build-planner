@@ -257,7 +257,7 @@ mod tests {
                         None,
                     ),
                     Bonus::new(
-                        Attribute::Debug(0),
+                        Attribute::Debug(1),
                         BonusType::Stacking,
                         Value::Value(10f32),
                         BonusSource::Debug(0),
