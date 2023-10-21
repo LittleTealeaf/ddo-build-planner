@@ -21,19 +21,13 @@ pub enum Condition {
     Any(Vec<Self>),
     /// Requires that all of the conditions are true
     All(Vec<Self>),
-    /// Always True
-    True,
-    /// Always False
-    False,
+    /// Insert a constant value
+    Constant(bool),
 }
 
 impl From<bool> for Condition {
     fn from(value: bool) -> Self {
-        if value {
-            Self::True
-        } else {
-            Self::False
-        }
+        Self::Constant(value)
     }
 }
 
@@ -105,8 +99,8 @@ impl Display for Condition {
             Self::EqualTo(a, b) => write!(f, "{a} is equal to {b}"),
             Self::Any(conditions) => write!(f, "Any of {conditions:?}"),
             Self::All(conditions) => write!(f, "All of {conditions:?}"),
-            Self::True => write!(f, "True"),
-            Self::False => write!(f, "False"),
+            Self::Constant(true) => write!(f, "True"),
+            Self::Constant(false) => write!(f, "False"),
         }
     }
 }
