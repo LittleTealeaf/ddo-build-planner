@@ -18,9 +18,9 @@ pub enum Condition {
     /// Requires that one value is equal to another value
     EqualTo(Value, Value),
     /// Requires that some of the conditions are true
-    Any(Vec<Condition>),
+    Any(Vec<Self>),
     /// Requires that all of the conditions are true
-    All(Vec<Condition>),
+    All(Vec<Self>),
     /// Always True
     True,
     /// Always False
@@ -50,12 +50,12 @@ impl Condition {
     }
 
     /// Requires that none of the conditions are true
-    pub fn none(conditions: Vec<Condition>) -> Self {
+    pub fn none(conditions: Vec<Self>) -> Self {
         Self::Not(Box::new(Self::Any(conditions)))
     }
 
     /// Requires that at least one of the conditions is false
-    pub fn not_all(conditions: Vec<Condition>) -> Self {
+    pub fn not_all(conditions: Vec<Self>) -> Self {
         Self::Not(Box::new(Self::All(conditions)))
     }
 
