@@ -14,7 +14,7 @@ impl Compiler {
         let check_condition = |cond: &Condition| self.check_condition(cond);
 
         match condition {
-            Condition::Not(cond) => self.check_condition(cond),
+            Condition::Not(cond) => !self.check_condition(cond),
             Condition::GreaterThan(a, b) => self.calculate_value(a) > self.calculate_value(b),
             Condition::LessThan(a, b) => self.calculate_value(a) < self.calculate_value(b),
             Condition::EqualTo(a, b) => self
@@ -368,6 +368,135 @@ mod tests {
                 )],
                 20f32,
             );
+        }
+    }
+
+    mod condition {
+        use crate::bonus::{Bonus, BonusSource, BonusType};
+
+        use super::*;
+
+        fn test_condition(condition: Condition, expected: bool) {
+            let mut compiler = Compiler::default();
+            compiler.add_bonus(Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::Value(10f32),
+                BonusSource::Base,
+                Some(condition),
+            ));
+            let value = compiler.get_attribute(&Attribute::Debug(0));
+            let result = value.within_margin(&10f32);
+
+            assert_eq!(result, expected, "Found {}, expected {}", result, expected);
+        }
+
+        #[test]
+        fn not() {
+            test_condition(Condition::Not(Box::new(Condition::True)), false);
+            test_condition(Condition::Not(Box::new(Condition::False)), true);
+        }
+
+        #[test]
+        fn greater_than() {
+            test_condition(Condition::GreaterThan(10f32.into(), 5f32.into()), true);
+            test_condition(Condition::GreaterThan(5f32.into(), 10f32.into()), false);
+            test_condition(Condition::GreaterThan(10f32.into(), 10f32.into()), false);
+        }
+
+        #[test]
+        fn less_than() {
+            test_condition(Condition::LessThan(10f32.into(), 5f32.into()), false);
+            test_condition(Condition::LessThan(5f32.into(), 10f32.into()), true);
+            test_condition(Condition::LessThan(10f32.into(), 10f32.into()), false);
+        }
+
+        #[test]
+        fn equal_to() {
+            test_condition(Condition::EqualTo(10f32.into(), 5f32.into()), false);
+            test_condition(Condition::EqualTo(5f32.into(), 10f32.into()), false);
+            test_condition(Condition::EqualTo(10f32.into(), 10f32.into()), true);
+        }
+
+        #[test]
+        fn not_equal_to() {
+            test_condition(Condition::NotEqualTo(10f32.into(), 5f32.into()), true);
+            test_condition(Condition::NotEqualTo(5f32.into(), 10f32.into()), true);
+            test_condition(Condition::NotEqualTo(10f32.into(), 10f32.into()), false);
+        }
+
+        #[test]
+        fn any() {
+            test_condition(
+                Condition::Any(vec![Condition::True, Condition::False, Condition::False]),
+                true,
+            );
+            test_condition(
+                Condition::Any(vec![Condition::False, Condition::False, Condition::False]),
+                false,
+            );
+            test_condition(
+                Condition::Any(vec![Condition::True, Condition::True, Condition::True]),
+                true,
+            );
+        }
+
+        #[test]
+        fn all() {
+            test_condition(
+                Condition::All(vec![Condition::True, Condition::False, Condition::False]),
+                false,
+            );
+            test_condition(
+                Condition::All(vec![Condition::False, Condition::False, Condition::False]),
+                false,
+            );
+            test_condition(
+                Condition::All(vec![Condition::True, Condition::True, Condition::True]),
+                true,
+            );
+        }
+
+        #[test]
+        fn not_any() {
+            test_condition(
+                Condition::NotAny(vec![Condition::True, Condition::False, Condition::False]),
+                false,
+            );
+            test_condition(
+                Condition::NotAny(vec![Condition::False, Condition::False, Condition::False]),
+                true,
+            );
+            test_condition(
+                Condition::NotAny(vec![Condition::True, Condition::True, Condition::True]),
+                false,
+            );
+        }
+
+        #[test]
+        fn not_all() {
+            test_condition(
+                Condition::NotAll(vec![Condition::True, Condition::False, Condition::False]),
+                true,
+            );
+            test_condition(
+                Condition::NotAll(vec![Condition::False, Condition::False, Condition::False]),
+                true,
+            );
+            test_condition(
+                Condition::NotAll(vec![Condition::True, Condition::True, Condition::True]),
+                false,
+            );
+        }
+
+        #[test]
+        fn const_true() {
+            test_condition(Condition::True, true);
+        }
+
+        #[test]
+        fn const_false() {
+            test_condition(Condition::False, false);
         }
     }
 }
