@@ -8,6 +8,7 @@ mod has_dependency {
     use super::*;
 
     #[test]
+    /// Tests that querying a bonus dependency will include the value dependencies
     fn gets_value_dependency() {
         let bonus = Bonus::new(
             Attribute::Debug(0),
@@ -22,6 +23,7 @@ mod has_dependency {
     }
 
     #[test]
+    /// Tests that querying a bonus dependency will include the conditional dependencies
     fn gets_conditional_dependency() {
         let bonus = Bonus::new(
             Attribute::Debug(0),
