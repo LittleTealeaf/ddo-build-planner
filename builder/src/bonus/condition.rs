@@ -33,6 +33,16 @@ pub enum Condition {
     False,
 }
 
+impl From<bool> for Condition {
+    fn from(value: bool) -> Self {
+        if value {
+            Self::True
+        } else {
+            Self::False
+        }
+    }
+}
+
 /// Generator functions to abstract away stndard conditions
 impl Condition {
     /// Requires that the character has some attribute
