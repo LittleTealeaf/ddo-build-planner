@@ -132,7 +132,7 @@ mod calculate {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 Value::If {
-                    condition: Box::new(Condition::True),
+                    condition: Box::new(Condition::Constant(true)),
                     if_true: Box::new(Value::Value(10f32)),
                     if_false: Box::new(Value::Value(20f32)),
                 },
@@ -146,7 +146,7 @@ mod calculate {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 Value::If {
-                    condition: Box::new(Condition::False),
+                    condition: Box::new(Condition::Constant(false)),
                     if_true: Box::new(Value::Value(10f32)),
                     if_false: Box::new(Value::Value(20f32)),
                 },
@@ -183,8 +183,8 @@ mod condition {
 
     #[test]
     fn not() {
-        test_condition(Condition::Not(Box::new(Condition::True)), false);
-        test_condition(Condition::Not(Box::new(Condition::False)), true);
+        test_condition(Condition::Not(Box::new(Condition::Constant(true))), false);
+        test_condition(Condition::Not(Box::new(Condition::Constant(false))), true);
     }
 
     #[test]
@@ -209,24 +209,29 @@ mod condition {
     }
 
     #[test]
-    fn not_equal_to() {
-        test_condition(Condition::NotEqualTo(10f32.into(), 5f32.into()), true);
-        test_condition(Condition::NotEqualTo(5f32.into(), 10f32.into()), true);
-        test_condition(Condition::NotEqualTo(10f32.into(), 10f32.into()), false);
-    }
-
-    #[test]
     fn any() {
         test_condition(
-            Condition::Any(vec![Condition::True, Condition::False, Condition::False]),
+            Condition::Any(vec![
+                Condition::Constant(true),
+                Condition::Constant(false),
+                Condition::Constant(false),
+            ]),
             true,
         );
         test_condition(
-            Condition::Any(vec![Condition::False, Condition::False, Condition::False]),
+            Condition::Any(vec![
+                Condition::Constant(false),
+                Condition::Constant(false),
+                Condition::Constant(false),
+            ]),
             false,
         );
         test_condition(
-            Condition::Any(vec![Condition::True, Condition::True, Condition::True]),
+            Condition::Any(vec![
+                Condition::Constant(true),
+                Condition::Constant(true),
+                Condition::Constant(true),
+            ]),
             true,
         );
     }
@@ -234,58 +239,38 @@ mod condition {
     #[test]
     fn all() {
         test_condition(
-            Condition::All(vec![Condition::True, Condition::False, Condition::False]),
+            Condition::All(vec![
+                Condition::Constant(true),
+                Condition::Constant(false),
+                Condition::Constant(false),
+            ]),
             false,
         );
         test_condition(
-            Condition::All(vec![Condition::False, Condition::False, Condition::False]),
+            Condition::All(vec![
+                Condition::Constant(false),
+                Condition::Constant(false),
+                Condition::Constant(false),
+            ]),
             false,
         );
         test_condition(
-            Condition::All(vec![Condition::True, Condition::True, Condition::True]),
+            Condition::All(vec![
+                Condition::Constant(true),
+                Condition::Constant(true),
+                Condition::Constant(true),
+            ]),
             true,
-        );
-    }
-
-    #[test]
-    fn not_any() {
-        test_condition(
-            Condition::NotAny(vec![Condition::True, Condition::False, Condition::False]),
-            false,
-        );
-        test_condition(
-            Condition::NotAny(vec![Condition::False, Condition::False, Condition::False]),
-            true,
-        );
-        test_condition(
-            Condition::NotAny(vec![Condition::True, Condition::True, Condition::True]),
-            false,
-        );
-    }
-
-    #[test]
-    fn not_all() {
-        test_condition(
-            Condition::NotAll(vec![Condition::True, Condition::False, Condition::False]),
-            true,
-        );
-        test_condition(
-            Condition::NotAll(vec![Condition::False, Condition::False, Condition::False]),
-            true,
-        );
-        test_condition(
-            Condition::NotAll(vec![Condition::True, Condition::True, Condition::True]),
-            false,
         );
     }
 
     #[test]
     fn const_true() {
-        test_condition(Condition::True, true);
+        test_condition(Condition::Constant(true), true);
     }
 
     #[test]
     fn const_false() {
-        test_condition(Condition::False, false);
+        test_condition(Condition::Constant(false), false);
     }
 }

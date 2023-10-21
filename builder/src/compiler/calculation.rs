@@ -20,15 +20,9 @@ impl Compiler {
             Condition::EqualTo(a, b) => self
                 .calculate_value(a)
                 .within_margin(&self.calculate_value(b)),
-            Condition::NotEqualTo(a, b) => !self
-                .calculate_value(a)
-                .within_margin(&self.calculate_value(b)),
             Condition::Any(conds) => conds.iter().any(check_condition),
             Condition::All(conds) => conds.iter().all(check_condition),
-            Condition::NotAny(conds) => !conds.iter().any(check_condition),
-            Condition::NotAll(conds) => !conds.iter().all(check_condition),
-            Condition::True => true,
-            Condition::False => false,
+            Condition::Constant(value) => *value,
         }
     }
 
