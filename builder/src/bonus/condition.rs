@@ -69,7 +69,7 @@ impl AttributeDependencies for Condition {
             Self::Any(conds) | Self::All(conds) => {
                 conds.iter().any(|cond| cond.has_attr_dependency(attribute))
             }
-            _ => false,
+            Self::Constant(_) => false,
         }
     }
 
@@ -85,7 +85,7 @@ impl AttributeDependencies for Condition {
                     cond.include_attr_dependency(set);
                 }
             }
-            _ => {}
+            Self::Constant(_) => {}
         }
     }
 }
