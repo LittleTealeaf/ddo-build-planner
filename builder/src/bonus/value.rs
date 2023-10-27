@@ -43,7 +43,8 @@ pub enum Value {
 
 impl Value {
     /// Calculates the mean or average of the given values
-    pub fn mean(values: Vec<Value>) -> Self {
+    #[allow(clippy::cast_precision_loss)]
+    pub fn mean(values: Vec<Self>) -> Self {
         Self::Product(vec![
             Self::Value((values.len() as f32).recip()),
             Self::Sum(values),
@@ -51,7 +52,7 @@ impl Value {
     }
 
     /// Makes the given value negative
-    pub fn negative(value: Value) -> Self {
+    pub fn negative(value: Self) -> Self {
         Self::Product(vec![value, Self::Value(-1f32)])
     }
 }
