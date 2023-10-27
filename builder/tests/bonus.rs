@@ -109,6 +109,14 @@ mod has_dependency {
             assert!(value.has_attr_dependency(Attribute::Debug(2)));
             assert!(!value.has_attr_dependency(Attribute::Debug(3)));
         }
+
+        #[test]
+        fn reciprocal() {
+            let value = Value::Reciprocal(Box::new(Value::Attribute(Attribute::Debug(0))));
+
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+        }
     }
 }
 
@@ -201,6 +209,16 @@ mod include_dependencies {
             assert!(deps.contains(&Attribute::Debug(1)));
             assert!(deps.contains(&Attribute::Debug(2)));
             assert!(!deps.contains(&Attribute::Debug(3)));
+        }
+
+        #[test]
+        fn reciprocal() {
+            let value = Value::Reciprocal(Box::new(Value::Attribute(Attribute::Debug(0))));
+
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(!deps.contains(&Attribute::Debug(1)));
         }
     }
 }

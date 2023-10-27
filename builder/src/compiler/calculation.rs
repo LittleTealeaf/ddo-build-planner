@@ -63,6 +63,7 @@ impl Compiler {
                 })
             }
             Value::Floor(val) => self.calculate_value(val).floor(),
+            Value::Reciprocal(val) => self.calculate_value(val).recip(),
             Value::If {
                 condition,
                 if_true,
