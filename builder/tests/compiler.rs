@@ -170,6 +170,40 @@ mod calculate {
             10f32.recip(),
         );
     }
+
+    #[test]
+    fn negative() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::negative(Value::Value(1f32)),
+                BonusSource::Debug(0),
+                None,
+            )],
+            -1f32,
+        );
+    }
+
+    #[test]
+    fn average() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::mean(vec![
+                    Value::Value(1f32),
+                    Value::Value(2f32),
+                    Value::Value(3f32),
+                    Value::Value(4f32),
+                    Value::Value(5f32),
+                ]),
+                BonusSource::Debug(0),
+                None,
+            )],
+            3f32,
+        );
+    }
 }
 
 mod condition {
