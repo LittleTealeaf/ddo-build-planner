@@ -156,6 +156,20 @@ mod calculate {
             20f32,
         );
     }
+
+    #[test]
+    fn reciprocal() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::Reciprocal(Box::new(Value::Value(10f32))),
+                BonusSource::Debug(0),
+                None,
+            )],
+            10f32.recip(),
+        );
+    }
 }
 
 mod condition {
