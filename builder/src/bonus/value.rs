@@ -47,6 +47,7 @@ impl Value {
     pub fn mean(values: Vec<Self>) -> Self {
         Self::Product(vec![
             Self::Value((values.len() as f32).recip()),
+
             Self::Sum(values),
         ])
     }
