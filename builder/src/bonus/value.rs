@@ -25,6 +25,10 @@ pub enum Value {
     Max(Vec<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
+    /// Calculates the reciprocal of the number.
+    ///
+    /// For example, 5 would become 1/5
+    Reciprocal(Box<Value>),
 
     /// Returns `if_true` if `condition` is true, otherwise returns `if_false`
     If {
@@ -35,6 +39,21 @@ pub enum Value {
         /// The value to return if the condition returns false
         if_false: Box<Value>,
     },
+}
+
+impl Value {
+    /// Calculates the mean or average of the given values
+    pub fn mean(values: Vec<Value>) -> Self {
+        Self::Product(vec![
+            Self::Value((values.len() as f32).recip()),
+            Self::Sum(values),
+        ])
+    }
+
+    /// Makes the given value negative
+    pub fn negative(value: Value) -> Self {
+        Self::Product(vec![value, Self::Value(-1f32)])
+    }
 }
 
 impl Display for Value {
@@ -103,6 +122,7 @@ impl Display for Value {
                 write!(f, ")")
             }
             Self::Floor(val) => write!(f, "Floor({val})"),
+            Self::Reciprocal(val) => write!(f, "(1 / {val})"),
             Self::If {
                 condition,
                 if_true,
@@ -122,7 +142,7 @@ impl AttributeDependencies for Value {
             Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
-            Self::Floor(val) => val.has_attr_dependency(attribute),
+            Self::Floor(val) | Self::Reciprocal(val) => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
                 if_true,
@@ -146,7 +166,7 @@ impl AttributeDependencies for Value {
                     val.include_attr_dependency(set);
                 }
             }
-            Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Reciprocal(val) | Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,
