@@ -109,7 +109,7 @@ impl GetBonuses for SpellcastingFeat {
 impl GetFeatRequirement for SpellcastingFeat {
     fn get_feat_requirements(&self) -> Option<FeatRequirement> {
         match self {
-            Self::AugmentSummoning => None,
+            Self::AugmentSummoning | Self::MagicalTraining => None,
             Self::SpellFocus(focus) => focus.get_feat_requirements(),
             Self::MentalToughness | Self::SpellPenetration | Self::CombatCasting => {
                 Some(FeatRequirement::Any(vec![
@@ -135,7 +135,6 @@ impl GetFeatRequirement for SpellcastingFeat {
             Self::GreaterSpellPenetration => Some(FeatRequirement::Feat(Feat::Spellcasting(
                 Self::SpellPenetration,
             ))),
-            Self::MagicalTraining => None,
             Self::ImprovedMentalToughness => Some(FeatRequirement::Any(vec![
                 FeatRequirement::ClassLevel(PlayerClass::Cleric, 5),
                 FeatRequirement::ClassLevel(PlayerClass::Bard, 7),
