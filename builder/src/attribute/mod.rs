@@ -96,6 +96,8 @@ pub enum Attribute {
     Health(Health),
     /// Spell Points
     SpellPoints(SpellPoints),
+    /// Total Character Level
+    TotalCharacterLevel
 }
 
 impl Display for Attribute {
@@ -127,6 +129,7 @@ impl Display for Attribute {
             Self::SpellPenetration => write!(f, "Spell Penetration"),
             Self::Health(health) => health.fmt(f),
             Self::SpellPoints(sp) => sp.fmt(f),
+            Self::TotalCharacterLevel => write!(f, "Total Character Level")
         }
     }
 }

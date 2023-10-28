@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{PlayerClass, Skill};
+use crate::types::{PlayerClass, Skill, Ability};
 
 use super::Feat;
 
@@ -15,6 +15,8 @@ pub enum FeatRequirement {
     SkillPoints(Skill, u8),
     /// Requires the player to have obtained a given class level
     BaseAttackBonus(u8),
+    /// Ability Score
+    AbilityScore(Ability, u8),
     /// Requires any of the given requirements
     Any(Vec<FeatRequirement>),
     /// Requires all of the given requirements
