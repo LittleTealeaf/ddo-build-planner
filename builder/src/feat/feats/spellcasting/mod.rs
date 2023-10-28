@@ -38,7 +38,7 @@ pub enum SpellcastingFeat {
 
 impl GetBonuses for SpellcastingFeat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        match self {
+        (value > 0f32).then(|| match self {
             Self::AugmentSummoning => Some(vec![Bonus::new(
                 Attribute::SummonedAttribute(crate::types::SummonedAttribute::AbilityScore(
                     Ability::All,
@@ -102,7 +102,7 @@ impl GetBonuses for SpellcastingFeat {
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),
-        }
+        })?
     }
 }
 
