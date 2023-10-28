@@ -32,11 +32,22 @@ pub enum SpellcastingFeat {
     CombatCasting,
     /// Mobile Spellcasting
     MobileSpellcasting,
+    /// Augment Summoning
+    AugmentSummoning,
 }
 
 impl GetBonuses for SpellcastingFeat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
+            Self::AugmentSummoning => Some(vec![Bonus::new(
+                Attribute::SummonedAttribute(crate::types::SummonedAttribute::AbilityScore(
+                    Ability::All,
+                )),
+                BonusType::Stacking,
+                4f32.into(),
+                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                None,
+            )]),
             Self::MobileSpellcasting => None,
             Self::SpellFocus(focus) => focus.get_bonuses(value),
             Self::CombatCasting => Some(vec![Bonus::new(
@@ -98,6 +109,7 @@ impl GetBonuses for SpellcastingFeat {
 impl GetFeatRequirement for SpellcastingFeat {
     fn get_feat_requirements(&self) -> Option<FeatRequirement> {
         match self {
+            Self::AugmentSummoning => None,
             Self::SpellFocus(focus) => focus.get_feat_requirements(),
             Self::MentalToughness | Self::SpellPenetration | Self::CombatCasting => {
                 Some(FeatRequirement::Any(vec![
@@ -173,6 +185,7 @@ impl GetFeatRequirement for SpellcastingFeat {
 impl Display for SpellcastingFeat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::AugmentSummoning => write!(f, "Augment Summoning"),
             Self::SpellFocus(feat) => feat.fmt(f),
             Self::MentalToughness => write!(f, "Mental Toughness"),
             Self::ImprovedMentalToughness => write!(f, "Improved Mental Toughness"),

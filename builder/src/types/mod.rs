@@ -20,5 +20,6 @@ public_modules!(
     player_class,
     player_race,
     health,
-    spell_points
+    spell_points,
+    summoned_attribute
 );
