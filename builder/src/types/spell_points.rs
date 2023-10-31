@@ -9,7 +9,6 @@ use crate::{
 
 use super::PlayerClass;
 
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
 /// Different types of bonsues to spell points
 pub enum SpellPoints {

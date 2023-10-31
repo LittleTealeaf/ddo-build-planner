@@ -11,7 +11,6 @@ use crate::{
 
 use super::SpellcastingFeat;
 
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 /// Feats that grant bonuses to the DCs of spells
 pub enum SpellFocusFeat {

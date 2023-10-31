@@ -3,7 +3,6 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 /// The hand used for a Weapon Attribute
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponHand {
     /// Both Hands

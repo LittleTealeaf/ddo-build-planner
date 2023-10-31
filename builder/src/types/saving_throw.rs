@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 /// [`Reflex`]: SavingThrow::Reflex
 /// [`Will`]: SavingThrow::Will
 /// [`Traps`]: SavingThrow::Traps
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SavingThrow {
     /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.

@@ -3,7 +3,6 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 /// The different types of armor in the game.
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ArmorType {
     /// Cloth Armor

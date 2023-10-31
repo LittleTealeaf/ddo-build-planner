@@ -11,9 +11,6 @@ categories.workspace = true
 keywords.workspace = true
 
 [features]
-enum_ord = ["dep:enum-map"]
-enum_map = ["enum_ord"]
-editor = ["enum_ord"]
 debug = ["utils/debug"]
 
 [dependencies]
@@ -23,8 +20,7 @@ serde = { version = "1.0.190", features = ["derive"] }
 ron = "0.8.1"
 log = "0.4.20"
 im = "15.1.0"
-enum-map = { version = "2.7.0", features = ["serde"], optional = true }
 
 [dev-dependencies]
-builder = { path = ".", features = ["enum_ord", "debug"] }
+builder = { path = ".", features = ["debug"] }
 serde_test = "1.0.176"

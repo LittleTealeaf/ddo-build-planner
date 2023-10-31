@@ -15,7 +15,6 @@ use crate::{
 };
 
 /// Feats granted from different races.
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum RacialFeat {
     /// Small Size Bonus
@@ -323,34 +322,5 @@ impl GetBonuses for RacialFeat {
                 ),
             ],
         })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::bonus::BonusSource;
-
-    use super::*;
-
-    use enum_map::Enum;
-
-    #[test]
-    fn one_value_returns_bonuses() {
-        for feat in (0..RacialFeat::LENGTH).map(RacialFeat::from_usize) {
-            assert!(feat.get_bonuses(1f32).is_some());
-        }
-    }
-
-    #[test]
-    fn source_matches_up() {
-        for feat in (0..RacialFeat::LENGTH).map(RacialFeat::from_usize) {
-            if let Some(bonuses) = feat.get_bonuses(1f32) {
-                for bonus in bonuses {
-                    let source = bonus.get_source();
-                    let expected = BonusSource::Attribute(Attribute::Feat(Feat::RacialFeat(feat)));
-                    assert_eq!(source, expected, "Expected [{expected}], found [{source}]");
-                }
-            }
-        }
     }
 }

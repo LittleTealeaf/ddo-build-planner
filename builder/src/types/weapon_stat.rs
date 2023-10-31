@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use super::DamageType;
 
 /// Different stats that can be applied to a particular weapon
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponStat {
     /// Bonus to Attack

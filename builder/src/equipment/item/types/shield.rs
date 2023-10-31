@@ -3,7 +3,6 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 /// The types of shields.
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ShieldType {
     /// Buckler shields

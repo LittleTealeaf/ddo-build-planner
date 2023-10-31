@@ -9,7 +9,6 @@ use std::fmt::Display;
 use crate::{attribute::GetBonuses, race::RacialFeat};
 
 /// All possible feats that the player can have.
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Feat {
     /// Feats pertaining to a certain race.
@@ -64,19 +63,5 @@ impl From<RacialFeat> for Feat {
 impl From<Proficiency> for Feat {
     fn from(value: Proficiency) -> Self {
         Self::Proficiency(value)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    use enum_map::Enum;
-
-    #[test]
-    fn zero_bonus_returns_none() {
-        for feat in (0..Feat::LENGTH).map(Feat::from_usize) {
-            assert!(feat.get_bonuses(0f32).is_none());
-        }
     }
 }
