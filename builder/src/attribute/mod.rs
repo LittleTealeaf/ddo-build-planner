@@ -29,7 +29,6 @@ use self::{
 };
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
@@ -217,100 +216,10 @@ impl Attribute {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_default_bonuses;
-
     use super::*;
-
-    test_default_bonuses!(Attribute);
 
     #[test]
     fn dummy_is_not_tracked() {
         assert!(!Attribute::Dummy.is_tracked());
-    }
-
-    mod all_attributes {
-        use std::collections::HashSet;
-
-        use crate::bonus::{BonusSource, BonusType};
-
-        use enum_map::Enum;
-
-        use super::*;
-
-        fn get_all_attributes() -> impl Iterator<Item = Attribute> {
-            let max = Attribute::LENGTH;
-
-            (0..max).map(Attribute::from_usize)
-        }
-
-        #[test]
-        fn returns_is_tracked() {
-            get_all_attributes().for_each(|attr| {
-                attr.is_tracked();
-            });
-        }
-
-        #[test]
-        fn has_unique_display() {
-            let mut unique_names = HashSet::new();
-
-            get_all_attributes().for_each(|attr| {
-                let name = attr.to_string();
-                assert!(
-                    !unique_names.contains(&name),
-                    "Duplicate Name Found: {attr}"
-                );
-                unique_names.insert(name);
-            });
-        }
-
-        #[test]
-        fn do_not_clone_to_themselves() {
-            get_all_attributes()
-                .filter_map(|attr| {
-                    Some((
-                        attr,
-                        attr.clone_bonus(&Bonus::new(
-                            attr,
-                            BonusType::Stacking,
-                            10f32.into(),
-                            BonusSource::Debug(0),
-                            None,
-                        ))?,
-                    ))
-                })
-                .for_each(|(attr, bonuses)| {
-                    for bonus in bonuses {
-                        assert_ne!(bonus.get_attribute(), attr);
-                    }
-                });
-        }
-
-        #[test]
-        fn do_not_clone_into_cloneable_bonuses() {
-            get_all_attributes()
-                .filter_map(|attr| {
-                    Some((
-                        attr,
-                        attr.clone_bonus(&Bonus::new(
-                            attr,
-                            BonusType::Stacking,
-                            10f32.into(),
-                            BonusSource::Debug(0),
-                            None,
-                        ))?,
-                    ))
-                })
-                .for_each(|(attr, bonuses)| {
-                    for bonus in bonuses {
-                        assert!(
-                            bonus.get_attribute().clone_bonus(&bonus).is_none(),
-                            "{} bonus cloned from {} clones into other bonuses",
-                            bonus.get_attribute(),
-                            attr
-                        );
-                    }
-                });
-        }
     }
 }

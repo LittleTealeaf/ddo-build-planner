@@ -11,7 +11,8 @@ keywords.workspace = true
 license-file.workspace = true
 
 [dependencies]
-builder = { path = "../builder/", features = ["enum_map"]}
+builder = { path = "../builder/" }
 roc = "0.0.0"
 serde = { version = "1.0.190" }
 iced = "0.10.0"
+

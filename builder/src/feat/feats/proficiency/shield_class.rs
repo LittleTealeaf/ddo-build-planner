@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use crate::equipment::item::types::ShieldType;
 
 /// Shield Proficiencies
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ShieldProficiency {
     /// Orbs

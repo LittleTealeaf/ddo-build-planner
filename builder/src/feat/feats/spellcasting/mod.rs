@@ -12,7 +12,6 @@ use crate::{
 
 public_modules!(spell_focus);
 
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
 /// Feats thga fall under the "Spellcasting" category
 pub enum SpellcastingFeat {

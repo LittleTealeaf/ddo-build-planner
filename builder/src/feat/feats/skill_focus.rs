@@ -8,7 +8,6 @@ use crate::{
     types::{SavingThrow, Skill}, feat::{Feat, GetFeatRequirement, FeatRequirement},
 };
 
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]
 /// Feats that show up under the "Skill Focus" Tab
 pub enum SkillFocus {

@@ -7,7 +7,6 @@ use crate::{
     bonus::{Bonus, BonusSource, BonusType, Value},
 };
 
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
 /// Indicates bonuses to hit points, or health
 pub enum Health {

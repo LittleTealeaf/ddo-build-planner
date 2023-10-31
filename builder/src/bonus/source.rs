@@ -7,7 +7,6 @@ use crate::attribute::Attribute;
 /// Dictates the source that a bonus comes from.
 ///
 /// Each bonus must have a source that dictates where that bonus came from. For example, if an attribute returns any new bonuses, they must all have a source of that attribute.
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum BonusSource {
     /// Indicates that the bonus comes from an attribute.

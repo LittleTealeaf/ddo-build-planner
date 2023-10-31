@@ -4,7 +4,6 @@ use serde::{Serialize, Deserialize};
 
 
 /// Represents different attributes that relate to Armor Class
-#[cfg_attr(feature = "enum_ord", derive(enum_map::Enum))]
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ArmorClass {
     /// Bonuses to armor class from armor
