@@ -17,7 +17,7 @@ use crate::{
     feat::Feat,
     types::{
         Ability, ArmorClass, DamageType, Health, PlayerClass, SavingThrow, Sheltering, Skill,
-        SpellPoints, SpellPower, SpellSelector,
+        SpellPoints, SpellPower, SpellSelector, SummonedAttribute,
     },
 };
 use std::fmt::Display;
@@ -96,6 +96,10 @@ pub enum Attribute {
     Health(Health),
     /// Spell Points
     SpellPoints(SpellPoints),
+    /// Total Character Level
+    TotalCharacterLevel,
+    /// Summoned Creature Bonuses
+    SummonedAttribute(SummonedAttribute),
 }
 
 impl Display for Attribute {
@@ -127,6 +131,8 @@ impl Display for Attribute {
             Self::SpellPenetration => write!(f, "Spell Penetration"),
             Self::Health(health) => health.fmt(f),
             Self::SpellPoints(sp) => sp.fmt(f),
+            Self::TotalCharacterLevel => write!(f, "Total Character Level"),
+            Self::SummonedAttribute(attribute) => write!(f, "Summoned Creatures: {attribute}"),
         }
     }
 }
@@ -153,6 +159,7 @@ impl Attribute {
             Self::ClassLevel(cl) => cl.get_bonuses(value),
             Self::Flag(flag) => flag.get_bonuses(value),
             Self::Feat(feat) => feat.get_bonuses(value),
+            Self::SummonedAttribute(attribute) => attribute.get_bonuses(value),
             _ => None,
         }
     }
@@ -169,6 +176,7 @@ impl CloneBonus for Attribute {
             | Self::SpellCriticalDamage(sp) => sp.clone_bonus(bonus),
             Self::SavingThrow(st) => st.clone_bonus(bonus),
             Self::Weapon(stat) => stat.clone_bonus(bonus),
+            Self::SummonedAttribute(attribute) => attribute.clone_bonus(bonus),
             _ => None,
         }
     }
@@ -186,6 +194,7 @@ impl TrackAttribute for Attribute {
             Self::SpellPower(sp)
             | Self::SpellCriticalChance(sp)
             | Self::SpellCriticalDamage(sp) => sp.is_tracked(),
+            Self::SummonedAttribute(attribute) => attribute.is_tracked(),
             _ => true,
         }
     }
