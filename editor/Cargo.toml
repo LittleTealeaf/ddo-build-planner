@@ -13,6 +13,6 @@ license-file.workspace = true
 [dependencies]
 builder = { path = "../builder/" }
 roc = "0.0.0"
-serde = { version = "1.0.190" }
+serde = { version = "1.0.191" }
 iced = "0.10.0"
 
