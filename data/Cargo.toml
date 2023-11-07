@@ -15,11 +15,11 @@ example = []
 
 [dependencies]
 builder = { path = "../builder/"}
-serde = { version = "1.0.190", features = ["derive"] }
+serde = { version = "1.0.191", features = ["derive"] }
 ron = "0.8.1"
 
 [build-dependencies]
-serde = { version = "1.0.190" }
+serde = { version = "1.0.191" }
 ron = "0.8.1"
 builder = { path = "../builder/" }
 
