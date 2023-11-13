@@ -85,10 +85,10 @@ impl Skill {
     ];
 
     /// Returns the ability associated with this particular skill
-    pub fn get_ability(&self) -> Option<Ability> {
+    pub const fn get_ability(&self) -> Option<Ability> {
         match self {
-            Self::Jump | Skill::Swim => Some(Ability::Strength),
-            Skill::Tumble | Skill::Hide | Self::Balance | Self::MoveSilently | Self::OpenLock => {
+            Self::Jump | Self::Swim => Some(Ability::Strength),
+            Self::Tumble | Self::Hide | Self::Balance | Self::MoveSilently | Self::OpenLock => {
                 Some(Ability::Dexterity)
             }
             Self::Concentration => Some(Ability::Constitution),
