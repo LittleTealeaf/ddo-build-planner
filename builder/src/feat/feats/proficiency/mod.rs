@@ -8,8 +8,8 @@ pub use weapon_class::*;
 use std::fmt::Display;
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusSource, BonusType, CloneBonus},
+    attribute::Attribute,
+    bonus::{Bonus, CloneBonus},
     equipment::item::types::WeaponType,
     feat::Feat,
 };
