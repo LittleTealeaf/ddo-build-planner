@@ -102,7 +102,7 @@ impl Skill {
             | Self::Intimidate
             | Self::Perform
             | Self::UseMagicalDevice => Some(Ability::Charisma),
-            _ => None,
+            Self::All => None,
         }
     }
 }
