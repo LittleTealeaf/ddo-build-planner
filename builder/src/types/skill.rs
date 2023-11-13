@@ -2,6 +2,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+use super::Ability;
+
 /// Different skills that the character can have.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Skill {
@@ -81,6 +83,28 @@ impl Skill {
         Self::Tumble,
         Self::UseMagicalDevice,
     ];
+
+    /// Returns the ability associated with this particular skill
+    pub fn get_ability(&self) -> Option<Ability> {
+        match self {
+            Self::Jump | Skill::Swim => Some(Ability::Strength),
+            Skill::Tumble | Skill::Hide | Self::Balance | Self::MoveSilently | Self::OpenLock => {
+                Some(Ability::Dexterity)
+            }
+            Self::Concentration => Some(Ability::Constitution),
+            Self::DisableDevice | Self::Repair | Self::Search | Self::Spellcraft => {
+                Some(Ability::Intelligence)
+            }
+            Self::Spot | Self::Heal | Self::Listen => Some(Ability::Wisdom),
+            Self::Bluff
+            | Self::Diplomacy
+            | Self::Haggle
+            | Self::Intimidate
+            | Self::Perform
+            | Self::UseMagicalDevice => Some(Ability::Charisma),
+            _ => None,
+        }
+    }
 }
 
 impl Display for Skill {
@@ -115,16 +139,43 @@ impl Display for Skill {
 #[cfg(test)]
 mod tests {
 
-    use im::OrdSet;
-
     use super::*;
 
-    fn no_repeats_in_skills() {
-        let mut set = OrdSet::new();
-
-        for skill in Skill::SKILLS {
-            assert!(!set.contains(&skill));
-            set.insert(skill);
+    #[test]
+    fn skills_have_proper_abilities() {
+        let values = [
+            (Some(Ability::Dexterity), Skill::Balance),
+            (Some(Ability::Charisma), Skill::Bluff),
+            (Some(Ability::Constitution), Skill::Concentration),
+            (Some(Ability::Charisma), Skill::Diplomacy),
+            (Some(Ability::Intelligence), Skill::DisableDevice),
+            (Some(Ability::Charisma), Skill::Haggle),
+            (Some(Ability::Wisdom), Skill::Heal),
+            (Some(Ability::Dexterity), Skill::Hide),
+            (Some(Ability::Charisma), Skill::Intimidate),
+            (Some(Ability::Strength), Skill::Jump),
+            (Some(Ability::Wisdom), Skill::Listen),
+            (Some(Ability::Dexterity), Skill::MoveSilently),
+            (Some(Ability::Dexterity), Skill::OpenLock),
+            (Some(Ability::Charisma), Skill::Perform),
+            (Some(Ability::Intelligence), Skill::Repair),
+            (Some(Ability::Intelligence), Skill::Search),
+            (Some(Ability::Intelligence), Skill::Spellcraft),
+            (Some(Ability::Wisdom), Skill::Spot),
+            (Some(Ability::Strength), Skill::Swim),
+            (Some(Ability::Dexterity), Skill::Tumble),
+            (Some(Ability::Charisma), Skill::UseMagicalDevice),
+            (None, Skill::All),
+        ];
+        for (ability, skill) in values {
+            assert_eq!(
+                ability,
+                skill.get_ability(),
+                "Invalid ability for {:?}: found {:?} expected {:?}",
+                skill,
+                skill.get_ability(),
+                ability
+            );
         }
     }
 }
