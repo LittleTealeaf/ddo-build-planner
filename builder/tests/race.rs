@@ -1,7 +1,7 @@
 mod dwarf {
     use builder::{
         attribute::{flags::Flag, Attribute},
-        bonus::{Bonus, BonusSource, BonusType},
+        bonus::{Bonus, BonusSource},
         compiler::Compiler,
         equipment::item::types::WeaponType,
         feat::{Feat, Proficiency},
@@ -18,10 +18,8 @@ mod dwarf {
                 Proficiency::WeaponProficiency(WeaponType::DwarvenWarAxe)
             )))
             .within_margin(&0f32));
-        compiler.add_bonus(Bonus::new(
-            Attribute::Feat(Feat::Proficiency(Proficiency::MartialWeaponProficiency)),
-            BonusType::Stacking,
-            1f32.into(),
+        compiler.add_bonus(Bonus::feat(
+            Feat::Proficiency(Proficiency::MartialWeaponProficiency),
             BonusSource::Debug(1),
             None,
         ));
