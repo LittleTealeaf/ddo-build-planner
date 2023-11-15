@@ -7,7 +7,12 @@ pub use weapon_class::*;
 
 use std::fmt::Display;
 
-use crate::equipment::item::types::WeaponType;
+use crate::{
+    attribute::Attribute,
+    bonus::{Bonus, CloneBonus},
+    equipment::item::types::WeaponType,
+    feat::Feat,
+};
 
 /// Proficiencies for Weapons and Armor
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -22,6 +27,75 @@ pub enum Proficiency {
     Shield(ShieldProficiency),
     /// Rune Arm Proficiency
     RuneArm,
+}
+
+impl CloneBonus for Proficiency {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        match self {
+            Self::SimpleWeaponProficiency => Some(
+                [
+                    WeaponType::Club,
+                    WeaponType::Dagger,
+                    WeaponType::LightMace,
+                    WeaponType::HeavyMace,
+                    WeaponType::Morningstar,
+                    WeaponType::Quarterstaff,
+                    WeaponType::Sickle,
+                    WeaponType::Dart,
+                    WeaponType::LightCrossbow,
+                    WeaponType::HeavyCrossbow,
+                    WeaponType::ThrowingDagger,
+                ]
+                .into_iter()
+                .map(|weapon| {
+                    Bonus::new(
+                        Attribute::Feat(Feat::Proficiency(Self::WeaponProficiency(weapon))),
+                        bonus.get_type(),
+                        bonus.get_value(),
+                        bonus.get_source(),
+                        bonus.get_condition(),
+                    )
+                })
+                .collect(),
+            ),
+            Self::MartialWeaponProficiency => Some(
+                [
+                    WeaponType::Falchion,
+                    WeaponType::GreatAxe,
+                    WeaponType::GreatClub,
+                    WeaponType::GreatSword,
+                    WeaponType::Maul,
+                    WeaponType::BattleAxe,
+                    WeaponType::Handaxe,
+                    WeaponType::LightHammer,
+                    WeaponType::Kukri,
+                    WeaponType::LongSword,
+                    WeaponType::LightPick,
+                    WeaponType::HeavyPick,
+                    WeaponType::Rapier,
+                    WeaponType::Scimitar,
+                    WeaponType::ShortSword,
+                    WeaponType::WarHammer,
+                    WeaponType::LongBow,
+                    WeaponType::ShortBow,
+                    WeaponType::ThrowingAxe,
+                    WeaponType::ThrowingHammer,
+                ]
+                .into_iter()
+                .map(|weapon| {
+                    Bonus::new(
+                        Attribute::Feat(Feat::Proficiency(Self::WeaponProficiency(weapon))),
+                        bonus.get_type(),
+                        bonus.get_value(),
+                        bonus.get_source(),
+                        bonus.get_condition(),
+                    )
+                })
+                .collect(),
+            ),
+            _ => None,
+        }
+    }
 }
 
 impl Display for Proficiency {

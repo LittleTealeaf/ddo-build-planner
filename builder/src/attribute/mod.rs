@@ -169,6 +169,7 @@ impl CloneBonus for Attribute {
         match self {
             Self::Ability(ability) => ability.clone_bonus(bonus),
             Self::Skill(skill) => skill.clone_bonus(bonus),
+            Self::Feat(feat) => feat.clone_bonus(bonus),
             Self::Sheltering(sheltering) => sheltering.clone_bonus(bonus),
             Self::SpellPower(sp)
             | Self::SpellCriticalChance(sp)
