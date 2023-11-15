@@ -8,7 +8,10 @@ mod value;
 
 use std::fmt::Display;
 
-use crate::attribute::{flags::Flag, Attribute, AttributeDependencies};
+use crate::{
+    attribute::{flags::Flag, Attribute, AttributeDependencies},
+    feat::Feat,
+};
 
 pub use bonus_type::*;
 pub use condition::*;
@@ -104,6 +107,17 @@ impl Bonus {
             1f32.into(),
             source,
             None,
+        )
+    }
+
+    /// Returns a bonus that gives the character some [`Feat`]
+    pub fn feat(feat: Feat, source: BonusSource, condition: Option<Condition>) -> Self {
+        Self::new(
+            Attribute::Feat(feat),
+            BonusType::Stacking,
+            1f32.into(),
+            source,
+            condition,
         )
     }
 
