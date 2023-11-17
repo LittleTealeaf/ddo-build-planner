@@ -14,6 +14,17 @@ license-file = "LICENSE"
 edition = "2021"
 version = "0.0.1"
 
+[workspace.lints.rust]
+dead_code = "allow"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+pedantic = "warn"
+complexity = "warn"
+nursery = "warn"
+must_use_candidate = { level = "allow", priority = 1 }
+too_many_lines = { level = "allow", priority = 1 }
+module_name_repetitions = { level = "allow", priority = 1 }
 
 [profile.release]
 lto = true
