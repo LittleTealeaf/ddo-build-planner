@@ -1,3 +1,4 @@
+//! Application Starting Point
 use builder::{
     attribute::{flags::OffHandType, Attribute},
     bonus::{Bonus, BonusSource, BonusType},

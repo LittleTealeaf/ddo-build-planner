@@ -1,3 +1,4 @@
+//! Application starting point for the Editor Application
 use iced::{executor, theme, Application, Command, Settings};
 
 fn main() -> iced::Result {

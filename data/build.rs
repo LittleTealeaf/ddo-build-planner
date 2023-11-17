@@ -1,3 +1,4 @@
+//! Compiles the sourced data into the build file
 use std::{env, fs::File, io::Write, path::Path};
 
 use errors::Error;
