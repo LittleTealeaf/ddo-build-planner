@@ -1,4 +1,8 @@
-use std::fmt::Display;
+use std::{
+    fmt::Display,
+    iter::{Product, Sum},
+    ops::{Add, Div, Mul, Neg, Rem, Sub},
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -15,21 +19,22 @@ pub enum Value {
     Value(f32),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
-    /// Sums each of the values
-    Sum(Vec<Value>),
-    /// Multiplies each of the values
-    Product(Vec<Value>),
     /// Returns the minimum value from the set
     Min(Vec<Value>),
     /// Returns the maximum value from the set
     Max(Vec<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
-    /// Calculates the reciprocal of the number.
-    ///
-    /// For example, 5 would become 1/5
-    Reciprocal(Box<Value>),
-
+    /// Adds the first value to the second value
+    Add(Box<Value>, Box<Value>),
+    /// Subtracts the second value from the first value
+    Sub(Box<Value>, Box<Value>),
+    /// Multiplies the two values
+    Mul(Box<Value>, Box<Value>),
+    /// Divides the first value by the second value
+    Div(Box<Value>, Box<Value>),
+    /// Returns the remainder from dividing the first value by the second value
+    Rem(Box<Value>, Box<Value>),
     /// Returns `if_true` if `condition` is true, otherwise returns `if_false`
     If {
         /// The condition needed to be checked
@@ -41,57 +46,61 @@ pub enum Value {
     },
 }
 
+// impl Value {
+//     /// Calculates the mean or average of the given values
+//     #[allow(clippy::cast_precision_loss)]
+//     pub fn mean(values: Vec<Self>) -> Self {
+//         let len = values.len();
+//         values.into_iter().sum::<Self>() / Self::Value(len as f32)
+//     }
+// }
+//
+/// Operations to simplify writing formulas
 impl Value {
-    /// Calculates the mean or average of the given values
-    #[allow(clippy::cast_precision_loss)]
-    pub fn mean(values: Vec<Self>) -> Self {
-        Self::Product(vec![
-            Self::Value((values.len() as f32).recip()),
-            Self::Sum(values),
-        ])
+    /// Calculates the mean of some list or set
+    ///
+    /// # Panics
+    /// Panics if there are 0 items in the iterator
+    pub fn mean<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        let mut iter = iter.into_iter();
+        let mut sum = iter.next().expect("Expected at least one item");
+        let mut count = 1f32;
+        for item in iter {
+            sum = sum + item;
+            count += 1f32;
+        }
+
+        sum / Self::from(count)
     }
 
-    /// Makes the given value negative
-    pub fn negative(value: Self) -> Self {
-        Self::Product(vec![value, Self::Value(-1f32)])
+    /// Floors the value
+    #[must_use]
+    pub fn floor(self) -> Self {
+        Self::Floor(self.into())
+    }
+
+    /// Finds the reciprocol of the value.
+    ///
+    /// The reciprocol of value `x` is equivilant to `1 / x`
+    #[must_use]
+    pub fn recip(self) -> Self {
+        Self::Value(1f32) / self
     }
 }
 
 impl Display for Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::Add(a, b) => write!(f, "({a} + {b})"),
+            Self::Sub(a, b) => write!(f, "({a} - {b})"),
+            Self::Mul(a, b) => write!(f, "({a} * {b})"),
+            Self::Div(a, b) => write!(f, "({a} / {b})"),
+            Self::Rem(a, b) => write!(f, "({a} % {b})"),
             Self::Value(value) => value.fmt(f),
             Self::Attribute(attr) => attr.fmt(f),
-            Self::Sum(vals) => {
-                write!(f, "(")?;
-
-                let mut iter = vals.iter();
-
-                if let Some(val) = iter.next() {
-                    val.fmt(f)?;
-                }
-
-                for val in iter {
-                    write!(f, " + {val}")?;
-                }
-
-                write!(f, ")")
-            }
-            Self::Product(vals) => {
-                write!(f, "(")?;
-
-                let mut iter = vals.iter();
-
-                if let Some(val) = iter.next() {
-                    val.fmt(f)?;
-
-                    for val in iter {
-                        write!(f, " * {val}")?;
-                    }
-                }
-
-                write!(f, ")")
-            }
             Self::Min(vals) => {
                 write!(f, "Min(")?;
 
@@ -123,7 +132,6 @@ impl Display for Value {
                 write!(f, ")")
             }
             Self::Floor(val) => write!(f, "Floor({val})"),
-            Self::Reciprocal(val) => write!(f, "(1 / {val})"),
             Self::If {
                 condition,
                 if_true,
@@ -138,12 +146,19 @@ impl Display for Value {
 impl AttributeDependencies for Value {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool {
         match self {
+            Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => {
+                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
+            }
             Self::Value(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
+            Self::Min(vals) | Self::Max(vals) => {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
-            Self::Floor(val) | Self::Reciprocal(val) => val.has_attr_dependency(attribute),
+            Self::Floor(val) => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
                 if_true,
@@ -159,15 +174,23 @@ impl AttributeDependencies for Value {
     fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
         match self {
             Self::Value(_) => {}
+            Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => {
+                a.include_attr_dependency(set);
+                b.include_attr_dependency(set);
+            }
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
+            Self::Min(vals) | Self::Max(vals) => {
                 for val in vals {
                     val.include_attr_dependency(set);
                 }
             }
-            Self::Reciprocal(val) | Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,
@@ -190,5 +213,76 @@ impl From<f32> for Value {
 impl From<Attribute> for Value {
     fn from(value: Attribute) -> Self {
         Self::Attribute(value)
+    }
+}
+
+impl Add for Value {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::Add(self.into(), rhs.into())
+    }
+}
+
+impl Sub for Value {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self::Sub(self.into(), rhs.into())
+    }
+}
+
+impl Mul for Value {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self::Mul(self.into(), rhs.into())
+    }
+}
+
+impl Div for Value {
+    type Output = Self;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        Self::Div(self.into(), rhs.into())
+    }
+}
+
+impl Rem for Value {
+    type Output = Self;
+
+    fn rem(self, rhs: Self) -> Self::Output {
+        Self::Rem(self.into(), rhs.into())
+    }
+}
+
+impl Neg for Value {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self::Mul(self.into(), Self::Value(-1f32).into())
+    }
+}
+
+impl Sum for Value {
+    fn sum<I: Iterator<Item = Self>>(mut iter: I) -> Self {
+        let mut sum = iter.next().unwrap();
+
+        for item in iter {
+            sum = sum + item;
+        }
+        sum
+    }
+}
+
+impl Product for Value {
+    fn product<I: Iterator<Item = Self>>(mut iter: I) -> Self {
+        let mut product = iter.next().expect("Expected at least one value");
+
+        for item in iter {
+            product = product * item;
+        }
+
+        product
     }
 }

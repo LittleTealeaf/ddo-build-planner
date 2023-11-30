@@ -29,17 +29,11 @@ impl DefaultBonuses for ArmorClass {
             Bonus::new(
                 Self::Bonus.into(),
                 BonusType::Stacking,
-                Value::Sum(vec![
-                    Value::Product(vec![
-                        Attribute::from(Self::ArmorBonus).into(),
-                        Attribute::from(Self::ArmorScalar).into(),
-                    ]),
-                    Value::Product(vec![
-                        Attribute::from(Self::ShieldBonus).into(),
-                        Attribute::from(Self::ShieldScalar).into(),
-                    ]),
-                    Attribute::from(Self::NaturalArmor).into(),
-                ]),
+                (Value::from(Attribute::from(Self::ArmorBonus))
+                    * Value::from(Attribute::from(Self::ArmorScalar)))
+                    + (Value::from(Attribute::from(Self::ShieldBonus))
+                        * Value::from(Attribute::from(Self::ShieldScalar)))
+                    + Attribute::from(Self::NaturalArmor).into(),
                 BonusSource::Base,
                 None,
             ),

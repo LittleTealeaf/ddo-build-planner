@@ -83,13 +83,8 @@ impl GetBonuses for SpellcastingFeat {
                 Bonus::new(
                     Attribute::SpellPoints(SpellPoints::Base),
                     BonusType::Stacking,
-                    Value::Sum(vec![
-                        Value::Value(5f32),
-                        Value::Product(vec![
-                            Value::Attribute(Attribute::TotalCharacterLevel),
-                            Value::Value(5f32),
-                        ]),
-                    ]),
+                    Value::from(5f32)
+                        + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5f32)),
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),

@@ -30,8 +30,6 @@ impl Compiler {
         match value {
             Value::Value(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
-            Value::Sum(vals) => vals.iter().map(|val| self.calculate_value(val)).sum(),
-            Value::Product(vals) => vals.iter().map(|val| self.calculate_value(val)).product(),
             Value::Min(vals) => {
                 let mut iter = vals.iter();
 
@@ -63,7 +61,6 @@ impl Compiler {
                 })
             }
             Value::Floor(val) => self.calculate_value(val).floor(),
-            Value::Reciprocal(val) => self.calculate_value(val).recip(),
             Value::If {
                 condition,
                 if_true,
@@ -75,6 +72,11 @@ impl Compiler {
                     self.calculate_value(if_false)
                 }
             }
+            Value::Add(a, b) => self.calculate_value(a) + self.calculate_value(b),
+            Value::Sub(a, b) => self.calculate_value(a) - self.calculate_value(b),
+            Value::Mul(a, b) => self.calculate_value(a) * self.calculate_value(b),
+            Value::Div(a, b) => self.calculate_value(a) / self.calculate_value(b),
+            Value::Rem(a, b) => self.calculate_value(a) % self.calculate_value(b),
         }
     }
 }

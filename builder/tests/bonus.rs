@@ -56,19 +56,58 @@ mod has_dependency {
         }
 
         #[test]
-        fn sum() {
-            let value = Value::Sum(vec![Attribute::Debug(0).into(), 10f32.into()]);
-
+        fn add() {
+            let value = Value::Add(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
             assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
         }
 
         #[test]
-        fn product() {
-            let value = Value::Product(vec![Attribute::Debug(0).into(), 10f32.into()]);
-
+        fn sub() {
+            let value = Value::Sub(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
             assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn mul() {
+            let value = Value::Mul(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn div() {
+            let value = Value::Div(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn rem() {
+            let value = Value::Rem(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
         }
 
         #[test]
@@ -109,14 +148,6 @@ mod has_dependency {
             assert!(value.has_attr_dependency(Attribute::Debug(2)));
             assert!(!value.has_attr_dependency(Attribute::Debug(3)));
         }
-
-        #[test]
-        fn reciprocal() {
-            let value = Value::Reciprocal(Box::new(Value::Attribute(Attribute::Debug(0))));
-
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
-        }
     }
 }
 
@@ -145,23 +176,63 @@ mod include_dependencies {
         }
 
         #[test]
-        fn sum() {
-            let value = Value::Sum(vec![Attribute::Debug(0).into(), 10f32.into()]);
-
+        fn add() {
+            let value = Value::Add(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
             let deps = value.get_attr_dependencies();
-
             assert!(deps.contains(&Attribute::Debug(0)));
-            assert!(!deps.contains(&Attribute::Debug(1)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
         }
 
         #[test]
-        fn product() {
-            let value = Value::Product(vec![Attribute::Debug(0).into(), 10f32.into()]);
-
+        fn sub() {
+            let value = Value::Sub(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
             let deps = value.get_attr_dependencies();
-
             assert!(deps.contains(&Attribute::Debug(0)));
-            assert!(!deps.contains(&Attribute::Debug(1)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn mul() {
+            let value = Value::Mul(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
+            let deps = value.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn div() {
+            let value = Value::Div(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
+            let deps = value.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn rem() {
+            let value = Value::Rem(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
+            let deps = value.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -210,15 +281,41 @@ mod include_dependencies {
             assert!(deps.contains(&Attribute::Debug(2)));
             assert!(!deps.contains(&Attribute::Debug(3)));
         }
+    }
+}
+
+mod value {
+    mod ops {
+        use builder::bonus::Value;
 
         #[test]
-        fn reciprocal() {
-            let value = Value::Reciprocal(Box::new(Value::Attribute(Attribute::Debug(0))));
+        fn add() {
+            let value = Value::from(1f32) + Value::from(2f32);
+            assert!(matches!(value, Value::Add(_, _)));
+        }
 
-            let deps = value.get_attr_dependencies();
+        #[test]
+        fn sub() {
+            let value = Value::from(1f32) - Value::from(1f32);
+            assert!(matches!(value, Value::Sub(_, _)));
+        }
 
-            assert!(deps.contains(&Attribute::Debug(0)));
-            assert!(!deps.contains(&Attribute::Debug(1)));
+        #[test]
+        fn mul() {
+            let value = Value::from(1f32) * Value::from(1f32);
+            assert!(matches!(value, Value::Mul(_, _)));
+        }
+
+        #[test]
+        fn div() {
+            let value = Value::from(1f32) / Value::from(1f32);
+            assert!(matches!(value, Value::Div(_, _)));
+        }
+
+        #[test]
+        fn rem() {
+            let value = Value::from(1f32) % Value::from(1f32);
+            assert!(matches!(value, Value::Rem(_, _)));
         }
     }
 }
