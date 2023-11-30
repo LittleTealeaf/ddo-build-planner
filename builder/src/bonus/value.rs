@@ -1,6 +1,6 @@
 use std::{
     fmt::Display,
-    ops::{Add, Div, Mul, Rem, Sub},
+    ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
 
 use serde::{Deserialize, Serialize};
@@ -62,10 +62,13 @@ impl Value {
             Self::Sum(values),
         ])
     }
+}
 
-    /// Makes the given value negative
-    pub fn negative(value: Self) -> Self {
-        Self::Product(vec![value, Self::Value(-1f32)])
+/// Operations to simplify writing formulas
+impl Value {
+    /// Floors the value
+    pub fn floor(self) -> Self {
+        Self::Floor(self.into())
     }
 }
 
@@ -262,5 +265,13 @@ impl Rem for Value {
 
     fn rem(self, rhs: Self) -> Self::Output {
         Self::Rem(self.into(), rhs.into())
+    }
+}
+
+impl Neg for Value {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self::Mul(self.into(), Self::Value(-1f32).into())
     }
 }
