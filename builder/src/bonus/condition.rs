@@ -1,4 +1,7 @@
-use std::{fmt::Display, ops::Not};
+use std::{
+    fmt::Display,
+    ops::{BitAnd, BitOr, BitXor, Not},
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -182,5 +185,28 @@ impl Not for Condition {
 
     fn not(self) -> Self::Output {
         Self::Not(self.into())
+    }
+}
+
+impl BitAnd for Condition {
+    type Output = Self;
+
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Self::And(self.into(), rhs.into())
+    }
+}
+
+impl BitOr for Condition {
+    type Output = Self;
+
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self::Or(self.into(), rhs.into())
+    }
+}
+
+impl BitXor for Condition {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Self::Xor(self.into(), rhs.into())
     }
 }

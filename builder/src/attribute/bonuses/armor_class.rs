@@ -10,8 +10,8 @@ use crate::{
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
-        .or(Condition::has(Flag::ArmorType(ArmorType::Medium).into()))
-        .or(Condition::has(Flag::ArmorType(ArmorType::Heavy).into()))
+        | Condition::has(Flag::ArmorType(ArmorType::Medium).into())
+        | Condition::has(Flag::ArmorType(ArmorType::Heavy).into())
 }
 
 fn is_wielding_tower_shield() -> Condition {
