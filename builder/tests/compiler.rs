@@ -256,7 +256,7 @@ mod condition {
     };
     use utils::float::ErrorMargin;
 
-    fn test_condition(condition: Condition, expected: bool) {
+    fn test_condition(condition: Condition, expected: bool, error: &'static str) {
         let mut compiler = Compiler::default();
         compiler.add_bonus(Bonus::new(
             Attribute::Debug(0),
@@ -268,99 +268,159 @@ mod condition {
         let value = compiler.get_attribute(&Attribute::Debug(0));
         let result = value.within_margin(&10f32);
 
-        assert_eq!(result, expected, "Found {}, expected {}", result, expected);
+        assert_eq!(
+            result, expected,
+            "Found {}, expected {}, for condition {}",
+            result, expected, error
+        );
     }
 
     #[test]
     fn not() {
-        test_condition(Condition::Not(Box::new(Condition::Constant(true))), false);
-        test_condition(Condition::Not(Box::new(Condition::Constant(false))), true);
+        test_condition(
+            Condition::Not(Box::new(Condition::Constant(true))),
+            false,
+            "!true",
+        );
+        test_condition(
+            Condition::Not(Box::new(Condition::Constant(false))),
+            true,
+            "true",
+        );
     }
 
     #[test]
     fn greater_than() {
-        test_condition(Condition::GreaterThan(10f32.into(), 5f32.into()), true);
-        test_condition(Condition::GreaterThan(5f32.into(), 10f32.into()), false);
-        test_condition(Condition::GreaterThan(10f32.into(), 10f32.into()), false);
+        test_condition(
+            Condition::GreaterThan(10f32.into(), 5f32.into()),
+            true,
+            "10 > 5",
+        );
+        test_condition(
+            Condition::GreaterThan(5f32.into(), 10f32.into()),
+            false,
+            "5 > 10",
+        );
+        test_condition(
+            Condition::GreaterThan(10f32.into(), 10f32.into()),
+            false,
+            "10 > 10",
+        );
     }
 
     #[test]
     fn less_than() {
-        test_condition(Condition::LessThan(10f32.into(), 5f32.into()), false);
-        test_condition(Condition::LessThan(5f32.into(), 10f32.into()), true);
-        test_condition(Condition::LessThan(10f32.into(), 10f32.into()), false);
+        test_condition(
+            Condition::LessThan(10f32.into(), 5f32.into()),
+            false,
+            "10 < 5",
+        );
+        test_condition(
+            Condition::LessThan(5f32.into(), 10f32.into()),
+            true,
+            "5 < 10",
+        );
+        test_condition(
+            Condition::LessThan(10f32.into(), 10f32.into()),
+            false,
+            "10 < 10",
+        );
     }
 
     #[test]
     fn equal_to() {
-        test_condition(Condition::EqualTo(10f32.into(), 5f32.into()), false);
-        test_condition(Condition::EqualTo(5f32.into(), 10f32.into()), false);
-        test_condition(Condition::EqualTo(10f32.into(), 10f32.into()), true);
-    }
-
-    #[test]
-    fn any() {
         test_condition(
-            Condition::Any(vec![
-                Condition::Constant(true),
-                Condition::Constant(false),
-                Condition::Constant(false),
-            ]),
-            true,
-        );
-        test_condition(
-            Condition::Any(vec![
-                Condition::Constant(false),
-                Condition::Constant(false),
-                Condition::Constant(false),
-            ]),
+            Condition::EqualTo(10f32.into(), 5f32.into()),
             false,
+            "10 == 5",
         );
         test_condition(
-            Condition::Any(vec![
-                Condition::Constant(true),
-                Condition::Constant(true),
-                Condition::Constant(true),
-            ]),
+            Condition::EqualTo(5f32.into(), 10f32.into()),
+            false,
+            "5 == 10",
+        );
+        test_condition(
+            Condition::EqualTo(10f32.into(), 10f32.into()),
             true,
+            "10 == 10",
         );
     }
 
     #[test]
-    fn all() {
+    fn and() {
         test_condition(
-            Condition::All(vec![
-                Condition::Constant(true),
-                Condition::Constant(false),
-                Condition::Constant(false),
-            ]),
+            Condition::from(false).and(false.into()),
             false,
+            "False and False",
         );
         test_condition(
-            Condition::All(vec![
-                Condition::Constant(false),
-                Condition::Constant(false),
-                Condition::Constant(false),
-            ]),
+            Condition::from(false).and(true.into()),
             false,
+            "False and True",
         );
         test_condition(
-            Condition::All(vec![
-                Condition::Constant(true),
-                Condition::Constant(true),
-                Condition::Constant(true),
-            ]),
+            Condition::from(true).and(false.into()),
+            false,
+            "True and False",
+        );
+        test_condition(
+            Condition::from(true).and(true.into()),
             true,
+            "True and True",
+        );
+    }
+
+    #[test]
+    fn or() {
+        test_condition(
+            Condition::from(false).or(false.into()),
+            false,
+            "False and False",
+        );
+        test_condition(
+            Condition::from(false).or(true.into()),
+            true,
+            "False and True",
+        );
+        test_condition(
+            Condition::from(true).or(false.into()),
+            true,
+            "True and False",
+        );
+        test_condition(Condition::from(true).or(true.into()), true, "True and True");
+    }
+
+    #[test]
+    fn xor() {
+        test_condition(
+            Condition::from(false).xor(false.into()),
+            false,
+            "False and False",
+        );
+        test_condition(
+            Condition::from(false).xor(true.into()),
+            true,
+            "False and True",
+        );
+        test_condition(
+            Condition::from(true).xor(false.into()),
+            true,
+            "True and False",
+        );
+        test_condition(
+            Condition::from(true).xor(true.into()),
+            false,
+            "True and True",
         );
     }
 
     #[test]
     fn const_true() {
-        test_condition(Condition::Constant(true), true);
+        test_condition(Condition::Constant(true), true, "true");
     }
 
     #[test]
     fn const_false() {
-        test_condition(Condition::Constant(false), false);
+        test_condition(Condition::Constant(false), false, "false");
     }
 }
