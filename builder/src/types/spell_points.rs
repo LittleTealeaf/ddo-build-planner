@@ -40,28 +40,19 @@ impl DefaultBonuses for SpellPoints {
             Bonus::new(
                 Attribute::SpellPoints(Self::Base),
                 BonusType::Stacking,
-                Value::Product(vec![
-                    Attribute::SpellPoints(Self::Scaled).into(),
-                    Value::Sum(vec![
-                        Attribute::ClassLevel(PlayerClass::FavoredSoul).into(),
-                        Attribute::ClassLevel(PlayerClass::Sorcerer).into(),
-                        20f32.into(),
-                    ]),
-                    (1f32 / 2f32).into(),
-                ]),
+                Value::from(Attribute::SpellPoints(Self::Scaled))
+                    * (Value::from(Attribute::ClassLevel(PlayerClass::FavoredSoul))
+                        + Value::from(Attribute::ClassLevel(PlayerClass::Sorcerer))
+                        + Value::from(20f32))
+                    / Value::from(20f32),
                 BonusSource::Base,
                 None,
             ),
             Bonus::new(
                 Attribute::SpellPoints(Self::Total),
                 BonusType::Stacking,
-                Value::Product(vec![
-                    Attribute::SpellPoints(Self::Base).into(),
-                    Value::Sum(vec![
-                        1f32.into(),
-                        Attribute::SpellPoints(Self::Modifier).into(),
-                    ]),
-                ]),
+                Value::from(Attribute::SpellPoints(Self::Base))
+                    * (Value::from(1f32) + Value::from(Attribute::SpellPoints(Self::Modifier))),
                 BonusSource::Base,
                 None,
             ),

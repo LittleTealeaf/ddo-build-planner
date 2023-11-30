@@ -41,23 +41,16 @@ impl DefaultBonuses for Health {
             Bonus::new(
                 Attribute::Health(Self::Bonus),
                 BonusType::Stacking,
-                Value::Product(vec![
-                    Attribute::Health(Self::Base).into(),
-                    Value::Sum(vec![
-                        Attribute::Health(Self::BaseModifier).into(),
-                        1f32.into(),
-                    ]),
-                ]),
+                Value::from(Attribute::Health(Self::Base))
+                    * (Value::from(Attribute::Health(Self::BaseModifier)) + Value::from(1f32)),
                 BonusSource::Base,
                 None,
             ),
             Bonus::new(
                 Attribute::Health(Self::Total),
                 BonusType::Stacking,
-                Value::Product(vec![
-                    Attribute::Health(Self::Bonus).into(),
-                    Value::Sum(vec![Attribute::Health(Self::Modifier).into(), 1f32.into()]),
-                ]),
+                Value::from(Attribute::Health(Self::Bonus))
+                    * (Value::from(Attribute::Health(Self::Modifier)) + Value::from(1f32)),
                 BonusSource::Base,
                 None,
             ),

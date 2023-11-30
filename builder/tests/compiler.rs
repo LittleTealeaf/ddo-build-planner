@@ -56,31 +56,73 @@ mod calculate {
     }
 
     #[test]
-    fn sum() {
+    fn add() {
         test_bonuses(
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::Sum(vec![Value::Value(6f32), Value::Value(5f32)]),
+                Value::from(1f32) + Value::from(2f32),
                 BonusSource::Debug(0),
                 None,
             )],
-            11f32,
-        );
+            3f32,
+        )
     }
 
     #[test]
-    fn product() {
+    fn sub() {
         test_bonuses(
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::Product(vec![Value::Value(6f32), Value::Value(5f32)]),
+                Value::from(5f32) - Value::from(2f32),
                 BonusSource::Debug(0),
                 None,
             )],
-            30f32,
-        );
+            3f32,
+        )
+    }
+
+    #[test]
+    fn mul() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::from(3f32) * Value::from(2f32),
+                BonusSource::Debug(0),
+                None,
+            )],
+            6f32,
+        )
+    }
+
+    #[test]
+    fn div() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::from(6f32) / Value::from(2f32),
+                BonusSource::Debug(0),
+                None,
+            )],
+            3f32,
+        )
+    }
+
+    #[test]
+    fn rem() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::from(5f32) % Value::from(2f32),
+                BonusSource::Debug(0),
+                None,
+            )],
+            1f32,
+        )
     }
 
     #[test]
@@ -117,7 +159,7 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::Floor(Box::new(Value::Value(10.5f32))),
+                Box::new(Value::Value(10.5f32)).floor(),
                 BonusSource::Debug(0),
                 None,
             )],
@@ -177,7 +219,7 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::negative(Value::Value(1f32)),
+                -Value::Value(1f32),
                 BonusSource::Debug(0),
                 None,
             )],

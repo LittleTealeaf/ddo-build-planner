@@ -1,5 +1,6 @@
 use std::{
     fmt::Display,
+    iter::Sum,
     ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
 
@@ -18,10 +19,6 @@ pub enum Value {
     Value(f32),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
-    /// Sums each of the values
-    Sum(Vec<Value>),
-    /// Multiplies each of the values
-    Product(Vec<Value>),
     /// Returns the minimum value from the set
     Min(Vec<Value>),
     /// Returns the maximum value from the set
@@ -57,10 +54,8 @@ impl Value {
     /// Calculates the mean or average of the given values
     #[allow(clippy::cast_precision_loss)]
     pub fn mean(values: Vec<Self>) -> Self {
-        Self::Product(vec![
-            Self::Value((values.len() as f32).recip()),
-            Self::Sum(values),
-        ])
+        let len = values.len();
+        values.into_iter().sum::<Value>() / Self::Value(len as f32)
     }
 }
 
@@ -82,36 +77,6 @@ impl Display for Value {
             Self::Rem(a, b) => write!(f, "({a} % {b})"),
             Self::Value(value) => value.fmt(f),
             Self::Attribute(attr) => attr.fmt(f),
-            Self::Sum(vals) => {
-                write!(f, "(")?;
-
-                let mut iter = vals.iter();
-
-                if let Some(val) = iter.next() {
-                    val.fmt(f)?;
-                }
-
-                for val in iter {
-                    write!(f, " + {val}")?;
-                }
-
-                write!(f, ")")
-            }
-            Self::Product(vals) => {
-                write!(f, "(")?;
-
-                let mut iter = vals.iter();
-
-                if let Some(val) = iter.next() {
-                    val.fmt(f)?;
-
-                    for val in iter {
-                        write!(f, " * {val}")?;
-                    }
-                }
-
-                write!(f, ")")
-            }
             Self::Min(vals) => {
                 write!(f, "Min(")?;
 
@@ -167,7 +132,7 @@ impl AttributeDependencies for Value {
             }
             Self::Value(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
+            Self::Min(vals) | Self::Max(vals) => {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
             Self::Floor(val) | Self::Reciprocal(val) => val.has_attr_dependency(attribute),
@@ -197,7 +162,7 @@ impl AttributeDependencies for Value {
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
+            Self::Min(vals) | Self::Max(vals) => {
                 for val in vals {
                     val.include_attr_dependency(set);
                 }
@@ -273,5 +238,16 @@ impl Neg for Value {
 
     fn neg(self) -> Self::Output {
         Self::Mul(self.into(), Self::Value(-1f32).into())
+    }
+}
+
+impl Sum for Value {
+    fn sum<I: Iterator<Item = Self>>(mut iter: I) -> Self {
+        let mut sum = iter.next().unwrap();
+
+        for item in iter {
+            sum = sum + item;
+        }
+        sum
     }
 }

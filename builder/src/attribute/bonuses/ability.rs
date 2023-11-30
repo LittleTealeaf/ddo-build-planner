@@ -36,10 +36,9 @@ impl DefaultBonuses for Ability {
                     Bonus::new(
                         Attribute::AbilityModifier(ability),
                         BonusType::Stacking,
-                        Value::Floor(Box::new(Value::Product(vec![
-                            Value::Sum(vec![Attribute::Ability(ability).into(), (-10f32).into()]),
-                            0.5f32.into(),
-                        ]))),
+                        ((Value::Attribute(Attribute::Ability(ability)) - 10f32.into())
+                            / 2f32.into())
+                        .floor(),
                         BonusSource::Base,
                         None,
                     ),
