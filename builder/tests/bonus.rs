@@ -148,7 +148,6 @@ mod has_dependency {
             assert!(value.has_attr_dependency(Attribute::Debug(2)));
             assert!(!value.has_attr_dependency(Attribute::Debug(3)));
         }
-
     }
 }
 
@@ -282,7 +281,6 @@ mod include_dependencies {
             assert!(deps.contains(&Attribute::Debug(2)));
             assert!(!deps.contains(&Attribute::Debug(3)));
         }
-
     }
 }
 
