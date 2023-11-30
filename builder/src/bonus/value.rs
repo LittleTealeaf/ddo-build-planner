@@ -1,4 +1,7 @@
-use std::fmt::Display;
+use std::{
+    fmt::Display,
+    ops::{Add, Div, Mul, Rem, Sub},
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -29,7 +32,16 @@ pub enum Value {
     ///
     /// For example, 5 would become 1/5
     Reciprocal(Box<Value>),
-
+    /// Adds the first value to the second value
+    Add(Box<Value>, Box<Value>),
+    /// Subtracts the second value from the first value
+    Sub(Box<Value>, Box<Value>),
+    /// Multiplies the two values
+    Mul(Box<Value>, Box<Value>),
+    /// Divides the first value by the second value
+    Div(Box<Value>, Box<Value>),
+    /// Returns the remainder from dividing the first value by the second value
+    Rem(Box<Value>, Box<Value>),
     /// Returns `if_true` if `condition` is true, otherwise returns `if_false`
     If {
         /// The condition needed to be checked
@@ -60,6 +72,11 @@ impl Value {
 impl Display for Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::Add(a, b) => write!(f, "({a} + {b})"),
+            Self::Sub(a, b) => write!(f, "({a} - {b})"),
+            Self::Mul(a, b) => write!(f, "({a} * {b})"),
+            Self::Div(a, b) => write!(f, "({a} / {b})"),
+            Self::Rem(a, b) => write!(f, "({a} % {b})"),
             Self::Value(value) => value.fmt(f),
             Self::Attribute(attr) => attr.fmt(f),
             Self::Sum(vals) => {
@@ -138,6 +155,13 @@ impl Display for Value {
 impl AttributeDependencies for Value {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool {
         match self {
+            Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => {
+                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
+            }
             Self::Value(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
             Self::Min(vals) | Self::Max(vals) | Self::Product(vals) | Self::Sum(vals) => {
@@ -159,6 +183,14 @@ impl AttributeDependencies for Value {
     fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
         match self {
             Self::Value(_) => {}
+            Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => {
+                a.include_attr_dependency(set);
+                b.include_attr_dependency(set);
+            }
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
@@ -190,5 +222,45 @@ impl From<f32> for Value {
 impl From<Attribute> for Value {
     fn from(value: Attribute) -> Self {
         Self::Attribute(value)
+    }
+}
+
+impl Add for Value {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::Add(self.into(), rhs.into())
+    }
+}
+
+impl Sub for Value {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self::Sub(self.into(), rhs.into())
+    }
+}
+
+impl Mul for Value {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self::Mul(self.into(), rhs.into())
+    }
+}
+
+impl Div for Value {
+    type Output = Self;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        Self::Div(self.into(), rhs.into())
+    }
+}
+
+impl Rem for Value {
+    type Output = Self;
+
+    fn rem(self, rhs: Self) -> Self::Output {
+        Self::Rem(self.into(), rhs.into())
     }
 }

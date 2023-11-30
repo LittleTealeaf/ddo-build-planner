@@ -75,6 +75,11 @@ impl Compiler {
                     self.calculate_value(if_false)
                 }
             }
+            Value::Add(a, b) => self.calculate_value(a) + self.calculate_value(b),
+            Value::Sub(a, b) => self.calculate_value(a) - self.calculate_value(b),
+            Value::Mul(a, b) => self.calculate_value(a) * self.calculate_value(b),
+            Value::Div(a, b) => self.calculate_value(a) / self.calculate_value(b),
+            Value::Rem(a, b) => self.calculate_value(a) % self.calculate_value(b),
         }
     }
 }
