@@ -1,6 +1,6 @@
 use std::{
     fmt::Display,
-    iter::Sum,
+    iter::{Product, Sum},
     ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
 
@@ -272,5 +272,17 @@ impl Sum for Value {
             sum = sum + item;
         }
         sum
+    }
+}
+
+impl Product for Value {
+    fn product<I: Iterator<Item = Self>>(mut iter: I) -> Self {
+        let mut product = iter.next().expect("Expected at least one value");
+
+        for item in iter {
+            product = product * item;
+        }
+
+        product
     }
 }
