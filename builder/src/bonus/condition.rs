@@ -1,7 +1,4 @@
-use std::{
-    fmt::Display,
-    ops::{Neg, Not},
-};
+use std::{fmt::Display, ops::Not};
 
 use serde::{Deserialize, Serialize};
 
@@ -184,14 +181,6 @@ impl Not for Condition {
     type Output = Self;
 
     fn not(self) -> Self::Output {
-        Self::Not(self.into())
-    }
-}
-
-impl Neg for Condition {
-    type Output = Self;
-
-    fn neg(self) -> Self::Output {
         Self::Not(self.into())
     }
 }
