@@ -43,16 +43,6 @@ impl Condition {
         Self::GreaterThan(attribute.into(), 0f32.into())
     }
 
-    /// Requires that the character does not have some attribute
-    pub fn not_have(attribute: Attribute) -> Self {
-        Self::EqualTo(attribute.into(), 0f32.into())
-    }
-
-    /// Requires that one value is not equal to the other value
-    pub fn not_eq(a: Value, b: Value) -> Self {
-        !Self::EqualTo(a, b)
-    }
-
     /// Requires that all of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
