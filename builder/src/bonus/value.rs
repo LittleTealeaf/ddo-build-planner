@@ -55,13 +55,14 @@ impl Value {
     #[allow(clippy::cast_precision_loss)]
     pub fn mean(values: Vec<Self>) -> Self {
         let len = values.len();
-        values.into_iter().sum::<Value>() / Self::Value(len as f32)
+        values.into_iter().sum::<Self>() / Self::Value(len as f32)
     }
 }
 
 /// Operations to simplify writing formulas
 impl Value {
     /// Floors the value
+    #[must_use]
     pub fn floor(self) -> Self {
         Self::Floor(self.into())
     }
