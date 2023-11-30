@@ -154,6 +154,20 @@ mod calculate {
     }
 
     #[test]
+    fn recip() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Box::new(Value::Value(2f32)).recip(),
+                BonusSource::Debug(0),
+                None,
+            )],
+            0.5f32,
+        );
+    }
+
+    #[test]
     fn floor() {
         test_bonuses(
             [Bonus::new(
@@ -196,20 +210,6 @@ mod calculate {
                 None,
             )],
             20f32,
-        );
-    }
-
-    #[test]
-    fn reciprocal() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::Reciprocal(Box::new(Value::Value(10f32))),
-                BonusSource::Debug(0),
-                None,
-            )],
-            10f32.recip(),
         );
     }
 

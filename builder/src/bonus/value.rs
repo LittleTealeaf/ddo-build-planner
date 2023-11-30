@@ -25,10 +25,6 @@ pub enum Value {
     Max(Vec<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
-    /// Calculates the reciprocal of the number.
-    ///
-    /// For example, 5 would become 1/5
-    Reciprocal(Box<Value>),
     /// Adds the first value to the second value
     Add(Box<Value>, Box<Value>),
     /// Subtracts the second value from the first value
@@ -65,6 +61,14 @@ impl Value {
     #[must_use]
     pub fn floor(self) -> Self {
         Self::Floor(self.into())
+    }
+
+    /// Finds the reciprocol of the value.
+    ///
+    /// The reciprocol of value `x` is equivilant to `1 / x`
+    #[must_use]
+    pub fn recip(self) -> Self {
+        Self::Value(1f32) / self
     }
 }
 
@@ -109,7 +113,6 @@ impl Display for Value {
                 write!(f, ")")
             }
             Self::Floor(val) => write!(f, "Floor({val})"),
-            Self::Reciprocal(val) => write!(f, "(1 / {val})"),
             Self::If {
                 condition,
                 if_true,
@@ -136,7 +139,7 @@ impl AttributeDependencies for Value {
             Self::Min(vals) | Self::Max(vals) => {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
-            Self::Floor(val) | Self::Reciprocal(val) => val.has_attr_dependency(attribute),
+            Self::Floor(val)   => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
                 if_true,
@@ -168,7 +171,7 @@ impl AttributeDependencies for Value {
                     val.include_attr_dependency(set);
                 }
             }
-            Self::Reciprocal(val) | Self::Floor(val) => val.include_attr_dependency(set),
+             Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,
