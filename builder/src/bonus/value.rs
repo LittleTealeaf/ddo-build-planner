@@ -46,17 +46,36 @@ pub enum Value {
     },
 }
 
-impl Value {
-    /// Calculates the mean or average of the given values
-    #[allow(clippy::cast_precision_loss)]
-    pub fn mean(values: Vec<Self>) -> Self {
-        let len = values.len();
-        values.into_iter().sum::<Self>() / Self::Value(len as f32)
-    }
-}
-
+// impl Value {
+//     /// Calculates the mean or average of the given values
+//     #[allow(clippy::cast_precision_loss)]
+//     pub fn mean(values: Vec<Self>) -> Self {
+//         let len = values.len();
+//         values.into_iter().sum::<Self>() / Self::Value(len as f32)
+//     }
+// }
+//
 /// Operations to simplify writing formulas
 impl Value {
+    /// Calculates the mean of some list or set
+    ///
+    /// # Panics
+    /// Panics if there are 0 items in the iterator
+    pub fn mean<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        let mut iter = iter.into_iter();
+        let mut sum = iter.next().expect("Expected at least one item");
+        let mut count = 1f32;
+        for item in iter {
+            sum = sum + item;
+            count += 1f32;
+        }
+
+        sum / Self::from(count)
+    }
+
     /// Floors the value
     #[must_use]
     pub fn floor(self) -> Self {
@@ -139,7 +158,7 @@ impl AttributeDependencies for Value {
             Self::Min(vals) | Self::Max(vals) => {
                 vals.iter().any(|val| val.has_attr_dependency(attribute))
             }
-            Self::Floor(val)   => val.has_attr_dependency(attribute),
+            Self::Floor(val) => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
                 if_true,
@@ -171,7 +190,7 @@ impl AttributeDependencies for Value {
                     val.include_attr_dependency(set);
                 }
             }
-             Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,
