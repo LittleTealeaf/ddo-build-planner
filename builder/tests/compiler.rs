@@ -349,22 +349,22 @@ mod condition {
     #[test]
     fn and() {
         test_condition(
-            Condition::from(false).and(false.into()),
+            Condition::from(false) & Condition::from(false),
             false,
             "False and False",
         );
         test_condition(
-            Condition::from(false).and(true.into()),
+            Condition::from(false) & Condition::from(true),
             false,
             "False and True",
         );
         test_condition(
-            Condition::from(true).and(false.into()),
+            Condition::from(true) & Condition::from(false),
             false,
             "True and False",
         );
         test_condition(
-            Condition::from(true).and(true.into()),
+            Condition::from(true) & Condition::from(true),
             true,
             "True and True",
         );
@@ -373,42 +373,46 @@ mod condition {
     #[test]
     fn or() {
         test_condition(
-            Condition::from(false).or(false.into()),
+            Condition::from(false) | Condition::from(false),
             false,
             "False and False",
         );
         test_condition(
-            Condition::from(false).or(true.into()),
+            Condition::from(false) | Condition::from(true),
             true,
             "False and True",
         );
         test_condition(
-            Condition::from(true).or(false.into()),
+            Condition::from(true) | Condition::from(false),
             true,
             "True and False",
         );
-        test_condition(Condition::from(true).or(true.into()), true, "True and True");
+        test_condition(
+            Condition::from(true) | Condition::from(true),
+            true,
+            "True and True",
+        );
     }
 
     #[test]
     fn xor() {
         test_condition(
-            Condition::from(false).xor(false.into()),
+            Condition::from(false) ^ Condition::from(false),
             false,
             "False and False",
         );
         test_condition(
-            Condition::from(false).xor(true.into()),
+            Condition::from(false) ^ Condition::from(true),
             true,
             "False and True",
         );
         test_condition(
-            Condition::from(true).xor(false.into()),
+            Condition::from(true) ^ Condition::from(false),
             true,
             "True and False",
         );
         test_condition(
-            Condition::from(true).xor(true.into()),
+            Condition::from(true) ^ Condition::from(true),
             false,
             "True and True",
         );
