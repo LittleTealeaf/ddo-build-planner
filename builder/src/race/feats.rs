@@ -222,13 +222,12 @@ impl GetBonuses for RacialFeat {
                             Condition::has(
                                 Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
                                     .into(),
-                            )
-                            .or(Condition::has(
+                            ) | Condition::has(
                                 Toggle::Attacking(AttackingTarget::MonsterType(
                                     MonsterType::Goblinoid,
                                 ))
                                 .into(),
-                            )),
+                            ),
                         ),
                     ),
                 ]

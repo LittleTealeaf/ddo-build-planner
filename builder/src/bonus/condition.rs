@@ -39,8 +39,8 @@ impl From<bool> for Condition {
 /// Additional constructors for more complicated conditions
 impl Condition {
     /// Requires that the character has some attribute
-    pub fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(attribute.into(), 0f32.into())
+    pub const fn has(attribute: Attribute) -> Self {
+        Self::GreaterThan(Value::Attribute(attribute), Value::Value(0f32))
     }
 
     /// Requires that all of the provided conditions are true

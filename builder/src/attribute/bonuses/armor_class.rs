@@ -14,9 +14,10 @@ fn is_wearing_armor() -> Condition {
         | Condition::has(Flag::ArmorType(ArmorType::Heavy).into())
 }
 
-fn is_wielding_tower_shield() -> Condition {
-    Condition::has(Flag::OffHandType(OffHandType::Shield(ShieldType::TowerShield)).into())
-}
+// TODO: Convert as many functions to constant
+const IS_WIELDING_TOWER_SHIELD: Condition = Condition::has(Attribute::Flag(Flag::OffHandType(
+    OffHandType::Shield(ShieldType::TowerShield),
+)));
 
 impl DefaultBonuses for ArmorClass {
     type Iterator = [Bonus; 4];
@@ -44,7 +45,7 @@ impl DefaultBonuses for ArmorClass {
                 BonusSource::Base,
                 Some(
                     is_wearing_armor()
-                        & (is_wielding_tower_shield()
+                        & (IS_WIELDING_TOWER_SHIELD
                             ^ Condition::GreaterThan(
                                 Attribute::from(Self::ArmorMaxDexBonus).into(),
                                 Attribute::from(Self::ShieldMaxDexBonus).into(),
@@ -58,7 +59,7 @@ impl DefaultBonuses for ArmorClass {
                 Attribute::ArmorClass(Self::ShieldMaxDexBonus).into(),
                 BonusSource::Base,
                 Some(
-                    is_wielding_tower_shield()
+                    IS_WIELDING_TOWER_SHIELD
                         & (is_wearing_armor()
                             ^ Condition::GreaterThan(
                                 Attribute::from(Self::ShieldMaxDexBonus).into(),
