@@ -11,8 +11,6 @@ use super::Compiler;
 // Supporting Functions
 impl Compiler {
     fn check_condition(&mut self, condition: &Condition) -> bool {
-        let check_condition = |cond: &Condition| self.check_condition(cond);
-
         match condition {
             Condition::Not(cond) => !self.check_condition(cond),
             Condition::GreaterThan(a, b) => self.calculate_value(a) > self.calculate_value(b),
@@ -20,9 +18,10 @@ impl Compiler {
             Condition::EqualTo(a, b) => self
                 .calculate_value(a)
                 .within_margin(&self.calculate_value(b)),
-            Condition::Any(conds) => conds.iter().any(check_condition),
-            Condition::All(conds) => conds.iter().all(check_condition),
             Condition::Constant(value) => *value,
+            Condition::And(a, b) => self.check_condition(a) && self.check_condition(b),
+            Condition::Or(a, b) => self.check_condition(a) || self.check_condition(b),
+            Condition::Xor(a, b) => self.check_condition(a) != self.check_condition(b),
         }
     }
 

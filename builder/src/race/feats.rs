@@ -218,18 +218,17 @@ impl GetBonuses for RacialFeat {
                         BonusType::Racial,
                         1f32.into(),
                         Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)).into(),
-                        Some(Condition::Any(vec![
+                        Some(
                             Condition::has(
                                 Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
                                     .into(),
-                            ),
-                            Condition::has(
+                            ) | Condition::has(
                                 Toggle::Attacking(AttackingTarget::MonsterType(
                                     MonsterType::Goblinoid,
                                 ))
                                 .into(),
                             ),
-                        ])),
+                        ),
                     ),
                 ]
             }
@@ -297,30 +296,34 @@ impl GetBonuses for RacialFeat {
                 Attribute::from(Feat::from(Self::HalflingLuck)).into(),
                 None,
             )],
-            Self::HalflingThrownWeaponFocus => vec![
-                Bonus::new(
-                    (WeaponHand::Main, WeaponStat::Attack).into(),
-                    BonusType::Stacking,
-                    1f32.into(),
-                    Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
-                    Some(Condition::Any(
-                        WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt)).into()))
-                            .to_vec(),
-                    )),
-                ),
-                Bonus::new(
-                    (WeaponHand::Off, WeaponStat::Attack).into(),
-                    BonusType::Stacking,
-                    1f32.into(),
-                    Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
-                    Some(Condition::Any(
-                        WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt)).into()))
-                            .to_vec(),
-                    )),
-                ),
-            ],
+            Self::HalflingThrownWeaponFocus => {
+                vec![
+                    Bonus::new(
+                        (WeaponHand::Main, WeaponStat::Attack).into(),
+                        BonusType::Stacking,
+                        1f32.into(),
+                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
+                        Some(
+                            Condition::any(WeaponType::THROWING_WEAPONS.map(|wt| {
+                                Condition::has(Flag::from(MainHandType::Weapon(wt)).into())
+                            }))
+                            .unwrap(),
+                        ),
+                    ),
+                    Bonus::new(
+                        (WeaponHand::Off, WeaponStat::Attack).into(),
+                        BonusType::Stacking,
+                        1f32.into(),
+                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
+                        Some(
+                            Condition::any(WeaponType::THROWING_WEAPONS.map(|wt| {
+                                Condition::has(Flag::from(OffHandType::Weapon(wt)).into())
+                            }))
+                            .unwrap(),
+                        ),
+                    ),
+                ]
+            }
         })
     }
 }

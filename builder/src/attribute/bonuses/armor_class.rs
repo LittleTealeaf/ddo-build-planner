@@ -9,11 +9,9 @@ use crate::{
 };
 
 fn is_wearing_armor() -> Condition {
-    Condition::Any(vec![
-        Condition::has(Flag::ArmorType(ArmorType::Light).into()),
-        Condition::has(Flag::ArmorType(ArmorType::Medium).into()),
-        Condition::has(Flag::ArmorType(ArmorType::Heavy).into()),
-    ])
+    Condition::has(Flag::ArmorType(ArmorType::Light).into())
+        | Condition::has(Flag::ArmorType(ArmorType::Medium).into())
+        | Condition::has(Flag::ArmorType(ArmorType::Heavy).into())
 }
 
 fn is_wielding_tower_shield() -> Condition {
@@ -44,16 +42,14 @@ impl DefaultBonuses for ArmorClass {
                 BonusType::Stacking,
                 Attribute::ArmorClass(Self::ArmorMaxDexBonus).into(),
                 BonusSource::Base,
-                Some(Condition::All(vec![
-                    is_wearing_armor(),
-                    Condition::not_all(vec![
-                        is_wielding_tower_shield(),
-                        Condition::GreaterThan(
-                            Attribute::from(Self::ArmorMaxDexBonus).into(),
-                            Attribute::from(Self::ShieldMaxDexBonus).into(),
-                        ),
-                    ]),
-                ])),
+                Some(
+                    is_wearing_armor()
+                        & (is_wielding_tower_shield()
+                            ^ Condition::GreaterThan(
+                                Attribute::from(Self::ArmorMaxDexBonus).into(),
+                                Attribute::from(Self::ShieldMaxDexBonus).into(),
+                            )),
+                ),
             ),
             // Max dex bonus from shield
             Bonus::new(
@@ -61,16 +57,14 @@ impl DefaultBonuses for ArmorClass {
                 BonusType::Stacking,
                 Attribute::ArmorClass(Self::ShieldMaxDexBonus).into(),
                 BonusSource::Base,
-                Some(Condition::All(vec![
-                    is_wielding_tower_shield(),
-                    Condition::not_all(vec![
-                        is_wearing_armor(),
-                        Condition::GreaterThan(
-                            Attribute::from(Self::ShieldMaxDexBonus).into(),
-                            Attribute::from(Self::ArmorMaxDexBonus).into(),
-                        ),
-                    ]),
-                ])),
+                Some(
+                    is_wielding_tower_shield()
+                        & (is_wearing_armor()
+                            ^ Condition::GreaterThan(
+                                Attribute::from(Self::ShieldMaxDexBonus).into(),
+                                Attribute::from(Self::ArmorMaxDexBonus).into(),
+                            )),
+                ),
             ),
             Bonus::new(
                 Self::Bonus.into(),

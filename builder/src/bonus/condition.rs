@@ -1,4 +1,7 @@
-use std::fmt::Display;
+use std::{
+    fmt::Display,
+    ops::{BitAnd, BitOr, BitXor, Not},
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -17,12 +20,14 @@ pub enum Condition {
     LessThan(Value, Value),
     /// Requires that one value is equal to another value
     EqualTo(Value, Value),
-    /// Requires that some of the conditions are true
-    Any(Vec<Self>),
-    /// Requires that all of the conditions are true
-    All(Vec<Self>),
     /// Insert a constant value
     Constant(bool),
+    /// Requires that both conditions are satisfied
+    And(Box<Self>, Box<Self>),
+    /// Requires that at least one condition is satisfied
+    Or(Box<Self>, Box<Self>),
+    /// Exclusive Or gate, requires that only one is true
+    Xor(Box<Self>, Box<Self>),
 }
 
 impl From<bool> for Condition {
@@ -31,31 +36,100 @@ impl From<bool> for Condition {
     }
 }
 
-/// Generator functions to abstract away stndard conditions
+/// Additional constructors for more complicated conditions
 impl Condition {
     /// Requires that the character has some attribute
-    pub fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(attribute.into(), 0f32.into())
+    pub const fn has(attribute: Attribute) -> Self {
+        Self::GreaterThan(Value::Attribute(attribute), Value::Value(0f32))
     }
 
-    /// Requires that the character does not have some attribute
-    pub fn not_have(attribute: Attribute) -> Self {
-        Self::EqualTo(attribute.into(), 0f32.into())
+    /// Requires that all of the provided conditions are true
+    ///
+    /// Returns [`None`] if the iterator has no values
+    pub fn all<I>(conditions: I) -> Option<Self>
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        conditions.into_iter().reduce(Self::and)
+    }
+
+    /// Requires that any of the provided conditions are true
+    ///
+    /// Returns [`None`] if the iterator has no values
+    pub fn any<I>(conditions: I) -> Option<Self>
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        conditions.into_iter().reduce(Self::or)
     }
 
     /// Requires that none of the conditions are true
-    pub fn none(conditions: Vec<Self>) -> Self {
-        Self::Not(Box::new(Self::Any(conditions)))
+    ///
+    /// Returns [`None`] if the iterator has no values
+    pub fn none<I>(conditions: I) -> Option<Self>
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        Some(!Self::any(conditions)?)
     }
 
     /// Requires that at least one of the conditions is false
-    pub fn not_all(conditions: Vec<Self>) -> Self {
-        Self::Not(Box::new(Self::All(conditions)))
+    ///
+    /// Returns [`None`] if the iterator has no values
+    pub fn not_all<I>(conditions: I) -> Option<Self>
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        Some(!Self::all(conditions)?)
+    }
+}
+
+/// Chain Operations
+impl Condition {
+    /// Logical AND
+    ///
+    /// Returns true if both values are true
+    #[must_use]
+    pub fn and(self, other: Self) -> Self {
+        self & other
     }
 
-    /// Requires that one value is not equal to the other value
-    pub fn not_eq(a: Value, b: Value) -> Self {
-        Self::Not(Box::new(Self::EqualTo(a, b)))
+    /// Logical OR
+    ///
+    /// Returns true if one value is true
+    #[must_use]
+    pub fn or(self, other: Self) -> Self {
+        self | other
+    }
+
+    /// Logical XOR
+    #[must_use]
+    pub fn xor(self, other: Self) -> Self {
+        self ^ other
+    }
+
+    /// Logical NAND
+    ///
+    /// Returns false if both outputs are true, otherwise returns true
+    #[must_use]
+    pub fn nand(self, other: Self) -> Self {
+        !(self & other)
+    }
+
+    /// Logical NOR
+    ///
+    /// Returns true if both outputs are false
+    #[must_use]
+    pub fn nor(self, other: Self) -> Self {
+        !(self | other)
+    }
+
+    /// Logical XNOR
+    ///
+    /// Returns true if the values are either both true or both false
+    #[must_use]
+    pub fn xnor(self, other: Self) -> Self {
+        !(self ^ other)
     }
 }
 
@@ -63,11 +137,11 @@ impl AttributeDependencies for Condition {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool {
         match self {
             Self::Not(cond) => cond.has_attr_dependency(attribute),
-            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+            Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
-            Self::Any(conds) | Self::All(conds) => {
-                conds.iter().any(|cond| cond.has_attr_dependency(attribute))
+            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
             Self::Constant(_) => false,
         }
@@ -76,14 +150,14 @@ impl AttributeDependencies for Condition {
     fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
         match self {
             Self::Not(cond) => cond.include_attr_dependency(set),
-            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+
+            Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => {
                 a.include_attr_dependency(set);
                 b.include_attr_dependency(set);
             }
-            Self::Any(conds) | Self::All(conds) => {
-                for cond in conds {
-                    cond.include_attr_dependency(set);
-                }
+            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+                a.include_attr_dependency(set);
+                b.include_attr_dependency(set);
             }
             Self::Constant(_) => {}
         }
@@ -97,10 +171,42 @@ impl Display for Condition {
             Self::GreaterThan(a, b) => write!(f, "{a} is greater than {b}"),
             Self::LessThan(a, b) => write!(f, "{a} is less than {b}"),
             Self::EqualTo(a, b) => write!(f, "{a} is equal to {b}"),
-            Self::Any(conditions) => write!(f, "Any of {conditions:?}"),
-            Self::All(conditions) => write!(f, "All of {conditions:?}"),
             Self::Constant(true) => write!(f, "True"),
             Self::Constant(false) => write!(f, "False"),
+            Self::And(a, b) => write!(f, "({a}) AND ({b})"),
+            Self::Or(a, b) => write!(f, "({a}) OR ({b})"),
+            Self::Xor(a, b) => write!(f, "({a}) == ({b})"),
         }
+    }
+}
+
+impl Not for Condition {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        Self::Not(self.into())
+    }
+}
+
+impl BitAnd for Condition {
+    type Output = Self;
+
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Self::And(self.into(), rhs.into())
+    }
+}
+
+impl BitOr for Condition {
+    type Output = Self;
+
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self::Or(self.into(), rhs.into())
+    }
+}
+
+impl BitXor for Condition {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Self::Xor(self.into(), rhs.into())
     }
 }
