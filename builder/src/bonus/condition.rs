@@ -91,7 +91,7 @@ impl Condition {
     /// Returns true if both values are true
     #[must_use]
     pub fn and(self, other: Self) -> Self {
-        Self::And(self.into(), other.into())
+        self & other
     }
 
     /// Logical OR
@@ -99,13 +99,13 @@ impl Condition {
     /// Returns true if one value is true
     #[must_use]
     pub fn or(self, other: Self) -> Self {
-        Self::Or(self.into(), other.into())
+        self | other
     }
 
     /// Logical XOR
     #[must_use]
     pub fn xor(self, other: Self) -> Self {
-        Self::Xor(self.into(), other.into())
+        self ^ other
     }
 
     /// Logical NAND
@@ -113,7 +113,7 @@ impl Condition {
     /// Returns false if both outputs are true, otherwise returns true
     #[must_use]
     pub fn nand(self, other: Self) -> Self {
-        !self.and(other)
+        !(self & other)
     }
 
     /// Logical NOR
@@ -121,7 +121,7 @@ impl Condition {
     /// Returns true if both outputs are false
     #[must_use]
     pub fn nor(self, other: Self) -> Self {
-        !self.or(other)
+        !(self | other)
     }
 
     /// Logical XNOR
@@ -129,7 +129,7 @@ impl Condition {
     /// Returns true if the values are either both true or both false
     #[must_use]
     pub fn xnor(self, other: Self) -> Self {
-        !self.xor(other)
+        !(self ^ other)
     }
 }
 
