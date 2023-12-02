@@ -46,7 +46,7 @@ impl Condition {
     /// Requires that all of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn all<I>(conditions: I) -> Option<Self>
+    pub fn all_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
@@ -56,7 +56,7 @@ impl Condition {
     /// Requires that any of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn any<I>(conditions: I) -> Option<Self>
+    pub fn any_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
@@ -70,17 +70,17 @@ impl Condition {
     where
         I: IntoIterator<Item = Self>,
     {
-        Some(!Self::any(conditions)?)
+        Some(!Self::any_iter(conditions)?)
     }
 
     /// Requires that at least one of the conditions is false
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn not_all<I>(conditions: I) -> Option<Self>
+    pub fn not_all_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        Some(!Self::all(conditions)?)
+        Some(!Self::all_iter(conditions)?)
     }
 }
 
