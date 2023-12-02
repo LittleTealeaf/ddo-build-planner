@@ -4,11 +4,12 @@ use std::{
     ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
 
+use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
 
-use super::Condition;
+use super::{Condition, Depth};
 
 /// Represents a value of a [`Bonus`]
 ///
@@ -19,10 +20,10 @@ pub enum Value {
     Value(f32),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
-    /// Returns the minimum value from the set
-    Min(Vec<Value>),
-    /// Returns the maximum value from the set
-    Max(Vec<Value>),
+    /// Returns the minimum value of the two
+    Min(Box<Value>, Box<Value>),
+    /// Returns the maximum value of the two
+    Max(Box<Value>, Box<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
     /// Adds the first value to the second value
@@ -46,15 +47,17 @@ pub enum Value {
     },
 }
 
-// impl Value {
-//     /// Calculates the mean or average of the given values
-//     #[allow(clippy::cast_precision_loss)]
-//     pub fn mean(values: Vec<Self>) -> Self {
-//         let len = values.len();
-//         values.into_iter().sum::<Self>() / Self::Value(len as f32)
-//     }
-// }
-//
+/// Reduces iterators into values with a cumulative function
+fn cumulative_iter_reduce<I, F>(iter: I, fun: F) -> Value
+where
+    I: IntoIterator<Item = Value>,
+    F: FnMut(Value, Value) -> Value,
+{
+    iter.into_iter()
+        .tree_fold1(fun)
+        .expect("Expected at least one entry")
+}
+
 /// Operations to simplify writing formulas
 impl Value {
     /// Calculates the mean of some list or set
@@ -65,15 +68,57 @@ impl Value {
     where
         I: IntoIterator<Item = Self>,
     {
-        let mut iter = iter.into_iter();
-        let mut sum = iter.next().expect("Expected at least one item");
-        let mut count = 1f32;
-        for item in iter {
-            sum = sum + item;
-            count += 1f32;
-        }
+        let (sum, count) = iter
+            .into_iter()
+            .map(|a| (a, 1f32))
+            .tree_fold1(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
+            .unwrap();
 
         sum / Self::from(count)
+    }
+
+    /// Returns the minimum of all of the values
+    ///
+    /// # Panics
+    /// Panics if an iterator with no items is passed in
+    pub fn iter_min<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        cumulative_iter_reduce(iter, Self::min)
+    }
+
+    /// Returns the maximum of all of the values
+    ///
+    /// # Panics
+    /// Panics if an iterator with no items is passed in
+    pub fn iter_max<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        cumulative_iter_reduce(iter, Self::max)
+    }
+
+    /// Returns the sum of the values within the iterator
+    ///
+    /// # Panics
+    /// Panics if an iterator with no items is passed in
+    pub fn iter_sum<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        cumulative_iter_reduce(iter, Self::add)
+    }
+
+    /// Returns the sum of the values within the iterator
+    ///
+    /// # Panics
+    /// Panics if an iterator with no items is passed in
+    pub fn iter_product<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        cumulative_iter_reduce(iter, Self::mul)
     }
 
     /// Floors the value
@@ -82,12 +127,54 @@ impl Value {
         Self::Floor(self.into())
     }
 
+    /// Cielings the value
+    #[must_use]
+    pub fn ciel(self) -> Self {
+        (self + Self::from(1f32)).floor()
+    }
+
     /// Finds the reciprocol of the value.
     ///
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
         Self::Value(1f32) / self
+    }
+
+    /// Returns the maximum of this or another value
+    #[must_use]
+    pub fn max(self, other: Self) -> Self {
+        Self::Max(self.into(), other.into())
+    }
+
+    /// Returns the minimum of this or another value
+    #[must_use]
+    pub fn min(self, other: Self) -> Self {
+        Self::Min(self.into(), other.into())
+    }
+}
+
+impl Depth for Value {
+    fn get_depth(&self) -> usize {
+        match self {
+            Self::Value(_) | Self::Attribute(_) => 1,
+            Self::Min(a, b)
+            | Self::Max(a, b)
+            | Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => a.get_depth().max(b.get_depth()),
+            Self::Floor(a) => a.get_depth(),
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => condition
+                .get_depth()
+                .max(if_true.get_depth())
+                .max(if_false.get_depth()),
+        }
     }
 }
 
@@ -101,36 +188,8 @@ impl Display for Value {
             Self::Rem(a, b) => write!(f, "({a} % {b})"),
             Self::Value(value) => value.fmt(f),
             Self::Attribute(attr) => attr.fmt(f),
-            Self::Min(vals) => {
-                write!(f, "Min(")?;
-
-                let mut iter = vals.iter();
-
-                if let Some(val) = iter.next() {
-                    val.fmt(f)?;
-
-                    for val in iter {
-                        write!(f, ", {val}")?;
-                    }
-                }
-
-                write!(f, ")")
-            }
-            Self::Max(vals) => {
-                write!(f, "Max(")?;
-
-                let mut iter = vals.iter();
-
-                if let Some(val) = iter.next() {
-                    val.fmt(f)?;
-
-                    for val in iter {
-                        write!(f, ", {val}")?;
-                    }
-                }
-
-                write!(f, ")")
-            }
+            Self::Min(a, b) => write!(f, "Min({a}, {b})"),
+            Self::Max(a, b) => write!(f, "Max({a}, {b})"),
             Self::Floor(val) => write!(f, "Floor({val})"),
             Self::If {
                 condition,
@@ -150,14 +209,13 @@ impl AttributeDependencies for Value {
             | Self::Sub(a, b)
             | Self::Mul(a, b)
             | Self::Div(a, b)
-            | Self::Rem(a, b) => {
+            | Self::Rem(a, b)
+            | Self::Max(a, b)
+            | Self::Min(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
             Self::Value(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Min(vals) | Self::Max(vals) => {
-                vals.iter().any(|val| val.has_attr_dependency(attribute))
-            }
             Self::Floor(val) => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
@@ -178,17 +236,14 @@ impl AttributeDependencies for Value {
             | Self::Sub(a, b)
             | Self::Mul(a, b)
             | Self::Div(a, b)
-            | Self::Rem(a, b) => {
+            | Self::Rem(a, b)
+            | Self::Min(a, b)
+            | Self::Max(a, b) => {
                 a.include_attr_dependency(set);
                 b.include_attr_dependency(set);
             }
             Self::Attribute(attr) => {
                 set.insert(*attr);
-            }
-            Self::Min(vals) | Self::Max(vals) => {
-                for val in vals {
-                    val.include_attr_dependency(set);
-                }
             }
             Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {

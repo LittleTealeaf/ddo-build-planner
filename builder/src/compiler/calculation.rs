@@ -29,36 +29,8 @@ impl Compiler {
         match value {
             Value::Value(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
-            Value::Min(vals) => {
-                let mut iter = vals.iter();
-
-                iter.next().map_or(0f32, |first| {
-                    let mut min = self.calculate_value(first);
-
-                    for item in iter {
-                        let val = self.calculate_value(item);
-                        if min > val {
-                            min = val;
-                        }
-                    }
-                    min
-                })
-            }
-            Value::Max(vals) => {
-                let mut iter = vals.iter();
-
-                iter.next().map_or(0f32, |first| {
-                    let mut max = self.calculate_value(first);
-
-                    for item in iter {
-                        let val = self.calculate_value(item);
-                        if max < val {
-                            max = val;
-                        }
-                    }
-                    max
-                })
-            }
+            Value::Max(a, b) => self.calculate_value(a).max(self.calculate_value(b)),
+            Value::Min(a, b) => self.calculate_value(a).min(self.calculate_value(b)),
             Value::Floor(val) => self.calculate_value(val).floor(),
             Value::If {
                 condition,
