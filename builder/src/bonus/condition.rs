@@ -70,7 +70,7 @@ impl Condition {
     where
         I: IntoIterator<Item = Self>,
     {
-        Some(!Self::any_iter(conditions)?)
+        Self::any_iter(conditions).map(Self::not)
     }
 
     /// Requires that at least one of the conditions is false
@@ -80,7 +80,7 @@ impl Condition {
     where
         I: IntoIterator<Item = Self>,
     {
-        Some(!Self::all_iter(conditions)?)
+        Self::all_iter(conditions).map(Self::not)
     }
 }
 
