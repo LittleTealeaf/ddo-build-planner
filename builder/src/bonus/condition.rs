@@ -66,7 +66,7 @@ impl Condition {
     /// Requires that none of the conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn none<I>(conditions: I) -> Option<Self>
+    pub fn none_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
