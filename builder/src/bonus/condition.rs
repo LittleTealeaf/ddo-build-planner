@@ -167,12 +167,12 @@ impl AttributeDependencies for Condition {
 impl Depth for Condition {
     fn get_depth(&self) -> usize {
         match self {
-            Condition::Constant(_) => 1,
-            Condition::Not(a) => a.get_depth(),
-            Condition::GreaterThan(a, b) | Condition::LessThan(a, b) | Condition::EqualTo(a, b) => {
+            Self::Constant(_) => 1,
+            Self::Not(a) => a.get_depth(),
+            Self::GreaterThan(a, b) | Condition::LessThan(a, b) | Condition::EqualTo(a, b) => {
                 a.get_depth().max(b.get_depth())
             }
-            Condition::And(a, b) | Condition::Or(a, b) | Condition::Xor(a, b) => {
+            Self::And(a, b) | Condition::Or(a, b) | Condition::Xor(a, b) => {
                 a.get_depth().max(b.get_depth())
             }
         }
