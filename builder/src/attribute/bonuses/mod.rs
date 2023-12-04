@@ -7,7 +7,6 @@ public_modules!(
     player_class,
     saving_throw,
     sheltering,
-    skill,
     spell_power,
     weapon_attribute
 );

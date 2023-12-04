@@ -2,8 +2,6 @@
 
 use utils::public_modules;
 
-
-
 public_modules!(
     ability,
     armor_class,

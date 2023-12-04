@@ -1,6 +1,6 @@
 use crate::{
     feat::{Feat, Proficiency},
-    types::{Ability,Immunity, PlayerClass, Race, SavingThrow, Sheltering, Skill, ArmorClass},
+    types::{Ability, ArmorClass, Immunity, PlayerClass, Race, SavingThrow, Sheltering, Skill},
 };
 
 use super::{bonuses::WeaponAttribute, flags::Flag, toggles::Toggle, Attribute};

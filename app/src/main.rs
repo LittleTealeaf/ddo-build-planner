@@ -4,7 +4,7 @@ use builder::{
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
     equipment::item::types::ShieldType,
-    types::{Ability, PlayerClass, Race, WeaponHand, WeaponStat, ArmorClass},
+    types::{Ability, ArmorClass, PlayerClass, Race, WeaponHand, WeaponStat},
 };
 
 fn main() {

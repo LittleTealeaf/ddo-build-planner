@@ -16,8 +16,8 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     types::{
-        Ability, DamageType, Health, PlayerClass, SavingThrow, Sheltering, Skill,
-        SpellPoints, SpellPower, SpellSelector, SummonedAttribute, ArmorClass,
+        Ability, ArmorClass, DamageType, Health, PlayerClass, SavingThrow, Sheltering, Skill,
+        SpellPoints, SpellPower, SpellSelector, SummonedAttribute,
     },
 };
 use std::fmt::Display;
