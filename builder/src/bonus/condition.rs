@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
 
-use super::Value;
+use super::{Depth, Value};
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -46,7 +46,7 @@ impl Condition {
     /// Requires that all of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn all<I>(conditions: I) -> Option<Self>
+    pub fn all_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
@@ -56,7 +56,7 @@ impl Condition {
     /// Requires that any of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn any<I>(conditions: I) -> Option<Self>
+    pub fn any_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
@@ -66,21 +66,21 @@ impl Condition {
     /// Requires that none of the conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn none<I>(conditions: I) -> Option<Self>
+    pub fn none_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        Some(!Self::any(conditions)?)
+        Self::any_iter(conditions).map(Self::not)
     }
 
     /// Requires that at least one of the conditions is false
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn not_all<I>(conditions: I) -> Option<Self>
+    pub fn not_all_iter<I>(conditions: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        Some(!Self::all(conditions)?)
+        Self::all_iter(conditions).map(Self::not)
     }
 }
 
@@ -160,6 +160,19 @@ impl AttributeDependencies for Condition {
                 b.include_attr_dependency(set);
             }
             Self::Constant(_) => {}
+        }
+    }
+}
+
+impl Depth for Condition {
+    fn get_depth(&self) -> usize {
+        match self {
+            Self::Constant(_) => 1,
+            Self::Not(a) => a.get_depth(),
+            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+                a.get_depth().max(b.get_depth())
+            }
+            Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => a.get_depth().max(b.get_depth()),
         }
     }
 }

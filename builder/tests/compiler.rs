@@ -12,9 +12,7 @@ mod calculate {
         let value = compiler.get_attribute(&Attribute::Debug(0));
         assert!(
             value.within_margin(&expected),
-            "Expected {}, found {}",
-            expected,
-            value
+            "Expected {expected}, found {value}",
         );
     }
 
@@ -66,7 +64,7 @@ mod calculate {
                 None,
             )],
             3f32,
-        )
+        );
     }
 
     #[test]
@@ -80,7 +78,7 @@ mod calculate {
                 None,
             )],
             3f32,
-        )
+        );
     }
 
     #[test]
@@ -94,7 +92,7 @@ mod calculate {
                 None,
             )],
             6f32,
-        )
+        );
     }
 
     #[test]
@@ -108,7 +106,7 @@ mod calculate {
                 None,
             )],
             3f32,
-        )
+        );
     }
 
     #[test]
@@ -122,7 +120,7 @@ mod calculate {
                 None,
             )],
             1f32,
-        )
+        );
     }
 
     #[test]
@@ -131,7 +129,17 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::Min(vec![Value::Value(6f32), Value::Value(5f32)]),
+                Value::from(5f32).min(Value::from(6f32)),
+                BonusSource::Debug(0),
+                None,
+            )],
+            5f32,
+        );
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::from(6f32).min(Value::from(5f32)),
                 BonusSource::Debug(0),
                 None,
             )],
@@ -145,7 +153,17 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::Max(vec![Value::Value(6f32), Value::Value(5f32)]),
+                Value::from(5f32).max(Value::from(6f32)),
+                BonusSource::Debug(0),
+                None,
+            )],
+            6f32,
+        );
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::from(6f32).max(Value::from(5f32)),
                 BonusSource::Debug(0),
                 None,
             )],
@@ -178,6 +196,20 @@ mod calculate {
                 None,
             )],
             10f32,
+        );
+    }
+
+    #[test]
+    fn ciel() {
+        test_bonuses(
+            [Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                Value::from(10.5f32).ciel(),
+                BonusSource::Debug(0),
+                None,
+            )],
+            11f32,
         );
     }
 
@@ -270,8 +302,7 @@ mod condition {
 
         assert_eq!(
             result, expected,
-            "Found {}, expected {}, for condition {}",
-            result, expected, error
+            "Found {result}, expected {expected}, for condition {error}",
         );
     }
 

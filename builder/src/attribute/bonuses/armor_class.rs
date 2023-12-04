@@ -72,11 +72,9 @@ impl DefaultBonuses for ArmorClass {
                 Value::If {
                     condition: Condition::has(Attribute::ArmorClass(Self::CalculatedMaxDexBonus))
                         .into(),
-                    if_true: Value::Min(vec![
-                        Attribute::AbilityModifier(Ability::Dexterity).into(),
-                        Attribute::ArmorClass(Self::CalculatedMaxDexBonus).into(),
-                    ])
-                    .into(),
+                    if_true: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).min(
+                        Value::from(Attribute::ArmorClass(Self::CalculatedMaxDexBonus)),
+                    ).into(),
                     if_false: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).into(),
                 },
                 BonusSource::Base,

@@ -128,9 +128,9 @@ mod tests {
 
         let compiler = Compiler::default();
 
-        let bonuses = compiler
+        assert!(compiler
             .get_dependants(Attribute::Ability(Ability::Dexterity))
-            .collect::<Vec<_>>();
-        assert!(bonuses.len() > 0);
+            .next()
+            .is_some());
     }
 }

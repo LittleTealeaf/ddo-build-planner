@@ -304,7 +304,7 @@ impl GetBonuses for RacialFeat {
                         1f32.into(),
                         Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
                         Some(
-                            Condition::any(WeaponType::THROWING_WEAPONS.map(|wt| {
+                            Condition::any_iter(WeaponType::THROWING_WEAPONS.map(|wt| {
                                 Condition::has(Flag::from(MainHandType::Weapon(wt)).into())
                             }))
                             .unwrap(),
@@ -316,7 +316,7 @@ impl GetBonuses for RacialFeat {
                         1f32.into(),
                         Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
                         Some(
-                            Condition::any(WeaponType::THROWING_WEAPONS.map(|wt| {
+                            Condition::any_iter(WeaponType::THROWING_WEAPONS.map(|wt| {
                                 Condition::has(Flag::from(OffHandType::Weapon(wt)).into())
                             }))
                             .unwrap(),

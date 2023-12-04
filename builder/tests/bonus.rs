@@ -112,7 +112,10 @@ mod has_dependency {
 
         #[test]
         fn min() {
-            let value = Value::Min(vec![Attribute::Debug(0).into(), 10f32.into()]);
+            let value = Value::Min(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(10f32).into(),
+            );
 
             assert!(value.has_attr_dependency(Attribute::Debug(0)));
             assert!(!value.has_attr_dependency(Attribute::Debug(1)));
@@ -120,7 +123,10 @@ mod has_dependency {
 
         #[test]
         fn max() {
-            let value = Value::Max(vec![Attribute::Debug(0).into(), Attribute::Debug(1).into()]);
+            let value = Value::Max(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
 
             assert!(value.has_attr_dependency(Attribute::Debug(0)));
             assert!(value.has_attr_dependency(Attribute::Debug(1)));
@@ -237,7 +243,10 @@ mod include_dependencies {
 
         #[test]
         fn min() {
-            let value = Value::Min(vec![Attribute::Debug(0).into(), 10f32.into()]);
+            let value = Value::Min(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(10f32).into(),
+            );
 
             let deps = value.get_attr_dependencies();
 
@@ -247,7 +256,10 @@ mod include_dependencies {
 
         #[test]
         fn max() {
-            let value = Value::Max(vec![Attribute::Debug(0).into(), Attribute::Debug(1).into()]);
+            let value = Value::Max(
+                Value::from(Attribute::Debug(0)).into(),
+                Value::from(Attribute::Debug(1)).into(),
+            );
 
             let deps = value.get_attr_dependencies();
 

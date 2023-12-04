@@ -64,7 +64,7 @@ mod tests {
         assert!(map.get(&TestEnum::C).unwrap().contains(&4));
 
         let items = map.get(&TestEnum::D).unwrap();
-        let mut iter = items.into_iter();
+        let mut iter = items.iter();
         assert_eq!(Some(&5), iter.next());
         assert_eq!(Some(&5), iter.next());
         assert_eq!(None, iter.next());
@@ -91,7 +91,7 @@ mod tests {
         assert!(map.get(&TestEnum::C).unwrap().contains(&4));
 
         let items = map.get(&TestEnum::D).unwrap();
-        let mut iter = items.into_iter();
+        let mut iter = items.iter();
         assert_eq!(Some(&5), iter.next());
         assert_eq!(Some(&5), iter.next());
         assert_eq!(None, iter.next());
