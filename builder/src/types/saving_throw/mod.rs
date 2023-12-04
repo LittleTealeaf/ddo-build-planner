@@ -1,6 +1,9 @@
+public_modules!(bonuses);
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 /// The different saving throws that a character can have bonuses to
 ///
