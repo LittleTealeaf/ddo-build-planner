@@ -19,7 +19,6 @@ pub trait CloneBonus {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>>;
 }
 
-
 /// Calculates the depth of the object. Depth refers to the number of objects nested within this
 /// instance.
 ///
