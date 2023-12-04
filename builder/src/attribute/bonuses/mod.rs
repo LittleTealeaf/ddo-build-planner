@@ -3,4 +3,4 @@
 //! [`Attribute`]: crate::attribute::Attribute
 
 use utils::public_modules;
-public_modules!(player_class, sheltering, spell_power, weapon_attribute);
+public_modules!(player_class, sheltering, weapon_attribute);

@@ -17,16 +17,13 @@ use crate::{
     feat::Feat,
     types::{
         Ability, ArmorClass, DamageType, Health, PlayerClass, SavingThrow, Sheltering, Skill,
-        SpellPoints, SpellPower, SpellSelector, SummonedAttribute,
+        SpellPoints, SpellPower, SpellSelector, SummonedAttribute, _SpellCriticalChance,
+        _SpellCriticalDamage, _SpellPower,
     },
 };
 use std::fmt::Display;
 
-use self::{
-    bonuses::{WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower},
-    flags::Flag,
-    toggles::Toggle,
-};
+use self::{bonuses::WeaponAttribute, flags::Flag, toggles::Toggle};
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
