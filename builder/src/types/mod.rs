@@ -17,8 +17,8 @@ public_modules!(
     weapon_stat,
     weapon_hand,
     monster_type,
-    player_class,
     player_race,
+    player_class,
     health,
     spell_points,
     summoned_attribute
