@@ -1,11 +1,13 @@
+public_modules!(weapon_hand,weapon_stat);
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 use crate::{
     attribute::{Attribute, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
-    types::{WeaponHand, WeaponStat},
 };
 
 /// A `WeaponStat` that is specifically for a weapon hand.
