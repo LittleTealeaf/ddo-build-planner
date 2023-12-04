@@ -1,6 +1,9 @@
+public_modules!(bonuses);
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 /// The different abilities that a character has
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
