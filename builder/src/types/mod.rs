@@ -2,8 +2,11 @@
 
 use utils::public_modules;
 
+
+
 public_modules!(
     ability,
+    armor_class,
     skill,
     spell_school,
     saving_throw,
@@ -15,7 +18,6 @@ public_modules!(
     sheltering,
     weapon_stat,
     weapon_hand,
-    armor_class,
     monster_type,
     player_class,
     player_race,
