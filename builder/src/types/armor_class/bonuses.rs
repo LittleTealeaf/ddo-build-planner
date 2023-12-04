@@ -5,8 +5,10 @@ use crate::{
     },
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     equipment::item::types::{ArmorType, ShieldType},
-    types::{Ability, ArmorClass},
+    types::Ability,
 };
+
+use super::ArmorClass;
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
@@ -72,9 +74,11 @@ impl DefaultBonuses for ArmorClass {
                 Value::If {
                     condition: Condition::has(Attribute::ArmorClass(Self::CalculatedMaxDexBonus))
                         .into(),
-                    if_true: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).min(
-                        Value::from(Attribute::ArmorClass(Self::CalculatedMaxDexBonus)),
-                    ).into(),
+                    if_true: Value::from(Attribute::AbilityModifier(Ability::Dexterity))
+                        .min(Value::from(Attribute::ArmorClass(
+                            Self::CalculatedMaxDexBonus,
+                        )))
+                        .into(),
                     if_false: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).into(),
                 },
                 BonusSource::Base,

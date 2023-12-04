@@ -5,7 +5,6 @@
 use utils::public_modules;
 public_modules!(
     ability,
-    armor_class,
     player_class,
     saving_throw,
     sheltering,
