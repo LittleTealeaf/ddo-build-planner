@@ -1,6 +1,9 @@
+public_modules!(bonuses);
+
 use std::fmt::Display;
 
 use serde::{Serialize, Deserialize};
+use utils::public_modules;
 
 /// Sheltering attributes grant a % reduction to damage from that type.
 ///
