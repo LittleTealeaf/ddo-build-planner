@@ -20,6 +20,7 @@ use crate::{
 use super::Toggle;
 
 
+// TODO: this needs to be cleaned up
 /// Indicates that the character possesses some flag.
 ///
 /// Flags are most often used for indirect effects, such as "does the character have this toggle", or other traits.
