@@ -1,3 +1,4 @@
+//! Player Health
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};

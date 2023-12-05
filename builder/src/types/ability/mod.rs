@@ -1,3 +1,5 @@
+//! Ability types
+
 public_modules!(bonuses);
 
 use std::fmt::Display;
@@ -42,7 +44,7 @@ impl Ability {
         Self::Constitution,
         Self::Intelligence,
         Self::Wisdom,
-        Self::Charisma
+        Self::Charisma,
     ];
 }
 

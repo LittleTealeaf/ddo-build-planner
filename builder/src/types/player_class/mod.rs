@@ -1,3 +1,4 @@
+//! Each of the playable player classes and archetypes
 public_modules!(bonuses);
 
 use std::fmt::Display;

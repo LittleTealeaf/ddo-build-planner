@@ -8,8 +8,14 @@ use crate::{
     equipment::item::types::WeaponType,
     feat::Feat,
     types::{
-        ArmorClass, AttackingTarget, Flag, Immunity, MainHandType, MonsterType, OffHandType,
-        SavingThrow, Skill, Toggle, WeaponHand, WeaponStat,
+        armor_class::ArmorClass,
+        flag::{Flag, MainHandType, OffHandType},
+        immunity::Immunity,
+        monster_type::MonsterType,
+        saving_throw::SavingThrow,
+        skill::Skill,
+        toggle::{AttackingTarget, Toggle},
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
 

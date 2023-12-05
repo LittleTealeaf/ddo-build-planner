@@ -1,8 +1,9 @@
 use crate::{
     feat::{Feat, Proficiency},
     types::{
-        Ability, ArmorClass, Flag, Immunity, PlayerClass, Race, SavingThrow, Sheltering, Skill,
-        Toggle, WeaponAttribute,
+        ability::Ability, armor_class::ArmorClass, flag::Flag, immunity::Immunity,
+        player_class::PlayerClass, player_race::Race, saving_throw::SavingThrow,
+        sheltering::Sheltering, skill::Skill, toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
 

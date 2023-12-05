@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Alignment, MonsterType};
+use crate::types::{alignment::Alignment, monster_type::MonsterType};
 
 /// Indicates that the character is attacking / fighting a certain type
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]

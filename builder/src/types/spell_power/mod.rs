@@ -1,3 +1,5 @@
+//! Spell Power
+// TODO: Merge with a spell category
 public_modules!(bonuses);
 
 use std::fmt::Display;
@@ -5,7 +7,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
-use super::DamageType;
+use super::damage_type::DamageType;
 
 /// Defines specific spell powers that a player can boost to increase damage for spells of that
 /// type.

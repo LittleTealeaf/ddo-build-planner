@@ -11,7 +11,7 @@ use std::fmt::Display;
 use crate::{
     attribute::{Attribute, AttributeDependencies},
     feat::Feat,
-    types::Flag,
+    types::flag::Flag,
 };
 
 pub use bonus_type::*;
@@ -272,7 +272,7 @@ impl Display for Bonus {
 
 #[cfg(test)]
 mod tests {
-    use crate::types::Ability;
+    use crate::types::ability::Ability;
 
     use super::*;
 

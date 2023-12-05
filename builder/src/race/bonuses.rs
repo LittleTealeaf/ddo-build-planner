@@ -3,7 +3,10 @@ use crate::{
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::{Feat, Proficiency},
-    types::{Ability, DamageType, Immunity, Race, SavingThrow, Skill},
+    types::{
+        ability::Ability, damage_type::DamageType, immunity::Immunity, player_race::Race,
+        saving_throw::SavingThrow, skill::Skill,
+    },
 };
 
 use super::RacialFeat;

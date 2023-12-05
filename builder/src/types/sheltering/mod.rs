@@ -1,8 +1,9 @@
+//! Physical and Magical Sheltering
 public_modules!(bonuses);
 
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
 /// Sheltering attributes grant a % reduction to damage from that type.

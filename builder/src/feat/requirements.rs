@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{PlayerClass, Skill, Ability};
+
+use crate::types::{player_class::PlayerClass, skill::Skill, ability::Ability};
 
 use super::Feat;
 

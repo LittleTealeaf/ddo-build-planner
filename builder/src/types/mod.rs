@@ -1,26 +1,22 @@
 //! Contains all of the various types within Dungeons & Dragons: Online
 
-use utils::public_modules;
-
-public_modules!(
-    ability,
-    armor_class,
-    skill,
-    spell_school,
-    saving_throw,
-    alignment,
-    damage_type,
-    immunity,
-    spell_selector,
-    spell_power,
-    sheltering,
-    weapon_attribute,
-    monster_type,
-    player_race,
-    player_class,
-    flag,
-    toggle,
-    health,
-    spell_points,
-    summoned_attribute
-);
+pub mod ability;
+pub mod alignment;
+pub mod armor_class;
+pub mod damage_type;
+pub mod flag;
+pub mod health;
+pub mod immunity;
+pub mod monster_type;
+pub mod player_class;
+pub mod player_race;
+pub mod saving_throw;
+pub mod sheltering;
+pub mod skill;
+pub mod spell_points;
+pub mod spell_power;
+pub mod spell_school;
+pub mod spell_selector;
+pub mod summoned_attribute;
+pub mod toggle;
+pub mod weapon_attribute;

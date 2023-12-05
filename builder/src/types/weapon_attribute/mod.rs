@@ -1,4 +1,5 @@
-public_modules!(weapon_hand,weapon_stat);
+//! weapon Attributes
+public_modules!(weapon_hand, weapon_stat);
 
 use std::fmt::Display;
 

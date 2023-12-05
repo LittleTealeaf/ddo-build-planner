@@ -1,3 +1,4 @@
+//! Summoned Attributes
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
@@ -7,7 +8,7 @@ use crate::{
     bonus::{Bonus, CloneBonus},
 };
 
-use super::Ability;
+use super::ability::Ability;
 
 /// Attributes pertaining to summoned creatures, charmed minions, pets, and hirelings
 #[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]

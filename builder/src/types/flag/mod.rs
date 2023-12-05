@@ -1,4 +1,3 @@
-
 //! Handles any Flag that the character has.
 //!
 //! Most of the time, the flag is either a `1` (Has) or `0` (Not Have).
@@ -12,13 +11,13 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
 use crate::{
+    attribute::GetBonuses,
     bonus::Bonus,
     equipment::item::types::ArmorType,
-    types::{Alignment, Immunity, Race}, attribute::GetBonuses,
+    types::{alignment::Alignment, immunity::Immunity, player_race::Race},
 };
 
-use super::Toggle;
-
+use super::toggle::Toggle;
 
 /// Indicates that the character possesses some flag.
 ///

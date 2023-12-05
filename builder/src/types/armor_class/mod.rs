@@ -1,3 +1,4 @@
+//! Armor class types and calculations
 public_modules!(bonuses);
 
 use std::fmt::Display;

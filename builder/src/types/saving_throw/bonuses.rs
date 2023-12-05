@@ -1,7 +1,7 @@
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusSource, BonusType, CloneBonus},
-    types::{Ability, SavingThrow},
+    types::{ability::Ability, saving_throw::SavingThrow},
 };
 
 impl CloneBonus for SavingThrow {

@@ -1,3 +1,4 @@
+//! Spell Points
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
@@ -7,7 +8,7 @@ use crate::{
     bonus::{Bonus, BonusSource, BonusType, Value},
 };
 
-use super::PlayerClass;
+use super::player_class::PlayerClass;
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
 /// Different types of bonsues to spell points
