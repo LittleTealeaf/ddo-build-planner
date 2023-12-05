@@ -32,7 +32,7 @@ use crate::{
 ///     },
 ///     bonus::{Bonus, BonusSource, Condition, BonusType},
 ///     compiler::Compiler,
-///     types::Sheltering,
+///     types::sheltering::Sheltering,
 /// };
 ///
 /// let mut compiler = Compiler::default();

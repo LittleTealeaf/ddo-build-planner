@@ -211,7 +211,7 @@ impl Bonus {
     /// # Example
     /// ```
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, Value},
-    /// attribute::{Attribute}, types::Ability};
+    /// attribute::{Attribute}, types::ability::Ability};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
     /// BonusSource::Base, None);
