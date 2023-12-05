@@ -1,29 +1,23 @@
 app:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: 'app/**'
+- changed-files:
+  - any-glob-to-any-file: 'app/**'
 
 builder:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: 'builder/**'
+- changed-files:
+  - any-glob-to-any-file: 'builder/**'
 
 data:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: 'data/**'
+- changed-files:
+  - any-glob-to-any-file: 'data/**'
 
 editor:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: 'editor/**'
+- changed-files:
+  - any-glob-to-any-file: 'editor/**'
 
 utils:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: 'utils/**'
+- changed-files:
+  - any-glob-to-any-file: 'utils/**'
 
 github:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: '.github/**'
+- changed-files:
+  - any-glob-to-any-file: '.github/**'
