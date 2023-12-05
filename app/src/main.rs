@@ -9,7 +9,7 @@ use builder::{
         armor_class::ArmorClass,
         flag::OffHandType,
         player_class::PlayerClass,
-        player_race::Race,
+        race::Race,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };

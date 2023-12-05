@@ -5,7 +5,7 @@ mod dwarf {
         compiler::Compiler,
         equipment::item::types::WeaponType,
         feat::{Feat, Proficiency},
-        types::{flag::Flag, player_race::Race},
+        types::{flag::Flag, race::Race},
     };
     use utils::float::ErrorMargin;
 

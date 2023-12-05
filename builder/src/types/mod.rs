@@ -9,7 +9,7 @@ pub mod health;
 pub mod immunity;
 pub mod monster_type;
 pub mod player_class;
-pub mod player_race;
+pub mod race;
 pub mod saving_throw;
 pub mod sheltering;
 pub mod skill;
