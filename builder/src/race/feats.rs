@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::bit_ops::BitAny;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -309,10 +310,12 @@ impl GetBonuses for RacialFeat {
                         1f32.into(),
                         Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
                         Some(
-                            Condition::any_iter(WeaponType::THROWING_WEAPONS.map(|wt| {
-                                Condition::has(Flag::from(MainHandType::Weapon(wt)).into())
-                            }))
-                            .unwrap(),
+                            WeaponType::THROWING_WEAPONS
+                                .map(|wt| {
+                                    Condition::has(Flag::from(MainHandType::Weapon(wt)).into())
+                                })
+                                .bit_any()
+                                .unwrap(),
                         ),
                     ),
                     Bonus::new(
@@ -321,10 +324,12 @@ impl GetBonuses for RacialFeat {
                         1f32.into(),
                         Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
                         Some(
-                            Condition::any_iter(WeaponType::THROWING_WEAPONS.map(|wt| {
-                                Condition::has(Flag::from(OffHandType::Weapon(wt)).into())
-                            }))
-                            .unwrap(),
+                            WeaponType::THROWING_WEAPONS
+                                .map(|wt| {
+                                    Condition::has(Flag::from(OffHandType::Weapon(wt)).into())
+                                })
+                                .bit_any()
+                                .unwrap(),
                         ),
                     ),
                 ]

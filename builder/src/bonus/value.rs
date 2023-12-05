@@ -320,24 +320,13 @@ impl Neg for Value {
 }
 
 impl Sum for Value {
-    fn sum<I: Iterator<Item = Self>>(mut iter: I) -> Self {
-        let mut sum = iter.next().unwrap();
-
-        for item in iter {
-            sum = sum + item;
-        }
-        sum
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        Self::iter_sum(iter)
     }
 }
 
 impl Product for Value {
-    fn product<I: Iterator<Item = Self>>(mut iter: I) -> Self {
-        let mut product = iter.next().expect("Expected at least one value");
-
-        for item in iter {
-            product = product * item;
-        }
-
-        product
+    fn product<I: Iterator<Item = Self>>(iter: I) -> Self {
+        Self::iter_product(iter)
     }
 }

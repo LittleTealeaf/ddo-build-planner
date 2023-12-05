@@ -3,3 +3,4 @@
 pub mod float;
 pub mod modules;
 pub mod ord;
+pub mod bit_ops;
