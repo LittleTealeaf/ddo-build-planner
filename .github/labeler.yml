@@ -1,7 +1,7 @@
 app:
 - any:
   - changed-files:
-    - any-glob-to-any-fle: 'app/**'
+    - any-glob-to-any-file: 'app/**'
 
 builder:
 - any:
