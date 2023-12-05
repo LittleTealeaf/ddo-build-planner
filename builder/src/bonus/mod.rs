@@ -10,7 +10,8 @@ use std::fmt::Display;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
-    feat::Feat, types::Flag,
+    feat::Feat,
+    types::Flag,
 };
 
 pub use bonus_type::*;

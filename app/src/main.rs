@@ -1,9 +1,10 @@
 //! Application Starting Point
 use builder::{
+    attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
     equipment::item::types::ShieldType,
-    types::{Ability, ArmorClass, PlayerClass, Race, WeaponHand, WeaponStat, OffHandType}, attribute::Attribute,
+    types::{Ability, ArmorClass, OffHandType, PlayerClass, Race, WeaponHand, WeaponStat},
 };
 
 fn main() {

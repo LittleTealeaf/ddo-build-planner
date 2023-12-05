@@ -3,13 +3,14 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{
-        Attribute, GetBonuses,
-    },
+    attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::Feat,
-    types::{ArmorClass, Immunity, MonsterType, SavingThrow, Skill, WeaponHand, WeaponStat, Toggle, AttackingTarget, Flag, MainHandType, OffHandType},
+    types::{
+        ArmorClass, AttackingTarget, Flag, Immunity, MainHandType, MonsterType, OffHandType,
+        SavingThrow, Skill, Toggle, WeaponHand, WeaponStat,
+    },
 };
 
 /// Feats granted from different races.
