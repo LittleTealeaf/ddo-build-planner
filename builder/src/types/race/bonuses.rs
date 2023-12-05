@@ -3,10 +3,12 @@ use crate::{
     bonus::{Bonus, BonusType, Condition},
     equipment::item::types::WeaponType,
     feat::{Feat, Proficiency},
-    types::{Ability, DamageType, Immunity, Race, SavingThrow, Skill},
+    types::{
+        ability::Ability, damage_type::DamageType, immunity::Immunity, race::Race,
+        saving_throw::SavingThrow, skill::Skill,
+    }, race::RacialFeat,
 };
 
-use super::RacialFeat;
 
 impl Race {
     fn ability_modifier(self, ability: Ability, value: f32) -> Bonus {

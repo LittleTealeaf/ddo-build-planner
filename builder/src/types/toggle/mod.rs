@@ -6,11 +6,9 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::bonus::Bonus;
+use crate::{attribute::GetBonuses, bonus::Bonus};
 
 pub use attacking_target::*;
-
-use super::GetBonuses;
 
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]

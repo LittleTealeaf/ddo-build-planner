@@ -6,8 +6,7 @@ use utils::public_modules;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType, Value},
-    feat::{Feat, FeatRequirement, GetFeatRequirement},
-    types::{Ability, PlayerClass, Skill, SpellPoints, SpellPower},
+    feat::{Feat, FeatRequirement, GetFeatRequirement}, types::{summoned_attribute::SummonedAttribute, ability::Ability, skill::Skill, spell_power::SpellPower, spell_points::SpellPoints, player_class::PlayerClass},
 };
 
 public_modules!(spell_focus);
@@ -39,7 +38,7 @@ impl GetBonuses for SpellcastingFeat {
     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         (value > 0f32).then(|| match self {
             Self::AugmentSummoning => Some(vec![Bonus::new(
-                Attribute::SummonedAttribute(crate::types::SummonedAttribute::AbilityScore(
+                Attribute::SummonedAttribute(SummonedAttribute::AbilityScore(
                     Ability::All,
                 )),
                 BonusType::Stacking,

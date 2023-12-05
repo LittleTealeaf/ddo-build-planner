@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
-    types::{SavingThrow, Skill}, feat::{Feat, GetFeatRequirement, FeatRequirement},
+    types::{saving_throw::SavingThrow, skill::Skill}, feat::{Feat, GetFeatRequirement, FeatRequirement},
 };
 
 #[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]

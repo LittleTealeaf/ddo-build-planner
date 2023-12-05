@@ -9,8 +9,9 @@ mod value;
 use std::fmt::Display;
 
 use crate::{
-    attribute::{flags::Flag, Attribute, AttributeDependencies},
+    attribute::{Attribute, AttributeDependencies},
     feat::Feat,
+    types::flag::Flag,
 };
 
 pub use bonus_type::*;
@@ -210,7 +211,7 @@ impl Bonus {
     /// # Example
     /// ```
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Condition, Value},
-    /// attribute::{Attribute}, types::Ability};
+    /// attribute::{Attribute}, types::ability::Ability};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, 10f32.into(),
     /// BonusSource::Base, None);
@@ -271,7 +272,7 @@ impl Display for Bonus {
 
 #[cfg(test)]
 mod tests {
-    use crate::types::Ability;
+    use crate::types::ability::Ability;
 
     use super::*;
 

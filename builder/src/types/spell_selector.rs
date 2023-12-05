@@ -1,11 +1,11 @@
-
+//! Spell Selector
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::SpellSchool;
+use crate::types::spell_school::SpellSchool;
 
-use super::{SpellPower, PlayerClass};
+use super::{player_class::PlayerClass, spell_power::SpellPower};
 
 /// Specifies the spell, type of spell, spell class.
 ///

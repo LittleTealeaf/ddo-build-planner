@@ -1,7 +1,7 @@
 use crate::{
     attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
-    types::SpellPower,
+    types::spell_power::SpellPower,
 };
 
 /// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellPower`]
@@ -99,11 +99,11 @@ impl CloneBonus for SpellPower {
 macro_rules! from_skill {
     ($skill: ident, $sp: ident) => {
         Bonus::new(
-            $crate::attribute::Attribute::SpellPower($crate::types::SpellPower::from(
-                $crate::types::DamageType::$sp,
+            $crate::attribute::Attribute::SpellPower($crate::types::spell_power::SpellPower::from(
+                $crate::types::damage_type::DamageType::$sp,
             )),
             BonusType::Stacking,
-            $crate::attribute::Attribute::Skill($crate::types::Skill::$skill).into(),
+            $crate::attribute::Attribute::Skill($crate::types::skill::Skill::$skill).into(),
             $crate::bonus::BonusSource::Base,
             None,
         )
@@ -161,3 +161,4 @@ mod tests {
         }
     }
 }
+

@@ -1,7 +1,10 @@
+//! Armor class types and calculations
+public_modules!(bonuses);
+
 use std::fmt::Display;
 
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 /// Represents different attributes that relate to Armor Class
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -46,4 +49,3 @@ impl Display for ArmorClass {
         }
     }
 }
-

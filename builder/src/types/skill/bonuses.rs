@@ -1,7 +1,7 @@
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
-    types::{Skill, SpellPower},
+    types::{skill::Skill, spell_power::SpellPower},
 };
 
 impl Skill {
@@ -39,7 +39,7 @@ macro_rules! skill_ability_bonus {
         Bonus::new(
             $crate::attribute::Attribute::Skill(Skill::$skill).into(),
             $crate::bonus::BonusType::AbilityModifier,
-            $crate::attribute::Attribute::AbilityModifier($crate::types::Ability::$ability).into(),
+            $crate::attribute::Attribute::AbilityModifier($crate::types::ability::Ability::$ability).into(),
             $crate::bonus::BonusSource::Base,
             None,
         )

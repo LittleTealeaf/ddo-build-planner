@@ -1,11 +1,11 @@
 mod dwarf {
     use builder::{
-        attribute::{flags::Flag, Attribute},
+        attribute::Attribute,
         bonus::{Bonus, BonusSource},
         compiler::Compiler,
         equipment::item::types::WeaponType,
         feat::{Feat, Proficiency},
-        types::Race,
+        types::{flag::Flag, race::Race},
     };
     use utils::float::ErrorMargin;
 

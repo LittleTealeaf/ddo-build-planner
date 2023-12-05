@@ -1,6 +1,9 @@
-use std::fmt::Display;
+//! Contains player race
+public_modules!(bonuses);
 
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
+use utils::public_modules;
 
 /// The different race options that the character can be.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]

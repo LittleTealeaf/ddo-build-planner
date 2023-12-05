@@ -1,7 +1,7 @@
 use crate::{
     attribute::{Attribute, DefaultBonuses, TrackAttribute},
     bonus::{Bonus, BonusSource, BonusType, CloneBonus, Value},
-    types::Ability,
+    types::ability::Ability,
 };
 
 impl Ability {

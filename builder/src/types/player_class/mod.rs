@@ -1,6 +1,10 @@
+//! Each of the playable player classes and archetypes
+public_modules!(bonuses);
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 /// The different Player Classes that are in the game
 #[derive(Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]

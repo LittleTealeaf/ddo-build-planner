@@ -1,7 +1,7 @@
 use crate::{
     attribute::TrackAttribute,
     bonus::{Bonus, CloneBonus},
-    types::Sheltering,
+    types::sheltering::Sheltering,
 };
 
 impl CloneBonus for Sheltering {

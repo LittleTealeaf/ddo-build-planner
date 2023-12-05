@@ -1,8 +1,5 @@
 //! Represents each attribute that a character can have
-pub mod bonuses;
-pub mod flags;
 mod macros;
-pub mod toggles;
 mod traits;
 
 mod from;
@@ -16,17 +13,15 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     types::{
-        Ability, ArmorClass, DamageType, Health, PlayerClass, SavingThrow, Sheltering, Skill,
-        SpellPoints, SpellPower, SpellSelector, SummonedAttribute,
+        ability::Ability, armor_class::ArmorClass, damage_type::DamageType, flag::Flag,
+        health::Health, player_class::PlayerClass, saving_throw::SavingThrow,
+        sheltering::Sheltering, skill::Skill, spell_points::SpellPoints, spell_power::SpellPower,
+        spell_power::_SpellCriticalChance, spell_power::_SpellCriticalDamage,
+        spell_power::_SpellPower, spell_selector::SpellSelector,
+        summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
 use std::fmt::Display;
-
-use self::{
-    bonuses::{WeaponAttribute, _SpellCriticalChance, _SpellCriticalDamage, _SpellPower},
-    flags::Flag,
-    toggles::Toggle,
-};
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -148,6 +143,7 @@ impl Attribute {
         match self {
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
+
             Self::SpellCriticalChance(sp) => {
                 GetBonuses::<_SpellCriticalChance>::get_bonuses(sp, value)
             }

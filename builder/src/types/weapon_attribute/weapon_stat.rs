@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use super::DamageType;
+use crate::types::damage_type::DamageType;
 
 /// Different stats that can be applied to a particular weapon
 #[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -45,4 +45,3 @@ impl From<DamageType> for WeaponStat {
         Self::DamageType(value)
     }
 }
-

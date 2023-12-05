@@ -1,10 +1,17 @@
 //! Application Starting Point
 use builder::{
-    attribute::{flags::OffHandType, Attribute},
+    attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
     equipment::item::types::ShieldType,
-    types::{Ability, ArmorClass, PlayerClass, Race, WeaponHand, WeaponStat},
+    types::{
+        ability::Ability,
+        armor_class::ArmorClass,
+        flag::OffHandType,
+        player_class::PlayerClass,
+        race::Race,
+        weapon_attribute::{WeaponHand, WeaponStat},
+    },
 };
 
 fn main() {

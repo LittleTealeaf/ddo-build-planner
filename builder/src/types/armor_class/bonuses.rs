@@ -1,12 +1,14 @@
 use crate::{
-    attribute::{
-        flags::{Flag, OffHandType},
-        Attribute, DefaultBonuses,
-    },
+    attribute::{Attribute, DefaultBonuses},
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     equipment::item::types::{ArmorType, ShieldType},
-    types::{Ability, ArmorClass},
+    types::{
+        ability::Ability,
+        flag::{Flag, OffHandType},
+    },
 };
+
+use super::ArmorClass;
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
@@ -15,7 +17,9 @@ fn is_wearing_armor() -> Condition {
 }
 
 fn is_wielding_tower_shield() -> Condition {
-    Condition::has(Flag::OffHandType(OffHandType::Shield(ShieldType::TowerShield)).into())
+    Condition::has(Attribute::from(Flag::OffHandType(OffHandType::Shield(
+        ShieldType::TowerShield,
+    ))))
 }
 
 impl DefaultBonuses for ArmorClass {
@@ -72,9 +76,11 @@ impl DefaultBonuses for ArmorClass {
                 Value::If {
                     condition: Condition::has(Attribute::ArmorClass(Self::CalculatedMaxDexBonus))
                         .into(),
-                    if_true: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).min(
-                        Value::from(Attribute::ArmorClass(Self::CalculatedMaxDexBonus)),
-                    ).into(),
+                    if_true: Value::from(Attribute::AbilityModifier(Ability::Dexterity))
+                        .min(Value::from(Attribute::ArmorClass(
+                            Self::CalculatedMaxDexBonus,
+                        )))
+                        .into(),
                     if_false: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).into(),
                 },
                 BonusSource::Base,

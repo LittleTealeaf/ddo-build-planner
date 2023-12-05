@@ -1,8 +1,9 @@
+//! Each of the different damage types in the game
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use super::Alignment;
+use super::alignment::Alignment;
 
 /// Describes different types of damage possible in Dungeons & Dragons Online
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]

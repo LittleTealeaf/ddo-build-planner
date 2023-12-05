@@ -1,7 +1,7 @@
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
-    types::{Ability, PlayerClass},
+    types::{ability::Ability, player_class::PlayerClass},
 };
 
 impl GetBonuses for PlayerClass {

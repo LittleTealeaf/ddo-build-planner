@@ -1,6 +1,10 @@
+//! Each of the possible saving throws
+public_modules!(bonuses);
+
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::public_modules;
 
 /// The different saving throws that a character can have bonuses to
 ///
@@ -102,7 +106,6 @@ impl Display for SavingThrow {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -130,7 +133,7 @@ mod tests {
             (SavingThrow::Enchantment, SavingThrow::Will),
             (SavingThrow::Illusion, SavingThrow::Will),
             (SavingThrow::Fear, SavingThrow::Will),
-            (SavingThrow::Curse, SavingThrow::Will)
+            (SavingThrow::Curse, SavingThrow::Will),
         ];
 
         for (secondary, primary) in list {

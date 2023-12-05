@@ -5,8 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusSource, BonusType},
-    feat::{Feat, FeatRequirement, GetFeatRequirement},
-    types::{PlayerClass, SpellSchool, SpellSelector},
+    feat::{Feat, FeatRequirement, GetFeatRequirement}, types::{spell_school::SpellSchool, spell_selector::SpellSelector, player_class::PlayerClass},
 };
 
 use super::SpellcastingFeat;
