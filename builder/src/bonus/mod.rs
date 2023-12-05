@@ -9,8 +9,8 @@ mod value;
 use std::fmt::Display;
 
 use crate::{
-    attribute::{flags::Flag, Attribute, AttributeDependencies},
-    feat::Feat,
+    attribute::{Attribute, AttributeDependencies},
+    feat::Feat, types::Flag,
 };
 
 pub use bonus_type::*;

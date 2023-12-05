@@ -1,11 +1,10 @@
 use crate::{
     attribute::{
-        flags::{Flag, OffHandType},
         Attribute, DefaultBonuses,
     },
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     equipment::item::types::{ArmorType, ShieldType},
-    types::Ability,
+    types::{Ability, Flag, OffHandType},
 };
 
 use super::ArmorClass;
@@ -17,7 +16,7 @@ fn is_wearing_armor() -> Condition {
 }
 
 fn is_wielding_tower_shield() -> Condition {
-    Condition::has(Flag::OffHandType(OffHandType::Shield(ShieldType::TowerShield)).into())
+    Condition::has(Attribute::from(Flag::OffHandType(OffHandType::Shield(ShieldType::TowerShield))))
 }
 
 impl DefaultBonuses for ArmorClass {

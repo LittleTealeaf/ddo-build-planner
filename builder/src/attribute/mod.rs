@@ -1,7 +1,5 @@
 //! Represents each attribute that a character can have
-pub mod flags;
 mod macros;
-pub mod toggles;
 mod traits;
 
 mod from;
@@ -15,14 +13,13 @@ use crate::{
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     types::{
-        Ability, ArmorClass, DamageType, Health, PlayerClass, SavingThrow, Sheltering, Skill,
+        Ability, ArmorClass, DamageType, Flag, Health, PlayerClass, SavingThrow, Sheltering, Skill,
         SpellPoints, SpellPower, SpellSelector, SummonedAttribute, WeaponAttribute,
-        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower,
+        _SpellCriticalChance, _SpellCriticalDamage, _SpellPower, Toggle,
     },
 };
 use std::fmt::Display;
 
-use self::{flags::Flag, toggles::Toggle};
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
 #[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]

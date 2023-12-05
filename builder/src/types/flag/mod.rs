@@ -1,3 +1,4 @@
+
 //! Handles any Flag that the character has.
 //!
 //! Most of the time, the flag is either a `1` (Has) or `0` (Not Have).
@@ -13,10 +14,11 @@ use std::fmt::Display;
 use crate::{
     bonus::Bonus,
     equipment::item::types::ArmorType,
-    types::{Alignment, Immunity, Race},
+    types::{Alignment, Immunity, Race}, attribute::GetBonuses,
 };
 
-use super::{toggles::Toggle, GetBonuses};
+use super::Toggle;
+
 
 /// Indicates that the character possesses some flag.
 ///

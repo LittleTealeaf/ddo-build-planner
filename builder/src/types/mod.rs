@@ -18,6 +18,8 @@ public_modules!(
     monster_type,
     player_race,
     player_class,
+    flag,
+    toggle,
     health,
     spell_points,
     summoned_attribute
