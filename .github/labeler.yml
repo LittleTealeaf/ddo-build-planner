@@ -1,17 +1,29 @@
 app:
-- app/**
+- any:
+  - changed-files:
+    - any-glob-to-any-fle: 'app/**'
 
 builder:
-- builder/**
+- any:
+  - changed-files:
+    - any-glob-to-any-file: 'builder/**'
 
 data:
-- data/**
+- any:
+  - changed-files:
+    - any-glob-to-any-file: 'data/**'
 
 editor:
-- editor/**
+- any:
+  - changed-files:
+    - any-glob-to-any-file: 'editor/**'
 
 utils:
-- utils/**
+- any:
+  - changed-files:
+    - any-glob-to-any-file: 'utils/**'
 
 github:
-- .github/**
+- any:
+  - changed-files:
+    - any-glob-to-any-file: '.github/**'
