@@ -4,6 +4,7 @@ use std::{
 };
 
 use serde::{Deserialize, Serialize};
+use utils::bit_ops::{BitAll, BitAny};
 
 use crate::attribute::{Attribute, AttributeDependencies};
 
@@ -50,7 +51,7 @@ impl Condition {
     where
         I: IntoIterator<Item = Self>,
     {
-        conditions.into_iter().reduce(Self::and)
+        conditions.bit_all()
     }
 
     /// Requires that any of the provided conditions are true
@@ -60,7 +61,7 @@ impl Condition {
     where
         I: IntoIterator<Item = Self>,
     {
-        conditions.into_iter().reduce(Self::or)
+        conditions.bit_any()
     }
 
     /// Requires that none of the conditions are true
