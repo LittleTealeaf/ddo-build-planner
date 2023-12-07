@@ -108,6 +108,7 @@ dependencies = [
  "data",
  "iced",
  "roc",
+ "ron",
 ]
 
 [[package]]
