@@ -9,43 +9,52 @@ use utils::public_modules;
 /// Represents different attributes that relate to Armor Class
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ArmorClass {
-    /// Bonuses to armor class from armor
+    /// Total armor class.
+    ///
+    /// Do not add bonuses to this. This attribute will be automatically calculated from other
+    /// attributes
+    TotalArmorClass,
+    /// Generic bonuses to Armor Class
+    Bonus,
+    /// Bonuses from the Armor
+    ///
+    /// The standard type to prevent stacking is [`BonusType::Standard`]
+    ///
+    /// [`BonusType::Standard`]: crate::bonus::BonusType::Standard
     ArmorBonus,
-    /// Bonuses to armor class from shields
+    /// Bonuses from the Shield
+    ///
+    /// The standard type to prevent stacking is [`BonusType::Standard`]
+    ///
+    /// [`BonusType::Standard`]: crate::bonus::BonusType::Standard
     ShieldBonus,
-    /// Scaling for [`ArmorClass::ArmorBonus`]
+    /// Scalar value for Armor AC Bonus
     ArmorScalar,
-    /// Scaling for [`ArmorClass::ShieldBonus`]
+    /// Scalar value for Shield AC Bonus
     ShieldScalar,
+    /// Armor Max Dex Bonus
+    ArmorMaxDex,
+    /// Shield Max Dex Bonus
+    ShieldMaxDex,
     /// Natural Armor
     NaturalArmor,
-    /// Max Dex Bonus for Armor
-    ArmorMaxDexBonus,
-    /// Max Dex Bonus for Tower Shield
-    ShieldMaxDexBonus,
-    /// Calculated Max Dex Bonus
-    ///
-    /// DO NOT MANUALLY ADD BONUSES TO THIS ATTRIBUTE.
-    CalculatedMaxDexBonus,
-    /// Flat bonuses to armor class
-    Bonus,
-    /// Scaling for [`ArmorClass::Bonus`]
-    Scalar,
+    /// Total Scalar
+    TotalScalar,
 }
 
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Bonus => write!(f, "Armor Class"),
-            Self::ArmorBonus => write!(f, "Armor AC"),
-            Self::ShieldBonus => write!(f, "Shield AC"),
-            Self::ArmorScalar => write!(f, "% Armor AC"),
-            Self::ShieldScalar => write!(f, "% Shield AC"),
-            Self::Scalar => write!(f, "% Armor Class"),
+            Self::TotalArmorClass => write!(f, "Armor Class"),
+            Self::Bonus => write!(f, "Armor Class Bonus"),
+            Self::ArmorBonus => write!(f, "Armor AC Bonus"),
+            Self::ShieldBonus => write!(f, "Shield AC Bonus"),
+            Self::ArmorScalar => write!(f, "Armor AC Scalar"),
+            Self::ShieldScalar => write!(f, "Shield AC Scalar"),
+            Self::ArmorMaxDex => write!(f, "Armor Max Dex Bonus"),
+            Self::ShieldMaxDex => write!(f, "Shield Max Dex Bonus"),
             Self::NaturalArmor => write!(f, "Natural Armor"),
-            Self::CalculatedMaxDexBonus => write!(f, "Calculated Max Dex Bonus"),
-            Self::ArmorMaxDexBonus => write!(f, "Armor Max Dex Bonus"),
-            Self::ShieldMaxDexBonus => write!(f, "Tower Shield Max Dex Bonus"),
+            Self::TotalScalar => write!(f, "Armor Class Scalar"),
         }
     }
 }
