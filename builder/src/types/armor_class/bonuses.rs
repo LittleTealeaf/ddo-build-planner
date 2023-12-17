@@ -23,66 +23,57 @@ fn is_wielding_tower_shield() -> Condition {
 }
 
 impl DefaultBonuses for ArmorClass {
-    type Iterator = [Bonus; 4];
+    type Iterator = Vec<Bonus>;
 
     fn get_default_bonuses() -> Self::Iterator {
-        [
-            // Armor class bonus scaled
+        vec![
+            // Dexterity Bonus to Armor Class
             Bonus::new(
-                Self::Bonus.into(),
-                BonusType::Stacking,
-                (Value::from(Attribute::from(Self::ArmorBonus))
-                    * Value::from(Attribute::from(Self::ArmorScalar)))
-                    + (Value::from(Attribute::from(Self::ShieldBonus))
-                        * Value::from(Attribute::from(Self::ShieldScalar)))
-                    + Attribute::from(Self::NaturalArmor).into(),
+                Attribute::ArmorClass(Self::Bonus),
+                BonusType::AbilityModifier,
+                Value::If {
+                    condition: is_wearing_armor().into(),
+                    if_true: Box::new(Value::If {
+                        condition: is_wielding_tower_shield().into(),
+                        if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
+                            .min(Value::Attribute(Attribute::ArmorClass(Self::ArmorMaxDex)))
+                            .min(Value::Attribute(Attribute::ArmorClass(Self::ShieldMaxDex)))
+                            .into(),
+                        if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
+                            .min(Value::Attribute(Attribute::ArmorClass(Self::ArmorMaxDex)))
+                            .into(),
+                    }),
+                    if_false: Box::new(Value::If {
+                        condition: is_wielding_tower_shield().into(),
+                        if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
+                            .into(),
+                        if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
+                            .min(Value::Attribute(Attribute::ArmorClass(Self::ShieldMaxDex)))
+                            .into(),
+                    }),
+                },
                 BonusSource::Base,
                 None,
             ),
-            // Armor class bonus scaled from shield
-            // Max Dex Bonus from armor
+            // Total Armor Class Bonus
             Bonus::new(
-                Attribute::ArmorClass(Self::CalculatedMaxDexBonus),
-                BonusType::Stacking,
-                Attribute::ArmorClass(Self::ArmorMaxDexBonus).into(),
-                BonusSource::Base,
-                Some(
-                    is_wearing_armor()
-                        & (is_wielding_tower_shield()
-                            ^ Condition::GreaterThan(
-                                Attribute::from(Self::ArmorMaxDexBonus).into(),
-                                Attribute::from(Self::ShieldMaxDexBonus).into(),
-                            )),
-                ),
-            ),
-            // Max dex bonus from shield
-            Bonus::new(
-                Attribute::ArmorClass(Self::CalculatedMaxDexBonus),
-                BonusType::Stacking,
-                Attribute::ArmorClass(Self::ShieldMaxDexBonus).into(),
-                BonusSource::Base,
-                Some(
-                    is_wielding_tower_shield()
-                        & (is_wearing_armor()
-                            ^ Condition::GreaterThan(
-                                Attribute::from(Self::ShieldMaxDexBonus).into(),
-                                Attribute::from(Self::ArmorMaxDexBonus).into(),
-                            )),
-                ),
-            ),
-            Bonus::new(
-                Self::Bonus.into(),
-                BonusType::AbilityModifier,
-                Value::If {
-                    condition: Condition::has(Attribute::ArmorClass(Self::CalculatedMaxDexBonus))
-                        .into(),
-                    if_true: Value::from(Attribute::AbilityModifier(Ability::Dexterity))
-                        .min(Value::from(Attribute::ArmorClass(
-                            Self::CalculatedMaxDexBonus,
-                        )))
-                        .into(),
-                    if_false: Value::from(Attribute::AbilityModifier(Ability::Dexterity)).into(),
-                },
+                Attribute::ArmorClass(Self::TotalArmorClass),
+                BonusType::Standard,
+                [
+                    Value::Attribute(Attribute::ArmorClass(Self::Bonus)),
+                    Value::Attribute(Attribute::ArmorClass(Self::NaturalArmor)),
+                    Value::Attribute(Attribute::ArmorClass(Self::ShieldBonus))
+                        * (Value::Value(1f32)
+                            + Value::Attribute(Attribute::ArmorClass(Self::ShieldScalar))),
+                    Value::Attribute(Attribute::ArmorClass(Self::ArmorBonus))
+                        * (Value::Value(1f32)
+                            + Value::Attribute(Attribute::ArmorClass(Self::ArmorScalar))),
+                    Value::Value(10f32),
+                ]
+                .into_iter()
+                .sum::<Value>()
+                    * (Value::Value(1f32)
+                        + Value::Attribute(Attribute::ArmorClass(Self::TotalScalar))),
                 BonusSource::Base,
                 None,
             ),
