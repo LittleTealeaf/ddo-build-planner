@@ -1,4 +1,5 @@
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
+mod base;
 mod bonus_type;
 mod condition;
 mod deserialize;
@@ -6,6 +7,7 @@ mod source;
 mod traits;
 mod value;
 
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
 use crate::{
@@ -14,9 +16,9 @@ use crate::{
     types::flag::Flag,
 };
 
+pub use base::*;
 pub use bonus_type::*;
 pub use condition::*;
-use serde::{Deserialize, Serialize};
 pub use source::*;
 pub use traits::*;
 pub use value::*;

@@ -1,7 +1,7 @@
 use crate::{
-    attribute::{Attribute, DefaultBonuses, TrackAttribute},
-    bonus::{Bonus, BonusSource, BonusType, CloneBonus},
-    types::{ability::Ability, saving_throw::SavingThrow},
+    attribute::TrackAttribute,
+    bonus::{Bonus, CloneBonus},
+    types::saving_throw::SavingThrow,
 };
 
 impl CloneBonus for SavingThrow {
@@ -22,36 +22,6 @@ impl CloneBonus for SavingThrow {
     }
 }
 
-impl DefaultBonuses for SavingThrow {
-    type Iterator = [Bonus; 3];
-
-    fn get_default_bonuses() -> Self::Iterator {
-        [
-            Bonus::new(
-                Self::Reflex.into(),
-                BonusType::AbilityModifier,
-                Attribute::AbilityModifier(Ability::Dexterity).into(),
-                BonusSource::Base,
-                None,
-            ),
-            Bonus::new(
-                Self::Fortitude.into(),
-                BonusType::AbilityModifier,
-                Attribute::AbilityModifier(Ability::Constitution).into(),
-                BonusSource::Base,
-                None,
-            ),
-            Bonus::new(
-                Self::Will.into(),
-                BonusType::AbilityModifier,
-                Attribute::AbilityModifier(Ability::Wisdom).into(),
-                BonusSource::Base,
-                None,
-            ),
-        ]
-    }
-}
-
 impl TrackAttribute for SavingThrow {
     fn is_tracked(&self) -> bool {
         !matches!(self, Self::All)
@@ -60,11 +30,9 @@ impl TrackAttribute for SavingThrow {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_default_bonuses;
+    use crate::attribute::Attribute;
 
     use super::*;
-
-    test_default_bonuses!(SavingThrow);
 
     #[test]
     fn all_is_not_tracked() {

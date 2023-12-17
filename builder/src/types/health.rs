@@ -3,11 +3,6 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    attribute::{Attribute, DefaultBonuses},
-    bonus::{Bonus, BonusSource, BonusType, Value},
-};
-
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
 /// Indicates bonuses to hit points, or health
 pub enum Health {
@@ -34,29 +29,4 @@ impl Display for Health {
             Self::Total => write!(f, "Total"),
         }
     }
-}
-
-impl DefaultBonuses for Health {
-    fn get_default_bonuses() -> Self::Iterator {
-        [
-            Bonus::new(
-                Attribute::Health(Self::Bonus),
-                BonusType::Stacking,
-                Value::from(Attribute::Health(Self::Base))
-                    * (Value::from(Attribute::Health(Self::BaseModifier)) + Value::from(1f32)),
-                BonusSource::Base,
-                None,
-            ),
-            Bonus::new(
-                Attribute::Health(Self::Total),
-                BonusType::Stacking,
-                Value::from(Attribute::Health(Self::Bonus))
-                    * (Value::from(Attribute::Health(Self::Modifier)) + Value::from(1f32)),
-                BonusSource::Base,
-                None,
-            ),
-        ]
-    }
-
-    type Iterator = [Bonus; 2];
 }

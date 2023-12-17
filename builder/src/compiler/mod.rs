@@ -12,7 +12,7 @@ pub use inserting::*;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource},
+    bonus::{get_base_bonuses, Bonus, BonusSource},
 };
 
 /// Compiles and calculates attribut values from a set of [`Bonus`] entries.
@@ -59,7 +59,7 @@ impl Default for Compiler {
             children: OrdMap::new(),
         };
 
-        new.add_bonuses(Attribute::get_default_bonuses());
+        new.add_bonuses(get_base_bonuses());
 
         new
     }
