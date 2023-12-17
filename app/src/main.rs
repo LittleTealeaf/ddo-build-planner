@@ -1,20 +1,18 @@
 //! Application Starting Point
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType, Value, Condition},
+    bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     compiler::Compiler,
-    equipment::item::types::{ShieldType, ArmorType},
+    equipment::item::types::{ArmorType, ShieldType},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
-        flag::{OffHandType, Flag},
+        flag::{Flag, OffHandType},
         player_class::PlayerClass,
         race::Race,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
-
-
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
@@ -46,16 +44,22 @@ fn main() {
                     * (Value::Value(1f32)
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
                 Value::Value(10f32),
-            Value::If {
+                Value::If {
                     condition: is_wearing_armor().into(),
                     if_true: Box::new(Value::If {
                         condition: is_wielding_tower_shield().into(),
                         if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .min(Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex)))
-                            .min(Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldMaxDex)))
+                            .min(Value::Attribute(Attribute::ArmorClass(
+                                ArmorClass::ArmorMaxDex
+                            )))
+                            .min(Value::Attribute(Attribute::ArmorClass(
+                                ArmorClass::ShieldMaxDex
+                            )))
                             .into(),
                         if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .min(Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex)))
+                            .min(Value::Attribute(Attribute::ArmorClass(
+                                ArmorClass::ArmorMaxDex
+                            )))
                             .into(),
                     }),
                     if_false: Box::new(Value::If {
@@ -63,7 +67,9 @@ fn main() {
                         if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
                             .into(),
                         if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .min(Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldMaxDex)))
+                            .min(Value::Attribute(Attribute::ArmorClass(
+                                ArmorClass::ShieldMaxDex
+                            )))
                             .into(),
                     }),
                 }
