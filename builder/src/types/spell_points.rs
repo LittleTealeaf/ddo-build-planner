@@ -3,13 +3,6 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    attribute::{Attribute, DefaultBonuses},
-    bonus::{Bonus, BonusSource, BonusType, Value},
-};
-
-use super::player_class::PlayerClass;
-
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
 /// Different types of bonsues to spell points
 pub enum SpellPoints {
@@ -33,32 +26,4 @@ impl Display for SpellPoints {
             Self::Scaled => write!(f, "Scaled Spell Points"),
         }
     }
-}
-
-impl DefaultBonuses for SpellPoints {
-    fn get_default_bonuses() -> Self::Iterator {
-        [
-            Bonus::new(
-                Attribute::SpellPoints(Self::Base),
-                BonusType::Stacking,
-                Value::from(Attribute::SpellPoints(Self::Scaled))
-                    * (Value::from(Attribute::ClassLevel(PlayerClass::FavoredSoul))
-                        + Value::from(Attribute::ClassLevel(PlayerClass::Sorcerer))
-                        + Value::from(20f32))
-                    / Value::from(20f32),
-                BonusSource::Base,
-                None,
-            ),
-            Bonus::new(
-                Attribute::SpellPoints(Self::Total),
-                BonusType::Stacking,
-                Value::from(Attribute::SpellPoints(Self::Base))
-                    * (Value::from(1f32) + Value::from(Attribute::SpellPoints(Self::Modifier))),
-                BonusSource::Base,
-                None,
-            ),
-        ]
-    }
-
-    type Iterator = [Bonus; 2];
 }

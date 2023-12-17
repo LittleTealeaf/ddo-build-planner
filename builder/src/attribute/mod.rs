@@ -1,11 +1,9 @@
 //! Represents each attribute that a character can have
-mod macros;
 mod traits;
 
 mod from;
 
 pub use from::*;
-use itertools::chain;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
 
@@ -193,21 +191,6 @@ impl TrackAttribute for Attribute {
             Self::SummonedAttribute(attribute) => attribute.is_tracked(),
             _ => true,
         }
-    }
-}
-
-impl Attribute {
-    /// Returns the default bonuses for all attributes. These default bonuses should be included in every new bonus compiler.
-    pub fn get_default_bonuses() -> impl Iterator<Item = Bonus> {
-        chain!(
-            Ability::get_default_bonuses(),
-            SavingThrow::get_default_bonuses(),
-            SpellPower::get_default_bonuses(),
-            ArmorClass::get_default_bonuses(),
-            Skill::get_default_bonuses(),
-            Health::get_default_bonuses(),
-            SpellPoints::get_default_bonuses(),
-        )
     }
 }
 

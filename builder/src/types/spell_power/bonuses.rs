@@ -1,5 +1,5 @@
 use crate::{
-    attribute::{Attribute, DefaultBonuses, GetBonuses, TrackAttribute},
+    attribute::{Attribute, GetBonuses, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
     types::spell_power::SpellPower,
 };
@@ -96,39 +96,6 @@ impl CloneBonus for SpellPower {
     }
 }
 
-macro_rules! from_skill {
-    ($skill: ident, $sp: ident) => {
-        Bonus::new(
-            $crate::attribute::Attribute::SpellPower($crate::types::spell_power::SpellPower::from(
-                $crate::types::damage_type::DamageType::$sp,
-            )),
-            BonusType::Stacking,
-            $crate::attribute::Attribute::Skill($crate::types::skill::Skill::$skill).into(),
-            $crate::bonus::BonusSource::Base,
-            None,
-        )
-    };
-}
-
-impl DefaultBonuses for SpellPower {
-    type Iterator = [Bonus; 10];
-
-    fn get_default_bonuses() -> Self::Iterator {
-        [
-            from_skill!(Heal, Positive),
-            from_skill!(Heal, Negative),
-            from_skill!(Perform, Sonic),
-            from_skill!(Spellcraft, Acid),
-            from_skill!(Spellcraft, Cold),
-            from_skill!(Spellcraft, Electric),
-            from_skill!(Spellcraft, Fire),
-            from_skill!(Spellcraft, Force),
-            from_skill!(Spellcraft, Light),
-            from_skill!(Spellcraft, Poison),
-        ]
-    }
-}
-
 impl TrackAttribute for SpellPower {
     fn is_tracked(&self) -> bool {
         !matches!(self, Self::Potency)
@@ -137,11 +104,9 @@ impl TrackAttribute for SpellPower {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_default_bonuses;
 
     use super::*;
 
-    test_default_bonuses!(SpellPower);
 
     #[test]
     fn potency_is_not_tracked() {

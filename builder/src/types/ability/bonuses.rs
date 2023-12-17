@@ -1,6 +1,6 @@
 use crate::{
-    attribute::{Attribute, DefaultBonuses, TrackAttribute},
-    bonus::{Bonus, BonusSource, BonusType, CloneBonus, Value},
+    attribute::{Attribute, TrackAttribute},
+    bonus::{Bonus, BonusType, CloneBonus},
     types::ability::Ability,
 };
 
@@ -19,35 +19,6 @@ impl Ability {
     }
 }
 
-impl DefaultBonuses for Ability {
-    type Iterator = std::iter::Flatten<std::array::IntoIter<[Bonus; 2], 6>>;
-
-    fn get_default_bonuses() -> Self::Iterator {
-        Self::ABILITIES
-            .map(|ability| {
-                [
-                    Bonus::new(
-                        Attribute::Ability(ability),
-                        BonusType::Stacking,
-                        8f32.into(),
-                        BonusSource::Base,
-                        None,
-                    ),
-                    Bonus::new(
-                        Attribute::AbilityModifier(ability),
-                        BonusType::Stacking,
-                        ((Value::Attribute(Attribute::Ability(ability)) - 10f32.into())
-                            / 2f32.into())
-                        .floor(),
-                        BonusSource::Base,
-                        None,
-                    ),
-                ]
-            })
-            .into_iter()
-            .flatten()
-    }
-}
 
 impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
@@ -75,11 +46,7 @@ impl TrackAttribute for Ability {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_default_bonuses;
-
     use super::*;
-
-    test_default_bonuses!(Ability);
 
     #[test]
     fn all_is_not_tracked() {
