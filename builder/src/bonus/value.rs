@@ -47,27 +47,13 @@ pub enum Value {
     },
 }
 
-/// Reduces iterators into values with a cumulative function
-fn cumulative_iter_reduce<I, F>(iter: I, fun: F) -> Value
-where
-    I: IntoIterator<Item = Value>,
-    F: FnMut(Value, Value) -> Value,
-{
-    iter.into_iter()
-        .tree_fold1(fun)
-        .expect("Expected at least one entry")
-}
-
 /// Operations to simplify writing formulas
 impl Value {
     /// Calculates the mean of some list or set
     ///
     /// # Panics
     /// Panics if there are 0 items in the iterator
-    pub fn mean<I>(iter: I) -> Self
-    where
-        I: IntoIterator<Item = Self>,
-    {
+    pub fn mean(iter: impl IntoIterator<Item = Self>) -> Self {
         let (sum, count) = iter
             .into_iter()
             .map(|a| (a, 1f32))
@@ -81,44 +67,40 @@ impl Value {
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_min<I>(iter: I) -> Self
-    where
-        I: IntoIterator<Item = Self>,
-    {
-        cumulative_iter_reduce(iter, Self::min)
+    pub fn iter_min(iter: impl IntoIterator<Item = Self>) -> Self {
+        iter.into_iter()
+            .tree_fold1(Self::min)
+            .expect("Expected at least one value")
     }
 
     /// Returns the maximum of all of the values
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_max<I>(iter: I) -> Self
-    where
-        I: IntoIterator<Item = Self>,
-    {
-        cumulative_iter_reduce(iter, Self::max)
+    pub fn iter_max(iter: impl IntoIterator<Item = Self>) -> Self {
+        iter.into_iter()
+            .tree_fold1(Self::max)
+            .expect("Expected at least one value")
     }
 
     /// Returns the sum of the values within the iterator
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_sum<I>(iter: I) -> Self
-    where
-        I: IntoIterator<Item = Self>,
-    {
-        cumulative_iter_reduce(iter, Self::add)
+    pub fn iter_sum(iter: impl IntoIterator<Item = Self>) -> Self {
+        iter.into_iter()
+            .tree_fold1(Self::add)
+            .expect("Expected at least one value")
     }
 
     /// Returns the sum of the values within the iterator
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_product<I>(iter: I) -> Self
-    where
-        I: IntoIterator<Item = Self>,
-    {
-        cumulative_iter_reduce(iter, Self::mul)
+    pub fn iter_product(iter: impl IntoIterator<Item = Self>) -> Self {
+        iter.into_iter()
+            .tree_fold1(Self::mul)
+            .expect("Expected at least one value")
     }
 
     /// Floors the value
