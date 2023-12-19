@@ -6,7 +6,6 @@ use utils::bit_ops::BitAny;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
-    equipment::item::types::WeaponType,
     feat::Feat,
     types::{
         armor_class::ArmorClass,
@@ -16,7 +15,7 @@ use crate::{
         saving_throw::SavingThrow,
         skill::Skill,
         toggle::{AttackingTarget, Toggle},
-        weapon_attribute::{WeaponHand, WeaponStat},
+        weapon_attribute::{WeaponHand, WeaponStat}, item::WeaponType,
     },
 };
 

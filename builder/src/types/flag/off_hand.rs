@@ -2,7 +2,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::equipment::item::types::{ShieldType, WeaponType};
+use crate::types::item::{WeaponType, ShieldType};
+
 
 /// Represents the different types of items the character can wield in their off hand
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]

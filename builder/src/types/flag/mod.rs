@@ -13,11 +13,10 @@ use std::fmt::Display;
 use crate::{
     attribute::GetBonuses,
     bonus::Bonus,
-    equipment::item::types::ArmorType,
     types::{alignment::Alignment, immunity::Immunity, race::Race},
 };
 
-use super::toggle::Toggle;
+use super::{toggle::Toggle, item::ArmorType};
 
 /// Indicates that the character possesses some flag.
 ///

@@ -1,11 +1,10 @@
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
-    equipment::item::types::WeaponType,
     feat::{Feat, Proficiency},
     types::{
         ability::Ability, damage_type::DamageType, immunity::Immunity, race::Race,
-        saving_throw::SavingThrow, skill::Skill,
+        saving_throw::SavingThrow, skill::Skill, item::WeaponType,
     }, race::RacialFeat,
 };
 

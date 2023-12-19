@@ -2,7 +2,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::equipment::item::types::ShieldType;
+use crate::types::item::ShieldType;
+
 
 /// Shield Proficiencies
 #[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]

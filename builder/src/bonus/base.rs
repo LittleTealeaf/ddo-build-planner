@@ -2,7 +2,6 @@ use itertools::chain;
 
 use crate::{
     attribute::Attribute,
-    equipment::item::types::{ArmorType, ShieldType},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
@@ -13,7 +12,7 @@ use crate::{
         saving_throw::SavingThrow,
         skill::Skill,
         spell_points::SpellPoints,
-        spell_power::SpellPower,
+        spell_power::SpellPower, item::{ArmorType, ShieldType},
     },
 };
 

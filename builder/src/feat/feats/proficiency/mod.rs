@@ -10,8 +10,7 @@ use std::fmt::Display;
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, CloneBonus},
-    equipment::item::types::WeaponType,
-    feat::Feat,
+    feat::Feat, types::item::WeaponType,
 };
 
 /// Proficiencies for Weapons and Armor

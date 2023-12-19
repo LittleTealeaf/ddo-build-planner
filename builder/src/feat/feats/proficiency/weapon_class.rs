@@ -1,4 +1,5 @@
-use crate::equipment::item::types::WeaponType;
+use crate::types::item::WeaponType;
+
 
 /// Proficiency Class for weapons
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
