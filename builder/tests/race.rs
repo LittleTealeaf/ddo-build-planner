@@ -4,7 +4,7 @@ mod dwarf {
         bonus::{Bonus, BonusSource},
         compiler::Compiler,
         feat::{Feat, Proficiency},
-        types::{flag::Flag, race::Race, item::WeaponType},
+        types::{flag::Flag, item::WeaponType, race::Race},
     };
     use utils::float::ErrorMargin;
 

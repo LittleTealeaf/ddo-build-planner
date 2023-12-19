@@ -2,7 +2,8 @@ use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType},
     compiler::Compiler,
-    feat::{Feat, Proficiency}, types::item::WeaponType,
+    feat::{Feat, Proficiency},
+    types::item::WeaponType,
 };
 
 #[test]

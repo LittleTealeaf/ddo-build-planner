@@ -16,7 +16,7 @@ use crate::{
     types::{alignment::Alignment, immunity::Immunity, race::Race},
 };
 
-use super::{toggle::Toggle, item::ArmorType};
+use super::{item::ArmorType, toggle::Toggle};
 
 /// Indicates that the character possesses some flag.
 ///

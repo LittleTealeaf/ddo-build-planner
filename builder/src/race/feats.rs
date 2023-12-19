@@ -11,11 +11,12 @@ use crate::{
         armor_class::ArmorClass,
         flag::{Flag, MainHandType, OffHandType},
         immunity::Immunity,
+        item::WeaponType,
         monster_type::MonsterType,
         saving_throw::SavingThrow,
         skill::Skill,
         toggle::{AttackingTarget, Toggle},
-        weapon_attribute::{WeaponHand, WeaponStat}, item::WeaponType,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
 

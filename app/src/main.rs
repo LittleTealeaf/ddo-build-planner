@@ -7,9 +7,10 @@ use builder::{
         ability::Ability,
         armor_class::ArmorClass,
         flag::{Flag, OffHandType},
+        item::{ArmorType, ShieldType},
         player_class::PlayerClass,
         race::Race,
-        weapon_attribute::{WeaponHand, WeaponStat}, item::{ArmorType, ShieldType},
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
 

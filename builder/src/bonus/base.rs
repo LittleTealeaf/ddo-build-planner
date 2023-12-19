@@ -8,11 +8,12 @@ use crate::{
         damage_type::DamageType,
         flag::{Flag, OffHandType},
         health::Health,
+        item::{ArmorType, ShieldType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,
         skill::Skill,
         spell_points::SpellPoints,
-        spell_power::SpellPower, item::{ArmorType, ShieldType},
+        spell_power::SpellPower,
     },
 };
 
