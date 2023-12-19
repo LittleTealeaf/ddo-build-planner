@@ -25,10 +25,7 @@ impl Compiler {
 /// Adding bonsues
 impl Compiler {
     /// Adds multiple bonuses to the compiler
-    pub fn add_bonuses<I>(&mut self, bonuses: I)
-    where
-        I: IntoIterator<Item = Bonus>,
-    {
+    pub fn add_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
         let mut sources = OrdSet::new();
 
         let bonuses = bonuses.into_iter().map(|bonus| {
