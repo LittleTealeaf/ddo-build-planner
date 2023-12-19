@@ -17,20 +17,14 @@ pub struct Buffer {
 
 impl Buffer {
     /// Inserts attributes into the queue. All attributes are forced as no bonuses are included
-    pub fn insert_attributes<T>(&mut self, attributes: T)
-    where
-        T: IntoIterator<Item = Attribute>,
-    {
+    pub fn insert_attributes(&mut self, attributes: impl IntoIterator<Item = Attribute>) {
         for attribute in attributes {
             self.attributes.push(Reverse(attribute));
             self.forced.insert(attribute);
         }
     }
 
-    pub fn insert_bonuses<T>(&mut self, bonuses: T, forced: bool)
-    where
-        T: IntoIterator<Item = Bonus>,
-    {
+    pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>, forced: bool) {
         let bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {

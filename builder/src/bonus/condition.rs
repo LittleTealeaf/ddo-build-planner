@@ -47,40 +47,28 @@ impl Condition {
     /// Requires that all of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn all_iter<I>(conditions: I) -> Option<Self>
-    where
-        I: IntoIterator<Item = Self>,
-    {
+    pub fn all_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
         conditions.bit_all()
     }
 
     /// Requires that any of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn any_iter<I>(conditions: I) -> Option<Self>
-    where
-        I: IntoIterator<Item = Self>,
-    {
+    pub fn any_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
         conditions.bit_any()
     }
 
     /// Requires that none of the conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn none_iter<I>(conditions: I) -> Option<Self>
-    where
-        I: IntoIterator<Item = Self>,
-    {
+    pub fn none_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
         Self::any_iter(conditions).map(Self::not)
     }
 
     /// Requires that at least one of the conditions is false
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn not_all_iter<I>(conditions: I) -> Option<Self>
-    where
-        I: IntoIterator<Item = Self>,
-    {
+    pub fn not_all_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
         Self::all_iter(conditions).map(Self::not)
     }
 }
