@@ -2,13 +2,13 @@ use itertools::chain;
 
 use crate::{
     attribute::Attribute,
-    equipment::item::types::{ArmorType, ShieldType},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
         flag::{Flag, OffHandType},
         health::Health,
+        item::{ArmorType, ShieldType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,
         skill::Skill,

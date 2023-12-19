@@ -3,9 +3,8 @@ mod dwarf {
         attribute::Attribute,
         bonus::{Bonus, BonusSource},
         compiler::Compiler,
-        equipment::item::types::WeaponType,
         feat::{Feat, Proficiency},
-        types::{flag::Flag, race::Race},
+        types::{flag::Flag, item::WeaponType, race::Race},
     };
     use utils::float::ErrorMargin;
 

@@ -7,6 +7,7 @@ pub mod damage_type;
 pub mod flag;
 pub mod health;
 pub mod immunity;
+pub mod item;
 pub mod monster_type;
 pub mod player_class;
 pub mod race;

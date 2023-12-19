@@ -3,11 +3,11 @@ use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
     compiler::Compiler,
-    equipment::item::types::{ArmorType, ShieldType},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
         flag::{Flag, OffHandType},
+        item::{ArmorType, ShieldType},
         player_class::PlayerClass,
         race::Race,
         weapon_attribute::{WeaponHand, WeaponStat},

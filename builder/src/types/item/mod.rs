@@ -1,11 +1,8 @@
-//! Different item types
-mod armor;
-mod shield;
-mod weapon;
+//! Indicates different item types
 
-pub use armor::*;
-pub use shield::*;
-pub use weapon::*;
+use utils::public_modules;
+
+public_modules!(armor, weapon, shield);
 
 /// The types that an item can be
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]

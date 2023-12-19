@@ -6,12 +6,12 @@ use utils::bit_ops::BitAny;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
-    equipment::item::types::WeaponType,
     feat::Feat,
     types::{
         armor_class::ArmorClass,
         flag::{Flag, MainHandType, OffHandType},
         immunity::Immunity,
+        item::WeaponType,
         monster_type::MonsterType,
         saving_throw::SavingThrow,
         skill::Skill,
