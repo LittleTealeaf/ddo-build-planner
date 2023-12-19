@@ -21,7 +21,7 @@ use crate::{
 };
 
 /// Feats granted from different races.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum RacialFeat {
     /// Small Size Bonus
     SmallSizeBonus,

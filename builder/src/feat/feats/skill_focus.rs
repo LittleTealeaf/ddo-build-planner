@@ -8,7 +8,7 @@ use crate::{
     types::{saving_throw::SavingThrow, skill::Skill}, feat::{Feat, GetFeatRequirement, FeatRequirement},
 };
 
-#[derive(PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]
+#[derive(Hash, PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]
 /// Feats that show up under the "Skill Focus" Tab
 pub enum SkillFocus {
     /// Proides a +3 bonus to a specifc skill

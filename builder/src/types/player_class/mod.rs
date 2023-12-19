@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
 /// The different Player Classes that are in the game
-#[derive(Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum PlayerClass {
     /// Alchemist Class
     Alchemist,

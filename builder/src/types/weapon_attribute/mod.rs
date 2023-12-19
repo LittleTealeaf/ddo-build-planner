@@ -12,7 +12,7 @@ use crate::{
 };
 
 /// A `WeaponStat` that is specifically for a weapon hand.
-#[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
 impl Display for WeaponAttribute {

@@ -8,7 +8,7 @@ mod traits;
 mod value;
 
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
+use std::{collections::HashSet, fmt::Display};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -246,7 +246,7 @@ impl AttributeDependencies for Bonus {
                 .map_or(false, |cond| cond.has_attr_dependency(attribute))
     }
 
-    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+    fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {
         self.value.include_attr_dependency(set);
         if let Some(condition) = &self.condition {
             condition.include_attr_dependency(set);

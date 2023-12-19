@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use super::alignment::Alignment;
 
 /// Describes different types of damage possible in Dungeons & Dragons Online
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum DamageType {
     /// Physical Damage Type
     Physical,

@@ -14,7 +14,7 @@ use utils::public_modules;
 /// [`Reflex`]: SavingThrow::Reflex
 /// [`Will`]: SavingThrow::Will
 /// [`Traps`]: SavingThrow::Traps
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SavingThrow {
     /// Bonus to [`Fortitude`], [`Reflex`], and [`Will`] Saving Throws.
     ///

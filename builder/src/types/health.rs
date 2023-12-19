@@ -3,7 +3,9 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
+#[derive(
+    Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
+)]
 /// Indicates bonuses to hit points, or health
 pub enum Health {
     /// Base hit points, prior to any bonuses from combat style feats

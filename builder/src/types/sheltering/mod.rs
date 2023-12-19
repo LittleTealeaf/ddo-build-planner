@@ -9,7 +9,7 @@ use utils::public_modules;
 /// Sheltering attributes grant a % reduction to damage from that type.
 ///
 /// Magical Sheltering can be capped at a certain amount based on equipment and enhancements, which is tracked with [`Sheltering::MagicalCap`]
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Sheltering {
     /// Both [`Physical`] and [`Magical`] Sheltering
     ///

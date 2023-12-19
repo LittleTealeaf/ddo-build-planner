@@ -11,7 +11,7 @@ use super::damage_type::DamageType;
 
 /// Defines specific spell powers that a player can boost to increase damage for spells of that
 /// type.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellPower {
     /// Provides a Universal typed bonus to all spell powers
     Universal,

@@ -6,8 +6,9 @@ mod buffer;
 mod calculation;
 mod inserting;
 
+use std::collections::HashMap;
+
 pub use calculation::*;
-use im::OrdMap;
 pub use inserting::*;
 
 use crate::{
@@ -46,17 +47,17 @@ use crate::{
 /// [`Bonus`]: crate::bonus::Bonus
 /// [`Ability::All`]: crate::attribute::types::Ability::All
 pub struct Compiler {
-    bonuses: OrdMap<Attribute, Vec<Bonus>>,
-    cache: OrdMap<Attribute, f32>,
-    children: OrdMap<BonusSource, Vec<Attribute>>,
+    bonuses: HashMap<Attribute, Vec<Bonus>>,
+    cache: HashMap<Attribute, f32>,
+    children: HashMap<BonusSource, Vec<Attribute>>,
 }
 
 impl Default for Compiler {
     fn default() -> Self {
         let mut new = Self {
-            bonuses: OrdMap::new(),
-            cache: OrdMap::new(),
-            children: OrdMap::new(),
+            bonuses: HashMap::new(),
+            cache: HashMap::new(),
+            children: HashMap::new(),
         };
 
         new.add_bonuses(get_base_bonuses());

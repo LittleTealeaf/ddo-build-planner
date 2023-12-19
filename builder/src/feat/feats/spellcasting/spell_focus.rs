@@ -10,7 +10,7 @@ use crate::{
 
 use super::SpellcastingFeat;
 
-#[derive(PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Serialize, Deserialize, Debug)]
+#[derive(Hash, PartialEq, Eq, Copy, Clone, PartialOrd, Ord, Serialize, Deserialize, Debug)]
 /// Feats that grant bonuses to the DCs of spells
 pub enum SpellFocusFeat {
     /// Provides a +1 bonus to DCs of a given school

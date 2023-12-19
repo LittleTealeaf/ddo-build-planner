@@ -1,6 +1,8 @@
-use std::{cmp::Reverse, collections::BinaryHeap};
+use std::{
+    cmp::Reverse,
+    collections::{BinaryHeap, HashSet},
+};
 
-use im::OrdSet;
 use itertools::Itertools;
 
 use crate::{
@@ -11,7 +13,7 @@ use crate::{
 #[derive(Default)]
 pub struct Buffer {
     attributes: BinaryHeap<Reverse<Attribute>>,
-    forced: OrdSet<Attribute>,
+    forced: HashSet<Attribute>,
     bonuses: Vec<Bonus>,
 }
 
@@ -40,7 +42,7 @@ impl Buffer {
             .filter(|bonus| bonus.get_attribute().is_tracked())
             .collect_vec();
 
-        let sources: OrdSet<BonusSource> = bonuses.iter().map(Bonus::get_source).collect();
+        let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::get_source).collect();
 
         // Remove any residing bonuses from any of the provided sources
         {
@@ -58,7 +60,7 @@ impl Buffer {
 
         // Handles adding attributes to respective sets
         {
-            let attributes: OrdSet<Attribute> = bonuses.iter().map(Bonus::get_attribute).collect();
+            let attributes: HashSet<Attribute> = bonuses.iter().map(Bonus::get_attribute).collect();
 
             if forced {
                 self.forced.extend(&mut attributes.iter().copied());
@@ -90,7 +92,7 @@ impl Buffer {
                     .collect_vec()
             };
 
-            let forced = self.forced.remove(&attribute).is_some();
+            let forced = self.forced.remove(&attribute);
 
             if forced || !bonuses.is_empty() {
                 return Some((attribute, bonuses, forced));

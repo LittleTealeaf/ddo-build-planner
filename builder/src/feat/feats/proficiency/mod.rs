@@ -14,7 +14,7 @@ use crate::{
 };
 
 /// Proficiencies for Weapons and Armor
-#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Proficiency {
     /// Proficiency for each weapon.
     WeaponProficiency(WeaponType),
