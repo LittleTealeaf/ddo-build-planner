@@ -9,7 +9,7 @@ use utils::public_modules;
 use super::ability::Ability;
 
 /// Different skills that the character can have.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Skill {
     /// All Skills
     All,

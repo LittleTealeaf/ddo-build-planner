@@ -101,7 +101,7 @@ impl Compiler {
 
     /// Returns all attributes that have bonuses in the compiler.
     pub fn get_all_attributes(&mut self) -> Vec<(Attribute, f32)> {
-        let attributes = self.bonuses.iter().map(|(key, _)| *key).collect_vec();
+        let attributes = self.bonuses.keys().copied().collect_vec();
         attributes
             .into_iter()
             .map(|attr| (attr, self.get_attribute(&attr)))

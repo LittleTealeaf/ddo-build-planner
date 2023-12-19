@@ -11,7 +11,7 @@ use crate::{attribute::GetBonuses, bonus::Bonus};
 pub use attacking_target::*;
 
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
     /// Is the character blocking
     Blocking,

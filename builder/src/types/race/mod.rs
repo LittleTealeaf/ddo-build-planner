@@ -6,7 +6,7 @@ use std::fmt::Display;
 use utils::public_modules;
 
 /// The different race options that the character can be.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Race {
     /// Dragonborn Race
     Dragonborn,

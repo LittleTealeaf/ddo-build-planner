@@ -11,7 +11,7 @@ use crate::{
 
 public_modules!(spell_focus);
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
 /// Feats thga fall under the "Spellcasting" category
 pub enum SpellcastingFeat {
     /// Feats that provide bonuses to spell DCs

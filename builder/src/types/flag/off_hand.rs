@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::item::{ShieldType, WeaponType};
 
 /// Represents the different types of items the character can wield in their off hand
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum OffHandType {
     /// The character is wielding a weapon in their off hand
     Weapon(WeaponType),

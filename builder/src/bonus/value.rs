@@ -1,4 +1,5 @@
 use std::{
+    collections::HashSet,
     fmt::Display,
     iter::{Product, Sum},
     ops::{Add, Div, Mul, Neg, Rem, Sub},
@@ -211,7 +212,7 @@ impl AttributeDependencies for Value {
         }
     }
 
-    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+    fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {
         match self {
             Self::Value(_) => {}
             Self::Add(a, b)

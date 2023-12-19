@@ -6,7 +6,7 @@ use crate::types::item::ShieldType;
 
 
 /// Shield Proficiencies
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ShieldProficiency {
     /// Orbs
     Orb,

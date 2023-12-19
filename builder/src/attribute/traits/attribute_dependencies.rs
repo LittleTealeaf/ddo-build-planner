@@ -1,5 +1,6 @@
+use std::collections::HashSet;
+
 use crate::attribute::Attribute;
-use im::OrdSet;
 
 /// Indicates that this type can have some attribute dependnecies
 pub trait AttributeDependencies {
@@ -7,11 +8,11 @@ pub trait AttributeDependencies {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool;
 
     /// Collects dependencies into an `OrdSet`
-    fn include_attr_dependency(&self, set: &mut OrdSet<Attribute>);
+    fn include_attr_dependency(&self, set: &mut HashSet<Attribute>);
 
     /// Creates an ord set for dependencies
-    fn get_attr_dependencies(&self) -> OrdSet<Attribute> {
-        let mut set = OrdSet::new();
+    fn get_attr_dependencies(&self) -> HashSet<Attribute> {
+        let mut set = HashSet::new();
         self.include_attr_dependency(&mut set);
         set
     }

@@ -3,7 +3,9 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default)]
+#[derive(
+    Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
+)]
 /// Different types of bonsues to spell points
 pub enum SpellPoints {
     /// Bonuses that can be scaled based on the number of Favored Soul or Sorcerer levels you have

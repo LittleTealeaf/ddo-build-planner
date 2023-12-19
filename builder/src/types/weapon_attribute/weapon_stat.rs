@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::damage_type::DamageType;
 
 /// Different stats that can be applied to a particular weapon
-#[derive(PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponStat {
     /// Bonus to Attack
     Attack,

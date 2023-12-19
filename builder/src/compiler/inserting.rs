@@ -1,4 +1,5 @@
-use im::OrdSet;
+use std::collections::HashSet;
+
 use itertools::Itertools;
 use utils::float::ErrorMargin;
 
@@ -26,7 +27,7 @@ impl Compiler {
 impl Compiler {
     /// Adds multiple bonuses to the compiler
     pub fn add_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
-        let mut sources = OrdSet::new();
+        let mut sources = HashSet::new();
 
         let bonuses = bonuses.into_iter().map(|bonus| {
             sources.insert(bonus.get_source());

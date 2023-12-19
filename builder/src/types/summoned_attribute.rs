@@ -11,7 +11,7 @@ use crate::{
 use super::ability::Ability;
 
 /// Attributes pertaining to summoned creatures, charmed minions, pets, and hirelings
-#[derive(Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SummonedAttribute {
     /// Provides bonuses to ability scores for summoned creatures
     AbilityScore(Ability),

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::item::WeaponType;
 
 /// Represents the different options that the character can have in their main hand.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum MainHandType {
     /// The character is wielding a wand in their main hand.
     Wand,

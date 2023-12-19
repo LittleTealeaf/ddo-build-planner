@@ -1,4 +1,5 @@
 use std::{
+    collections::HashSet,
     fmt::Display,
     ops::{BitAnd, BitOr, BitXor, Not},
 };
@@ -136,7 +137,7 @@ impl AttributeDependencies for Condition {
         }
     }
 
-    fn include_attr_dependency(&self, set: &mut im::OrdSet<Attribute>) {
+    fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {
         match self {
             Self::Not(cond) => cond.include_attr_dependency(set),
 
