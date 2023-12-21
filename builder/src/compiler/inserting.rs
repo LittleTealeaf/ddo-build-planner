@@ -1,7 +1,5 @@
-use std::collections::HashSet;
-
 use itertools::Itertools;
-use utils::float::ErrorMargin;
+use utils::{float::ErrorMargin, hashmap::MapGetMutOrDefault};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -10,7 +8,7 @@ use crate::{
 
 use super::{buffer::Buffer, Compiler};
 
-/// Proxy Functions for Adding Bonuses
+/// Functions to remove and add bonuses
 impl Compiler {
     /// Removes all bonuses from a given source from the compiler
     pub fn remove_source(&mut self, source: BonusSource) {
@@ -21,10 +19,7 @@ impl Compiler {
     pub fn add_bonus(&mut self, bonus: Bonus) {
         self.add_bonuses([bonus]);
     }
-}
 
-/// Adding bonsues
-impl Compiler {
     /// Adds multiple bonuses to the compiler
     pub fn add_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
         let mut buffer = Buffer::default();
@@ -34,13 +29,13 @@ impl Compiler {
             self.remove_by_source(source);
         }
 
-        self.process_buffer(buffer);
+        self.consume_buffer(buffer);
     }
 }
 
 // Helper functions for adding bonuses
 impl Compiler {
-    fn process_buffer(&mut self, mut buffer: Buffer) {
+    fn consume_buffer(&mut self, mut buffer: Buffer) {
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .cache
@@ -90,12 +85,8 @@ impl Compiler {
         }
     }
 
-    fn insert_bonuses(&mut self, attribute: Attribute, mut bonuses: Vec<Bonus>) {
-        if let Some(entry) = self.bonuses.get_mut(&attribute) {
-            entry.append(&mut bonuses);
-        } else {
-            self.bonuses.insert(attribute, bonuses);
-        }
+    fn insert_bonuses(&mut self, attribute: Attribute, bonuses: impl IntoIterator<Item = Bonus>) {
+        self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
     }
 
     fn get_bonus_iter(&self) -> impl Iterator<Item = &Bonus> {

@@ -43,20 +43,7 @@ impl Buffer {
             .collect_vec();
 
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::get_source).collect();
-
-        // Remove any residing bonuses from any of the provided sources
-        {
-            let indexes: Vec<usize> = self
-                .bonuses
-                .iter()
-                .enumerate()
-                .filter_map(|(index, bonus)| sources.contains(&bonus.get_source()).then_some(index))
-                .rev()
-                .collect();
-            for index in indexes {
-                self.bonuses.swap_remove(index);
-            }
-        }
+        self.bonuses.retain(|i| !sources.contains(&i.get_source()));
 
         // Handles adding attributes to respective sets
         {
