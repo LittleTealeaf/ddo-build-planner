@@ -27,20 +27,20 @@ impl Compiler {
 impl Compiler {
     /// Adds multiple bonuses to the compiler
     pub fn add_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
-        let mut sources = HashSet::new();
-
-        let bonuses = bonuses.into_iter().map(|bonus| {
-            sources.insert(bonus.get_source());
-            bonus
-        });
-
         let mut buffer = Buffer::default();
         buffer.insert_bonuses(bonuses, true);
 
-        for source in sources {
+        for source in buffer.get_sources() {
             self.remove_by_source(source);
         }
 
+        self.process_buffer(buffer);
+    }
+}
+
+// Helper functions for adding bonuses
+impl Compiler {
+    fn process_buffer(&mut self, mut buffer: Buffer) {
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .cache
@@ -70,10 +70,7 @@ impl Compiler {
             }
         }
     }
-}
 
-// Helper functions for adding bonuses
-impl Compiler {
     fn remove_by_source(&mut self, source: BonusSource) {
         if let Some(children) = self.children.remove(&source) {
             for child in children {

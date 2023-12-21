@@ -100,6 +100,10 @@ impl Buffer {
         }
         None
     }
+
+    pub fn get_sources(&self) -> HashSet<BonusSource> {
+        self.bonuses.iter().map(Bonus::get_source).collect()
+    }
 }
 
 #[cfg(test)]
