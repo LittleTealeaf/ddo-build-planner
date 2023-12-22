@@ -99,13 +99,12 @@ impl Compiler {
         value
     }
 
-    /// Returns all attributes that have bonuses in the compiler.
-    pub fn get_all_attributes(&mut self) -> Vec<(Attribute, f32)> {
+    /// Returns all attributes that have bonuses in the compiler
+    pub fn get_all_attributes(&mut self) -> impl Iterator<Item = (Attribute, f32)> + '_ {
         let attributes = self.bonuses.keys().copied().collect_vec();
         attributes
             .into_iter()
             .map(|attr| (attr, self.get_attribute(&attr)))
-            .collect()
     }
 
     /// Calculates the total value of valid bonuses for a particular attribute.
