@@ -20,7 +20,7 @@ use crate::{
 use super::{Bonus, BonusSource, BonusType, Condition, Value};
 
 /// Returns all base bonuses that are to be included by default.
-pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
+pub fn get_base_bonuses() -> impl IntoIterator<Item = Bonus> {
     chain!(
         ability_bonuses(),
         saving_throw(),
@@ -31,7 +31,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
     )
 }
 
-fn ability_bonuses() -> impl Iterator<Item = Bonus> {
+fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
     Ability::ABILITIES.into_iter().flat_map(|ability| {
         [
             Bonus::new(
@@ -53,7 +53,7 @@ fn ability_bonuses() -> impl Iterator<Item = Bonus> {
     })
 }
 
-fn saving_throw() -> impl Iterator<Item = Bonus> {
+fn saving_throw() -> impl IntoIterator<Item = Bonus> {
     macro_rules! map {
         ($ability: ident, $save: ident) => {
             (Ability::$ability, SavingThrow::$save)
@@ -77,7 +77,7 @@ fn saving_throw() -> impl Iterator<Item = Bonus> {
     })
 }
 
-fn spell_power() -> impl Iterator<Item = Bonus> {
+fn spell_power() -> impl IntoIterator<Item = Bonus> {
     macro_rules! map {
         ($skill: ident, $damage_type: ident) => {
             (Skill::$skill, DamageType::$damage_type)
@@ -108,7 +108,7 @@ fn spell_power() -> impl Iterator<Item = Bonus> {
     })
 }
 
-fn skill() -> impl Iterator<Item = Bonus> {
+fn skill() -> impl IntoIterator<Item = Bonus> {
     macro_rules! map {
         ($ability: ident, $skill: ident) => {
             (Ability::$ability, Skill::$skill)
@@ -150,7 +150,7 @@ fn skill() -> impl Iterator<Item = Bonus> {
     })
 }
 
-fn armor_class() -> impl Iterator<Item = Bonus> {
+fn armor_class() -> impl IntoIterator<Item = Bonus> {
     let is_wearing_armor = Condition::has(Attribute::from(Flag::ArmorType(ArmorType::Light)))
         | Condition::has(Flag::ArmorType(ArmorType::Medium).into())
         | Condition::has(Flag::ArmorType(ArmorType::Heavy).into());
@@ -219,10 +219,9 @@ fn armor_class() -> impl Iterator<Item = Bonus> {
             None,
         ),
     ]
-    .into_iter()
 }
 
-fn health() -> impl Iterator<Item = Bonus> {
+fn health() -> impl IntoIterator<Item = Bonus> {
     [
         Bonus::new(
             Attribute::Health(Health::Bonus),
@@ -241,10 +240,9 @@ fn health() -> impl Iterator<Item = Bonus> {
             None,
         ),
     ]
-    .into_iter()
 }
 
-fn spell_points() -> impl Iterator<Item = Bonus> {
+fn spell_points() -> impl IntoIterator<Item = Bonus> {
     [
         Bonus::new(
             Attribute::SpellPoints(SpellPoints::Base),
@@ -266,5 +264,4 @@ fn spell_points() -> impl Iterator<Item = Bonus> {
             None,
         ),
     ]
-    .into_iter()
 }

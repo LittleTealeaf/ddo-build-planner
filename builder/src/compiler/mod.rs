@@ -52,6 +52,13 @@ pub struct Compiler {
     children: HashMap<BonusSource, Vec<Attribute>>,
 }
 
+impl Compiler {
+    /// Creates a new instance of the Compiler
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
 impl Default for Compiler {
     fn default() -> Self {
         let mut new = Self {
