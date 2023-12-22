@@ -95,9 +95,7 @@ impl Compiler {
     }
 
     fn get_bonus_iter(&self) -> impl Iterator<Item = &Bonus> {
-        self.bonuses
-            .iter()
-            .flat_map(|(_, bonus_set)| bonus_set.iter())
+        self.bonuses.values().flatten()
     }
 
     fn get_dependants(&self, attribute: Attribute) -> impl Iterator<Item = Attribute> + '_ {
