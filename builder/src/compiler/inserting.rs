@@ -10,9 +10,14 @@ use super::{buffer::Buffer, Compiler};
 
 /// Functions to remove and add bonuses
 impl Compiler {
+    /// Removes all bonuses from the given soruces from the compiler
+    pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = BonusSource>) {
+        self.add_bonuses(sources.into_iter().map(Bonus::dummy));
+    }
+
     /// Removes all bonuses from a given source from the compiler
     pub fn remove_source(&mut self, source: BonusSource) {
-        self.add_bonuses([Bonus::dummy(source)]);
+        self.remove_sources([source]);
     }
 
     /// Adds a single bonus to the compiler
