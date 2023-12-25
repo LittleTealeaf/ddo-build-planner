@@ -42,12 +42,14 @@ impl Buffer {
             // .filter(|bonus| bonus.get_attribute().is_tracked())
             .collect_vec();
 
-        let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::get_source).collect();
+        let sources: HashSet<BonusSource> =
+            bonuses.iter().map(Bonus::get_source).copied().collect();
         self.bonuses.retain(|i| !sources.contains(&i.get_source()));
 
         // Handles adding attributes to respective sets
         {
-            let attributes: HashSet<Attribute> = bonuses.iter().map(Bonus::get_attribute).collect();
+            let attributes: HashSet<Attribute> =
+                bonuses.iter().map(Bonus::get_attribute).cloned().collect();
 
             if forced {
                 self.forced.extend(attributes.iter().copied());
@@ -88,7 +90,7 @@ impl Buffer {
     }
 
     pub fn get_sources(&self) -> HashSet<BonusSource> {
-        self.bonuses.iter().map(Bonus::get_source).collect()
+        self.bonuses.iter().map(Bonus::get_source).cloned().collect()
     }
 }
 

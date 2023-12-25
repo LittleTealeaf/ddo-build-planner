@@ -141,11 +141,12 @@ impl Compiler {
     /// [`Condition::get_attribute`]: crate::compiler::Compiler::get_attribute()
     pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<f32> {
         // Collect valid bonuses that pass their conditions into a list of (type, value) tuples
-        let valid_bonuses = self
+        let binding = self
             .bonuses
             .get(attribute)?
-            .clone()
-            .into_iter()
+            .clone();
+        let valid_bonuses = binding
+            .iter()
             .filter_map(|bonus| {
                 bonus
                     .get_condition()

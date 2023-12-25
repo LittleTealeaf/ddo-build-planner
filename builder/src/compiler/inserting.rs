@@ -53,7 +53,7 @@ impl Compiler {
 
             if forced || !initial_value.within_margin(&self.get_attribute(&attribute)) {
                 // Add all dependants to the buffer
-                buffer.insert_attributes(self.get_dependants(attribute));
+                buffer.insert_attributes(self.get_dependants(attribute).cloned());
 
                 let source: BonusSource = attribute.into();
 
@@ -63,7 +63,7 @@ impl Compiler {
 
                 if let Some(bonuses) = attribute.get_bonuses(value) {
                     self.children
-                        .insert(source, bonuses.iter().map(Bonus::get_attribute).collect());
+                        .insert(source, bonuses.iter().map(Bonus::get_attribute).cloned().collect());
 
                     buffer.insert_bonuses(bonuses, false);
                 }
@@ -98,7 +98,7 @@ impl Compiler {
         self.bonuses.values().flatten()
     }
 
-    fn get_dependants(&self, attribute: Attribute) -> impl Iterator<Item = Attribute> + '_ {
+    fn get_dependants(&self, attribute: Attribute) -> impl Iterator<Item = &Attribute> + '_ {
         self.get_bonus_iter().filter_map(move |bonus| {
             bonus
                 .has_attr_dependency(attribute)

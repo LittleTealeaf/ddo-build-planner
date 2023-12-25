@@ -135,8 +135,8 @@ impl Bonus {
     /// assert_eq!(bonus.get_attribute(), Attribute::Dummy);
     /// ```
     #[must_use]
-    pub const fn get_attribute(&self) -> Attribute {
-        self.attribute
+    pub const fn get_attribute(&self) -> &Attribute {
+        &self.attribute
     }
 
     /// Returns the type that the bonus is
@@ -150,8 +150,8 @@ impl Bonus {
     /// assert_eq!(bonus.get_type(), BonusType::Enhancement);
     /// ```
     #[must_use]
-    pub const fn get_type(&self) -> BonusType {
-        self.bonus_type
+    pub const fn get_type(&self) -> &BonusType {
+        &self.bonus_type
     }
 
     /// Returns the value of the bonus
@@ -165,8 +165,8 @@ impl Bonus {
     /// assert_eq!(bonus.get_value(), Value::Value(10f32));
     /// ```
     #[must_use]
-    pub fn get_value(&self) -> Value {
-        self.value.clone()
+    pub const fn get_value(&self) -> &Value {
+        &self.value
     }
 
     /// Returns the source of the bonus
@@ -180,8 +180,8 @@ impl Bonus {
     /// assert_eq!(bonus.get_source(), BonusSource::Base);
     /// ```
     #[must_use]
-    pub const fn get_source(&self) -> BonusSource {
-        self.source
+    pub const fn get_source(&self) -> &BonusSource {
+        &self.source
     }
 
     /// Returns the condition of the bonus
@@ -202,8 +202,8 @@ impl Bonus {
     ///
     /// ```
     #[must_use]
-    pub fn get_condition(&self) -> Option<Condition> {
-        self.condition.clone()
+    pub const fn get_condition(&self) -> Option<&Condition> {
+        self.condition.as_ref()
     }
 
     /// Clones all of the bonuse's values, replacing the attribute.

@@ -49,10 +49,10 @@ impl CloneBonus for Proficiency {
                 .map(|weapon| {
                     Bonus::new(
                         Attribute::Feat(Feat::Proficiency(Self::WeaponProficiency(weapon))),
-                        bonus.get_type(),
-                        bonus.get_value(),
-                        bonus.get_source(),
-                        bonus.get_condition(),
+                        *bonus.get_type(),
+                        bonus.get_value().clone(),
+                        *bonus.get_source(),
+                        bonus.get_condition().cloned(),
                     )
                 })
                 .collect(),
@@ -84,10 +84,10 @@ impl CloneBonus for Proficiency {
                 .map(|weapon| {
                     Bonus::new(
                         Attribute::Feat(Feat::Proficiency(Self::WeaponProficiency(weapon))),
-                        bonus.get_type(),
-                        bonus.get_value(),
-                        bonus.get_source(),
-                        bonus.get_condition(),
+                        *bonus.get_type(),
+                        bonus.get_value().clone(),
+                        *bonus.get_source(),
+                        bonus.get_condition().cloned(),
                     )
                 })
                 .collect(),
