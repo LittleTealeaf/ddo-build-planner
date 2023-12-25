@@ -459,3 +459,88 @@ mod condition {
         test_condition(Condition::Constant(false), false, "false");
     }
 }
+
+mod sources {
+    use builder::{
+        attribute::Attribute,
+        bonus::{Bonus, BonusSource, BonusType},
+        compiler::Compiler,
+    };
+    use utils::float::ErrorMargin;
+
+    #[test]
+    fn remove_source() {
+        let mut compiler = Compiler::new();
+        compiler.add_bonuses([
+            Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                1f32.into(),
+                BonusSource::Debug(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::Debug(1),
+                BonusType::Stacking,
+                1f32.into(),
+                BonusSource::Debug(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::Debug(2),
+                BonusType::Stacking,
+                1f32.into(),
+                BonusSource::Debug(1),
+                None,
+            ),
+        ]);
+        compiler.remove_source(BonusSource::Debug(0));
+        assert!(compiler
+            .get_attribute(&Attribute::Debug(0))
+            .within_margin(&0f32));
+        assert!(compiler
+            .get_attribute(&Attribute::Debug(1))
+            .within_margin(&0f32));
+        assert!(compiler
+            .get_attribute(&Attribute::Debug(2))
+            .within_margin(&1f32));
+    }
+
+    #[test]
+    fn remove_sources() {
+        let mut compiler = Compiler::new();
+        compiler.add_bonuses([
+            Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                1f32.into(),
+                BonusSource::Debug(0),
+                None,
+            ),
+            Bonus::new(
+                Attribute::Debug(1),
+                BonusType::Stacking,
+                1f32.into(),
+                BonusSource::Debug(1),
+                None,
+            ),
+            Bonus::new(
+                Attribute::Debug(2),
+                BonusType::Stacking,
+                1f32.into(),
+                BonusSource::Debug(2),
+                None,
+            ),
+        ]);
+        compiler.remove_sources([BonusSource::Debug(0), BonusSource::Debug(1)]);
+        assert!(compiler
+            .get_attribute(&Attribute::Debug(0))
+            .within_margin(&0f32));
+        assert!(compiler
+            .get_attribute(&Attribute::Debug(1))
+            .within_margin(&0f32));
+        assert!(compiler
+            .get_attribute(&Attribute::Debug(2))
+            .within_margin(&1f32));
+    }
+}

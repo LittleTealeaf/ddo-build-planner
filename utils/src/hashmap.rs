@@ -46,6 +46,30 @@ where
     }
 }
 
+impl<K, V, S> MapGetMutOr<K, V> for im::HashMap<K, V, S>
+where
+    K: Hash + Eq + PartialEq + Clone,
+    V: Clone,
+    S: BuildHasher,
+{
+    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
+    where
+        F: Fn() -> V,
+    {
+        if !self.contains_key(key) {
+            self.insert(key.clone(), if_empty());
+        }
+        self.get_mut(key).expect("Expected Returned Value")
+    }
+
+    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
+        if !self.contains_key(key) {
+            self.insert(key.clone(), default);
+        }
+        self.get_mut(key).expect("Expected Returned Value")
+    }
+}
+
 impl<K, V> MapGetMutOr<K, V> for OrdMap<K, V>
 where
     K: Ord + PartialOrd + Clone,

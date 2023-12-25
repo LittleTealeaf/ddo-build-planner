@@ -53,4 +53,21 @@ mod ability {
             }
         }
     }
+
+    #[test]
+    fn all_maps_to_all_abilities() {
+        let mut compiler = Compiler::new();
+        compiler.add_bonus(Bonus::new(
+            Attribute::Ability(Ability::All),
+            BonusType::Stacking,
+            2f32.into(),
+            BonusSource::Debug(0),
+            None,
+        ));
+        for ability in Ability::ABILITIES {
+            assert!(compiler
+                .get_attribute(&Attribute::Ability(ability))
+                .within_margin(&10f32));
+        }
+    }
 }

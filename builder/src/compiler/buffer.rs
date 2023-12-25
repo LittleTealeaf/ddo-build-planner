@@ -6,7 +6,7 @@ use std::{
 use itertools::Itertools;
 
 use crate::{
-    attribute::{Attribute, TrackAttribute},
+    attribute::Attribute,
     bonus::{Bonus, BonusSource, CloneBonus},
 };
 
@@ -39,7 +39,7 @@ impl Buffer {
                 ]
             })
             .flatten()
-            .filter(|bonus| bonus.get_attribute().is_tracked())
+            // .filter(|bonus| bonus.get_attribute().is_tracked())
             .collect_vec();
 
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::get_source).collect();
@@ -50,11 +50,10 @@ impl Buffer {
             let attributes: HashSet<Attribute> = bonuses.iter().map(Bonus::get_attribute).collect();
 
             if forced {
-                self.forced.extend(&mut attributes.iter().copied());
+                self.forced.extend(attributes.iter().copied());
             }
 
-            self.attributes
-                .extend(&mut attributes.into_iter().map(Reverse));
+            self.attributes.extend(attributes.into_iter().map(Reverse));
         }
 
         // Add all bonuses to the bonuses list
