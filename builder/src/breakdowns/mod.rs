@@ -3,6 +3,11 @@
 mod calculation;
 pub use calculation::*;
 
+mod inserting;
+pub use inserting::*;
+
+mod buffer;
+
 use std::collections::HashMap;
 
 use crate::{

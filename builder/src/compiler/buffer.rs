@@ -44,12 +44,12 @@ impl Buffer {
 
         let sources: HashSet<BonusSource> =
             bonuses.iter().map(Bonus::get_source).copied().collect();
-        self.bonuses.retain(|i| !sources.contains(&i.get_source()));
+        self.bonuses.retain(|i| !sources.contains(i.get_source()));
 
         // Handles adding attributes to respective sets
         {
             let attributes: HashSet<Attribute> =
-                bonuses.iter().map(Bonus::get_attribute).cloned().collect();
+                bonuses.iter().map(Bonus::get_attribute).copied().collect();
 
             if forced {
                 self.forced.extend(attributes.iter().copied());
@@ -90,7 +90,7 @@ impl Buffer {
     }
 
     pub fn get_sources(&self) -> HashSet<BonusSource> {
-        self.bonuses.iter().map(Bonus::get_source).cloned().collect()
+        self.bonuses.iter().map(Bonus::get_source).copied().collect()
     }
 }
 
