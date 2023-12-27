@@ -24,7 +24,7 @@ pub struct Breakdowns {
 
 impl Breakdowns {
     pub fn new() -> Self {
-        let mut breakdowns = Breakdowns {
+        let mut breakdowns = Self {
             bonuses: HashMap::new(),
             cache: HashMap::new(),
             children: HashMap::new(),
@@ -40,12 +40,11 @@ impl Breakdowns {
     }
 
     pub fn iter_attributes(&mut self) -> impl Iterator<Item = (Attribute, f32)> + '_ {
-
         let attributes = self.bonuses.keys().copied().collect::<Vec<_>>();
 
-        attributes.into_iter().map(|attribute| {
-            (attribute, self.get_attribute(&attribute))
-        })
+        attributes
+            .into_iter()
+            .map(|attribute| (attribute, self.get_attribute(&attribute)))
     }
 }
 

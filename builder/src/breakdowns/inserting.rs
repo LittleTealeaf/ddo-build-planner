@@ -10,7 +10,6 @@ use crate::{
 use super::{buffer::Buffer, Breakdowns};
 
 impl Breakdowns {
-
     pub fn add_bonus(&mut self, bonus: Bonus) {
         self.insert_bonus(bonus);
     }
@@ -24,11 +23,11 @@ impl Breakdowns {
     }
 
     pub fn remove_source(&mut self, source: BonusSource) {
-        self.remove_sources([source])
+        self.remove_sources([source]);
     }
 
     pub fn insert_bonus(&mut self, bonus: Bonus) {
-        self.insert_bonuses([bonus])
+        self.insert_bonuses([bonus]);
     }
 
     pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
