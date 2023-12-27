@@ -1,4 +1,5 @@
 use itertools::chain;
+use utils::bit_ops::BitAny;
 
 use crate::{
     attribute::Attribute,
@@ -142,12 +143,11 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
             Value::iter_min([
                 Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
                 Value::If {
-                    condition: Condition::iter_any(
-                        [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                            .map(|armor| Condition::has(Attribute::Flag(Flag::ArmorType(armor)))),
-                    )
-                    .unwrap()
-                    .into(),
+                    condition: [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+                        .map(|armor| Condition::has(Attribute::Flag(Flag::ArmorType(armor))))
+                        .bit_any()
+                        .unwrap()
+                        .into(),
                     if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex))
                         .into(),
                     if_false: Value::Value(f32::MAX).into(),
