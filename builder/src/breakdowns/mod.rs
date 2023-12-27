@@ -12,7 +12,7 @@ use std::collections::HashMap;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, get_base_bonuses},
+    bonus::{get_base_bonuses, Bonus, BonusSource},
 };
 
 /// TODO: Documentation
@@ -30,9 +30,13 @@ impl Breakdowns {
             children: HashMap::new(),
         };
 
-        breakdowns.add_bonuses(get_base_bonuses());
+        breakdowns.insert_bonuses(get_base_bonuses());
 
         breakdowns
+    }
+
+    pub fn get_bonuses(&self) -> impl Iterator<Item = &Bonus> {
+        self.bonuses.values().flatten()
     }
 }
 
