@@ -114,6 +114,7 @@ impl Bonus {
     }
 
     /// Returns a bonus that gives the character some [`Feat`]
+    #[must_use]
     pub fn feat(feat: Feat, source: BonusSource, condition: Option<Condition>) -> Self {
         Self::new(
             Attribute::Feat(feat),

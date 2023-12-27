@@ -76,6 +76,7 @@ impl SavingThrow {
     ///
     /// Saving Throws that do not have parents, such as primary saving throws ([`Fortitude`],
     /// [`Reflex`], or [`Will`]) or [`All`] will return None
+    #[must_use]
     pub const fn get_parent(&self) -> Option<Self> {
         match self {
             Self::Poison | Self::Disease => Some(Self::Fortitude),

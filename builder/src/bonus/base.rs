@@ -20,6 +20,7 @@ use crate::{
 use super::{Bonus, BonusSource, BonusType, Condition, Value};
 
 /// Returns all base bonuses that are to be included by default.
+#[must_use]
 pub fn get_base_bonuses() -> impl IntoIterator<Item = Bonus> {
     chain!(
         ability_bonuses(),

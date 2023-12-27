@@ -22,7 +22,6 @@ missing_docs = "warn"
 pedantic = "warn"
 complexity = "warn"
 nursery = "warn"
-must_use_candidate = { level = "allow", priority = 1 }
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
 needless_collect = { level = "allow", priority = 1 }

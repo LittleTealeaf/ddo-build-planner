@@ -1,6 +1,6 @@
 use crate::{
-    attribute::{Attribute, GetBonuses, TrackAttribute},
-    bonus::{Bonus, BonusType, CloneBonus},
+    attribute::{Attribute, TrackAttribute},
+    bonus::{Bonus, CloneBonus},
     types::spell_power::SpellPower,
 };
 
@@ -44,7 +44,6 @@ mod tests {
 
     use super::*;
 
-
     #[test]
     fn potency_is_not_tracked() {
         assert!(!SpellPower::Potency.is_tracked());
@@ -63,4 +62,3 @@ mod tests {
         }
     }
 }
-

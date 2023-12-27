@@ -23,6 +23,7 @@ pub struct Breakdowns {
 }
 
 impl Breakdowns {
+    #[must_use]
     pub fn new() -> Self {
         let mut breakdowns = Self {
             bonuses: HashMap::new(),

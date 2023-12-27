@@ -28,11 +28,13 @@ pub enum FeatRequirement {
 
 impl FeatRequirement {
     /// Returns the feat requirement for a logical "none" object
+    #[must_use]
     pub fn none(requirements: Vec<Self>) -> Self {
         Self::Not(Box::new(Self::Any(requirements)))
     }
 
     /// Returns the feat requirement for a logical "not-all" object
+    #[must_use]
     pub fn not_all(requirements: Vec<Self>) -> Self {
         Self::Not(Box::new(Self::All(requirements)))
     }

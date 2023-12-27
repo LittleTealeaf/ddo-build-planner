@@ -41,6 +41,7 @@ impl From<bool> for Condition {
 /// Additional constructors for more complicated conditions
 impl Condition {
     /// Requires that the character has some attribute
+    #[must_use]
     pub const fn has(attribute: Attribute) -> Self {
         Self::GreaterThan(Value::Attribute(attribute), Value::Value(0f32))
     }
