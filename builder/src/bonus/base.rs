@@ -134,48 +134,34 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
 }
 
 fn armor_class() -> impl IntoIterator<Item = Bonus> {
-    let is_wearing_armor = Condition::has(Attribute::from(Flag::ArmorType(ArmorType::Light)))
-        | Condition::has(Flag::ArmorType(ArmorType::Medium).into())
-        | Condition::has(Flag::ArmorType(ArmorType::Heavy).into());
-
-    let is_wielding_tower_shield = Condition::has(Attribute::from(Flag::OffHandType(
-        OffHandType::Shield(ShieldType::TowerShield),
-    )));
-
     [
         // Dexterity Bonus to Armor Class
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::Bonus),
             BonusType::AbilityModifier,
-            Value::If {
-                condition: is_wearing_armor.into(),
-                if_true: Box::new(Value::If {
-                    condition: is_wielding_tower_shield.clone().into(),
-                    if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                        .min(Value::Attribute(Attribute::ArmorClass(
-                            ArmorClass::ArmorMaxDex,
-                        )))
-                        .min(Value::Attribute(Attribute::ArmorClass(
-                            ArmorClass::ShieldMaxDex,
-                        )))
+            Value::iter_min([
+                Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
+                Value::If {
+                    condition: Condition::any_iter(
+                        [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+                            .map(|armor| Condition::has(Attribute::Flag(Flag::ArmorType(armor)))),
+                    )
+                    .unwrap()
+                    .into(),
+                    if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex))
                         .into(),
-                    if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                        .min(Value::Attribute(Attribute::ArmorClass(
-                            ArmorClass::ArmorMaxDex,
-                        )))
+                    if_false: Value::Value(f32::MAX).into(),
+                },
+                Value::If {
+                    condition: Condition::has(Attribute::from(Flag::OffHandType(
+                        OffHandType::Shield(ShieldType::TowerShield),
+                    )))
+                    .into(),
+                    if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldMaxDex))
                         .into(),
-                }),
-                if_false: Box::new(Value::If {
-                    condition: is_wielding_tower_shield.into(),
-                    if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                        .into(),
-                    if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                        .min(Value::Attribute(Attribute::ArmorClass(
-                            ArmorClass::ShieldMaxDex,
-                        )))
-                        .into(),
-                }),
-            },
+                    if_false: Value::Value(f32::MAX).into(),
+                },
+            ]),
             BonusSource::Base,
             None,
         ),
