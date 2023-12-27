@@ -14,9 +14,8 @@ use crate::{
         ability::Ability, armor_class::ArmorClass, damage_type::DamageType, flag::Flag,
         health::Health, player_class::PlayerClass, saving_throw::SavingThrow,
         sheltering::Sheltering, skill::Skill, spell_points::SpellPoints, spell_power::SpellPower,
-        spell_power::_SpellCriticalChance, spell_power::_SpellCriticalDamage,
-        spell_power::_SpellPower, spell_selector::SpellSelector,
-        summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
+        spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, toggle::Toggle,
+        weapon_attribute::WeaponAttribute,
     },
 };
 use std::fmt::Display;
@@ -140,14 +139,6 @@ impl Attribute {
     pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
         match self {
             Self::Toggle(toggle) => toggle.get_bonuses(value),
-            Self::SpellPower(sp) => GetBonuses::<_SpellPower>::get_bonuses(sp, value),
-
-            Self::SpellCriticalChance(sp) => {
-                GetBonuses::<_SpellCriticalChance>::get_bonuses(sp, value)
-            }
-            Self::SpellCriticalDamage(sp) => {
-                GetBonuses::<_SpellCriticalDamage>::get_bonuses(sp, value)
-            }
             Self::Weapon(stat) => stat.get_bonuses(value),
             Self::ClassLevel(cl) => cl.get_bonuses(value),
             Self::Flag(flag) => flag.get_bonuses(value),

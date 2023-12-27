@@ -141,18 +141,13 @@ impl Compiler {
     /// [`Condition::get_attribute`]: crate::compiler::Compiler::get_attribute()
     pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<f32> {
         // Collect valid bonuses that pass their conditions into a list of (type, value) tuples
-        let binding = self
-            .bonuses
-            .get(attribute)?
-            .clone();
-        let valid_bonuses = binding
-            .iter()
-            .filter_map(|bonus| {
-                bonus
-                    .get_condition()
-                    .map_or(true, |condition| self.check_condition(&condition))
-                    .then(|| (bonus.get_type(), self.calculate_value(&bonus.get_value())))
-            });
+        let binding = self.bonuses.get(attribute)?.clone();
+        let valid_bonuses = binding.iter().filter_map(|bonus| {
+            bonus
+                .get_condition()
+                .map_or(true, |condition| self.check_condition(condition))
+                .then(|| (bonus.get_type(), self.calculate_value(bonus.get_value())))
+        });
 
         // Collect each type into a vec with EnumBinaryMap
         let map = valid_bonuses.into_grouped_ord_map();

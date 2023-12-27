@@ -4,69 +4,6 @@ use crate::{
     types::spell_power::SpellPower,
 };
 
-/// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellPower`]
-pub struct _SpellPower;
-
-impl GetBonuses<_SpellPower> for SpellPower {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        matches!(self, Self::Universal).then(|| {
-            Self::SPELL_POWERS
-                .map(|sp| {
-                    Bonus::new(
-                        Attribute::SpellPower(sp),
-                        BonusType::Stacking,
-                        value.into(),
-                        Attribute::SpellPower(Self::Universal).into(),
-                        None,
-                    )
-                })
-                .into()
-        })
-    }
-}
-
-/// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellCriticalChance`]
-pub struct _SpellCriticalChance;
-
-impl GetBonuses<_SpellCriticalChance> for SpellPower {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        matches!(self, Self::Universal).then(|| {
-            Self::SPELL_POWERS
-                .map(|sp| {
-                    Bonus::new(
-                        Attribute::SpellCriticalChance(sp),
-                        BonusType::Stacking,
-                        value.into(),
-                        Attribute::SpellCriticalChance(Self::Universal).into(),
-                        None,
-                    )
-                })
-                .into()
-        })
-    }
-}
-
-/// 0-sized struct used by [`SpellPower`] to differentiate [`GetBonuses`] for [`Attribute::SpellCriticalDamage`]
-pub struct _SpellCriticalDamage;
-
-impl GetBonuses<_SpellCriticalDamage> for SpellPower {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        matches!(self, Self::Universal).then(|| {
-            Self::SPELL_POWERS
-                .map(|sp| {
-                    Bonus::new(
-                        Attribute::SpellCriticalDamage(sp),
-                        BonusType::Stacking,
-                        value.into(),
-                        Attribute::SpellCriticalDamage(Self::Universal).into(),
-                        None,
-                    )
-                })
-                .into()
-        })
-    }
-}
-
 impl CloneBonus for SpellPower {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         Some(

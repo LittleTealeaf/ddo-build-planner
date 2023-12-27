@@ -24,10 +24,11 @@ pub fn get_base_bonuses() -> impl IntoIterator<Item = Bonus> {
     chain!(
         ability_bonuses(),
         saving_throw(),
-        spell_power(),
+        spell_power_skills(),
+        spell_power_universal(),
         skill(),
         health(),
-        spell_points()
+        spell_points(),
     )
 }
 
@@ -54,16 +55,10 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
 }
 
 fn saving_throw() -> impl IntoIterator<Item = Bonus> {
-    macro_rules! map {
-        ($ability: ident, $save: ident) => {
-            (Ability::$ability, SavingThrow::$save)
-        };
-    }
-
     [
-        map!(Dexterity, Reflex),
-        map!(Constitution, Fortitude),
-        map!(Wisdom, Will),
+        (Ability::Dexterity, SavingThrow::Reflex),
+        (Ability::Constitution, SavingThrow::Fortitude),
+        (Ability::Wisdom, SavingThrow::Will),
     ]
     .into_iter()
     .map(|(ability, saving_throw)| {
@@ -77,24 +72,18 @@ fn saving_throw() -> impl IntoIterator<Item = Bonus> {
     })
 }
 
-fn spell_power() -> impl IntoIterator<Item = Bonus> {
-    macro_rules! map {
-        ($skill: ident, $damage_type: ident) => {
-            (Skill::$skill, DamageType::$damage_type)
-        };
-    }
-
+fn spell_power_skills() -> impl IntoIterator<Item = Bonus> {
     [
-        map!(Heal, Positive),
-        map!(Heal, Negative),
-        map!(Perform, Sonic),
-        map!(Spellcraft, Acid),
-        map!(Spellcraft, Cold),
-        map!(Spellcraft, Electric),
-        map!(Spellcraft, Fire),
-        map!(Spellcraft, Force),
-        map!(Spellcraft, Light),
-        map!(Spellcraft, Poison),
+        (Skill::Heal, DamageType::Positive),
+        (Skill::Heal, DamageType::Negative),
+        (Skill::Perform, DamageType::Sonic),
+        (Skill::Spellcraft, DamageType::Acid),
+        (Skill::Spellcraft, DamageType::Cold),
+        (Skill::Spellcraft, DamageType::Electric),
+        (Skill::Spellcraft, DamageType::Fire),
+        (Skill::Spellcraft, DamageType::Force),
+        (Skill::Spellcraft, DamageType::Light),
+        (Skill::Spellcraft, DamageType::Poison),
     ]
     .into_iter()
     .map(|(skill, damage_type)| {
@@ -109,34 +98,28 @@ fn spell_power() -> impl IntoIterator<Item = Bonus> {
 }
 
 fn skill() -> impl IntoIterator<Item = Bonus> {
-    macro_rules! map {
-        ($ability: ident, $skill: ident) => {
-            (Ability::$ability, Skill::$skill)
-        };
-    }
-
     [
-        map!(Dexterity, Balance),
-        map!(Charisma, Bluff),
-        map!(Constitution, Concentration),
-        map!(Charisma, Diplomacy),
-        map!(Intelligence, DisableDevice),
-        map!(Charisma, Haggle),
-        map!(Wisdom, Heal),
-        map!(Dexterity, Hide),
-        map!(Charisma, Intimidate),
-        map!(Strength, Jump),
-        map!(Wisdom, Listen),
-        map!(Dexterity, MoveSilently),
-        map!(Dexterity, OpenLock),
-        map!(Charisma, Perform),
-        map!(Intelligence, Repair),
-        map!(Intelligence, Search),
-        map!(Intelligence, Spellcraft),
-        map!(Wisdom, Spot),
-        map!(Strength, Swim),
-        map!(Dexterity, Tumble),
-        map!(Charisma, UseMagicalDevice),
+        (Ability::Dexterity, Skill::Balance),
+        (Ability::Charisma, Skill::Bluff),
+        (Ability::Constitution, Skill::Concentration),
+        (Ability::Charisma, Skill::Diplomacy),
+        (Ability::Intelligence, Skill::DisableDevice),
+        (Ability::Charisma, Skill::Haggle),
+        (Ability::Wisdom, Skill::Heal),
+        (Ability::Dexterity, Skill::Hide),
+        (Ability::Charisma, Skill::Intimidate),
+        (Ability::Strength, Skill::Jump),
+        (Ability::Wisdom, Skill::Listen),
+        (Ability::Dexterity, Skill::MoveSilently),
+        (Ability::Dexterity, Skill::OpenLock),
+        (Ability::Charisma, Skill::Perform),
+        (Ability::Intelligence, Skill::Repair),
+        (Ability::Intelligence, Skill::Search),
+        (Ability::Intelligence, Skill::Spellcraft),
+        (Ability::Wisdom, Skill::Spot),
+        (Ability::Strength, Skill::Swim),
+        (Ability::Dexterity, Skill::Tumble),
+        (Ability::Charisma, Skill::UseMagicalDevice),
     ]
     .into_iter()
     .map(|(ability, skill)| {
@@ -264,4 +247,24 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
             None,
         ),
     ]
+}
+
+fn spell_power_universal() -> impl IntoIterator<Item = Bonus> {
+    [
+        Attribute::SpellPower,
+        Attribute::SpellCriticalChance,
+        Attribute::SpellCriticalDamage,
+    ]
+    .into_iter()
+    .flat_map(|attribute| {
+        SpellPower::SPELL_POWERS.into_iter().map(move |sp| {
+            Bonus::new(
+                attribute(sp),
+                BonusType::Stacking,
+                Value::Attribute(attribute(SpellPower::Universal)),
+                BonusSource::Base,
+                None,
+            )
+        })
+    })
 }
