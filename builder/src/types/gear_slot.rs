@@ -36,5 +36,5 @@ pub enum GearSlot {
     /// Main Hand Slot
     MainHand,
     /// Off Hand Slot
-    OffHand
+    OffHand,
 }

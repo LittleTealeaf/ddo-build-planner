@@ -4,7 +4,8 @@ mod ability {
     use builder::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType},
-        types::ability::Ability, breakdowns::Breakdowns,
+        breakdowns::Breakdowns,
+        types::ability::Ability,
     };
     use utils::float::ErrorMargin;
 

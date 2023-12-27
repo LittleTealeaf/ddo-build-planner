@@ -3,5 +3,5 @@
 /// Describes an item
 #[derive(Clone, Debug)]
 pub struct Item {
-    name: String
+    name: String,
 }

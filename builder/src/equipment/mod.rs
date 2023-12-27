@@ -1,4 +1,4 @@
 //! Describes Equipment and Items
 
-pub mod item;
 pub mod gearset;
+pub mod item;

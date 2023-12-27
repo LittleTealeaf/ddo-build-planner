@@ -2,8 +2,8 @@
 
 pub mod attribute;
 pub mod bonus;
+pub mod breakdowns;
 pub mod equipment;
 pub mod feat;
 pub mod race;
 pub mod types;
-pub mod breakdowns;
