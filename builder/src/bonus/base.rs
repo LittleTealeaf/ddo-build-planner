@@ -142,7 +142,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
             Value::iter_min([
                 Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
                 Value::If {
-                    condition: Condition::any_iter(
+                    condition: Condition::iter_any(
                         [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
                             .map(|armor| Condition::has(Attribute::Flag(Flag::ArmorType(armor)))),
                     )
