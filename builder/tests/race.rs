@@ -2,7 +2,7 @@ mod dwarf {
     use builder::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource},
-        compiler::Compiler,
+        breakdowns::Breakdowns,
         feat::{Feat, Proficiency},
         types::{flag::Flag, item::WeaponType, race::Race},
     };
@@ -10,7 +10,7 @@ mod dwarf {
 
     #[test]
     fn dwarven_war_axe() {
-        let mut compiler = Compiler::default();
+        let mut compiler = Breakdowns::new();
         compiler.add_bonus(Bonus::flag(Flag::Race(Race::Dwarf), BonusSource::Debug(0)));
         assert!(compiler
             .get_attribute(&Attribute::Feat(Feat::Proficiency(

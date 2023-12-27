@@ -4,15 +4,14 @@ mod ability {
     use builder::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType},
-        compiler::Compiler,
-        types::ability::Ability,
+        types::ability::Ability, breakdowns::Breakdowns,
     };
     use utils::float::ErrorMargin;
 
     #[test]
     fn base_score_is_8() {
         for ability in Ability::ABILITIES {
-            assert!(Compiler::new()
+            assert!(Breakdowns::new()
                 .get_attribute(&Attribute::Ability(ability))
                 .within_margin(&8f32));
         }
@@ -39,7 +38,7 @@ mod ability {
         ];
         for ability in Ability::ABILITIES {
             for (score, modifier) in &values {
-                let mut compiler = Compiler::new();
+                let mut compiler = Breakdowns::new();
                 compiler.add_bonus(Bonus::new(
                     Attribute::Ability(ability),
                     BonusType::Stacking,
@@ -56,7 +55,7 @@ mod ability {
 
     #[test]
     fn all_maps_to_all_abilities() {
-        let mut compiler = Compiler::new();
+        let mut compiler = Breakdowns::new();
         compiler.add_bonus(Bonus::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,

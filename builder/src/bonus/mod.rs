@@ -84,10 +84,10 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusSource, BonusType, Value}, attribute::Attribute};
     ///
     /// let dummy = Bonus::dummy(BonusSource::Base);
-    /// assert_eq!(dummy.get_attribute(), Attribute::Dummy);
-    /// assert_eq!(dummy.get_type(), BonusType::Stacking);
-    /// assert_eq!(dummy.get_value(), Value::Value(0f32));
-    /// assert_eq!(dummy.get_source(), BonusSource::Base);
+    /// assert_eq!(dummy.get_attribute(), &Attribute::Dummy);
+    /// assert_eq!(dummy.get_type(), &BonusType::Stacking);
+    /// assert_eq!(dummy.get_value(), &Value::Value(0f32));
+    /// assert_eq!(dummy.get_source(), &BonusSource::Base);
     /// assert!(dummy.get_condition().is_none());
     /// ```
     #[must_use]
@@ -132,7 +132,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, 10f32.into(),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_attribute(), Attribute::Dummy);
+    /// assert_eq!(bonus.get_attribute(), &Attribute::Dummy);
     /// ```
     #[must_use]
     pub const fn get_attribute(&self) -> &Attribute {
@@ -147,7 +147,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, 10f32.into(),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_type(), BonusType::Enhancement);
+    /// assert_eq!(bonus.get_type(), &BonusType::Enhancement);
     /// ```
     #[must_use]
     pub const fn get_type(&self) -> &BonusType {
@@ -162,7 +162,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::Value(10f32),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_value(), Value::Value(10f32));
+    /// assert_eq!(bonus.get_value(), &Value::Value(10f32));
     /// ```
     #[must_use]
     pub const fn get_value(&self) -> &Value {
@@ -177,7 +177,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, 10f32.into(),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_source(), BonusSource::Base);
+    /// assert_eq!(bonus.get_source(), &BonusSource::Base);
     /// ```
     #[must_use]
     pub const fn get_source(&self) -> &BonusSource {
@@ -219,10 +219,10 @@ impl Bonus {
     /// BonusSource::Base, None);
     ///
     /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
-    /// assert_eq!(new_bonus.get_attribute(), Attribute::Ability(Ability::All));
-    /// assert_eq!(new_bonus.get_type(), BonusType::Quality);
-    /// assert_eq!(new_bonus.get_value(), Value::Value(10f32));
-    /// assert_eq!(new_bonus.get_source(), BonusSource::Base);
+    /// assert_eq!(new_bonus.get_attribute(), &Attribute::Ability(Ability::All));
+    /// assert_eq!(new_bonus.get_type(), &BonusType::Quality);
+    /// assert_eq!(new_bonus.get_value(), &Value::Value(10f32));
+    /// assert_eq!(new_bonus.get_source(), &BonusSource::Base);
     /// assert!(new_bonus.get_condition().is_none());
     /// ```
     #[must_use]

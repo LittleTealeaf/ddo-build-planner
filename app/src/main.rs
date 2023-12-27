@@ -2,7 +2,7 @@
 use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
-    compiler::Compiler,
+    breakdowns::Breakdowns,
     types::{
         ability::Ability,
         armor_class::ArmorClass,
@@ -27,7 +27,7 @@ fn is_wielding_tower_shield() -> Condition {
 }
 
 fn main() {
-    let mut compiler = Compiler::default();
+    let mut breakdowns = Breakdowns::new();
 
     println!("Adding Bonuses");
 
@@ -82,7 +82,7 @@ fn main() {
         .unwrap()
     );
 
-    compiler.add_bonuses(vec![Bonus::new(
+    breakdowns.insert_bonuses([Bonus::new(
         Ability::All.into(),
         BonusType::Stacking,
         10f32.into(),
@@ -90,7 +90,7 @@ fn main() {
         None,
     )]);
 
-    compiler.add_bonuses(vec![
+    breakdowns.insert_bonuses([
         Bonus::new(
             PlayerClass::FavoredSoul.into(),
             BonusType::Stacking,
@@ -158,7 +158,7 @@ fn main() {
         ),
     ]);
 
-    for (attr, val) in compiler.get_all_attributes() {
+    for (attr, val) in breakdowns.iter_attributes() {
         println!("{attr}: {val}");
     }
 }

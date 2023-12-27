@@ -2,7 +2,6 @@
 
 pub mod attribute;
 pub mod bonus;
-pub mod compiler;
 pub mod equipment;
 pub mod feat;
 pub mod race;

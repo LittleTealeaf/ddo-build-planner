@@ -38,6 +38,15 @@ impl Breakdowns {
     pub fn get_bonuses(&self) -> impl Iterator<Item = &Bonus> {
         self.bonuses.values().flatten()
     }
+
+    pub fn iter_attributes(&mut self) -> impl Iterator<Item = (Attribute, f32)> + '_ {
+
+        let attributes = self.bonuses.keys().copied().collect::<Vec<_>>();
+
+        attributes.into_iter().map(|attribute| {
+            (attribute, self.get_attribute(&attribute))
+        })
+    }
 }
 
 impl Default for Breakdowns {

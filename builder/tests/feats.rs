@@ -1,15 +1,15 @@
 use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType},
-    compiler::Compiler,
+    breakdowns::Breakdowns,
     feat::{Feat, Proficiency},
     types::item::WeaponType,
 };
 
 #[test]
 fn simple_proficiency_provides_proficiencies() {
-    let mut compiler = Compiler::default();
-    compiler.add_bonus(Bonus::new(
+    let mut compiler = Breakdowns::new();
+    compiler.insert_bonus(Bonus::new(
         Attribute::Feat(Feat::Proficiency(Proficiency::SimpleWeaponProficiency)),
         BonusType::Stacking,
         1f32.into(),
@@ -26,8 +26,8 @@ fn simple_proficiency_provides_proficiencies() {
 
 #[test]
 fn martial_proficiency_provides_proficiencies() {
-    let mut compiler = Compiler::default();
-    compiler.add_bonus(Bonus::new(
+    let mut compiler = Breakdowns::new();
+    compiler.insert_bonus(Bonus::new(
         Attribute::Feat(Feat::Proficiency(Proficiency::MartialWeaponProficiency)),
         BonusType::Stacking,
         1f32.into(),
