@@ -3,6 +3,7 @@ mod traits;
 
 mod from;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
 
@@ -135,7 +136,7 @@ impl Attribute {
     ///
     /// If an attribute has no bonuses associated with it, then `None` is returned.
     #[must_use]
-    pub fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+    pub fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         match self {
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::Weapon(stat) => stat.get_bonuses(value),

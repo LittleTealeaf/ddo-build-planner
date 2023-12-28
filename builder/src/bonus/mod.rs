@@ -284,7 +284,7 @@ mod tests {
         let bonus = Bonus::new(
             Attribute::Ability(Ability::Strength),
             BonusType::Profane,
-            Value::Value(10f32),
+            Value::Value(10.into()),
             BonusSource::Debug(3),
             None,
         );

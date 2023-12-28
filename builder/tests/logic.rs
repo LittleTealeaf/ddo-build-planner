@@ -7,35 +7,34 @@ mod ability {
         breakdowns::Breakdowns,
         types::ability::Ability,
     };
+    use rust_decimal::Decimal;
     use utils::float::ErrorMargin;
 
     #[test]
     fn base_score_is_8() {
         for ability in Ability::ABILITIES {
-            assert!(Breakdowns::new()
-                .get_attribute(&Attribute::Ability(ability))
-                .within_margin(&8f32));
+            assert!(Breakdowns::new().get_attribute(&Attribute::Ability(ability)) == 8.into());
         }
     }
 
     #[test]
     fn modifier_calculates_correctly() {
         let values = [
-            (6f32, -2f32),
-            (7f32, -2f32),
-            (8f32, -1f32),
-            (9f32, -1f32),
-            (10f32, 0f32),
-            (11f32, 0f32),
-            (12f32, 1f32),
-            (13f32, 1f32),
-            (14f32, 2f32),
-            (15f32, 2f32),
-            (16f32, 3f32),
-            (17f32, 3f32),
-            (18f32, 4f32),
-            (19f32, 4f32),
-            (20f32, 5f32),
+            (6.into(), (-2).into()),
+            (7.into(), (-2).into()),
+            (8.into(), (-1).into()),
+            (9.into(), (-1).into()),
+            (10.into(), 0.into()),
+            (11.into(), 0.into()),
+            (12.into(), 1.into()),
+            (13.into(), 1.into()),
+            (14.into(), 2.into()),
+            (15.into(), 2.into()),
+            (16.into(), 3.into()),
+            (17.into(), 3.into()),
+            (18.into(), 4.into()),
+            (19.into(), 4.into()),
+            (20.into(), 5.into()),
         ];
         for ability in Ability::ABILITIES {
             for (score, modifier) in &values {
@@ -43,13 +42,11 @@ mod ability {
                 compiler.insert_bonus(Bonus::new(
                     Attribute::Ability(ability),
                     BonusType::Stacking,
-                    (score - 8f32).into(),
+                    (score - Decimal::from(8)).into(),
                     BonusSource::Debug(0),
                     None,
                 ));
-                assert!(compiler
-                    .get_attribute(&Attribute::AbilityModifier(ability))
-                    .within_margin(modifier));
+                assert!(compiler.get_attribute(&Attribute::AbilityModifier(ability)) == *modifier);
             }
         }
     }
@@ -65,9 +62,7 @@ mod ability {
             None,
         ));
         for ability in Ability::ABILITIES {
-            assert!(compiler
-                .get_attribute(&Attribute::Ability(ability))
-                .within_margin(&10f32));
+            assert!(compiler.get_attribute(&Attribute::Ability(ability)) == 10.into());
         }
     }
 }

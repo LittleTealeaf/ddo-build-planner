@@ -6,6 +6,7 @@ use std::{
 };
 
 use itertools::Itertools;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
@@ -18,7 +19,7 @@ use super::{Condition, Depth};
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Value {
     /// Just a simple [`f32`] value.
-    Value(f32),
+    Value(Decimal),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
     /// Returns the minimum value of the two
@@ -121,7 +122,7 @@ impl Value {
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
-        Self::Value(1f32) / self
+        Self::Value(1.into()) / self
     }
 
     /// Returns the maximum of this or another value
@@ -244,6 +245,12 @@ impl AttributeDependencies for Value {
 
 impl From<f32> for Value {
     fn from(value: f32) -> Self {
+        Self::Value(Decimal::from_f32_retain(value).unwrap())
+    }
+}
+
+impl From<Decimal> for Value {
+    fn from(value: Decimal) -> Self {
         Self::Value(value)
     }
 }
@@ -298,7 +305,7 @@ impl Neg for Value {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self::Mul(self.into(), Self::Value(-1f32).into())
+        Self::Mul(self.into(), Self::Value(Decimal::NEGATIVE_ONE).into())
     }
 }
 

@@ -6,6 +6,8 @@ mod buffer;
 
 use std::collections::HashMap;
 
+use rust_decimal::Decimal;
+
 use crate::{
     attribute::Attribute,
     bonus::{get_base_bonuses, Bonus, BonusSource},
@@ -14,7 +16,7 @@ use crate::{
 /// Calculates the final attribute values for the character.
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
-    cache: HashMap<Attribute, f32>,
+    cache: HashMap<Attribute, Decimal>,
     children: HashMap<BonusSource, Vec<Attribute>>,
 }
 
@@ -36,7 +38,7 @@ impl Breakdowns {
         self.bonuses.values().flatten()
     }
 
-    pub fn iter_attributes(&mut self) -> impl Iterator<Item = (Attribute, f32)> + '_ {
+    pub fn iter_attributes(&mut self) -> impl Iterator<Item = (Attribute, Decimal)> + '_ {
         let attributes = self.bonuses.keys().copied().collect::<Vec<_>>();
 
         attributes

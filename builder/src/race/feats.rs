@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::bit_ops::BitAny;
 
@@ -84,8 +85,8 @@ impl Display for RacialFeat {
 }
 
 impl GetBonuses for RacialFeat {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (value > 0f32).then(|| match self {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+        (value > Decimal::ZERO).then(|| match self {
             Self::SmallSizeBonus => {
                 vec![
                     Bonus::new(

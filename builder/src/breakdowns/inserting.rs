@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use rust_decimal::Decimal;
 use utils::{float::ErrorMargin, hashmap::MapGetMutOrDefault};
 
 use crate::{
@@ -61,13 +62,13 @@ impl Breakdowns {
             let initial_value = self
                 .cache
                 .remove(&attribute)
-                .or_else(|| forced.then_some(0f32))
+                .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
-                .unwrap_or(0f32);
+                .unwrap_or(Decimal::ZERO);
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            if forced || !initial_value.within_margin(&self.get_attribute(&attribute)) {
+            if forced || initial_value != self.get_attribute(&attribute) {
                 let source = BonusSource::Attribute(attribute);
 
                 buffer.insert_attributes(self.get_dependants(attribute).copied());

@@ -20,7 +20,7 @@ fn simple_proficiency_provides_proficiencies() {
     assert!(
         compiler.get_attribute(&Attribute::Feat(Feat::Proficiency(
             Proficiency::WeaponProficiency(WeaponType::Dagger)
-        ))) > 0f32
+        ))) > 0.into()
     );
 }
 
@@ -38,6 +38,6 @@ fn martial_proficiency_provides_proficiencies() {
     assert!(
         compiler.get_attribute(&Attribute::Feat(Feat::Proficiency(
             Proficiency::WeaponProficiency(WeaponType::Falchion)
-        ))) > 0f32
+        ))) > 0.into()
     );
 }

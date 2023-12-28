@@ -15,8 +15,7 @@ mod dwarf {
         assert!(compiler
             .get_attribute(&Attribute::Feat(Feat::Proficiency(
                 Proficiency::WeaponProficiency(WeaponType::DwarvenWarAxe)
-            )))
-            .within_margin(&0f32));
+            ))) == 0.into());
         compiler.insert_bonus(Bonus::feat(
             Feat::Proficiency(Proficiency::MartialWeaponProficiency),
             BonusSource::Debug(1),
@@ -25,7 +24,7 @@ mod dwarf {
         assert!(
             compiler.get_attribute(&Attribute::Feat(Feat::Proficiency(
                 Proficiency::WeaponProficiency(WeaponType::DwarvenWarAxe)
-            ))) > 0f32
+            ))) > 0.into()
         );
     }
 }

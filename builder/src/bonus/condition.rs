@@ -4,6 +4,7 @@ use std::{
     ops::{BitAnd, BitOr, BitXor, Not},
 };
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::bit_ops::{BitAll, BitAny};
 
@@ -43,7 +44,7 @@ impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
     pub const fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(Value::Attribute(attribute), Value::Value(0f32))
+        Self::GreaterThan(Value::Attribute(attribute), Value::Value(Decimal::ZERO))
     }
 
     /// Requires that all of the provided conditions are true

@@ -1,3 +1,5 @@
+use rust_decimal::Decimal;
+
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
@@ -35,8 +37,8 @@ impl Race {
 }
 
 impl GetBonuses for Race {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (value > 0f32).then(|| match self {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+        (value > Decimal::ZERO).then(|| match self {
             Self::Aasimar => Some(vec![
                 self.ability_modifier(Ability::Wisdom, 2f32),
                 Bonus::new(

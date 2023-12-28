@@ -1,4 +1,5 @@
 use itertools::chain;
+use rust_decimal::Decimal;
 use utils::bit_ops::BitAny;
 
 use crate::{
@@ -150,7 +151,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                         .into(),
                     if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex))
                         .into(),
-                    if_false: Value::Value(f32::MAX).into(),
+                    if_false: Value::Value(Decimal::MAX).into(),
                 },
                 Value::If {
                     condition: Condition::has(Attribute::from(Flag::OffHandType(
@@ -159,7 +160,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                     .into(),
                     if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldMaxDex))
                         .into(),
-                    if_false: Value::Value(f32::MAX).into(),
+                    if_false: Value::Value(Decimal::MAX).into(),
                 },
             ]),
             BonusSource::Base,
@@ -173,16 +174,16 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Value(1f32)
+                    * (Value::Value(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Value(1f32)
+                    * (Value::Value(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Value(10f32),
+                Value::Value(10.into()),
             ]
             .into_iter()
             .sum::<Value>()
-                * (Value::Value(1f32)
+                * (Value::Value(1.into())
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))),
             BonusSource::Base,
             None,

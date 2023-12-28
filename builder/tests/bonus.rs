@@ -28,7 +28,7 @@ mod has_dependency {
         let bonus = Bonus::new(
             Attribute::Debug(0),
             BonusType::Stacking,
-            Value::Value(10f32),
+            Value::Value(10.into()),
             BonusSource::Debug(0),
             Some(Condition::has(Attribute::Debug(1))),
         );
@@ -42,7 +42,7 @@ mod has_dependency {
 
         #[test]
         fn value() {
-            let value = Value::Value(10f32);
+            let value = Value::Value(10.into());
 
             assert!(!value.has_attr_dependency(Attribute::Debug(0)));
         }
@@ -165,7 +165,7 @@ mod include_dependencies {
 
         #[test]
         fn value() {
-            let value = Value::Value(10f32);
+            let value = Value::Value(10.into());
             let deps = value.get_attr_dependencies();
 
             assert!(!deps.contains(&Attribute::Debug(0)));

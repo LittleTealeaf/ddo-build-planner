@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
@@ -35,8 +36,8 @@ pub enum SpellcastingFeat {
 }
 
 impl GetBonuses for SpellcastingFeat {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (value > 0f32).then(|| match self {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+        (value > Decimal::ZERO).then(|| match self {
             Self::AugmentSummoning => Some(vec![Bonus::new(
                 Attribute::SummonedAttribute(SummonedAttribute::AbilityScore(
                     Ability::All,
@@ -66,7 +67,7 @@ impl GetBonuses for SpellcastingFeat {
                 Bonus::new(
                     Attribute::SpellPoints(SpellPoints::Base),
                     BonusType::Stacking,
-                    Value::Value(80f32),
+                    Value::Value(80.into()),
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),

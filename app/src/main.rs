@@ -13,6 +13,7 @@ use builder::{
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
+use rust_decimal::Decimal;
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
@@ -38,12 +39,12 @@ fn main() {
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Value(1f32)
+                    * (Value::Value(Decimal::ONE)
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Value(1f32)
+                    * (Value::Value(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Value(10f32),
+                Value::Value(10.into()),
                 Value::If {
                     condition: is_wearing_armor().into(),
                     if_true: Box::new(Value::If {
@@ -76,7 +77,7 @@ fn main() {
             ]
             .into_iter()
             .sum::<Value>()
-                * (Value::Value(1f32)
+                * (Value::Value(1.into())
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))))
         )
         .unwrap()

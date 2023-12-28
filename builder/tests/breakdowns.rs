@@ -1,19 +1,23 @@
 mod calculate {
+    use std::ops::Neg;
+
     use builder::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType, Condition, Value},
         breakdowns::Breakdowns,
     };
+    use rust_decimal::Decimal;
     use utils::float::ErrorMargin;
 
-    fn test_bonuses(bonuses: impl IntoIterator<Item = Bonus>, expected: f32) {
+    fn test_bonuses(bonuses: impl IntoIterator<Item = Bonus>, expected: Decimal) {
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonuses(bonuses);
         let value = breakdowns.get_attribute(&Attribute::Debug(0));
-        assert!(
-            value.within_margin(&expected),
-            "Expected {expected}, found {value}",
-        );
+        assert_eq!(value, expected);
+        // assert!(
+        //     value.within_margin(&expected),
+        //     "Expected {expected}, found {value}",
+        // );
     }
 
     #[test]
@@ -22,11 +26,11 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::Value(10f32),
+                Value::Value(10.into()),
                 BonusSource::Debug(0),
                 None,
             )],
-            10f32,
+            10.into(),
         );
     }
 
@@ -44,12 +48,12 @@ mod calculate {
                 Bonus::new(
                     Attribute::Debug(1),
                     BonusType::Stacking,
-                    Value::Value(10f32),
+                    Value::Value(10.into()),
                     BonusSource::Debug(0),
                     None,
                 ),
             ],
-            10f32,
+            10.into(),
         );
     }
 
@@ -63,7 +67,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            3f32,
+            3.into(),
         );
     }
 
@@ -77,7 +81,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            3f32,
+            3.into(),
         );
     }
 
@@ -91,7 +95,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            6f32,
+            6.into(),
         );
     }
 
@@ -105,7 +109,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            3f32,
+            3.into(),
         );
     }
 
@@ -119,7 +123,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            1f32,
+            1.into(),
         );
     }
 
@@ -133,7 +137,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            5f32,
+            5.into(),
         );
         test_bonuses(
             [Bonus::new(
@@ -143,7 +147,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            5f32,
+            5.into(),
         );
     }
 
@@ -157,7 +161,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            6f32,
+            6.into(),
         );
         test_bonuses(
             [Bonus::new(
@@ -167,7 +171,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            6f32,
+            6.into(),
         );
     }
 
@@ -177,11 +181,11 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Box::new(Value::Value(2f32)).recip(),
+                Box::new(Value::Value(2.into())).recip(),
                 BonusSource::Debug(0),
                 None,
             )],
-            0.5f32,
+            Decimal::ONE / Decimal::TWO,
         );
     }
 
@@ -191,11 +195,11 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Box::new(Value::Value(10.5f32)).floor(),
+                Box::new(Value::Value(Decimal::from_f32_retain(10.5).unwrap())).floor(),
                 BonusSource::Debug(0),
                 None,
             )],
-            10f32,
+            10.into(),
         );
     }
 
@@ -209,7 +213,7 @@ mod calculate {
                 BonusSource::Debug(0),
                 None,
             )],
-            11f32,
+            11.into(),
         );
     }
 
@@ -221,13 +225,13 @@ mod calculate {
                 BonusType::Stacking,
                 Value::If {
                     condition: Box::new(Condition::Constant(true)),
-                    if_true: Box::new(Value::Value(10f32)),
-                    if_false: Box::new(Value::Value(20f32)),
+                    if_true: Box::new(Value::Value(10.into())),
+                    if_false: Box::new(Value::Value(20.into())),
                 },
                 BonusSource::Debug(0),
                 None,
             )],
-            10f32,
+            10.into(),
         );
         test_bonuses(
             [Bonus::new(
@@ -235,13 +239,13 @@ mod calculate {
                 BonusType::Stacking,
                 Value::If {
                     condition: Box::new(Condition::Constant(false)),
-                    if_true: Box::new(Value::Value(10f32)),
-                    if_false: Box::new(Value::Value(20f32)),
+                    if_true: Box::new(Value::Value(10.into())),
+                    if_false: Box::new(Value::Value(20.into())),
                 },
                 BonusSource::Debug(0),
                 None,
             )],
-            20f32,
+            20.into(),
         );
     }
 
@@ -251,11 +255,11 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                -Value::Value(1f32),
+                -Value::Value(1.into()),
                 BonusSource::Debug(0),
                 None,
             )],
-            -1f32,
+            Decimal::ONE.neg(),
         );
     }
 
@@ -266,16 +270,16 @@ mod calculate {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 Value::mean(vec![
-                    Value::Value(1f32),
-                    Value::Value(2f32),
-                    Value::Value(3f32),
-                    Value::Value(4f32),
-                    Value::Value(5f32),
+                    Value::Value(1.into()),
+                    Value::Value(2.into()),
+                    Value::Value(3.into()),
+                    Value::Value(4.into()),
+                    Value::Value(5.into()),
                 ]),
                 BonusSource::Debug(0),
                 None,
             )],
-            3f32,
+            3.into(),
         );
     }
 }
@@ -293,12 +297,12 @@ mod condition {
         breakdowns.insert_bonus(Bonus::new(
             Attribute::Debug(0),
             BonusType::Stacking,
-            Value::Value(10f32),
+            Value::Value(10.into()),
             BonusSource::Base,
             Some(condition),
         ));
         let value = breakdowns.get_attribute(&Attribute::Debug(0));
-        let result = value.within_margin(&10f32);
+        let result = value == 10.into();
 
         assert_eq!(
             result, expected,
@@ -495,15 +499,9 @@ mod sources {
             ),
         ]);
         breakdowns.remove_source(BonusSource::Debug(0));
-        assert!(breakdowns
-            .get_attribute(&Attribute::Debug(0))
-            .within_margin(&0f32));
-        assert!(breakdowns
-            .get_attribute(&Attribute::Debug(1))
-            .within_margin(&0f32));
-        assert!(breakdowns
-            .get_attribute(&Attribute::Debug(2))
-            .within_margin(&1f32));
+        assert!(breakdowns.get_attribute(&Attribute::Debug(0)) == 0.into());
+        assert!(breakdowns.get_attribute(&Attribute::Debug(1)) == 0.into());
+        assert!(breakdowns.get_attribute(&Attribute::Debug(2)) == 1.into());
     }
 
     #[test]
@@ -533,14 +531,8 @@ mod sources {
             ),
         ]);
         breakdowns.remove_sources([BonusSource::Debug(0), BonusSource::Debug(1)]);
-        assert!(breakdowns
-            .get_attribute(&Attribute::Debug(0))
-            .within_margin(&0f32));
-        assert!(breakdowns
-            .get_attribute(&Attribute::Debug(1))
-            .within_margin(&0f32));
-        assert!(breakdowns
-            .get_attribute(&Attribute::Debug(2))
-            .within_margin(&1f32));
+        assert!(breakdowns.get_attribute(&Attribute::Debug(0)) == 0.into());
+        assert!(breakdowns.get_attribute(&Attribute::Debug(1)) == 0.into());
+        assert!(breakdowns.get_attribute(&Attribute::Debug(2)) == 1.into());
     }
 }

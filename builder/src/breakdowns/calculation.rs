@@ -1,3 +1,4 @@
+use rust_decimal::Decimal;
 use utils::{float::ErrorMargin, ord::IntoOrdGroupMap};
 
 use crate::{
@@ -14,8 +15,7 @@ impl Breakdowns {
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
             Condition::LessThan(a, b) => self.evaluate_value(a) < self.evaluate_value(b),
             Condition::EqualTo(a, b) => self
-                .evaluate_value(a)
-                .within_margin(&self.evaluate_value(b)),
+                .evaluate_value(a) == self.evaluate_value(b),
             Condition::Constant(value) => *value,
             Condition::And(a, b) => self.evaluate_condition(a) && self.evaluate_condition(b),
             Condition::Or(a, b) => self.evaluate_condition(a) || self.evaluate_condition(b),
@@ -23,7 +23,7 @@ impl Breakdowns {
         }
     }
 
-    pub(super) fn evaluate_value(&mut self, value: &Value) -> f32 {
+    pub(super) fn evaluate_value(&mut self, value: &Value) -> Decimal {
         match value {
             Value::Value(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
@@ -49,19 +49,19 @@ impl Breakdowns {
         }
     }
 
-    pub fn get_attribute(&mut self, attribute: &Attribute) -> f32 {
+    pub fn get_attribute(&mut self, attribute: &Attribute) -> Decimal {
         if let Some(value) = self.cache.get(attribute) {
             return *value;
         }
 
-        let value = self.calculate_attribute(attribute).unwrap_or(0f32);
+        let value = self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO);
 
         self.cache.insert(*attribute, value);
 
         value
     }
 
-    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<f32> {
+    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let bonuses = self.bonuses.get(attribute)?.clone();
         let filtered_bonuses = bonuses
             .into_iter()
@@ -78,14 +78,14 @@ impl Breakdowns {
 
         let stacking = map
             .remove(&BonusType::Stacking)
-            .map_or(0f32, |i| i.into_iter().sum());
+            .map_or(Decimal::ZERO, |i| i.into_iter().sum());
 
         Some(
             stacking
                 + map
                     .into_iter()
                     .map(|(_, mut values)| {
-                        let mut value = values.pop().unwrap_or(0f32);
+                        let mut value = values.pop().unwrap_or(Decimal::ZERO);
                         for item in values {
                             if value < item {
                                 value = item;
@@ -93,7 +93,7 @@ impl Breakdowns {
                         }
                         value
                     })
-                    .sum::<f32>(),
+                    .sum::<Decimal>(),
         )
     }
 }

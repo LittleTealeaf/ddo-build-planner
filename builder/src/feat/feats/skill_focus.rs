@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -38,8 +39,8 @@ pub enum SkillFocus {
 }
 
 impl GetBonuses for SkillFocus {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        (value > 0.0).then(|| match self {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
+        (value > Decimal::ZERO).then(|| match self {
             Self::Focus(skill) => vec![Bonus::new(
                 Attribute::Skill(*skill),
                 BonusType::Stacking,
