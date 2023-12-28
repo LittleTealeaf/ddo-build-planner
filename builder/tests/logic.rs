@@ -40,7 +40,7 @@ mod ability {
         for ability in Ability::ABILITIES {
             for (score, modifier) in &values {
                 let mut compiler = Breakdowns::new();
-                compiler.add_bonus(Bonus::new(
+                compiler.insert_bonus(Bonus::new(
                     Attribute::Ability(ability),
                     BonusType::Stacking,
                     (score - 8f32).into(),
@@ -57,7 +57,7 @@ mod ability {
     #[test]
     fn all_maps_to_all_abilities() {
         let mut compiler = Breakdowns::new();
-        compiler.add_bonus(Bonus::new(
+        compiler.insert_bonus(Bonus::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,
             2f32.into(),

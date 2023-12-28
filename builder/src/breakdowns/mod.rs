@@ -1,11 +1,7 @@
 //! Pulls together all the bonuses and calculates the bonuses for each attribute
 
 mod calculation;
-pub use calculation::*;
-
 mod inserting;
-pub use inserting::*;
-
 mod buffer;
 
 use std::collections::HashMap;
@@ -15,7 +11,7 @@ use crate::{
     bonus::{get_base_bonuses, Bonus, BonusSource},
 };
 
-/// TODO: Documentation
+/// Calculates the final attribute values for the character.
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
     cache: HashMap<Attribute, f32>,

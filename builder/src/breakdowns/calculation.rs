@@ -8,7 +8,7 @@ use crate::{
 use super::Breakdowns;
 
 impl Breakdowns {
-    fn evaluate_condition(&mut self, condition: &Condition) -> bool {
+    pub(super) fn evaluate_condition(&mut self, condition: &Condition) -> bool {
         match condition {
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
@@ -23,7 +23,7 @@ impl Breakdowns {
         }
     }
 
-    fn evaluate_value(&mut self, value: &Value) -> f32 {
+    pub(super) fn evaluate_value(&mut self, value: &Value) -> f32 {
         match value {
             Value::Value(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
