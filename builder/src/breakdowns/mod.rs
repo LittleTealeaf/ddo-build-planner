@@ -1,8 +1,8 @@
 //! Pulls together all the bonuses and calculates the bonuses for each attribute
 
+mod buffer;
 mod calculation;
 mod inserting;
-mod buffer;
 
 use std::collections::HashMap;
 

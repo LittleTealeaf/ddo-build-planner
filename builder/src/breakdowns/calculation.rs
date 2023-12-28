@@ -14,8 +14,7 @@ impl Breakdowns {
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
             Condition::LessThan(a, b) => self.evaluate_value(a) < self.evaluate_value(b),
-            Condition::EqualTo(a, b) => self
-                .evaluate_value(a) == self.evaluate_value(b),
+            Condition::EqualTo(a, b) => self.evaluate_value(a) == self.evaluate_value(b),
             Condition::Constant(value) => *value,
             Condition::And(a, b) => self.evaluate_condition(a) && self.evaluate_condition(b),
             Condition::Or(a, b) => self.evaluate_condition(a) || self.evaluate_condition(b),
