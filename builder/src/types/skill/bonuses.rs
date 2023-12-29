@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl Skill {
-    fn spell_power_bonus(self, sp: SpellPower, value: f32) -> Bonus {
+    fn spell_power_bonus(self, sp: SpellPower, value: i32) -> Bonus {
         Bonus::new(
             Attribute::SpellPower(sp),
             BonusType::Stacking,

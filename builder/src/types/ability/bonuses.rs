@@ -1,3 +1,5 @@
+use rust_decimal::Decimal;
+
 use crate::{
     attribute::{Attribute, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
@@ -5,7 +7,7 @@ use crate::{
 };
 
 impl Ability {
-    fn modifier_bonus<T>(self, attribute: T, value: f32) -> Bonus
+    fn modifier_bonus<T>(self, attribute: T, value: Decimal) -> Bonus
     where
         Attribute: From<T>,
     {

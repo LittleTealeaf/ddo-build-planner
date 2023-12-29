@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use rust_decimal::Decimal;
-use utils::{float::ErrorMargin, hashmap::MapGetMutOrDefault};
+use utils::hashmap::MapGetMutOrDefault;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},

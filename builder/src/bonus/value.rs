@@ -19,7 +19,7 @@ use super::{Condition, Depth};
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Value {
     /// Just a simple [`f32`] value.
-    Value(Decimal),
+    Const(Decimal),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
     /// Returns the minimum value of the two
@@ -58,7 +58,7 @@ impl Value {
     pub fn mean(iter: impl IntoIterator<Item = Self>) -> Self {
         let (sum, count) = iter
             .into_iter()
-            .map(|a| (a, 1f32))
+            .map(|a| (a, 1))
             .tree_fold1(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
             .unwrap();
 
@@ -114,7 +114,7 @@ impl Value {
     /// Cielings the value
     #[must_use]
     pub fn ciel(self) -> Self {
-        (self + Self::from(1f32)).floor()
+        (self + Self::from(1)).floor()
     }
 
     /// Finds the reciprocol of the value.
@@ -122,7 +122,7 @@ impl Value {
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
-        Self::Value(1.into()) / self
+        Self::Const(1.into()) / self
     }
 
     /// Returns the maximum of this or another value
@@ -141,7 +141,7 @@ impl Value {
 impl Depth for Value {
     fn get_depth(&self) -> usize {
         match self {
-            Self::Value(_) | Self::Attribute(_) => 1,
+            Self::Const(_) | Self::Attribute(_) => 1,
             Self::Min(a, b)
             | Self::Max(a, b)
             | Self::Add(a, b)
@@ -170,7 +170,7 @@ impl Display for Value {
             Self::Mul(a, b) => write!(f, "({a} * {b})"),
             Self::Div(a, b) => write!(f, "({a} / {b})"),
             Self::Rem(a, b) => write!(f, "({a} % {b})"),
-            Self::Value(value) => value.fmt(f),
+            Self::Const(value) => value.fmt(f),
             Self::Attribute(attr) => attr.fmt(f),
             Self::Min(a, b) => write!(f, "Min({a}, {b})"),
             Self::Max(a, b) => write!(f, "Max({a}, {b})"),
@@ -198,7 +198,7 @@ impl AttributeDependencies for Value {
             | Self::Min(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
-            Self::Value(_) => false,
+            Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
             Self::Floor(val) => val.has_attr_dependency(attribute),
             Self::If {
@@ -215,7 +215,7 @@ impl AttributeDependencies for Value {
 
     fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {
         match self {
-            Self::Value(_) => {}
+            Self::Const(_) => {}
             Self::Add(a, b)
             | Self::Sub(a, b)
             | Self::Mul(a, b)
@@ -243,15 +243,23 @@ impl AttributeDependencies for Value {
     }
 }
 
-impl From<f32> for Value {
-    fn from(value: f32) -> Self {
-        Self::Value(Decimal::from_f32_retain(value).unwrap())
-    }
+macro_rules! from_primative {
+    ($($type:ty), +) => {
+        $(
+            impl From<$type> for Value {
+                fn from(value: $type) -> Self {
+                    Self::Const(Decimal::from(value))
+                }
+            }
+        )+
+    };
 }
+
+from_primative!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
 
 impl From<Decimal> for Value {
     fn from(value: Decimal) -> Self {
-        Self::Value(value)
+        Self::Const(value)
     }
 }
 
@@ -305,7 +313,7 @@ impl Neg for Value {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self::Mul(self.into(), Self::Value(Decimal::NEGATIVE_ONE).into())
+        Self::Mul(self.into(), Self::Const(Decimal::NEGATIVE_ONE).into())
     }
 }
 

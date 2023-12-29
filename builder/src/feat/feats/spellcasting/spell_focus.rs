@@ -26,7 +26,7 @@ impl GetBonuses for SpellFocusFeat {
             Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![Bonus::new(
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
-                1f32.into(),
+                1.into(),
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(
                     SpellcastingFeat::SpellFocus(*self),
                 ))),

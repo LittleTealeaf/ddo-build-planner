@@ -1,5 +1,5 @@
 use rust_decimal::Decimal;
-use utils::{float::ErrorMargin, ord::IntoOrdGroupMap};
+use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::Attribute,
@@ -24,7 +24,7 @@ impl Breakdowns {
 
     pub(super) fn evaluate_value(&mut self, value: &Value) -> Decimal {
         match value {
-            Value::Value(val) => *val,
+            Value::Const(val) => *val,
             Value::Attribute(attribute) => self.get_attribute(attribute),
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),

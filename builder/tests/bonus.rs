@@ -28,7 +28,7 @@ mod has_dependency {
         let bonus = Bonus::new(
             Attribute::Debug(0),
             BonusType::Stacking,
-            Value::Value(10.into()),
+            Value::Const(10.into()),
             BonusSource::Debug(0),
             Some(Condition::has(Attribute::Debug(1))),
         );
@@ -42,7 +42,7 @@ mod has_dependency {
 
         #[test]
         fn value() {
-            let value = Value::Value(10.into());
+            let value = Value::Const(10.into());
 
             assert!(!value.has_attr_dependency(Attribute::Debug(0)));
         }
@@ -114,7 +114,7 @@ mod has_dependency {
         fn min() {
             let value = Value::Min(
                 Value::from(Attribute::Debug(0)).into(),
-                Value::from(10f32).into(),
+                Value::from(10).into(),
             );
 
             assert!(value.has_attr_dependency(Attribute::Debug(0)));
@@ -144,7 +144,7 @@ mod has_dependency {
         #[test]
         fn if_value() {
             let value = Value::If {
-                condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into()).into(),
+                condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1.into()).into(),
                 if_true: <Box<Value>>::from(Value::from(Attribute::Debug(1))),
                 if_false: Value::from(Attribute::Debug(2)).into(),
             };
@@ -165,7 +165,7 @@ mod include_dependencies {
 
         #[test]
         fn value() {
-            let value = Value::Value(10.into());
+            let value = Value::Const(10.into());
             let deps = value.get_attr_dependencies();
 
             assert!(!deps.contains(&Attribute::Debug(0)));
@@ -245,7 +245,7 @@ mod include_dependencies {
         fn min() {
             let value = Value::Min(
                 Value::from(Attribute::Debug(0)).into(),
-                Value::from(10f32).into(),
+                Value::from(10).into(),
             );
 
             let deps = value.get_attr_dependencies();
@@ -281,7 +281,7 @@ mod include_dependencies {
         #[test]
         fn if_value() {
             let value = Value::If {
-                condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1f32.into()).into(),
+                condition: Condition::GreaterThan(Attribute::Debug(0).into(), 1.into()).into(),
                 if_true: Value::from(Attribute::Debug(1)).into(),
                 if_false: Value::from(Attribute::Debug(2)).into(),
             };
@@ -302,31 +302,31 @@ mod value {
 
         #[test]
         fn add() {
-            let value = Value::from(1f32) + Value::from(2f32);
+            let value = Value::from(1) + Value::from(2);
             assert!(matches!(value, Value::Add(_, _)));
         }
 
         #[test]
         fn sub() {
-            let value = Value::from(1f32) - Value::from(1f32);
+            let value = Value::from(1) - Value::from(1);
             assert!(matches!(value, Value::Sub(_, _)));
         }
 
         #[test]
         fn mul() {
-            let value = Value::from(1f32) * Value::from(1f32);
+            let value = Value::from(1) * Value::from(1);
             assert!(matches!(value, Value::Mul(_, _)));
         }
 
         #[test]
         fn div() {
-            let value = Value::from(1f32) / Value::from(1f32);
+            let value = Value::from(1) / Value::from(1);
             assert!(matches!(value, Value::Div(_, _)));
         }
 
         #[test]
         fn rem() {
-            let value = Value::from(1f32) % Value::from(1f32);
+            let value = Value::from(1) % Value::from(1);
             assert!(matches!(value, Value::Rem(_, _)));
         }
     }

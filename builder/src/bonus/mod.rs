@@ -95,7 +95,7 @@ impl Bonus {
         Self::new(
             Attribute::Dummy,
             BonusType::Stacking,
-            0f32.into(),
+            0.into(),
             source,
             None,
         )
@@ -107,7 +107,7 @@ impl Bonus {
         Self::new(
             Attribute::Flag(flag),
             BonusType::Stacking,
-            1f32.into(),
+            1.into(),
             source,
             None,
         )
@@ -119,7 +119,7 @@ impl Bonus {
         Self::new(
             Attribute::Feat(feat),
             BonusType::Stacking,
-            1f32.into(),
+            1.into(),
             source,
             condition,
         )
@@ -284,7 +284,7 @@ mod tests {
         let bonus = Bonus::new(
             Attribute::Ability(Ability::Strength),
             BonusType::Profane,
-            Value::Value(10.into()),
+            Value::Const(10.into()),
             BonusSource::Debug(3),
             None,
         );

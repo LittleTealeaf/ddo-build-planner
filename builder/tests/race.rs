@@ -6,7 +6,6 @@ mod dwarf {
         feat::{Feat, Proficiency},
         types::{flag::Flag, item::WeaponType, race::Race},
     };
-    use utils::float::ErrorMargin;
 
     #[test]
     fn dwarven_war_axe() {

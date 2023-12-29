@@ -8,7 +8,6 @@ mod ability {
         types::ability::Ability,
     };
     use rust_decimal::Decimal;
-    use utils::float::ErrorMargin;
 
     #[test]
     fn base_score_is_8() {
@@ -57,7 +56,7 @@ mod ability {
         compiler.insert_bonus(Bonus::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,
-            2f32.into(),
+            2.into(),
             BonusSource::Debug(0),
             None,
         ));

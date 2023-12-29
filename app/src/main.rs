@@ -39,12 +39,12 @@ fn main() {
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Value(Decimal::ONE)
+                    * (Value::Const(Decimal::ONE)
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Value(1.into())
+                    * (Value::Const(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Value(10.into()),
+                Value::Const(10.into()),
                 Value::If {
                     condition: is_wearing_armor().into(),
                     if_true: Box::new(Value::If {
@@ -77,7 +77,7 @@ fn main() {
             ]
             .into_iter()
             .sum::<Value>()
-                * (Value::Value(1.into())
+                * (Value::Const(1.into())
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))))
         )
         .unwrap()
@@ -86,7 +86,7 @@ fn main() {
     breakdowns.insert_bonuses([Bonus::new(
         Ability::All.into(),
         BonusType::Stacking,
-        10f32.into(),
+        10.into(),
         BonusSource::Custom(10),
         None,
     )]);
@@ -95,7 +95,7 @@ fn main() {
         Bonus::new(
             PlayerClass::FavoredSoul.into(),
             BonusType::Stacking,
-            10f32.into(),
+            10.into(),
             0.into(),
             None,
         ),
@@ -104,49 +104,49 @@ fn main() {
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
             BonusType::Stacking,
-            5f32.into(),
+            5.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ArmorMaxDex),
             BonusType::Stacking,
-            10f32.into(),
+            10.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::All.into(),
             BonusType::Stacking,
-            8f32.into(),
+            8.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Dexterity.into(),
             BonusType::Stacking,
-            20f32.into(),
+            20.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Intelligence.into(),
             BonusType::Stacking,
-            20f32.into(),
+            20.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Enhancement,
-            20f32.into(),
+            20.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Insightful,
-            10f32.into(),
+            10.into(),
             1.into(),
             None,
         ),

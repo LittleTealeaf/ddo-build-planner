@@ -40,15 +40,16 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
             Bonus::new(
                 Attribute::Ability(ability),
                 BonusType::Stacking,
-                8f32.into(),
+                Value::Const(8.into()),
                 BonusSource::Base,
                 None,
             ),
             Bonus::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
-                ((Value::Attribute(Attribute::Ability(ability)) - 10f32.into()) / 2f32.into())
-                    .floor(),
+                ((Value::Attribute(Attribute::Ability(ability)) - Value::Const(10.into()))
+                    / Value::Const(2.into()))
+                .floor(),
                 BonusSource::Base,
                 None,
             ),
@@ -151,7 +152,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                         .into(),
                     if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex))
                         .into(),
-                    if_false: Value::Value(Decimal::MAX).into(),
+                    if_false: Value::Const(Decimal::MAX).into(),
                 },
                 Value::If {
                     condition: Condition::has(Attribute::from(Flag::OffHandType(
@@ -160,7 +161,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                     .into(),
                     if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldMaxDex))
                         .into(),
-                    if_false: Value::Value(Decimal::MAX).into(),
+                    if_false: Value::Const(Decimal::MAX).into(),
                 },
             ]),
             BonusSource::Base,
@@ -174,16 +175,16 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Value(1.into())
+                    * (Value::Const(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Value(1.into())
+                    * (Value::Const(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Value(10.into()),
+                Value::Const(10.into()),
             ]
             .into_iter()
             .sum::<Value>()
-                * (Value::Value(1.into())
+                * (Value::Const(1.into())
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))),
             BonusSource::Base,
             None,
@@ -197,7 +198,7 @@ fn health() -> impl IntoIterator<Item = Bonus> {
             Attribute::Health(Health::Bonus),
             BonusType::Stacking,
             Value::from(Attribute::Health(Health::Base))
-                * (Value::from(Attribute::Health(Health::BaseModifier)) + Value::from(1f32)),
+                * (Value::from(Attribute::Health(Health::BaseModifier)) + Value::from(1)),
             BonusSource::Base,
             None,
         ),
@@ -205,7 +206,7 @@ fn health() -> impl IntoIterator<Item = Bonus> {
             Attribute::Health(Health::Total),
             BonusType::Stacking,
             Value::from(Attribute::Health(Health::Bonus))
-                * (Value::from(Attribute::Health(Health::Modifier)) + Value::from(1f32)),
+                * (Value::from(Attribute::Health(Health::Modifier)) + Value::from(1)),
             BonusSource::Base,
             None,
         ),
@@ -220,8 +221,8 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
             Value::from(Attribute::SpellPoints(SpellPoints::Scaled))
                 * (Value::from(Attribute::ClassLevel(PlayerClass::FavoredSoul))
                     + Value::from(Attribute::ClassLevel(PlayerClass::Sorcerer))
-                    + Value::from(20f32))
-                / Value::from(20f32),
+                    + Value::from(20))
+                / Value::from(20),
             BonusSource::Base,
             None,
         ),
@@ -229,7 +230,7 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
             Attribute::SpellPoints(SpellPoints::Total),
             BonusType::Stacking,
             Value::from(Attribute::SpellPoints(SpellPoints::Base))
-                * (Value::from(1f32) + Value::from(Attribute::SpellPoints(SpellPoints::Modifier))),
+                * (Value::from(1) + Value::from(Attribute::SpellPoints(SpellPoints::Modifier))),
             BonusSource::Base,
             None,
         ),
