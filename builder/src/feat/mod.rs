@@ -7,7 +7,11 @@ use utils::public_modules;
 
 use std::fmt::Display;
 
-use crate::{attribute::GetBonuses, bonus::{CloneBonus, Bonus}, race::RacialFeat};
+use crate::{
+    attribute::GetBonuses,
+    bonus::{Bonus, CloneBonus},
+    race::RacialFeat,
+};
 
 /// All possible feats that the player can have.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
