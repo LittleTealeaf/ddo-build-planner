@@ -268,7 +268,7 @@ mod calculate {
             [Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                Value::mean(vec![
+                Value::mean([
                     Value::Const(1.into()),
                     Value::Const(2.into()),
                     Value::Const(3.into()),

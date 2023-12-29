@@ -1,20 +1,8 @@
 use crate::{
-    attribute::{Attribute, TrackAttribute},
-    bonus::{Bonus, BonusType, CloneBonus},
-    types::{skill::Skill, spell_power::SpellPower},
+    attribute::TrackAttribute,
+    bonus::{Bonus, CloneBonus},
+    types::skill::Skill,
 };
-
-impl Skill {
-    fn spell_power_bonus(self, sp: SpellPower, value: i32) -> Bonus {
-        Bonus::new(
-            Attribute::SpellPower(sp),
-            BonusType::Stacking,
-            value.into(),
-            Attribute::Skill(self).into(),
-            None,
-        )
-    }
-}
 
 impl CloneBonus for Skill {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
@@ -42,6 +30,8 @@ impl TrackAttribute for Skill {
 
 #[cfg(test)]
 mod tests {
+
+    use crate::attribute::Attribute;
 
     use super::*;
 

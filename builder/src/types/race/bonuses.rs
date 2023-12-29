@@ -4,12 +4,12 @@ use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
     feat::{Feat, Proficiency},
+    race::RacialFeat,
     types::{
-        ability::Ability, damage_type::DamageType, immunity::Immunity, race::Race,
-        saving_throw::SavingThrow, skill::Skill, item::WeaponType,
-    }, race::RacialFeat,
+        ability::Ability, damage_type::DamageType, immunity::Immunity, item::WeaponType,
+        race::Race, saving_throw::SavingThrow, skill::Skill,
+    },
 };
-
 
 impl Race {
     fn ability_modifier(self, ability: Ability, value: i16) -> Bonus {
@@ -27,7 +27,7 @@ impl Race {
         Feat: From<T>,
     {
         Bonus::new(
-            Feat::from(feat).into(),
+            Attribute::Feat(Feat::from(feat)),
             BonusType::Stacking,
             1.into(),
             Attribute::from(self).into(),

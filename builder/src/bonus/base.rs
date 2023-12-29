@@ -40,15 +40,15 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
             Bonus::new(
                 Attribute::Ability(ability),
                 BonusType::Stacking,
-                Value::Const(8.into()),
+                Value::from(8),
                 BonusSource::Base,
                 None,
             ),
             Bonus::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
-                ((Value::Attribute(Attribute::Ability(ability)) - Value::Const(10.into()))
-                    / Value::Const(2.into()))
+                ((Value::Attribute(Attribute::Ability(ability)) - Value::from(10))
+                    / Value::from(2))
                 .floor(),
                 BonusSource::Base,
                 None,
@@ -180,11 +180,11 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
                     * (Value::Const(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Const(10.into()),
+                Value::from(10),
             ]
             .into_iter()
             .sum::<Value>()
-                * (Value::Const(1.into())
+                * (Value::from(1)
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))),
             BonusSource::Base,
             None,

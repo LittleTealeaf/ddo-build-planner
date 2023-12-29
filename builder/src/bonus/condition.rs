@@ -13,7 +13,7 @@ use crate::attribute::{Attribute, AttributeDependencies};
 use super::{Depth, Value};
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Hash, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum Condition {
     /// Requires that a condition is not true
     Not(Box<Condition>),

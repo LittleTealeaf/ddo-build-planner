@@ -7,7 +7,7 @@ use utils::public_modules;
 
 use std::fmt::Display;
 
-use crate::{attribute::GetBonuses, bonus::CloneBonus, race::RacialFeat};
+use crate::{attribute::GetBonuses, bonus::{CloneBonus, Bonus}, race::RacialFeat};
 
 /// All possible feats that the player can have.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -35,7 +35,7 @@ impl Display for Feat {
 }
 
 impl CloneBonus for Feat {
-    fn clone_bonus(&self, bonus: &crate::bonus::Bonus) -> Option<Vec<crate::bonus::Bonus>> {
+    fn clone_bonus(&self, bonus: &crate::bonus::Bonus) -> Option<Vec<Bonus>> {
         match self {
             Self::Proficiency(feat) => feat.clone_bonus(bonus),
             _ => None,
@@ -44,7 +44,7 @@ impl CloneBonus for Feat {
 }
 
 impl GetBonuses for Feat {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         match self {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
             Self::Proficiency(_) => None,

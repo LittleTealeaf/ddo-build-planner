@@ -1,26 +1,8 @@
-use rust_decimal::Decimal;
-
 use crate::{
-    attribute::{Attribute, TrackAttribute},
-    bonus::{Bonus, BonusType, CloneBonus},
+    attribute::TrackAttribute,
+    bonus::{Bonus, CloneBonus},
     types::ability::Ability,
 };
-
-impl Ability {
-    fn modifier_bonus<T>(self, attribute: T, value: Decimal) -> Bonus
-    where
-        Attribute: From<T>,
-    {
-        Bonus::new(
-            attribute.into(),
-            BonusType::AbilityModifier,
-            value.into(),
-            Attribute::AbilityModifier(self).into(),
-            None,
-        )
-    }
-}
-
 
 impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
@@ -48,6 +30,8 @@ impl TrackAttribute for Ability {
 
 #[cfg(test)]
 mod tests {
+    use crate::attribute::Attribute;
+
     use super::*;
 
     #[test]

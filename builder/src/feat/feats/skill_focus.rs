@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    bonus::{Bonus, BonusType, Value},
     types::{saving_throw::SavingThrow, skill::Skill}, feat::{Feat, GetFeatRequirement, FeatRequirement},
 };
 
@@ -44,7 +44,7 @@ impl GetBonuses for SkillFocus {
             Self::Focus(skill) => vec![Bonus::new(
                 Attribute::Skill(*skill),
                 BonusType::Stacking,
-                3.into(),
+                Value::from(3),
                 Attribute::Feat(Feat::SkillFocus(Self::Focus(*skill))).into(),
                 None,
             )],
@@ -52,14 +52,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::Skill(Skill::Jump),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Acrobatic)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Tumble),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Acrobatic)).into(),
                     None,
                 ),
@@ -68,14 +68,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::Skill(Skill::Listen),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Alertness)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Spot),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Alertness)).into(),
                     None,
                 ),
@@ -84,14 +84,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::Skill(Skill::Balance),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Athletic)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Swim),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Athletic)).into(),
                     None,
                 ),
@@ -100,14 +100,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::SavingThrow(SavingThrow::Will),
                     BonusType::Stacking,
-                    1.into(),
+                    Value::from(1),
                     Attribute::Feat(Feat::SkillFocus(Self::Bullheaded)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Intimidate),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Bullheaded)).into(),
                     None,
                 ),
@@ -116,14 +116,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::SavingThrow(SavingThrow::Will),
                     BonusType::Stacking,
-                    1.into(),
+                    Value::from(1),
                     Attribute::Feat(Feat::SkillFocus(Self::Discipline)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Concentration),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Discipline)).into(),
                     None,
                 ),
@@ -131,7 +131,7 @@ impl GetBonuses for SkillFocus {
             Self::LuckOfHeroes => vec![Bonus::new(
                 Attribute::SavingThrow(SavingThrow::All),
                 BonusType::Stacking,
-                2.into(),
+                Value::from(2),
                 Attribute::Feat(Feat::SkillFocus(Self::LuckOfHeroes)).into(),
                 None,
             )],
@@ -139,14 +139,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::Skill(Skill::Diplomacy),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Negotiator)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Haggle),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Negotiator)).into(),
                     None,
                 ),
@@ -154,7 +154,7 @@ impl GetBonuses for SkillFocus {
             Self::ResistPoison => vec![Bonus::new(
                 Attribute::SavingThrow(SavingThrow::Poison),
                 BonusType::Stacking,
-                4.into(),
+                Value::from(4),
                 Attribute::Feat(Feat::SkillFocus(Self::ResistPoison)).into(),
                 None,
             )],
@@ -162,14 +162,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::Skill(Skill::Heal),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::SelfSufficient)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::Repair),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::SelfSufficient)).into(),
                     None,
                 ),
@@ -178,14 +178,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::SavingThrow(SavingThrow::Reflex),
                     BonusType::Stacking,
-                    1.into(),
+                    Value::from(1),
                     Attribute::Feat(Feat::SkillFocus(Self::SnakeBlood)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::SavingThrow(SavingThrow::Poison),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::SnakeBlood)).into(),
                     None,
                 ),
@@ -194,14 +194,14 @@ impl GetBonuses for SkillFocus {
                 Bonus::new(
                     Attribute::Skill(Skill::Hide),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Stealthy)).into(),
                     None,
                 ),
                 Bonus::new(
                     Attribute::Skill(Skill::MoveSilently),
                     BonusType::Stacking,
-                    2.into(),
+                    Value::from(2),
                     Attribute::Feat(Feat::SkillFocus(Self::Stealthy)).into(),
                     None,
                 ),

@@ -27,7 +27,7 @@ pub use value::*;
 ///
 /// A bonus contains the [`Attribute`], a [`BonusType`], a [`Value`], a [`BonusSource`], and
 /// an optional [`Condition`].
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Hash)]
 #[serde(from = "deserialize::DeserializedBonus")]
 pub struct Bonus {
     #[serde(rename = "attr")]
