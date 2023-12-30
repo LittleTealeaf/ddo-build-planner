@@ -1,6 +1,5 @@
 //! Pulls together all the bonuses and calculates the bonuses for each attribute
 
-mod buffer;
 mod calculation;
 mod inserting;
 
@@ -35,7 +34,7 @@ impl Breakdowns {
         breakdowns
     }
 
-    /// Returns ain iterator of all of the bonuses currently in the breakdowns
+    /// Returns an iterator of all of the bonuses currently in the breakdowns
     pub fn get_bonuses(&self) -> impl Iterator<Item = &Bonus> {
         self.bonuses.values().flatten()
     }
