@@ -48,20 +48,21 @@ impl Breakdowns {
         }
     }
 
+    /// Calculates and retuns the final value for a given [`Attribute`].
     pub fn get_attribute(&mut self, attribute: &Attribute) -> Decimal {
         if let Some(value) = self.cache.get(attribute) {
             return *value;
         }
 
-        let value = self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO);
+        let value = self.calculate_attribute(*attribute).unwrap_or(Decimal::ZERO);
 
         self.cache.insert(*attribute, value);
 
         value
     }
 
-    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
-        let bonuses = self.bonuses.get(attribute)?.clone();
+    pub(crate) fn calculate_attribute(&mut self, attribute: Attribute) -> Option<Decimal> {
+        let bonuses = self.bonuses.get(&attribute)?.clone();
         let filtered_bonuses = bonuses
             .into_iter()
             .filter(|bonus| {
