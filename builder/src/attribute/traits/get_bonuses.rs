@@ -13,6 +13,7 @@ use crate::bonus::Bonus;
 ///
 /// ```
 /// use builder::{bonus::Bonus, attribute::GetBonuses};
+/// use rust_decimal::Decimal;
 ///
 /// enum Test {
 ///     A,
@@ -20,13 +21,13 @@ use crate::bonus::Bonus;
 /// }
 ///
 /// impl GetBonuses for Test {
-///     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
 ///         // implementation
 ///         None // return None if there are none
 ///     }
 /// }
 ///
-/// let value = Test::A.get_bonuses(10f32);
+/// let value = Test::A.get_bonuses(Decimal::from(10));
 /// assert!(value.is_none());
 ///
 /// ```
@@ -35,6 +36,7 @@ use crate::bonus::Bonus;
 ///
 /// ```
 /// use builder::{bonus::Bonus, attribute::GetBonuses};
+/// use rust_decimal::Decimal;
 ///
 /// enum Test {
 ///     A,
@@ -45,19 +47,19 @@ use crate::bonus::Bonus;
 /// struct _TypeDEF;
 ///
 /// impl GetBonuses<_TypeABC> for Test {
-///     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
 ///         None
 ///     }
 /// }
 ///
 /// impl GetBonuses<_TypeDEF> for Test {
-///     fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
+///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
 ///         Some(Vec::new())
 ///     }
 /// }
 ///
-/// let abc_value = GetBonuses::<_TypeABC>::get_bonuses(&Test::A, 10f32);
-/// let def_value = GetBonuses::<_TypeDEF>::get_bonuses(&Test::B, 10f32);
+/// let abc_value = GetBonuses::<_TypeABC>::get_bonuses(&Test::A, 10.into());
+/// let def_value = GetBonuses::<_TypeDEF>::get_bonuses(&Test::B, 10.into());
 ///
 /// assert!(abc_value.is_none());
 /// assert!(def_value.is_some());
