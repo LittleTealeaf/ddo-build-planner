@@ -54,7 +54,9 @@ impl Breakdowns {
             return *value;
         }
 
-        let value = self.calculate_attribute(*attribute).unwrap_or(Decimal::ZERO);
+        let value = self
+            .calculate_attribute(*attribute)
+            .unwrap_or(Decimal::ZERO);
 
         self.cache.insert(*attribute, value);
 
