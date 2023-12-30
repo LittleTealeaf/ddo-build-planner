@@ -3,10 +3,10 @@ use utils::ord::IntoOrdGroupMap;
 
 use crate::{
     attribute::Attribute,
-    bonus::{BonusType, Condition, Value},
+    bonus::{Bonus, BonusType, Condition, Value},
 };
 
-use super::Breakdowns;
+use super::{Breakdowns, EvalBonus};
 
 impl Breakdowns {
     pub(super) fn evaluate_condition(&mut self, condition: &Condition) -> bool {
@@ -48,9 +48,30 @@ impl Breakdowns {
         }
     }
 
+    pub(super) fn get_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
+        if let Some(eval) = self.bonus_cache.get(bonus) {
+            return *eval;
+        }
+
+        let bonus_eval = self.calculate_bonus(bonus);
+
+        self.bonus_cache.insert(bonus.clone(), bonus_eval);
+
+        bonus_eval
+    }
+
+    pub(super) fn calculate_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
+        let value = self.evaluate_value(bonus.get_value());
+        let condition = bonus
+            .get_condition()
+            .map_or(true, |condition| self.evaluate_condition(condition));
+
+        EvalBonus { value, condition }
+    }
+
     /// Calculates and retuns the final value for a given [`Attribute`].
     pub fn get_attribute(&mut self, attribute: &Attribute) -> Decimal {
-        if let Some(value) = self.cache.get(attribute) {
+        if let Some(value) = self.attribute_cache.get(attribute) {
             return *value;
         }
 
@@ -58,33 +79,28 @@ impl Breakdowns {
             .calculate_attribute(*attribute)
             .unwrap_or(Decimal::ZERO);
 
-        self.cache.insert(*attribute, value);
+        self.attribute_cache.insert(*attribute, value);
 
         value
     }
 
     pub(crate) fn calculate_attribute(&mut self, attribute: Attribute) -> Option<Decimal> {
-        let bonuses = self.bonuses.get(&attribute)?.clone();
-        let filtered_bonuses = bonuses
+        let mut bonuses = self
+            .bonuses
+            .get(&attribute)?
+            .clone()
             .into_iter()
-            .filter(|bonus| {
-                bonus
-                    .get_condition()
-                    .map_or(true, |condition| self.evaluate_condition(condition))
-            })
-            .collect::<Vec<_>>();
-        let mut map = filtered_bonuses
-            .iter()
-            .map(|bonus| (bonus.get_type(), self.evaluate_value(bonus.get_value())))
+            .map(|bonus| (*bonus.get_type(), self.get_bonus(&bonus)))
+            .filter_map(|(bonus_type, eval)| eval.condition.then_some((bonus_type, eval.value)))
             .into_grouped_ord_map();
 
-        let stacking = map
+        let stacking = bonuses
             .remove(&BonusType::Stacking)
             .map_or(Decimal::ZERO, |i| i.into_iter().sum());
 
         Some(
             stacking
-                + map
+                + bonuses
                     .into_iter()
                     .map(|(_, mut values)| {
                         let mut value = values.pop().unwrap_or(Decimal::ZERO);

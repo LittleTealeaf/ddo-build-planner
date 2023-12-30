@@ -13,10 +13,17 @@ use crate::{
     bonus::{get_base_bonuses, Bonus, BonusSource},
 };
 
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+struct EvalBonus {
+    value: Decimal,
+    condition: bool,
+}
+
 /// Calculates the final attribute values for the character.
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
-    cache: HashMap<Attribute, Decimal>,
+    attribute_cache: HashMap<Attribute, Decimal>,
+    bonus_cache: HashMap<Bonus, EvalBonus>,
     children: HashMap<BonusSource, Vec<Attribute>>,
 }
 
@@ -26,7 +33,8 @@ impl Breakdowns {
     pub fn new() -> Self {
         let mut breakdowns = Self {
             bonuses: HashMap::new(),
-            cache: HashMap::new(),
+            attribute_cache: HashMap::new(),
+            bonus_cache: HashMap::new(),
             children: HashMap::new(),
         };
 
@@ -35,7 +43,7 @@ impl Breakdowns {
         breakdowns
     }
 
-    /// Returns ain iterator of all of the bonuses currently in the breakdowns
+    /// Returns an iterator of all of the bonuses currently in the breakdowns
     pub fn get_bonuses(&self) -> impl Iterator<Item = &Bonus> {
         self.bonuses.values().flatten()
     }

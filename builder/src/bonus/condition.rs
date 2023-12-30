@@ -4,16 +4,16 @@ use std::{
     ops::{BitAnd, BitOr, BitXor, Not},
 };
 
+use itertools::Itertools;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::bit_ops::{BitAll, BitAny};
 
 use crate::attribute::{Attribute, AttributeDependencies};
 
 use super::{Depth, Value};
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
-#[derive(Hash, Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Hash, Clone, Eq, Debug, Serialize, Deserialize, PartialEq)]
 pub enum Condition {
     /// Requires that a condition is not true
     Not(Box<Condition>),
@@ -46,34 +46,6 @@ impl Condition {
     pub const fn has(attribute: Attribute) -> Self {
         Self::GreaterThan(Value::Attribute(attribute), Value::Const(Decimal::ZERO))
     }
-
-    /// Requires that all of the provided conditions are true
-    ///
-    /// Returns [`None`] if the iterator has no values
-    pub fn iter_all(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
-        conditions.bit_all()
-    }
-
-    /// Requires that any of the provided conditions are true
-    ///
-    /// Returns [`None`] if the iterator has no values
-    pub fn iter_any(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
-        conditions.bit_any()
-    }
-
-    /// Requires that none of the conditions are true
-    ///
-    /// Returns [`None`] if the iterator has no values
-    pub fn iter_none(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
-        Self::iter_any(conditions).map(Self::not)
-    }
-
-    /// Requires that at least one of the conditions is false
-    ///
-    /// Returns [`None`] if the iterator has no values
-    pub fn iter_not_all(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
-        Self::iter_all(conditions).map(Self::not)
-    }
 }
 
 /// Chain Operations
@@ -83,7 +55,7 @@ impl Condition {
     /// Returns true if both values are true
     #[must_use]
     pub fn and(self, other: Self) -> Self {
-        self & other
+        Self::And(Box::new(self), Box::new(other))
     }
 
     /// Logical OR
@@ -91,13 +63,13 @@ impl Condition {
     /// Returns true if one value is true
     #[must_use]
     pub fn or(self, other: Self) -> Self {
-        self | other
+        Self::Or(Box::new(self), Box::new(other))
     }
 
     /// Logical XOR
     #[must_use]
     pub fn xor(self, other: Self) -> Self {
-        self ^ other
+        Self::Xor(Box::new(self), Box::new(other))
     }
 
     /// Logical NAND
@@ -105,7 +77,7 @@ impl Condition {
     /// Returns false if both outputs are true, otherwise returns true
     #[must_use]
     pub fn nand(self, other: Self) -> Self {
-        !(self & other)
+        Self::Not(Box::new(Self::And(Box::new(self), Box::new(other))))
     }
 
     /// Logical NOR
@@ -113,7 +85,7 @@ impl Condition {
     /// Returns true if both outputs are false
     #[must_use]
     pub fn nor(self, other: Self) -> Self {
-        !(self | other)
+        Self::Not(Box::new(Self::Or(Box::new(self), Box::new(other))))
     }
 
     /// Logical XNOR
@@ -121,7 +93,7 @@ impl Condition {
     /// Returns true if the values are either both true or both false
     #[must_use]
     pub fn xnor(self, other: Self) -> Self {
-        !(self ^ other)
+        Self::Not(Box::new(Self::Xor(Box::new(self), Box::new(other))))
     }
 }
 
@@ -197,7 +169,7 @@ impl BitAnd for Condition {
     type Output = Self;
 
     fn bitand(self, rhs: Self) -> Self::Output {
-        Self::And(self.into(), rhs.into())
+        Self::And(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -205,13 +177,46 @@ impl BitOr for Condition {
     type Output = Self;
 
     fn bitor(self, rhs: Self) -> Self::Output {
-        Self::Or(self.into(), rhs.into())
+        Self::Or(Box::new(self), Box::new(rhs))
     }
 }
 
 impl BitXor for Condition {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self::Output {
-        Self::Xor(self.into(), rhs.into())
+        Self::Xor(Box::new(self), Box::new(rhs))
+    }
+}
+
+/// Condition folding functions that consumes a set of conditions into a single condition
+pub trait ConditionFold {
+    /// Returns a condition that returns `true` if any of the conditions are `true`. Returns [`None`] if there are no items in the iterator
+    fn cond_any(self) -> Option<Condition>;
+    /// Returns a condition that returns `true` if all of the conditions are `true`. Returns [`None`] if there are no items in the iterator
+    fn cond_all(self) -> Option<Condition>;
+    /// Returns a condition that returns `true` if none of the conditions are `true`. Returns [`None`] if there are no items in the iterator
+    fn cond_none(self) -> Option<Condition>;
+    /// Returns a condition that returns `true` if not all of the conditions are `true`. Returns [`None`] if there are no items in the iterator
+    fn cond_not_all(self) -> Option<Condition>;
+}
+
+impl<I> ConditionFold for I
+where
+    I: IntoIterator<Item = Condition>,
+{
+    fn cond_any(self) -> Option<Condition> {
+        self.into_iter().tree_fold1(|a, b| a | b)
+    }
+
+    fn cond_all(self) -> Option<Condition> {
+        self.into_iter().tree_fold1(|a, b| a & b)
+    }
+
+    fn cond_none(self) -> Option<Condition> {
+        self.cond_any().map(Condition::not)
+    }
+
+    fn cond_not_all(self) -> Option<Condition> {
+        self.cond_all().map(Condition::not)
     }
 }

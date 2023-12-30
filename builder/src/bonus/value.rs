@@ -16,7 +16,7 @@ use super::{Condition, Depth};
 /// Represents a value of a [`Bonus`]
 ///
 /// [`Bonus`]: crate::bonus::Bonus
-#[derive(Clone, PartialEq, Debug, Hash, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, Hash, Eq, Serialize, Deserialize)]
 pub enum Value {
     /// Just a simple [`f32`] value.
     Const(Decimal),
