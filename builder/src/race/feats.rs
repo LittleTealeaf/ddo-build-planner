@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType, Condition, Value, ConditionFold},
+    bonus::{Bonus, BonusType, Condition, ConditionFold, Value},
     feat::Feat,
     types::{
         armor_class::ArmorClass,
