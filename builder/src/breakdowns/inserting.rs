@@ -51,13 +51,15 @@ impl Breakdowns {
 
         let mut buffer = Buffer::create(bonuses);
 
-        let bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
-
-        buffer.insert_attributes(bonuses.iter().map(|bonus| *bonus.get_attribute()));
-
-        for bonus in bonuses {
-            self.bonus_cache.remove(&bonus);
-        }
+        buffer.insert_attributes(
+            self.remove_bonuses_by_source(sources)
+                .collect::<Vec<_>>()
+                .iter()
+                .map(|bonus| {
+                    self.bonus_cache.remove(bonus);
+                    *bonus.get_attribute()
+                }),
+        );
 
         self.consume_buffer(buffer);
     }
