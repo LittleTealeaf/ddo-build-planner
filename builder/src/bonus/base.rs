@@ -1,6 +1,5 @@
 use itertools::chain;
 use rust_decimal::Decimal;
-use utils::bit_ops::BitAny;
 
 use crate::{
     attribute::Attribute,
@@ -19,7 +18,7 @@ use crate::{
     },
 };
 
-use super::{Bonus, BonusSource, BonusType, Condition, Value};
+use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, Value};
 
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
@@ -147,7 +146,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                 Value::If {
                     condition: [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
                         .map(|armor| Condition::has(Attribute::Flag(Flag::ArmorType(armor))))
-                        .bit_any()
+                        .cond_any()
                         .unwrap()
                         .into(),
                     if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex))

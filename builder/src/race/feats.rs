@@ -2,11 +2,10 @@ use std::fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::bit_ops::BitAny;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType, Condition, Value},
+    bonus::{Bonus, BonusType, Condition, Value, ConditionFold},
     feat::Feat,
     types::{
         armor_class::ArmorClass,
@@ -312,7 +311,7 @@ impl GetBonuses for RacialFeat {
                         Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
                         WeaponType::THROWING_WEAPONS
                             .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt)).into()))
-                            .bit_any(),
+                            .cond_any(),
                     ),
                     Bonus::new(
                         (WeaponHand::Off, WeaponStat::Attack).into(),
@@ -321,7 +320,7 @@ impl GetBonuses for RacialFeat {
                         Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
                         WeaponType::THROWING_WEAPONS
                             .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt)).into()))
-                            .bit_any(),
+                            .cond_any(),
                     ),
                 ]
             }
