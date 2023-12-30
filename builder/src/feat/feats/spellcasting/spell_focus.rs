@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -20,12 +21,12 @@ pub enum SpellFocusFeat {
 }
 
 impl GetBonuses for SpellFocusFeat {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<crate::bonus::Bonus>> {
-        (value > 0f32).then(|| match self {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
+        (value > Decimal::ZERO).then(|| match self {
             Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![Bonus::new(
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
-                1f32.into(),
+                1.into(),
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(
                     SpellcastingFeat::SpellFocus(*self),
                 ))),

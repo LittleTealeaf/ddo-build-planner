@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
@@ -35,14 +36,14 @@ pub enum SpellcastingFeat {
 }
 
 impl GetBonuses for SpellcastingFeat {
-    fn get_bonuses(&self, value: f32) -> Option<Vec<Bonus>> {
-        (value > 0f32).then(|| match self {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+        (value > Decimal::ZERO).then(|| match self {
             Self::AugmentSummoning => Some(vec![Bonus::new(
                 Attribute::SummonedAttribute(SummonedAttribute::AbilityScore(
                     Ability::All,
                 )),
                 BonusType::Stacking,
-                4f32.into(),
+                4.into(),
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),
@@ -51,7 +52,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::CombatCasting => Some(vec![Bonus::new(
                 Attribute::Skill(Skill::Concentration),
                 BonusType::Stacking,
-                4f32.into(),
+                4.into(),
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),
@@ -59,14 +60,14 @@ impl GetBonuses for SpellcastingFeat {
                 Bonus::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
-                    5f32.into(),
+                    5.into(),
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
                 Bonus::new(
                     Attribute::SpellPoints(SpellPoints::Base),
                     BonusType::Stacking,
-                    Value::Value(80f32),
+                    Value::Const(80.into()),
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
@@ -75,15 +76,15 @@ impl GetBonuses for SpellcastingFeat {
                 Bonus::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
-                    1f32.into(),
+                    1.into(),
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
                 Bonus::new(
                     Attribute::SpellPoints(SpellPoints::Base),
                     BonusType::Stacking,
-                    Value::from(5f32)
-                        + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5f32)),
+                    Value::from(5)
+                        + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5)),
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
@@ -91,7 +92,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::SpellPenetration | Self::GreaterSpellPenetration => Some(vec![Bonus::new(
                 Attribute::SpellPenetration,
                 BonusType::Stacking,
-                2f32.into(),
+                2.into(),
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),

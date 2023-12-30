@@ -5,6 +5,7 @@ pub mod alignment;
 pub mod armor_class;
 pub mod damage_type;
 pub mod flag;
+pub mod gear_slot;
 pub mod health;
 pub mod immunity;
 pub mod item;

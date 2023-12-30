@@ -19,6 +19,8 @@ data = { path = "../data/" }
 iced = "0.10.0"
 roc = "0.0.0"
 ron = "0.8.1"
+rust_decimal = "1.33.1"
+
 
 [[bin]]
 name = "ddo-build-planner"

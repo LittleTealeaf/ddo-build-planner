@@ -4,6 +4,7 @@ use std::{
     ops::{BitAnd, BitOr, BitXor, Not},
 };
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::bit_ops::{BitAll, BitAny};
 
@@ -12,7 +13,7 @@ use crate::attribute::{Attribute, AttributeDependencies};
 use super::{Depth, Value};
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Hash, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum Condition {
     /// Requires that a condition is not true
     Not(Box<Condition>),
@@ -41,36 +42,37 @@ impl From<bool> for Condition {
 /// Additional constructors for more complicated conditions
 impl Condition {
     /// Requires that the character has some attribute
+    #[must_use]
     pub const fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(Value::Attribute(attribute), Value::Value(0f32))
+        Self::GreaterThan(Value::Attribute(attribute), Value::Const(Decimal::ZERO))
     }
 
     /// Requires that all of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn all_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
+    pub fn iter_all(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
         conditions.bit_all()
     }
 
     /// Requires that any of the provided conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn any_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
+    pub fn iter_any(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
         conditions.bit_any()
     }
 
     /// Requires that none of the conditions are true
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn none_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
-        Self::any_iter(conditions).map(Self::not)
+    pub fn iter_none(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
+        Self::iter_any(conditions).map(Self::not)
     }
 
     /// Requires that at least one of the conditions is false
     ///
     /// Returns [`None`] if the iterator has no values
-    pub fn not_all_iter(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
-        Self::all_iter(conditions).map(Self::not)
+    pub fn iter_not_all(conditions: impl IntoIterator<Item = Self>) -> Option<Self> {
+        Self::iter_all(conditions).map(Self::not)
     }
 }
 

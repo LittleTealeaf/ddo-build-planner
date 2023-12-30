@@ -1,4 +1,4 @@
-// TODO: More detailed documentation
+// TODO: Remove TrackedAttribute?
 
 /// Implements the check of whether a particular attribute is actually tracked.
 ///

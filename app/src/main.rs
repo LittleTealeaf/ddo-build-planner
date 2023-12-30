@@ -2,7 +2,7 @@
 use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
-    compiler::Compiler,
+    breakdowns::Breakdowns,
     types::{
         ability::Ability,
         armor_class::ArmorClass,
@@ -13,6 +13,7 @@ use builder::{
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
+use rust_decimal::Decimal;
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
@@ -27,7 +28,7 @@ fn is_wielding_tower_shield() -> Condition {
 }
 
 fn main() {
-    let mut compiler = Compiler::default();
+    let mut breakdowns = Breakdowns::new();
 
     println!("Adding Bonuses");
 
@@ -38,12 +39,12 @@ fn main() {
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Value(1f32)
+                    * (Value::Const(Decimal::ONE)
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
                 Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Value(1f32)
+                    * (Value::Const(1.into())
                         + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Value(10f32),
+                Value::Const(10.into()),
                 Value::If {
                     condition: is_wearing_armor().into(),
                     if_true: Box::new(Value::If {
@@ -76,25 +77,25 @@ fn main() {
             ]
             .into_iter()
             .sum::<Value>()
-                * (Value::Value(1f32)
+                * (Value::Const(1.into())
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))))
         )
         .unwrap()
     );
 
-    compiler.add_bonuses(vec![Bonus::new(
+    breakdowns.insert_bonuses([Bonus::new(
         Ability::All.into(),
         BonusType::Stacking,
-        10f32.into(),
+        10.into(),
         BonusSource::Custom(10),
         None,
     )]);
 
-    compiler.add_bonuses(vec![
+    breakdowns.insert_bonuses([
         Bonus::new(
             PlayerClass::FavoredSoul.into(),
             BonusType::Stacking,
-            10f32.into(),
+            10.into(),
             0.into(),
             None,
         ),
@@ -103,49 +104,49 @@ fn main() {
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
             BonusType::Stacking,
-            5f32.into(),
+            5.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ArmorMaxDex),
             BonusType::Stacking,
-            10f32.into(),
+            10.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::All.into(),
             BonusType::Stacking,
-            8f32.into(),
+            8.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Dexterity.into(),
             BonusType::Stacking,
-            20f32.into(),
+            20.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Intelligence.into(),
             BonusType::Stacking,
-            20f32.into(),
+            20.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Enhancement,
-            20f32.into(),
+            20.into(),
             1.into(),
             None,
         ),
         Bonus::new(
             Ability::Wisdom.into(),
             BonusType::Insightful,
-            10f32.into(),
+            10.into(),
             1.into(),
             None,
         ),
@@ -158,7 +159,7 @@ fn main() {
         ),
     ]);
 
-    for (attr, val) in compiler.get_all_attributes() {
+    for (attr, val) in breakdowns.iter_attributes() {
         println!("{attr}: {val}");
     }
 }

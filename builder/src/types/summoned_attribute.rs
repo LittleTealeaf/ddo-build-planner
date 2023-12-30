@@ -1,6 +1,7 @@
 //! Summoned Attributes
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -18,7 +19,7 @@ pub enum SummonedAttribute {
 }
 
 impl GetBonuses for SummonedAttribute {
-    fn get_bonuses(&self, _: f32) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, _: Decimal) -> Option<Vec<Bonus>> {
         None
     }
 }

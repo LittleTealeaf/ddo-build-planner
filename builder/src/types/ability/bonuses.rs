@@ -1,24 +1,8 @@
 use crate::{
-    attribute::{Attribute, TrackAttribute},
-    bonus::{Bonus, BonusType, CloneBonus},
+    attribute::TrackAttribute,
+    bonus::{Bonus, CloneBonus},
     types::ability::Ability,
 };
-
-impl Ability {
-    fn modifier_bonus<T>(self, attribute: T, value: f32) -> Bonus
-    where
-        Attribute: From<T>,
-    {
-        Bonus::new(
-            attribute.into(),
-            BonusType::AbilityModifier,
-            value.into(),
-            Attribute::AbilityModifier(self).into(),
-            None,
-        )
-    }
-}
-
 
 impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
@@ -27,10 +11,10 @@ impl CloneBonus for Ability {
                 .map(|ability| {
                     Bonus::new(
                         ability.into(),
-                        bonus.get_type(),
-                        bonus.get_value(),
-                        bonus.get_source(),
-                        bonus.get_condition(),
+                        *bonus.get_type(),
+                        bonus.get_value().clone(),
+                        *bonus.get_source(),
+                        bonus.get_condition().cloned(),
                     )
                 })
                 .to_vec()
@@ -46,6 +30,8 @@ impl TrackAttribute for Ability {
 
 #[cfg(test)]
 mod tests {
+    use crate::attribute::Attribute;
+
     use super::*;
 
     #[test]

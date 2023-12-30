@@ -11,10 +11,10 @@ impl CloneBonus for SavingThrow {
                 .map(|st| {
                     Bonus::new(
                         st.into(),
-                        bonus.get_type(),
-                        bonus.get_value(),
-                        bonus.get_source(),
-                        bonus.get_condition(),
+                        *bonus.get_type(),
+                        bonus.get_value().clone(),
+                        *bonus.get_source(),
+                        bonus.get_condition().cloned(),
                     )
                 })
                 .to_vec()
