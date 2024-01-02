@@ -1,5 +1,6 @@
 //! Pulls together all the bonuses and calculates the bonuses for each attribute
 
+mod breakdown;
 mod buffer;
 mod calculation;
 mod inserting;

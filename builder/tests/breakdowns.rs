@@ -1,5 +1,5 @@
 mod calculate {
-    use std::{ops::Neg, str::FromStr};
+    use std::ops::Neg;
 
     use builder::{
         attribute::Attribute,
@@ -8,266 +8,132 @@ mod calculate {
     };
     use rust_decimal::Decimal;
 
-    fn test_bonuses(bonuses: impl IntoIterator<Item = Bonus>, expected: Decimal) {
+    fn assert_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<Decimal>) {
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonuses(bonuses);
         let value = breakdowns.get_attribute(&Attribute::Debug(0));
-        assert_eq!(value, expected);
-        // assert!(
-        //     value.within_margin(&expected),
-        //     "Expected {expected}, found {value}",
-        // );
+        assert_eq!(value, expected.into());
+    }
+
+    const fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
+        Bonus::new(
+            Attribute::Debug(attribute),
+            BonusType::Stacking,
+            value,
+            BonusSource::Debug(0),
+            None,
+        )
     }
 
     #[test]
-    fn value() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::Const(10.into()),
-                BonusSource::Debug(0),
-                None,
-            )],
-            10.into(),
-        );
+    fn constant() {
+        assert_value([dbg_bonus(0, Value::Const(10.into()))], 10);
     }
 
     #[test]
     fn attribute() {
-        test_bonuses(
+        assert_value(
             [
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Stacking,
-                    Value::Attribute(Attribute::Debug(1)),
-                    BonusSource::Debug(0),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::Debug(1),
-                    BonusType::Stacking,
-                    Value::Const(10.into()),
-                    BonusSource::Debug(0),
-                    None,
-                ),
+                dbg_bonus(0, Value::Attribute(Attribute::Debug(1))),
+                dbg_bonus(1, Value::Const(10.into())),
             ],
-            10.into(),
+            10,
         );
     }
 
     #[test]
     fn add() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(1) + Value::from(2),
-                BonusSource::Debug(0),
-                None,
-            )],
-            3.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(1) + Value::from(2))], 3);
     }
 
     #[test]
     fn sub() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(5) - Value::from(2),
-                BonusSource::Debug(0),
-                None,
-            )],
-            3.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(5) - Value::from(2))], 3);
     }
 
     #[test]
     fn mul() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(3) * Value::from(2),
-                BonusSource::Debug(0),
-                None,
-            )],
-            6.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(3) * Value::from(2))], 6);
     }
 
     #[test]
     fn div() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(6) / Value::from(2),
-                BonusSource::Debug(0),
-                None,
-            )],
-            3.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(6) / Value::from(2))], 3);
     }
 
     #[test]
     fn rem() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(5) % Value::from(2),
-                BonusSource::Debug(0),
-                None,
-            )],
-            1.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(5) % Value::from(2))], 1);
     }
 
     #[test]
     fn min() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(5).min(Value::from(6)),
-                BonusSource::Debug(0),
-                None,
-            )],
-            5.into(),
-        );
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(6).min(Value::from(5)),
-                BonusSource::Debug(0),
-                None,
-            )],
-            5.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(5).min(Value::from(6)))], 5);
+        assert_value([dbg_bonus(0, Value::from(6).min(Value::from(5)))], 5);
     }
 
     #[test]
     fn max() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(5).max(Value::from(6)),
-                BonusSource::Debug(0),
-                None,
-            )],
-            6.into(),
-        );
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(6).max(Value::from(5)),
-                BonusSource::Debug(0),
-                None,
-            )],
-            6.into(),
-        );
+        assert_value([dbg_bonus(0, Value::from(5).max(Value::from(6)))], 6);
+        assert_value([dbg_bonus(0, Value::from(6).max(Value::from(5)))], 6);
     }
 
     #[test]
     fn recip() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Box::new(Value::Const(2.into())).recip(),
-                BonusSource::Debug(0),
-                None,
-            )],
-            Decimal::ONE / Decimal::TWO,
+        assert_value(
+            [dbg_bonus(0, Value::from(2).recip())],
+            Decimal::try_from(0.5).unwrap(),
         );
     }
 
     #[test]
     fn floor() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Box::new(Value::Const(Decimal::from_f32_retain(10.5).unwrap())).floor(),
-                BonusSource::Debug(0),
-                None,
-            )],
-            10.into(),
-        );
+        assert_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
     }
 
     #[test]
     fn ciel() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                Value::from(Decimal::from_str("10.5").unwrap()).ciel(),
-                BonusSource::Debug(0),
-                None,
-            )],
-            11.into(),
-        );
+        assert_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ciel())], 11);
     }
 
     #[test]
     fn condition() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
+        assert_value([dbg_bonus(0, Value::condition(true, 10, 20))], 10);
+        assert_value([dbg_bonus(0, Value::condition(false, 10, 20))], 20);
+        assert_value(
+            [dbg_bonus(
+                0,
                 Value::If {
-                    condition: Box::new(Condition::Constant(true)),
-                    if_true: Box::new(Value::Const(10.into())),
-                    if_false: Box::new(Value::Const(20.into())),
+                    condition: Condition::Constant(true).into(),
+                    if_true: Value::from(10).into(),
+                    if_false: Value::from(20).into(),
                 },
-                BonusSource::Debug(0),
-                None,
             )],
-            10.into(),
+            10,
         );
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
+        assert_value(
+            [dbg_bonus(
+                0,
                 Value::If {
-                    condition: Box::new(Condition::Constant(false)),
-                    if_true: Box::new(Value::Const(10.into())),
-                    if_false: Box::new(Value::Const(20.into())),
+                    condition: Condition::Constant(false).into(),
+                    if_true: Value::from(10).into(),
+                    if_false: Value::from(20).into(),
                 },
-                BonusSource::Debug(0),
-                None,
             )],
-            20.into(),
+            20,
         );
     }
 
     #[test]
     fn negative() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                -Value::Const(1.into()),
-                BonusSource::Debug(0),
-                None,
-            )],
-            Decimal::ONE.neg(),
-        );
+        assert_value([dbg_bonus(0, Value::from(1).neg())], -1);
     }
 
     #[test]
     fn average() {
-        test_bonuses(
-            [Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
+        assert_value(
+            [dbg_bonus(
+                0,
                 Value::mean([
                     Value::Const(1.into()),
                     Value::Const(2.into()),
@@ -275,10 +141,8 @@ mod calculate {
                     Value::Const(4.into()),
                     Value::Const(5.into()),
                 ]),
-                BonusSource::Debug(0),
-                None,
             )],
-            3.into(),
+            3,
         );
     }
 }
@@ -499,5 +363,15 @@ mod sources {
         assert!(breakdowns.get_attribute(&Attribute::Debug(0)) == 0.into());
         assert!(breakdowns.get_attribute(&Attribute::Debug(1)) == 0.into());
         assert!(breakdowns.get_attribute(&Attribute::Debug(2)) == 1.into());
+    }
+}
+
+mod breakdowns {
+    use builder::{attribute::Attribute, breakdowns::Breakdowns};
+
+    #[test]
+    fn return_none_for_untracked_bonuses() {
+        let mut breakdowns = Breakdowns::new();
+        assert!(breakdowns.get_breakdowns(&Attribute::Debug(0)).is_none());
     }
 }
