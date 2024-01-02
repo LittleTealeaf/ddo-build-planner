@@ -39,7 +39,7 @@ fn main() {
 
     breakdowns.insert_bonuses([
         Bonus::new(PlayerClass::FavoredSoul, BonusType::Stacking, 10, 0, None),
-        // Bonus::flag(OffHandType::from(ShieldType::TowerShield), 0),
+        Bonus::flag(OffHandType::from(ShieldType::TowerShield), 0),
         Bonus::flag(Race::Gnome, 0),
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
@@ -75,4 +75,7 @@ fn main() {
             None,
         ),
     ]);
+    for bonus in breakdowns.get_bonuses() {
+        println!("{bonus}");
+    }
 }

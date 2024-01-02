@@ -24,6 +24,7 @@ use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, Value};
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
     chain!(
         ability_bonuses(),
+        armor_class(),
         saving_throw(),
         spell_power_skills(),
         spell_power_universal(),
