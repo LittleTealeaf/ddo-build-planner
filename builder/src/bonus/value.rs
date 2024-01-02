@@ -51,6 +51,20 @@ pub enum Value {
 
 /// Operations to simplify writing formulas
 impl Value {
+    /// Conditionally returns a value based on a condition
+    #[must_use]
+    pub fn condition(
+        condition: impl Into<Condition>,
+        if_true: impl Into<Self>,
+        if_false: impl Into<Self>,
+    ) -> Self {
+        Self::If {
+            condition: Box::new(condition.into()),
+            if_true: Box::new(if_true.into()),
+            if_false: Box::new(if_false.into()),
+        }
+    }
+
     /// Calculates the mean of some list or set
     ///
     /// # Panics
@@ -256,6 +270,21 @@ macro_rules! from_primative {
 }
 
 from_primative!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
+
+macro_rules! try_from_primative {
+    ($($type:ty), +) => {
+        $(
+            impl TryFrom<$type> for Value {
+                type Error = rust_decimal::Error;
+                fn try_from(value: $type) -> Result<Self, Self::Error> {
+                    Ok(Self::Const(Decimal::try_from(value)?))
+                }
+            }
+        )+
+    }
+}
+
+try_from_primative!(f32, f64);
 
 impl From<Decimal> for Value {
     fn from(value: Decimal) -> Self {
