@@ -88,7 +88,7 @@ impl Bonus {
     /// assert!(dummy.get_condition().is_none());
     /// ```
     #[must_use]
-    pub fn dummy(source: BonusSource) -> Self {
+    pub fn dummy(source: impl Into<BonusSource>) -> Self {
         Self::new(Attribute::Dummy, BonusType::Stacking, 0, source, None)
     }
 
@@ -100,7 +100,7 @@ impl Bonus {
 
     /// Returns a bonus that gives the character some [`Feat`]
     #[must_use]
-    pub fn feat(feat: Feat, source: BonusSource, condition: Option<Condition>) -> Self {
+    pub fn feat(feat: Feat, source: BonusSource, condition: impl Into<Option<Condition>>) -> Self {
         Self::new(
             Attribute::Feat(feat),
             BonusType::Stacking,
@@ -212,7 +212,7 @@ impl Bonus {
     /// assert!(new_bonus.get_condition().is_none());
     /// ```
     #[must_use]
-    pub fn clone_into_attribute(&self, attribute: Attribute) -> Self {
+    pub fn clone_into_attribute(&self, attribute: impl Into<Attribute>) -> Self {
         Self::new(
             attribute,
             self.bonus_type,

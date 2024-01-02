@@ -8,15 +8,7 @@ impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             Self::ABILITIES
-                .map(|ability| {
-                    Bonus::new(
-                        ability,
-                        *bonus.get_type(),
-                        bonus.get_value().clone(),
-                        *bonus.get_source(),
-                        bonus.get_condition().cloned(),
-                    )
-                })
+                .map(|ability| bonus.clone_into_attribute(ability))
                 .to_vec()
         })
     }
@@ -30,7 +22,13 @@ impl TrackAttribute for Ability {
 
 #[cfg(test)]
 mod tests {
-    use crate::attribute::Attribute;
+    use rust_decimal::Decimal;
+
+    use crate::{
+        attribute::Attribute,
+        bonus::{BonusSource, BonusType},
+        breakdowns::Breakdowns,
+    };
 
     use super::*;
 
@@ -49,4 +47,5 @@ mod tests {
             assert!(Attribute::AbilityModifier(ability).is_tracked());
         }
     }
+
 }

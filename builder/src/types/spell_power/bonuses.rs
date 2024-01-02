@@ -19,15 +19,7 @@ impl CloneBonus for SpellPower {
                 }
                 _ => None,
             }?
-            .map(|attribute| {
-                Bonus::new(
-                    attribute,
-                    *bonus.get_type(),
-                    bonus.get_value().clone(),
-                    *bonus.get_source(),
-                    bonus.get_condition().cloned(),
-                )
-            })
+            .map(|attribute| bonus.clone_into_attribute(attribute))
             .to_vec(),
         )
     }

@@ -8,15 +8,7 @@ impl CloneBonus for Sheltering {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::Both).then(|| {
             [Self::Physical, Self::Magical]
-                .map(|sheltering| {
-                    Bonus::new(
-                        sheltering,
-                        *bonus.get_type(),
-                        bonus.get_value().clone(),
-                        *bonus.get_source(),
-                        bonus.get_condition().cloned(),
-                    )
-                })
+                .map(|sheltering| bonus.clone_into_attribute(sheltering))
                 .to_vec()
         })
     }
