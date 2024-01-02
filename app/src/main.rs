@@ -1,7 +1,7 @@
 //! Application Starting Point
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType, Condition, Value},
+    bonus::{Bonus, BonusSource, BonusType, Condition},
     breakdowns::Breakdowns,
     types::{
         ability::Ability,
@@ -13,7 +13,6 @@ use builder::{
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
-use rust_decimal::Decimal;
 
 fn is_wearing_armor() -> Condition {
     Condition::has(Flag::ArmorType(ArmorType::Light).into())
@@ -29,59 +28,6 @@ fn is_wielding_tower_shield() -> Condition {
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
-
-    println!("Adding Bonuses");
-
-    println!(
-        "{}",
-        ron::to_string(
-            &([
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Const(Decimal::ONE)
-                        + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Const(1.into())
-                        + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::Const(10.into()),
-                Value::If {
-                    condition: is_wearing_armor().into(),
-                    if_true: Box::new(Value::If {
-                        condition: is_wielding_tower_shield().into(),
-                        if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .min(Value::Attribute(Attribute::ArmorClass(
-                                ArmorClass::ArmorMaxDex
-                            )))
-                            .min(Value::Attribute(Attribute::ArmorClass(
-                                ArmorClass::ShieldMaxDex
-                            )))
-                            .into(),
-                        if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .min(Value::Attribute(Attribute::ArmorClass(
-                                ArmorClass::ArmorMaxDex
-                            )))
-                            .into(),
-                    }),
-                    if_false: Box::new(Value::If {
-                        condition: is_wielding_tower_shield().into(),
-                        if_false: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .into(),
-                        if_true: Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                            .min(Value::Attribute(Attribute::ArmorClass(
-                                ArmorClass::ShieldMaxDex
-                            )))
-                            .into(),
-                    }),
-                }
-            ]
-            .into_iter()
-            .sum::<Value>()
-                * (Value::Const(1.into())
-                    + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))))
-        )
-        .unwrap()
-    );
 
     breakdowns.insert_bonuses([Bonus::new(
         Ability::All.into(),
@@ -157,9 +103,12 @@ fn main() {
             2.into(),
             None,
         ),
+        Bonus::new(
+            (WeaponHand::Main, WeaponStat::Attack).into(),
+            BonusType::AbilityModifier,
+            Attribute::AbilityModifier(Ability::Strength).into(),
+            2.into(),
+            None,
+        ),
     ]);
-
-    for (attr, val) in breakdowns.iter_attributes() {
-        println!("{attr}: {val}");
-    }
 }
