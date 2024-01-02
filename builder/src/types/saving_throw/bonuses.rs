@@ -10,7 +10,7 @@ impl CloneBonus for SavingThrow {
             Self::PRIMARY
                 .map(|st| {
                     Bonus::new(
-                        st.into(),
+                        st,
                         *bonus.get_type(),
                         bonus.get_value().clone(),
                         *bonus.get_source(),

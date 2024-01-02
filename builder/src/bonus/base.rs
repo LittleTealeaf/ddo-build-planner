@@ -39,7 +39,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
             Bonus::new(
                 Attribute::Ability(ability),
                 BonusType::Stacking,
-                Value::from(8),
+            8,
                 BonusSource::Base,
                 None,
             ),
@@ -65,9 +65,9 @@ fn saving_throw() -> impl IntoIterator<Item = Bonus> {
     .into_iter()
     .map(|(ability, saving_throw)| {
         Bonus::new(
-            saving_throw.into(),
+            saving_throw,
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(ability).into(),
+            Attribute::AbilityModifier(ability),
             BonusSource::Base,
             None,
         )
@@ -92,7 +92,7 @@ fn spell_power_skills() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Attribute::SpellPower(SpellPower::Damage(damage_type)),
             BonusType::Stacking,
-            Attribute::Skill(skill).into(),
+            Attribute::Skill(skill),
             BonusSource::Base,
             None,
         )
@@ -128,7 +128,7 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Attribute::Skill(skill),
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(ability).into(),
+            Attribute::AbilityModifier(ability),
             BonusSource::Base,
             None,
         )

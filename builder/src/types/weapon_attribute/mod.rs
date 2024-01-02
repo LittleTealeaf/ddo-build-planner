@@ -39,10 +39,10 @@ impl GetBonuses for WeaponAttribute {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         match self {
             Self(hand, WeaponStat::CriticalMultiplier) => Some(vec![Bonus::new(
-                (*hand, WeaponStat::CriticalMultiplier1920).into(),
+                (*hand, WeaponStat::CriticalMultiplier1920),
                 BonusType::Stacking,
-                value.into(),
-                Attribute::from((*hand, WeaponStat::CriticalMultiplier)).into(),
+                value,
+                Attribute::from((*hand, WeaponStat::CriticalMultiplier)),
                 None,
             )]),
             _ => None,
@@ -85,7 +85,7 @@ impl CloneBonus for WeaponAttribute {
             }
             .map(|stat| {
                 Bonus::new(
-                    stat.into(),
+                    stat,
                     *bonus.get_type(),
                     bonus.get_value().clone(),
                     *bonus.get_source(),

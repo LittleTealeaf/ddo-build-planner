@@ -12,7 +12,7 @@ fn simple_proficiency_provides_proficiencies() {
     compiler.insert_bonus(Bonus::new(
         Attribute::Feat(Feat::Proficiency(Proficiency::SimpleWeaponProficiency)),
         BonusType::Stacking,
-        1.into(),
+        1,
         BonusSource::Debug(0),
         None,
     ));
@@ -30,7 +30,7 @@ fn martial_proficiency_provides_proficiencies() {
     compiler.insert_bonus(Bonus::new(
         Attribute::Feat(Feat::Proficiency(Proficiency::MartialWeaponProficiency)),
         BonusType::Stacking,
-        1.into(),
+        1,
         BonusSource::Debug(0),
         None,
     ));

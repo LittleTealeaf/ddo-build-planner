@@ -41,7 +41,7 @@ mod ability {
                 compiler.insert_bonus(Bonus::new(
                     Attribute::Ability(ability),
                     BonusType::Stacking,
-                    (score - Decimal::from(8)).into(),
+                    score - Decimal::from(8),
                     BonusSource::Debug(0),
                     None,
                 ));
@@ -56,7 +56,7 @@ mod ability {
         compiler.insert_bonus(Bonus::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,
-            2.into(),
+            2,
             BonusSource::Debug(0),
             None,
         ));

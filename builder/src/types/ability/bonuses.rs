@@ -10,7 +10,7 @@ impl CloneBonus for Ability {
             Self::ABILITIES
                 .map(|ability| {
                     Bonus::new(
-                        ability.into(),
+                        ability,
                         *bonus.get_type(),
                         bonus.get_value().clone(),
                         *bonus.get_source(),

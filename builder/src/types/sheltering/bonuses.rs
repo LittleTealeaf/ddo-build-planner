@@ -10,7 +10,7 @@ impl CloneBonus for Sheltering {
             [Self::Physical, Self::Magical]
                 .map(|sheltering| {
                     Bonus::new(
-                        sheltering.into(),
+                        sheltering,
                         *bonus.get_type(),
                         bonus.get_value().clone(),
                         *bonus.get_source(),

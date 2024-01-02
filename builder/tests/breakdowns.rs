@@ -15,7 +15,7 @@ mod calculate {
         assert_eq!(value, expected.into());
     }
 
-    const fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
+    fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
         Bonus::new(
             Attribute::Debug(attribute),
             BonusType::Stacking,
@@ -308,21 +308,21 @@ mod sources {
             Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(0),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(1),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(0),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(2),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(1),
                 None,
             ),
@@ -340,21 +340,21 @@ mod sources {
             Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(0),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(1),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(1),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(2),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(2),
                 None,
             ),

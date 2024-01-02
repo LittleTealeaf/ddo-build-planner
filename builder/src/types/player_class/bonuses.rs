@@ -12,8 +12,8 @@ impl GetBonuses for PlayerClass {
         let mut bonuses = vec![Bonus::new(
             Attribute::CasterLevel((*self).into()),
             BonusType::Stacking,
-            value.into(),
-            Attribute::from(*self).into(),
+            value,
+            Attribute::from(*self),
             None,
         )];
 
@@ -30,8 +30,8 @@ impl PlayerClass {
         Bonus::new(
             Attribute::SpellDC(self.into()),
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(ability).into(),
-            Attribute::from(self).into(),
+            Attribute::AbilityModifier(ability),
+            Attribute::from(self),
             None,
         )
     }

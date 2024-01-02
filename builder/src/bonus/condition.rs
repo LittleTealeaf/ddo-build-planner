@@ -43,8 +43,11 @@ impl From<bool> for Condition {
 impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
-    pub const fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(Value::Attribute(attribute), Value::Const(Decimal::ZERO))
+    pub fn has(attribute: impl Into<Attribute>) -> Self {
+        Self::GreaterThan(
+            Value::Attribute(attribute.into()),
+            Value::Const(Decimal::ZERO),
+        )
     }
 }
 
