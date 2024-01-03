@@ -100,9 +100,13 @@ impl Bonus {
 
     /// Returns a bonus that gives the character some [`Feat`]
     #[must_use]
-    pub fn feat(feat: Feat, source: BonusSource, condition: impl Into<Option<Condition>>) -> Self {
+    pub fn feat(
+        feat: impl Into<Feat>,
+        source: impl Into<BonusSource>,
+        condition: impl Into<Option<Condition>>,
+    ) -> Self {
         Self::new(
-            Attribute::Feat(feat),
+            Attribute::Feat(feat.into()),
             BonusType::Stacking,
             1,
             source,
