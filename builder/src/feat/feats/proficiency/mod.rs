@@ -8,9 +8,9 @@ pub use weapon_class::*;
 use std::fmt::Display;
 
 use crate::{
-    attribute::Attribute,
     bonus::{Bonus, CloneBonus},
-    feat::Feat, types::item::WeaponType,
+    feat::Feat,
+    types::item::WeaponType,
 };
 
 /// Proficiencies for Weapons and Armor
@@ -45,17 +45,10 @@ impl CloneBonus for Proficiency {
                     WeaponType::HeavyCrossbow,
                     WeaponType::ThrowingDagger,
                 ]
-                .into_iter()
                 .map(|weapon| {
-                    Bonus::new(
-                        Attribute::Feat(Feat::Proficiency(Self::WeaponProficiency(weapon))),
-                        *bonus.get_type(),
-                        bonus.get_value().clone(),
-                        *bonus.get_source(),
-                        bonus.get_condition().cloned(),
-                    )
+                    bonus.clone_into_attribute(Feat::Proficiency(Self::WeaponProficiency(weapon)))
                 })
-                .collect(),
+                .to_vec(),
             ),
             Self::MartialWeaponProficiency => Some(
                 [
@@ -80,17 +73,10 @@ impl CloneBonus for Proficiency {
                     WeaponType::ThrowingAxe,
                     WeaponType::ThrowingHammer,
                 ]
-                .into_iter()
                 .map(|weapon| {
-                    Bonus::new(
-                        Attribute::Feat(Feat::Proficiency(Self::WeaponProficiency(weapon))),
-                        *bonus.get_type(),
-                        bonus.get_value().clone(),
-                        *bonus.get_source(),
-                        bonus.get_condition().cloned(),
-                    )
+                    bonus.clone_into_attribute(Feat::Proficiency(Self::WeaponProficiency(weapon)))
                 })
-                .collect(),
+                .to_vec(),
             ),
             _ => None,
         }

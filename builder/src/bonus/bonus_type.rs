@@ -10,6 +10,9 @@ use serde::{Deserialize, Serialize};
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum BonusType {
+    /// Used in debugging bonus types
+    #[cfg(feature = "debug")]
+    Debug(u8),
     /// Bonuses that come from [`Attribute::AbilityModifier`]
     ///
     /// [`Attribute::AbilityModifier`]: crate::attribute::Attribute::AbilityModifier
@@ -90,6 +93,8 @@ pub enum BonusType {
 impl Display for BonusType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            #[cfg(feature = "debug")]
+            Self::Debug(channel) => write!(f, "Debug {channel}"),
             Self::AbilityModifier => write!(f, "Ability Modifier"),
             Self::ActionBoost => write!(f, "Action Boost"),
             Self::Alchemical => write!(f, "Alchemical"),
