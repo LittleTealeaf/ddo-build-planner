@@ -113,20 +113,25 @@ where
     }
 }
 
-// pub trait HashMapDefault<K, V> {
-//     fn get_mut_or_default(&mut self, key: K) -> &mut V;
-// }
-//
-// impl<K, V, S> HashMapDefault<K, V> for HashMap<K, V, S>
-// where
-//     K: Hash + Eq + PartialEq,
-//     V: Default,
-//     S: BuildHasher,
-// {
-//     fn get_mut_or_default(&mut self, key: K) -> &mut V {
-//         self.get_mut(&key).or_else(|| {
-//             self.insert(key, V::default())
-//         })
-//     }
-//
-// }
+/// Provides the `.into_grouped_hash_map` function for iterators
+pub trait IntoGroupedHashMap<K, V>
+where
+    K: Hash + Eq + PartialEq + Clone,
+{
+    /// Converts this into a grouped hash map
+    fn into_grouped_hash_map(self) -> HashMap<K, Vec<V>>;
+}
+
+impl<K, V, I> IntoGroupedHashMap<K, V> for I
+where
+    K: Hash + Eq + PartialEq + Clone,
+    I: IntoIterator<Item = (K, V)>,
+{
+    fn into_grouped_hash_map(self) -> HashMap<K, Vec<V>> {
+        let mut map: HashMap<K, Vec<V>> = HashMap::new();
+        for (key, value) in self {
+            map.get_mut_or_default(&key).push(value);
+        }
+        map
+    }
+}

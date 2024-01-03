@@ -1,5 +1,5 @@
 use rust_decimal::Decimal;
-use utils::ord::IntoOrdGroupMap;
+use utils::{hashmap::IntoGroupedHashMap, ord::IntoOrdGroupMap};
 
 use crate::{
     attribute::Attribute,
@@ -92,7 +92,7 @@ impl Breakdowns {
             .into_iter()
             .map(|bonus| (*bonus.get_type(), self.get_bonus(&bonus)))
             .filter_map(|(bonus_type, eval)| eval.condition.then_some((bonus_type, eval.value)))
-            .into_grouped_ord_map();
+            .into_grouped_hash_map();
 
         let stacking = bonuses
             .remove(&BonusType::Stacking)
@@ -101,16 +101,8 @@ impl Breakdowns {
         Some(
             stacking
                 + bonuses
-                    .into_iter()
-                    .map(|(_, mut values)| {
-                        let mut value = values.pop().unwrap_or(Decimal::ZERO);
-                        for item in values {
-                            if value < item {
-                                value = item;
-                            }
-                        }
-                        value
-                    })
+                    .into_values()
+                    .map(|values| values.into_iter().max().unwrap())
                     .sum::<Decimal>(),
         )
     }
