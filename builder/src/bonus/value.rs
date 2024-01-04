@@ -28,6 +28,8 @@ pub enum Value {
     Max(Box<Value>, Box<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
+    /// Ceils the inner value to a whole number
+    Ceil(Box<Value>),
     /// Adds the first value to the second value
     Add(Box<Value>, Box<Value>),
     /// Subtracts the second value from the first value
@@ -127,8 +129,8 @@ impl Value {
 
     /// Cielings the value
     #[must_use]
-    pub fn ciel(self) -> Self {
-        (self + Self::from(1)).floor()
+    pub fn ceil(self) -> Self {
+        Self::Ceil(self.into())
     }
 
     /// Finds the reciprocol of the value.
@@ -163,7 +165,7 @@ impl Depth for Value {
             | Self::Mul(a, b)
             | Self::Div(a, b)
             | Self::Rem(a, b) => a.get_depth().max(b.get_depth()),
-            Self::Floor(a) => a.get_depth(),
+            Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
             Self::If {
                 condition,
                 if_true,
@@ -189,6 +191,7 @@ impl Display for Value {
             Self::Min(a, b) => write!(f, "Min({a}, {b})"),
             Self::Max(a, b) => write!(f, "Max({a}, {b})"),
             Self::Floor(val) => write!(f, "Floor({val})"),
+            Self::Ceil(val) => write!(f, "Ceil({val})"),
             Self::If {
                 condition,
                 if_true,
@@ -214,7 +217,7 @@ impl AttributeDependencies for Value {
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Floor(val) => val.has_attr_dependency(attribute),
+            Self::Ceil(val) | Self::Floor(val) => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
                 if_true,
@@ -243,7 +246,7 @@ impl AttributeDependencies for Value {
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,

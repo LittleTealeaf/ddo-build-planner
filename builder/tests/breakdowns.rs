@@ -7,7 +7,8 @@ fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<De
     let mut breakdowns = Breakdowns::new();
     breakdowns.insert_bonuses(bonuses);
     let value = breakdowns.get_attribute(&Attribute::Debug(0));
-    assert_eq!(value, expected.into());
+    let expected: Decimal = expected.into();
+    assert_eq!(value, expected, "Expected {expected}, found {value}",);
 }
 
 mod value {
@@ -93,12 +94,26 @@ mod value {
 
     #[test]
     fn floor() {
-        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
+        let tests = [(10.5, 10), (10.0, 10), (10.01, 10), (10.99, 10)];
+
+        for (input, output) in tests {
+            expect_value(
+                [dbg_bonus(0, Value::try_from(input).unwrap().floor())],
+                output,
+            );
+        }
     }
 
     #[test]
-    fn ciel() {
-        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ciel())], 11);
+    fn ceil() {
+        let tests = [(10.5, 11), (10.0, 10), (10.01, 11), (10.99, 11)];
+
+        for (input, output) in tests {
+            expect_value(
+                [dbg_bonus(0, Value::try_from(input).unwrap().ceil())],
+                output,
+            );
+        }
     }
 
     #[test]
