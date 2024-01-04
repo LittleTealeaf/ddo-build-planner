@@ -43,8 +43,11 @@ impl From<bool> for Condition {
 impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
-    pub const fn has(attribute: Attribute) -> Self {
-        Self::GreaterThan(Value::Attribute(attribute), Value::Const(Decimal::ZERO))
+    pub fn has(attribute: impl Into<Attribute>) -> Self {
+        Self::GreaterThan(
+            Value::Attribute(attribute.into()),
+            Value::Const(Decimal::ZERO),
+        )
     }
 }
 
@@ -145,11 +148,10 @@ impl Display for Condition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Not(condition) => write!(f, "Not ({})", *condition),
-            Self::GreaterThan(a, b) => write!(f, "{a} is greater than {b}"),
-            Self::LessThan(a, b) => write!(f, "{a} is less than {b}"),
-            Self::EqualTo(a, b) => write!(f, "{a} is equal to {b}"),
-            Self::Constant(true) => write!(f, "True"),
-            Self::Constant(false) => write!(f, "False"),
+            Self::GreaterThan(a, b) => write!(f, "{a} > {b}"),
+            Self::LessThan(a, b) => write!(f, "{a} < {b}"),
+            Self::EqualTo(a, b) => write!(f, "{a} == {b}"),
+            Self::Constant(value) => write!(f, "{value}"),
             Self::And(a, b) => write!(f, "({a}) AND ({b})"),
             Self::Or(a, b) => write!(f, "({a}) OR ({b})"),
             Self::Xor(a, b) => write!(f, "({a}) == ({b})"),

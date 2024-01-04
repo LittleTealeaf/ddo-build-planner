@@ -5,8 +5,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusSource, BonusType},
-    feat::{Feat, FeatRequirement, GetFeatRequirement}, types::{spell_school::SpellSchool, spell_selector::SpellSelector, player_class::PlayerClass},
+    bonus::{Bonus, BonusType},
+    feat::{Feat, FeatRequirement, GetFeatRequirement},
+    types::{player_class::PlayerClass, spell_school::SpellSchool, spell_selector::SpellSelector},
 };
 
 use super::SpellcastingFeat;
@@ -26,10 +27,8 @@ impl GetBonuses for SpellFocusFeat {
             Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![Bonus::new(
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
-                1.into(),
-                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(
-                    SpellcastingFeat::SpellFocus(*self),
-                ))),
+                1,
+                Attribute::Feat(Feat::Spellcasting(SpellcastingFeat::SpellFocus(*self))),
                 None,
             )],
         })

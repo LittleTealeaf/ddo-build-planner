@@ -24,6 +24,7 @@ use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, Value};
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
     chain!(
         ability_bonuses(),
+        armor_class(),
         saving_throw(),
         spell_power_skills(),
         spell_power_universal(),
@@ -39,7 +40,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
             Bonus::new(
                 Attribute::Ability(ability),
                 BonusType::Stacking,
-                Value::from(8),
+                8,
                 BonusSource::Base,
                 None,
             ),
@@ -65,9 +66,9 @@ fn saving_throw() -> impl IntoIterator<Item = Bonus> {
     .into_iter()
     .map(|(ability, saving_throw)| {
         Bonus::new(
-            saving_throw.into(),
+            saving_throw,
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(ability).into(),
+            Attribute::AbilityModifier(ability),
             BonusSource::Base,
             None,
         )
@@ -92,7 +93,7 @@ fn spell_power_skills() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Attribute::SpellPower(SpellPower::Damage(damage_type)),
             BonusType::Stacking,
-            Attribute::Skill(skill).into(),
+            Attribute::Skill(skill),
             BonusSource::Base,
             None,
         )
@@ -128,7 +129,7 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Attribute::Skill(skill),
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(ability).into(),
+            Attribute::AbilityModifier(ability),
             BonusSource::Base,
             None,
         )
@@ -143,25 +144,21 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
             BonusType::AbilityModifier,
             Value::iter_min([
                 Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
-                Value::If {
-                    condition: [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                        .map(|armor| Condition::has(Attribute::Flag(Flag::ArmorType(armor))))
+                Value::condition(
+                    [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+                        .map(|armor| Condition::has(Flag::ArmorType(armor)))
                         .cond_any()
-                        .unwrap()
-                        .into(),
-                    if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorMaxDex))
-                        .into(),
-                    if_false: Value::Const(Decimal::MAX).into(),
-                },
-                Value::If {
-                    condition: Condition::has(Attribute::from(Flag::OffHandType(
-                        OffHandType::Shield(ShieldType::TowerShield),
-                    )))
-                    .into(),
-                    if_true: Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldMaxDex))
-                        .into(),
-                    if_false: Value::Const(Decimal::MAX).into(),
-                },
+                        .unwrap(),
+                    Attribute::ArmorClass(ArmorClass::ArmorMaxDex),
+                    Decimal::MAX,
+                ),
+                Value::condition(
+                    Condition::has(Attribute::from(Flag::OffHandType(OffHandType::Shield(
+                        ShieldType::TowerShield,
+                    )))),
+                    Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
+                    Decimal::MAX,
+                ),
             ]),
             BonusSource::Base,
             None,
@@ -248,7 +245,7 @@ fn spell_power_universal() -> impl IntoIterator<Item = Bonus> {
             Bonus::new(
                 attribute(sp),
                 BonusType::Stacking,
-                Value::Attribute(attribute(SpellPower::Universal)),
+                attribute(SpellPower::Universal),
                 BonusSource::Base,
                 None,
             )

@@ -1,21 +1,26 @@
-mod calculate {
+use builder::{attribute::Attribute, bonus::Bonus, breakdowns::Breakdowns};
+use rust_decimal::Decimal;
+
+/// Pushes a list of bonuses into a breakdown object and expects [`Attribute::Debug(0)`] to have
+/// the specified value
+fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<Decimal>) {
+    let mut breakdowns = Breakdowns::new();
+    breakdowns.insert_bonuses(bonuses);
+    let value = breakdowns.get_attribute(&Attribute::Debug(0));
+    assert_eq!(value, expected.into());
+}
+
+mod value {
     use std::ops::Neg;
 
     use builder::{
         attribute::Attribute,
         bonus::{Bonus, BonusSource, BonusType, Condition, Value},
-        breakdowns::Breakdowns,
     };
     use rust_decimal::Decimal;
 
-    fn assert_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<Decimal>) {
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonuses(bonuses);
-        let value = breakdowns.get_attribute(&Attribute::Debug(0));
-        assert_eq!(value, expected.into());
-    }
-
-    const fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
+    use crate::expect_value;
+    fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
         Bonus::new(
             Attribute::Debug(attribute),
             BonusType::Stacking,
@@ -27,12 +32,12 @@ mod calculate {
 
     #[test]
     fn constant() {
-        assert_value([dbg_bonus(0, Value::Const(10.into()))], 10);
+        expect_value([dbg_bonus(0, Value::Const(10.into()))], 10);
     }
 
     #[test]
     fn attribute() {
-        assert_value(
+        expect_value(
             [
                 dbg_bonus(0, Value::Attribute(Attribute::Debug(1))),
                 dbg_bonus(1, Value::Const(10.into())),
@@ -43,44 +48,44 @@ mod calculate {
 
     #[test]
     fn add() {
-        assert_value([dbg_bonus(0, Value::from(1) + Value::from(2))], 3);
+        expect_value([dbg_bonus(0, Value::from(1) + Value::from(2))], 3);
     }
 
     #[test]
     fn sub() {
-        assert_value([dbg_bonus(0, Value::from(5) - Value::from(2))], 3);
+        expect_value([dbg_bonus(0, Value::from(5) - Value::from(2))], 3);
     }
 
     #[test]
     fn mul() {
-        assert_value([dbg_bonus(0, Value::from(3) * Value::from(2))], 6);
+        expect_value([dbg_bonus(0, Value::from(3) * Value::from(2))], 6);
     }
 
     #[test]
     fn div() {
-        assert_value([dbg_bonus(0, Value::from(6) / Value::from(2))], 3);
+        expect_value([dbg_bonus(0, Value::from(6) / Value::from(2))], 3);
     }
 
     #[test]
     fn rem() {
-        assert_value([dbg_bonus(0, Value::from(5) % Value::from(2))], 1);
+        expect_value([dbg_bonus(0, Value::from(5) % Value::from(2))], 1);
     }
 
     #[test]
     fn min() {
-        assert_value([dbg_bonus(0, Value::from(5).min(Value::from(6)))], 5);
-        assert_value([dbg_bonus(0, Value::from(6).min(Value::from(5)))], 5);
+        expect_value([dbg_bonus(0, Value::from(5).min(Value::from(6)))], 5);
+        expect_value([dbg_bonus(0, Value::from(6).min(Value::from(5)))], 5);
     }
 
     #[test]
     fn max() {
-        assert_value([dbg_bonus(0, Value::from(5).max(Value::from(6)))], 6);
-        assert_value([dbg_bonus(0, Value::from(6).max(Value::from(5)))], 6);
+        expect_value([dbg_bonus(0, Value::from(5).max(Value::from(6)))], 6);
+        expect_value([dbg_bonus(0, Value::from(6).max(Value::from(5)))], 6);
     }
 
     #[test]
     fn recip() {
-        assert_value(
+        expect_value(
             [dbg_bonus(0, Value::from(2).recip())],
             Decimal::try_from(0.5).unwrap(),
         );
@@ -88,19 +93,19 @@ mod calculate {
 
     #[test]
     fn floor() {
-        assert_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
     }
 
     #[test]
     fn ciel() {
-        assert_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ciel())], 11);
+        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ciel())], 11);
     }
 
     #[test]
     fn condition() {
-        assert_value([dbg_bonus(0, Value::condition(true, 10, 20))], 10);
-        assert_value([dbg_bonus(0, Value::condition(false, 10, 20))], 20);
-        assert_value(
+        expect_value([dbg_bonus(0, Value::condition(true, 10, 20))], 10);
+        expect_value([dbg_bonus(0, Value::condition(false, 10, 20))], 20);
+        expect_value(
             [dbg_bonus(
                 0,
                 Value::If {
@@ -111,7 +116,7 @@ mod calculate {
             )],
             10,
         );
-        assert_value(
+        expect_value(
             [dbg_bonus(
                 0,
                 Value::If {
@@ -126,12 +131,12 @@ mod calculate {
 
     #[test]
     fn negative() {
-        assert_value([dbg_bonus(0, Value::from(1).neg())], -1);
+        expect_value([dbg_bonus(0, Value::from(1).neg())], -1);
     }
 
     #[test]
     fn average() {
-        assert_value(
+        expect_value(
             [dbg_bonus(
                 0,
                 Value::mean([
@@ -308,21 +313,21 @@ mod sources {
             Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(0),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(1),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(0),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(2),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(1),
                 None,
             ),
@@ -340,21 +345,21 @@ mod sources {
             Bonus::new(
                 Attribute::Debug(0),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(0),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(1),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(1),
                 None,
             ),
             Bonus::new(
                 Attribute::Debug(2),
                 BonusType::Stacking,
-                1.into(),
+                1,
                 BonusSource::Debug(2),
                 None,
             ),
@@ -363,6 +368,107 @@ mod sources {
         assert!(breakdowns.get_attribute(&Attribute::Debug(0)) == 0.into());
         assert!(breakdowns.get_attribute(&Attribute::Debug(1)) == 0.into());
         assert!(breakdowns.get_attribute(&Attribute::Debug(2)) == 1.into());
+    }
+}
+
+mod stacking {
+    use builder::{
+        attribute::Attribute,
+        bonus::{Bonus, BonusSource, BonusType},
+    };
+
+    use crate::expect_value;
+
+    #[test]
+    fn same_types_do_not_stack() {
+        expect_value(
+            [
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Debug(0),
+                    1,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Debug(0),
+                    2,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+            ],
+            2,
+        );
+    }
+
+    #[test]
+    fn different_types_stack() {
+        expect_value(
+            [
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Debug(0),
+                    3,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Debug(1),
+                    2,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+            ],
+            5,
+        );
+    }
+
+    #[test]
+    fn stacking_stacks_with_others() {
+        expect_value(
+            [
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    1,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Debug(1),
+                    2,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+            ],
+            3,
+        );
+    }
+
+    #[test]
+    fn stacking_stacks_with_stacking() {
+        expect_value(
+            [
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    3,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+                Bonus::new(
+                    Attribute::Debug(0),
+                    BonusType::Stacking,
+                    5,
+                    BonusSource::Debug(0),
+                    None,
+                ),
+            ],
+            8,
+        );
     }
 }
 

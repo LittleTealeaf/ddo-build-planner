@@ -45,32 +45,29 @@ pub struct Bonus {
 impl Bonus {
     /// Creates a new bonus with the provided values.
     ///
-    /// Many of the custom parameters implement as many [`From`] traits as needed, so many times
-    /// the [`Into::into`] function can be used.
-    ///
     /// # Example
     ///
     /// ```
     /// use builder::{bonus::{BonusType, Bonus, Value}, attribute::Attribute};
     ///
-    /// let bonus = Bonus::new(Attribute::Dummy.into(), BonusType::Stacking, Value::from(1),
-    /// Attribute::Dummy.into(), None);
+    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(1),
+    /// Attribute::Dummy, None);
     /// ```
     /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
     #[must_use]
-    pub const fn new(
-        attribute: Attribute,
-        bonus_type: BonusType,
-        value: Value,
-        source: BonusSource,
-        condition: Option<Condition>,
+    pub fn new(
+        attribute: impl Into<Attribute>,
+        bonus_type: impl Into<BonusType>,
+        value: impl Into<Value>,
+        source: impl Into<BonusSource>,
+        condition: impl Into<Option<Condition>>,
     ) -> Self {
         Self {
-            attribute,
-            bonus_type,
-            value,
-            source,
-            condition,
+            attribute: attribute.into(),
+            bonus_type: bonus_type.into(),
+            value: value.into(),
+            source: source.into(),
+            condition: condition.into(),
         }
     }
 
@@ -91,35 +88,27 @@ impl Bonus {
     /// assert!(dummy.get_condition().is_none());
     /// ```
     #[must_use]
-    pub fn dummy(source: BonusSource) -> Self {
-        Self::new(
-            Attribute::Dummy,
-            BonusType::Stacking,
-            0.into(),
-            source,
-            None,
-        )
+    pub fn dummy(source: impl Into<BonusSource>) -> Self {
+        Self::new(Attribute::Dummy, BonusType::Stacking, 0, source, None)
     }
 
     /// Returns a bonus that gives the character some [`Flag`].
     #[must_use]
-    pub fn flag(flag: Flag, source: BonusSource) -> Self {
-        Self::new(
-            Attribute::Flag(flag),
-            BonusType::Stacking,
-            1.into(),
-            source,
-            None,
-        )
+    pub fn flag(flag: impl Into<Flag>, source: impl Into<BonusSource>) -> Self {
+        Self::new(flag.into(), BonusType::Stacking, 1, source, None)
     }
 
     /// Returns a bonus that gives the character some [`Feat`]
     #[must_use]
-    pub fn feat(feat: Feat, source: BonusSource, condition: Option<Condition>) -> Self {
+    pub fn feat(
+        feat: impl Into<Feat>,
+        source: impl Into<BonusSource>,
+        condition: impl Into<Option<Condition>>,
+    ) -> Self {
         Self::new(
-            Attribute::Feat(feat),
+            Attribute::Feat(feat.into()),
             BonusType::Stacking,
-            1.into(),
+            1,
             source,
             condition,
         )
@@ -227,7 +216,7 @@ impl Bonus {
     /// assert!(new_bonus.get_condition().is_none());
     /// ```
     #[must_use]
-    pub fn clone_into_attribute(&self, attribute: Attribute) -> Self {
+    pub fn clone_into_attribute(&self, attribute: impl Into<Attribute>) -> Self {
         Self::new(
             attribute,
             self.bonus_type,
@@ -270,6 +259,36 @@ impl Display for Bonus {
                 self.value, self.bonus_type, self.attribute
             )
         }
+    }
+}
+
+impl From<Bonus> for Value {
+    fn from(value: Bonus) -> Self {
+        value.value
+    }
+}
+
+impl From<Bonus> for BonusSource {
+    fn from(value: Bonus) -> Self {
+        value.source
+    }
+}
+
+impl From<Bonus> for Attribute {
+    fn from(value: Bonus) -> Self {
+        value.attribute
+    }
+}
+
+impl From<Bonus> for Option<Condition> {
+    fn from(value: Bonus) -> Self {
+        value.condition
+    }
+}
+
+impl From<Bonus> for BonusType {
+    fn from(value: Bonus) -> Self {
+        value.bonus_type
     }
 }
 

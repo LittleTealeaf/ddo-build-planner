@@ -15,12 +15,12 @@ impl Breakdowns {
     /// Removes all bonuses with any of the provided [`BonusSources`]
     ///
     /// [`BonusSources`]: BonusSource
-    pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = BonusSource>) {
+    pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = impl Into<BonusSource>>) {
         self.insert_bonuses(sources.into_iter().map(Bonus::dummy));
     }
 
     /// Removes all bonuses with the provided [`BonusSource`]
-    pub fn remove_source(&mut self, source: BonusSource) {
+    pub fn remove_source(&mut self, source: impl Into<BonusSource>) {
         self.insert_bonuses([Bonus::dummy(source)]);
     }
 
@@ -51,15 +51,14 @@ impl Breakdowns {
 
         let mut buffer = Buffer::create(bonuses);
 
-        buffer.insert_attributes(
-            self.remove_bonuses_by_source(sources)
-                .collect::<Vec<_>>()
-                .iter()
-                .map(|bonus| {
-                    self.bonus_cache.remove(bonus);
-                    *bonus.get_attribute()
-                }),
-        );
+        let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
+
+        let updated_attributes = updated_bonuses.into_iter().map(|bonus| {
+            self.bonus_cache.remove(&bonus);
+            *bonus.get_attribute()
+        });
+
+        buffer.insert_attributes(updated_attributes);
 
         self.consume_buffer(buffer);
     }

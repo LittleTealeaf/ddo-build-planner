@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType, Condition, ConditionFold, Value},
+    bonus::{Bonus, BonusType, Condition, ConditionFold},
     feat::Feat,
     types::{
         armor_class::ArmorClass,
@@ -89,24 +89,24 @@ impl GetBonuses for RacialFeat {
             Self::SmallSizeBonus => {
                 vec![
                     Bonus::new(
-                        (WeaponHand::Both, WeaponStat::Attack).into(),
+                        (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Size,
-                        Value::from(1),
-                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)).into(),
+                        1,
+                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)),
                         None,
                     ),
                     Bonus::new(
-                        ArmorClass::Bonus.into(),
+                        ArmorClass::Bonus,
                         BonusType::Size,
-                        Value::from(1),
-                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)).into(),
+                        1,
+                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)),
                         None,
                     ),
                     Bonus::new(
-                        Skill::Hide.into(),
+                        Skill::Hide,
                         BonusType::Size,
-                        Value::from(4),
-                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)).into(),
+                        4,
+                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)),
                         None,
                     ),
                 ]
@@ -114,60 +114,60 @@ impl GetBonuses for RacialFeat {
             Self::GnomishProficiencies => {
                 vec![
                     Bonus::new(
-                        Skill::Haggle.into(),
+                        Skill::Haggle,
                         BonusType::Stacking,
-                        Value::from(2),
-                        Attribute::from(Feat::RacialFeat(Self::GnomishProficiencies)).into(),
+                        2,
+                        Attribute::from(Feat::RacialFeat(Self::GnomishProficiencies)),
                         None,
                     ),
                     Bonus::new(
-                        Skill::UseMagicalDevice.into(),
+                        Skill::UseMagicalDevice,
                         BonusType::Stacking,
-                        Value::from(22),
-                        Attribute::from(Feat::RacialFeat(Self::GnomishProficiencies)).into(),
+                        22,
+                        Attribute::from(Feat::RacialFeat(Self::GnomishProficiencies)),
                         None,
                     ),
                 ]
             }
             Self::ImmunityToSleep => {
                 vec![Bonus::new(
-                    Immunity::Sleep.into(),
+                    Immunity::Sleep,
                     BonusType::Stacking,
-                    Value::from(1),
-                    Attribute::from(Feat::RacialFeat(Self::ImmunityToSleep)).into(),
+                    1,
+                    Attribute::from(Feat::RacialFeat(Self::ImmunityToSleep)),
                     None,
                 )]
             }
             Self::EnchantmentSaveBonus => {
                 vec![Bonus::new(
-                    SavingThrow::Enchantment.into(),
+                    SavingThrow::Enchantment,
                     BonusType::Stacking,
-                    Value::from(2),
-                    Attribute::from(Feat::RacialFeat(Self::EnchantmentSaveBonus)).into(),
+                    2,
+                    Attribute::from(Feat::RacialFeat(Self::EnchantmentSaveBonus)),
                     None,
                 )]
             }
             Self::ElvenKeenSenses => {
                 vec![
                     Bonus::new(
-                        Skill::Listen.into(),
+                        Skill::Listen,
                         BonusType::Stacking,
-                        Value::from(2),
-                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)).into(),
+                        2,
+                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)),
                         None,
                     ),
                     Bonus::new(
-                        Skill::Search.into(),
+                        Skill::Search,
                         BonusType::Stacking,
-                        Value::from(2),
-                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)).into(),
+                        2,
+                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)),
                         None,
                     ),
                     Bonus::new(
-                        Skill::Spot.into(),
+                        Skill::Spot,
                         BonusType::Stacking,
-                        Value::from(2),
-                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)).into(),
+                        2,
+                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)),
                         None,
                     ),
                 ]
@@ -176,150 +176,144 @@ impl GetBonuses for RacialFeat {
                 vec![Bonus::new(
                     Attribute::SpellResistance,
                     BonusType::Stacking,
-                    Value::from(6),
-                    Attribute::from(Feat::RacialFeat(Self::RacialSpellResistance)).into(),
+                    6,
+                    Attribute::from(Feat::RacialFeat(Self::RacialSpellResistance)),
                     None,
                 )]
             }
             Self::DwarvenStability => {
                 vec![Bonus::new(
-                    Skill::Balance.into(),
+                    Skill::Balance,
                     BonusType::Stacking,
-                    Value::from(4),
-                    Attribute::from(Feat::RacialFeat(Self::DwarvenStability)).into(),
+                    4,
+                    Attribute::from(Feat::RacialFeat(Self::DwarvenStability)),
                     None,
                 )]
             }
             Self::GiantEvasion => {
                 vec![
                     Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)).into(),
-                        Attribute::from(Feat::RacialFeat(Self::GiantEvasion)).into(),
+                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)),
+                        Attribute::from(Feat::RacialFeat(Self::GiantEvasion)),
                     ),
                     Bonus::new(
-                        ArmorClass::Bonus.into(),
+                        ArmorClass::Bonus,
                         BonusType::Dodge,
-                        Value::from(4),
-                        Attribute::from(Feat::RacialFeat(Self::GiantEvasion)).into(),
-                        Some(Condition::has(
-                            Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant))
-                                .into(),
-                        )),
+                        4,
+                        Attribute::from(Feat::RacialFeat(Self::GiantEvasion)),
+                        Some(Condition::has(Toggle::Attacking(
+                            AttackingTarget::MonsterType(MonsterType::Giant),
+                        ))),
                     ),
                 ]
             }
             Self::OrcAndGoblinBonus => {
                 vec![
                     Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)).into(),
-                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)).into(),
+                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)),
+                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)),
                     ),
                     Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid))
-                            .into(),
-                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)).into(),
+                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid)),
+                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)),
                     ),
                     Bonus::new(
-                        (WeaponHand::Both, WeaponStat::Attack).into(),
+                        (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Racial,
-                        Value::from(1),
-                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)).into(),
+                        1,
+                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)),
                         Some(
-                            Condition::has(
-                                Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc))
-                                    .into(),
-                            ) | Condition::has(
-                                Toggle::Attacking(AttackingTarget::MonsterType(
-                                    MonsterType::Goblinoid,
-                                ))
-                                .into(),
-                            ),
+                            Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
+                                MonsterType::Orc,
+                            ))) | Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
+                                MonsterType::Goblinoid,
+                            ))),
                         ),
                     ),
                 ]
             }
             Self::DwarvenStonecunning => {
                 vec![Bonus::new(
-                    Skill::Search.into(),
+                    Skill::Search,
                     BonusType::Stacking,
-                    Value::from(2),
-                    Attribute::from(Feat::RacialFeat(Self::DwarvenStonecunning)).into(),
+                    2,
+                    Attribute::from(Feat::RacialFeat(Self::DwarvenStonecunning)),
                     None,
                 )]
             }
             Self::SpellSaveBonus => {
                 vec![Bonus::new(
-                    SavingThrow::Spell.into(),
+                    SavingThrow::Spell,
                     BonusType::Stacking,
-                    Value::from(2),
-                    Attribute::from(Feat::from(Self::SpellSaveBonus)).into(),
+                    2,
+                    Attribute::from(Feat::from(Self::SpellSaveBonus)),
                     None,
                 )]
             }
             Self::PoisonSaveBonus => {
                 vec![Bonus::new(
-                    SavingThrow::Poison.into(),
+                    SavingThrow::Poison,
                     BonusType::Stacking,
-                    Value::from(2),
-                    Attribute::from(Feat::from(Self::PoisonSaveBonus)).into(),
+                    2,
+                    Attribute::from(Feat::from(Self::PoisonSaveBonus)),
                     None,
                 )]
             }
             Self::HalflingAgility => vec![
                 Bonus::new(
-                    Skill::Jump.into(),
+                    Skill::Jump,
                     BonusType::Stacking,
-                    Value::from(2),
-                    Attribute::from(Feat::from(Self::HalflingAgility)).into(),
+                    2,
+                    Attribute::from(Feat::from(Self::HalflingAgility)),
                     None,
                 ),
                 Bonus::new(
-                    Skill::MoveSilently.into(),
+                    Skill::MoveSilently,
                     BonusType::Stacking,
-                    Value::from(2),
-                    Attribute::from(Feat::from(Self::HalflingAgility)).into(),
+                    2,
+                    Attribute::from(Feat::from(Self::HalflingAgility)),
                     None,
                 ),
             ],
             Self::HalflingBravery => vec![Bonus::new(
-                SavingThrow::Fear.into(),
+                SavingThrow::Fear,
                 BonusType::Morale,
-                Value::from(2),
-                Attribute::from(Feat::from(Self::HalflingBravery)).into(),
+                2,
+                Attribute::from(Feat::from(Self::HalflingBravery)),
                 None,
             )],
             Self::HalflingKeenEars => vec![Bonus::new(
-                Skill::Listen.into(),
+                Skill::Listen,
                 BonusType::Stacking,
-                Value::from(2),
-                Attribute::from(Feat::from(Self::HalflingKeenEars)).into(),
+                2,
+                Attribute::from(Feat::from(Self::HalflingKeenEars)),
                 None,
             )],
             Self::HalflingLuck => vec![Bonus::new(
-                SavingThrow::All.into(),
+                SavingThrow::All,
                 BonusType::Luck,
-                Value::from(1),
-                Attribute::from(Feat::from(Self::HalflingLuck)).into(),
+                1,
+                Attribute::from(Feat::from(Self::HalflingLuck)),
                 None,
             )],
             Self::HalflingThrownWeaponFocus => {
                 vec![
                     Bonus::new(
-                        (WeaponHand::Main, WeaponStat::Attack).into(),
+                        (WeaponHand::Main, WeaponStat::Attack),
                         BonusType::Stacking,
-                        Value::from(1),
-                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
+                        1,
+                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)),
                         WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt)).into()))
+                            .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt))))
                             .cond_any(),
                     ),
                     Bonus::new(
-                        (WeaponHand::Off, WeaponStat::Attack).into(),
+                        (WeaponHand::Off, WeaponStat::Attack),
                         BonusType::Stacking,
-                        Value::from(1),
-                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)).into(),
+                        1,
+                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)),
                         WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt)).into()))
+                            .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt))))
                             .cond_any(),
                     ),
                 ]

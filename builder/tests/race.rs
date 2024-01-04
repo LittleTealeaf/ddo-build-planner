@@ -17,7 +17,7 @@ mod dwarf {
             ))) == 0.into()
         );
         compiler.insert_bonus(Bonus::feat(
-            Feat::Proficiency(Proficiency::MartialWeaponProficiency),
+            Proficiency::MartialWeaponProficiency,
             BonusSource::Debug(1),
             None,
         ));

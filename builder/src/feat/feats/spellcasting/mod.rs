@@ -43,7 +43,7 @@ impl GetBonuses for SpellcastingFeat {
                     Ability::All,
                 )),
                 BonusType::Stacking,
-                4.into(),
+                4,
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),
@@ -52,7 +52,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::CombatCasting => Some(vec![Bonus::new(
                 Attribute::Skill(Skill::Concentration),
                 BonusType::Stacking,
-                4.into(),
+                4,
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),
@@ -60,14 +60,14 @@ impl GetBonuses for SpellcastingFeat {
                 Bonus::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
-                    5.into(),
+                    5,
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
                 Bonus::new(
                     Attribute::SpellPoints(SpellPoints::Base),
                     BonusType::Stacking,
-                    Value::Const(80.into()),
+                    80,
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
@@ -76,7 +76,7 @@ impl GetBonuses for SpellcastingFeat {
                 Bonus::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
-                    1.into(),
+                    1,
                     BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                     None,
                 ),
@@ -92,7 +92,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::SpellPenetration | Self::GreaterSpellPenetration => Some(vec![Bonus::new(
                 Attribute::SpellPenetration,
                 BonusType::Stacking,
-                2.into(),
+                2,
                 BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
                 None,
             )]),

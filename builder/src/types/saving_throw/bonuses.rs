@@ -8,15 +8,7 @@ impl CloneBonus for SavingThrow {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             Self::PRIMARY
-                .map(|st| {
-                    Bonus::new(
-                        st.into(),
-                        *bonus.get_type(),
-                        bonus.get_value().clone(),
-                        *bonus.get_source(),
-                        bonus.get_condition().cloned(),
-                    )
-                })
+                .map(|st| bonus.clone_into_attribute(st))
                 .to_vec()
         })
     }

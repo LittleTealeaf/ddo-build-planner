@@ -15,9 +15,9 @@ use builder::{
 };
 
 fn is_wearing_armor() -> Condition {
-    Condition::has(Flag::ArmorType(ArmorType::Light).into())
-        | Condition::has(Flag::ArmorType(ArmorType::Medium).into())
-        | Condition::has(Flag::ArmorType(ArmorType::Heavy).into())
+    Condition::has(Flag::ArmorType(ArmorType::Light))
+        | Condition::has(Flag::ArmorType(ArmorType::Medium))
+        | Condition::has(Flag::ArmorType(ArmorType::Heavy))
 }
 
 fn is_wielding_tower_shield() -> Condition {
@@ -30,85 +30,52 @@ fn main() {
     let mut breakdowns = Breakdowns::new();
 
     breakdowns.insert_bonuses([Bonus::new(
-        Ability::All.into(),
+        Ability::All,
         BonusType::Stacking,
-        10.into(),
+        10,
         BonusSource::Custom(10),
         None,
     )]);
 
     breakdowns.insert_bonuses([
-        Bonus::new(
-            PlayerClass::FavoredSoul.into(),
-            BonusType::Stacking,
-            10.into(),
-            0.into(),
-            None,
-        ),
-        // Bonus::flag(OffHandType::from(ShieldType::TowerShield).into(), 0.into()),
-        Bonus::flag(Race::Gnome.into(), 0.into()),
+        Bonus::new(PlayerClass::FavoredSoul, BonusType::Stacking, 10, 0, None),
+        Bonus::flag(OffHandType::from(ShieldType::TowerShield), 0),
+        Bonus::flag(Race::Gnome, 0),
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
             BonusType::Stacking,
-            5.into(),
-            1.into(),
+            5,
+            1,
             None,
         ),
         Bonus::new(
             Attribute::ArmorClass(ArmorClass::ArmorMaxDex),
             BonusType::Stacking,
-            10.into(),
-            1.into(),
+            10,
+            1,
             None,
         ),
+        Bonus::new(Ability::All, BonusType::Stacking, 8, 1, None),
+        Bonus::new(Ability::Dexterity, BonusType::Stacking, 20, 1, None),
+        Bonus::new(Ability::Intelligence, BonusType::Stacking, 20, 1, None),
+        Bonus::new(Ability::Wisdom, BonusType::Enhancement, 20, 1, None),
+        Bonus::new(Ability::Wisdom, BonusType::Insightful, 10, 1, None),
         Bonus::new(
-            Ability::All.into(),
-            BonusType::Stacking,
-            8.into(),
-            1.into(),
-            None,
-        ),
-        Bonus::new(
-            Ability::Dexterity.into(),
-            BonusType::Stacking,
-            20.into(),
-            1.into(),
-            None,
-        ),
-        Bonus::new(
-            Ability::Intelligence.into(),
-            BonusType::Stacking,
-            20.into(),
-            1.into(),
-            None,
-        ),
-        Bonus::new(
-            Ability::Wisdom.into(),
-            BonusType::Enhancement,
-            20.into(),
-            1.into(),
-            None,
-        ),
-        Bonus::new(
-            Ability::Wisdom.into(),
-            BonusType::Insightful,
-            10.into(),
-            1.into(),
-            None,
-        ),
-        Bonus::new(
-            (WeaponHand::Main, WeaponStat::Attack).into(),
+            (WeaponHand::Main, WeaponStat::Attack),
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(Ability::Intelligence).into(),
-            2.into(),
+            Attribute::AbilityModifier(Ability::Intelligence),
+            2,
             None,
         ),
         Bonus::new(
-            (WeaponHand::Main, WeaponStat::Attack).into(),
+            (WeaponHand::Main, WeaponStat::Attack),
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(Ability::Strength).into(),
-            2.into(),
+            Attribute::AbilityModifier(Ability::Strength),
+            2,
             None,
         ),
     ]);
+    for bonus in breakdowns.get_bonuses() {
+        println!("{bonus}");
+    }
 }
