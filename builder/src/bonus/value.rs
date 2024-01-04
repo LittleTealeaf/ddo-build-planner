@@ -18,7 +18,7 @@ use super::{Condition, Depth};
 /// [`Bonus`]: crate::bonus::Bonus
 #[derive(Clone, PartialEq, Debug, Hash, Eq, Serialize, Deserialize)]
 pub enum Value {
-    /// Just a simple [`f32`] value.
+    /// Hard codes a specific [`Decimal`] value.
     Const(Decimal),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
@@ -55,7 +55,9 @@ pub enum Value {
 
 /// Operations to simplify writing formulas
 impl Value {
-    /// Conditionally returns a value based on a condition
+    /// Shortcut for [`Condition::If`]
+    ///
+    /// [`Condition::If`]: Self#variant.If
     #[must_use]
     pub fn condition(
         condition: impl Into<Condition>,
@@ -78,7 +80,7 @@ impl Value {
             .into_iter()
             .map(|a| (a, 1))
             .tree_fold1(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
-            .unwrap();
+            .expect("Expected at least one value");
 
         sum / Self::from(count)
     }
@@ -123,39 +125,49 @@ impl Value {
             .expect("Expected at least one value")
     }
 
-    /// Floors the value
+    /// Shortcut for [`Condition::Floor`]
+    ///
+    /// [`Condition::Floor`]: Self#variant.Floor
     #[must_use]
     pub fn floor(self) -> Self {
         Self::Floor(self.into())
     }
 
-    /// Cielings the value
+    /// Shortcut for [`Condition::Ceil`]
+    ///
+    /// [`Condition::Ceil`]: Self#variant.Ceil
     #[must_use]
     pub fn ceil(self) -> Self {
         Self::Ceil(self.into())
     }
 
-    /// Returns the absolute value
+    /// Shortcut for [`Condition::Abs`]
+    ///
+    /// [`Condition::Abs`]: Self#variant.Abs
     #[must_use]
     pub fn abs(self) -> Self {
         Self::Abs(self.into())
     }
 
-    /// Finds the reciprocol of the value.
+    /// Returns the reciprocol
     ///
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
-        Self::Const(1.into()) / self
+        Self::Const(Decimal::ONE) / self
     }
 
-    /// Returns the maximum of this or another value
+    /// Shortcut for [`Condition::Max`]
+    ///
+    /// [`Condition::Max`]: Self#variant.Min
     #[must_use]
     pub fn max(self, other: Self) -> Self {
         Self::Max(self.into(), other.into())
     }
 
-    /// Returns the minimum of this or another value
+    /// Shortcut for [`Condition::Min`]
+    ///
+    /// [`Condition::Min`]: Self#variant.Min
     #[must_use]
     pub fn min(self, other: Self) -> Self {
         Self::Min(self.into(), other.into())
@@ -226,7 +238,9 @@ impl AttributeDependencies for Value {
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.has_attr_dependency(attribute),
+            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
+                val.has_attr_dependency(attribute)
+            }
             Self::If {
                 condition,
                 if_true,
