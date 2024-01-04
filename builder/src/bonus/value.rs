@@ -30,6 +30,8 @@ pub enum Value {
     Floor(Box<Value>),
     /// Ceils the inner value to a whole number
     Ceil(Box<Value>),
+    /// Makes the value positive if it is negative
+    Abs(Box<Value>),
     /// Adds the first value to the second value
     Add(Box<Value>, Box<Value>),
     /// Subtracts the second value from the first value
@@ -133,6 +135,12 @@ impl Value {
         Self::Ceil(self.into())
     }
 
+    /// Returns the absolute value
+    #[must_use]
+    pub fn abs(self) -> Self {
+        Self::Abs(self.into())
+    }
+
     /// Finds the reciprocol of the value.
     ///
     /// The reciprocol of value `x` is equivilant to `1 / x`
@@ -165,7 +173,7 @@ impl Depth for Value {
             | Self::Mul(a, b)
             | Self::Div(a, b)
             | Self::Rem(a, b) => a.get_depth().max(b.get_depth()),
-            Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
+            Self::Abs(a) | Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
             Self::If {
                 condition,
                 if_true,
@@ -192,6 +200,7 @@ impl Display for Value {
             Self::Max(a, b) => write!(f, "Max({a}, {b})"),
             Self::Floor(val) => write!(f, "Floor({val})"),
             Self::Ceil(val) => write!(f, "Ceil({val})"),
+            Self::Abs(val) => write!(f, "|{val}|"),
             Self::If {
                 condition,
                 if_true,
@@ -217,7 +226,7 @@ impl AttributeDependencies for Value {
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Ceil(val) | Self::Floor(val) => val.has_attr_dependency(attribute),
+            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.has_attr_dependency(attribute),
             Self::If {
                 condition,
                 if_true,
@@ -246,7 +255,7 @@ impl AttributeDependencies for Value {
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,
@@ -360,3 +369,53 @@ impl Product for Value {
         Self::iter_product(iter)
     }
 }
+
+//
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//
+//
+//     mod shortcuts {
+//         use super::*;
+//
+//         #[test]
+//         fn and() {
+//
+//         }
+//     }
+//
+//     mod ops {
+//         use super::*;
+//
+//         #[test]
+//         fn add() {
+//             let value = Value::from(1) + Value::from(2);
+//             let expected = Value::from(1).add(${1:rhs})$0
+//         }
+//
+//         #[test]
+//         fn sub() {
+//             let value = Value::from(1) - Value::from(1);
+//             assert!(matches!(value, Value::Sub(_, _)));
+//         }
+//
+//         #[test]
+//         fn mul() {
+//             let value = Value::from(1) * Value::from(1);
+//             assert!(matches!(value, Value::Mul(_, _)));
+//         }
+//
+//         #[test]
+//         fn div() {
+//             let value = Value::from(1) / Value::from(1);
+//             assert!(matches!(value, Value::Div(_, _)));
+//         }
+//
+//         #[test]
+//         fn rem() {
+//             let value = Value::from(1) % Value::from(1);
+//             assert!(matches!(value, Value::Rem(_, _)));
+//         }
+//     }
+// }

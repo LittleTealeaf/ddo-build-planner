@@ -94,26 +94,25 @@ mod value {
 
     #[test]
     fn floor() {
-        let tests = [(10.5, 10), (10.0, 10), (10.01, 10), (10.99, 10)];
-
-        for (input, output) in tests {
-            expect_value(
-                [dbg_bonus(0, Value::try_from(input).unwrap().floor())],
-                output,
-            );
-        }
+        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().floor())], 10);
     }
 
     #[test]
     fn ceil() {
-        let tests = [(10.5, 11), (10.0, 10), (10.01, 11), (10.99, 11)];
+        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ceil())], 11);
+        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().ceil())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().ceil())], 11);
+        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().ceil())], 11);
+    }
 
-        for (input, output) in tests {
-            expect_value(
-                [dbg_bonus(0, Value::try_from(input).unwrap().ceil())],
-                output,
-            );
-        }
+    #[test]
+    fn abs() {
+        expect_value([dbg_bonus(0, Value::from(2).abs())], 2);
+        expect_value([dbg_bonus(0, Value::from(-3).abs())], 3);
+        expect_value([dbg_bonus(0, Value::from(0).abs())], 0);
     }
 
     #[test]
@@ -304,13 +303,9 @@ mod condition {
     }
 
     #[test]
-    fn const_true() {
-        test_condition(Condition::Constant(true), true, "true");
-    }
-
-    #[test]
-    fn const_false() {
+    fn constant() {
         test_condition(Condition::Constant(false), false, "false");
+        test_condition(Condition::Constant(true), true, "true");
     }
 }
 

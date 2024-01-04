@@ -29,6 +29,7 @@ impl Breakdowns {
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),
             Value::Floor(val) => self.evaluate_value(val).floor(),
+            Value::Abs(val) => self.evaluate_value(val).abs(),
             Value::Ceil(val) => self.evaluate_value(val).ceil(),
             Value::If {
                 condition,
