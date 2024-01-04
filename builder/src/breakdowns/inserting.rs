@@ -15,12 +15,12 @@ impl Breakdowns {
     /// Removes all bonuses with any of the provided [`BonusSources`]
     ///
     /// [`BonusSources`]: BonusSource
-    pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = BonusSource>) {
+    pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = impl Into<BonusSource>>) {
         self.insert_bonuses(sources.into_iter().map(Bonus::dummy));
     }
 
     /// Removes all bonuses with the provided [`BonusSource`]
-    pub fn remove_source(&mut self, source: BonusSource) {
+    pub fn remove_source(&mut self, source: impl Into<BonusSource>) {
         self.insert_bonuses([Bonus::dummy(source)]);
     }
 
