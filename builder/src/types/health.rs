@@ -3,6 +3,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+use crate::attribute::{Attribute, ToAttribute};
+
 #[derive(
     Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
 )]
@@ -30,5 +32,11 @@ impl Display for Health {
             Self::Modifier => write!(f, "Health Modifier"),
             Self::Total => write!(f, "Total"),
         }
+    }
+}
+
+impl ToAttribute for Health {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Attribute::Health(self)
     }
 }

@@ -6,6 +6,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
+use crate::attribute::{Attribute, ToAttribute};
+
 /// Sheltering attributes grant a % reduction to damage from that type.
 ///
 /// Magical Sheltering can be capped at a certain amount based on equipment and enhancements, which is tracked with [`Sheltering::MagicalCap`]
@@ -52,5 +54,11 @@ impl Display for Sheltering {
             Self::MagicalReduction => write!(f, "Magical Reduction"),
             Self::PhysicalReduction => write!(f, "Physical Reduction"),
         }
+    }
+}
+
+impl ToAttribute for Sheltering {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Attribute::Sheltering(self)
     }
 }

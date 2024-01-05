@@ -8,6 +8,7 @@ pub use weapon_class::*;
 use std::fmt::Display;
 
 use crate::{
+    attribute::ToAttribute,
     bonus::{Bonus, CloneBonus},
     feat::Feat,
     types::item::WeaponType,
@@ -46,7 +47,7 @@ impl CloneBonus for Proficiency {
                     WeaponType::ThrowingDagger,
                 ]
                 .map(|weapon| {
-                    bonus.clone_into_attribute(Feat::Proficiency(Self::WeaponProficiency(weapon)))
+                    bonus.clone_into_attribute(Self::WeaponProficiency(weapon))
                 })
                 .to_vec(),
             ),
@@ -74,7 +75,7 @@ impl CloneBonus for Proficiency {
                     WeaponType::ThrowingHammer,
                 ]
                 .map(|weapon| {
-                    bonus.clone_into_attribute(Feat::Proficiency(Self::WeaponProficiency(weapon)))
+                    bonus.clone_into_attribute(Self::WeaponProficiency(weapon))
                 })
                 .to_vec(),
             ),
@@ -104,5 +105,11 @@ impl From<WeaponType> for Proficiency {
 impl From<ShieldProficiency> for Proficiency {
     fn from(value: ShieldProficiency) -> Self {
         Self::Shield(value)
+    }
+}
+
+impl ToAttribute for Proficiency {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Feat::Proficiency(self).to_attribute()
     }
 }

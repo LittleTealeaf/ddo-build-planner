@@ -6,6 +6,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
+use crate::attribute::{Attribute, ToAttribute};
+
 /// The different saving throws that a character can have bonuses to
 ///
 /// The three main saving throws are [`Fortitude`], [`Reflex`], and [`Will`]. There is a [`SavingThrow::All`] entry that will clone bonuses to the three main bonuses. Additionally, there are subsidary bonuses like bonuses against [`Traps`]
@@ -104,6 +106,12 @@ impl Display for SavingThrow {
             Self::Curse => write!(f, "Curse"),
             Self::All => write!(f, "All"),
         }
+    }
+}
+
+impl ToAttribute for SavingThrow {
+    fn to_attribute(self) -> Attribute {
+        Attribute::SavingThrow(self)
     }
 }
 

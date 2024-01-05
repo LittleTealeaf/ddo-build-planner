@@ -7,7 +7,10 @@ use std::fmt::Display;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-use crate::{attribute::GetBonuses, bonus::Bonus};
+use crate::{
+    attribute::{Attribute, GetBonuses, ToAttribute},
+    bonus::Bonus,
+};
 
 pub use attacking_target::*;
 
@@ -36,5 +39,11 @@ impl Display for Toggle {
 impl GetBonuses for Toggle {
     fn get_bonuses(&self, _value: Decimal) -> Option<Vec<Bonus>> {
         None
+    }
+}
+
+impl ToAttribute for Toggle {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Attribute::Toggle(self)
     }
 }

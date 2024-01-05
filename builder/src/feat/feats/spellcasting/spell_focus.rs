@@ -28,7 +28,7 @@ impl GetBonuses for SpellFocusFeat {
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
                 1,
-                Attribute::Feat(Feat::Spellcasting(SpellcastingFeat::SpellFocus(*self))),
+                Feat::Spellcasting(SpellcastingFeat::SpellFocus(*self)),
                 None,
             )],
         })

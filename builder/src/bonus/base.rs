@@ -7,7 +7,7 @@ use crate::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
-        flag::{Flag, OffHandType},
+        flag::OffHandType,
         health::Health,
         item::{ArmorType, ShieldType},
         player_class::PlayerClass,
@@ -132,7 +132,7 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
     .into_iter()
     .map(|(ability, skill)| {
         Bonus::new(
-            Attribute::Skill(skill),
+            skill,
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
             BASE,
@@ -152,17 +152,15 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                 Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
                 Value::condition(
                     [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                        .map(|armor| Condition::has(Flag::ArmorType(armor)))
+                        .map(Condition::has)
                         .cond_any()
                         .unwrap(),
-                    Attribute::ArmorClass(ArmorClass::ArmorMaxDex),
+                    ArmorClass::ArmorMaxDex,
                     Decimal::MAX,
                 ),
                 Value::condition(
-                    Condition::has(Attribute::from(Flag::OffHandType(OffHandType::Shield(
-                        ShieldType::TowerShield,
-                    )))),
-                    Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
+                    Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
+                    ArmorClass::ShieldMaxDex,
                     Decimal::MAX,
                 ),
             ]),
@@ -199,16 +197,14 @@ fn health() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Attribute::Health(Health::Bonus),
             BonusType::Stacking,
-            Value::from(Attribute::Health(Health::Base))
-                * (Value::from(Attribute::Health(Health::BaseModifier)) + Value::from(1)),
+            Value::from(Health::Base) * (Value::from(Health::BaseModifier) + Value::from(1)),
             BASE,
             None,
         ),
         Bonus::new(
             Attribute::Health(Health::Total),
             BonusType::Stacking,
-            Value::from(Attribute::Health(Health::Bonus))
-                * (Value::from(Attribute::Health(Health::Modifier)) + Value::from(1)),
+            Value::from(Health::Bonus) * (Value::from(Health::Modifier) + Value::from(1)),
             BASE,
             None,
         ),
@@ -221,8 +217,8 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
             Attribute::SpellPoints(SpellPoints::Base),
             BonusType::Stacking,
             Value::from(Attribute::SpellPoints(SpellPoints::Scaled))
-                * (Value::from(Attribute::ClassLevel(PlayerClass::FavoredSoul))
-                    + Value::from(Attribute::ClassLevel(PlayerClass::Sorcerer))
+                * (Value::from(PlayerClass::FavoredSoul)
+                    + Value::from(PlayerClass::Sorcerer)
                     + Value::from(20))
                 / Value::from(20),
             BASE,
@@ -231,8 +227,7 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Attribute::SpellPoints(SpellPoints::Total),
             BonusType::Stacking,
-            Value::from(Attribute::SpellPoints(SpellPoints::Base))
-                * (Value::from(1) + Value::from(Attribute::SpellPoints(SpellPoints::Modifier))),
+            Value::from(SpellPoints::Base) * (Value::from(1) + Value::from(SpellPoints::Modifier)),
             BASE,
             None,
         ),
@@ -265,10 +260,9 @@ fn sheltering() -> impl IntoIterator<Item = Bonus> {
             Sheltering::MagicalCap,
             BonusType::Stacking,
             Value::condition(
-                Condition::has(Flag::from(ArmorType::Medium))
-                    | Condition::has(Flag::from(ArmorType::Heavy)),
-                Attribute::Sheltering(Sheltering::Magical),
-                Value::condition(Condition::has(Flag::from(ArmorType::Light)), 100, 50),
+                Condition::has(ArmorType::Medium) | Condition::has(ArmorType::Heavy),
+                Sheltering::Magical,
+                Value::condition(Condition::has(ArmorType::Light), 100, 50),
             ),
             BASE,
             None,
@@ -276,15 +270,14 @@ fn sheltering() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Sheltering::MagicalTotal,
             BonusType::Stacking,
-            Value::from(Attribute::Sheltering(Sheltering::Magical))
-                .min(Value::from(Attribute::Sheltering(Sheltering::MagicalCap))),
+            Value::from(Sheltering::Magical).min(Value::from(Sheltering::MagicalCap)),
             BASE,
             None,
         ),
         Bonus::new(
             Sheltering::PhysicalTotal,
             BonusType::Stacking,
-            Attribute::Sheltering(Sheltering::Physical),
+            Sheltering::Physical,
             BASE,
             None,
         ),
@@ -302,9 +295,7 @@ fn sheltering_reduction() -> impl IntoIterator<Item = Bonus> {
             reduction,
             BonusType::Stacking,
             Value::from(100)
-                * (Value::from(1)
-                    - (Value::from(100)
-                        / (Value::from(100) + Value::from(Attribute::Sheltering(total))))),
+                * (Value::from(1) - (Value::from(100) / (Value::from(100) + Value::from(total)))),
             BASE,
             None,
         )

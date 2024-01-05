@@ -2,7 +2,9 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::item::WeaponType;
+use crate::{attribute::ToAttribute, types::item::WeaponType};
+
+use super::Flag;
 
 /// Represents the different options that the character can have in their main hand.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -25,5 +27,11 @@ impl Display for MainHandType {
 impl From<WeaponType> for MainHandType {
     fn from(value: WeaponType) -> Self {
         Self::Weapon(value)
+    }
+}
+
+impl ToAttribute for MainHandType {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Flag::MainHandType(self).to_attribute()
     }
 }

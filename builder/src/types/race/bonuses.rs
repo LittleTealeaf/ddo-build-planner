@@ -17,7 +17,7 @@ impl Race {
             Attribute::Ability(ability),
             BonusType::Stacking,
             value,
-            Attribute::from(self),
+            self,
             None,
         )
     }
@@ -30,7 +30,7 @@ impl Race {
             Attribute::Feat(Feat::from(feat)),
             BonusType::Stacking,
             1,
-            Attribute::from(self),
+            self,
             None,
         )
     }
@@ -41,46 +41,28 @@ impl GetBonuses for Race {
         (value > Decimal::ZERO).then(|| match self {
             Self::Aasimar => Some(vec![
                 self.ability_modifier(Ability::Wisdom, 2),
-                Bonus::new(
-                    Skill::Heal,
-                    BonusType::Racial,
-                    2,
-                    Attribute::from(Self::Aasimar),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Listen,
-                    BonusType::Racial,
-                    2,
-                    Attribute::from(Self::Aasimar),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Spot,
-                    BonusType::Racial,
-                    2,
-                    Attribute::from(Self::Aasimar),
-                    None,
-                ),
+                Bonus::new(Skill::Heal, BonusType::Racial, 2, Self::Aasimar, None),
+                Bonus::new(Skill::Listen, BonusType::Racial, 2, Self::Aasimar, None),
+                Bonus::new(Skill::Spot, BonusType::Racial, 2, Self::Aasimar, None),
                 Bonus::new(
                     Attribute::Resistance(DamageType::Cold),
                     BonusType::Stacking,
                     5,
-                    Attribute::from(Self::Aasimar),
+                    Self::Aasimar,
                     None,
                 ),
                 Bonus::new(
                     Attribute::Resistance(DamageType::Acid),
                     BonusType::Stacking,
                     5,
-                    Attribute::from(Self::Aasimar),
+                    Self::Aasimar,
                     None,
                 ),
                 Bonus::new(
                     Attribute::Resistance(DamageType::Electric),
                     BonusType::Stacking,
                     5,
-                    Attribute::from(Self::Aasimar),
+                    Self::Aasimar,
                     None,
                 ),
             ]),
@@ -131,13 +113,11 @@ impl GetBonuses for Race {
                 self.bonus_feat(RacialFeat::DwarvenStability),
                 self.bonus_feat(RacialFeat::SpellSaveBonus),
                 Bonus::new(
-                    Feat::from(Proficiency::from(WeaponType::DwarvenWarAxe)),
+                    Proficiency::from(WeaponType::DwarvenWarAxe),
                     BonusType::Stacking,
                     1,
-                    Attribute::from(Self::Dwarf),
-                    Some(Condition::has(Attribute::Feat(Feat::Proficiency(
-                        Proficiency::MartialWeaponProficiency,
-                    )))),
+                    Self::Dwarf,
+                    Some(Condition::has(Proficiency::MartialWeaponProficiency)),
                 ),
             ]),
             Self::Elf => Some(vec![
@@ -171,38 +151,11 @@ impl GetBonuses for Race {
                 self.bonus_feat(RacialFeat::SmallSizeBonus),
             ]),
             Self::HalfElf => Some(vec![
-                Bonus::new(
-                    Skill::Listen,
-                    BonusType::Racial,
-                    1,
-                    Attribute::from(Self::HalfElf),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Search,
-                    BonusType::Racial,
-                    1,
-                    Attribute::from(Self::HalfElf),
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Spot,
-                    BonusType::Racial,
-                    1,
-                    Attribute::from(Self::HalfElf),
-                    None,
-                ),
-                Bonus::flag(
-                    Immunity::Sleep,
-                    Attribute::from(Self::HalfElf),
-                ),
-                Bonus::new(
-                    Skill::Diplomacy,
-                    BonusType::Racial,
-                    2,
-                    Attribute::from(Self::HalfElf),
-                    None,
-                ),
+                Bonus::new(Skill::Listen, BonusType::Racial, 1, Self::HalfElf, None),
+                Bonus::new(Skill::Search, BonusType::Racial, 1, Self::HalfElf, None),
+                Bonus::new(Skill::Spot, BonusType::Racial, 1, Self::HalfElf, None),
+                Bonus::flag(Immunity::Sleep, Self::HalfElf),
+                Bonus::new(Skill::Diplomacy, BonusType::Racial, 2, Self::HalfElf, None),
             ]),
             Self::HalfOrc => Some(vec![
                 self.ability_modifier(Ability::Strength, 2),
@@ -231,18 +184,12 @@ impl GetBonuses for Race {
             }
             Self::Tiefling => Some(vec![
                 self.ability_modifier(Ability::Charisma, 2),
-                Bonus::new(
-                    Skill::Balance,
-                    BonusType::Racial,
-                    2,
-                    Attribute::from(Self::Tiefling),
-                    None,
-                ),
+                Bonus::new(Skill::Balance, BonusType::Racial, 2, Self::Tiefling, None),
                 Bonus::new(
                     SavingThrow::Spell,
                     BonusType::Racial,
                     2,
-                    Attribute::from(Self::Tiefling),
+                    Self::Tiefling,
                     None,
                 ),
                 // TODO: +2 to hit and damage against lawful outsiders and good outsiders
