@@ -23,7 +23,10 @@ impl TrackAttribute for Ability {
 #[cfg(test)]
 mod tests {
 
-    use crate::attribute::Attribute;
+    use crate::{
+        attribute::Attribute,
+        bonus::{BonusSource, BonusType},
+    };
 
     use super::*;
 
@@ -40,6 +43,44 @@ mod tests {
             assert!(ability.is_tracked());
             assert!(Attribute::Ability(ability).is_tracked());
             assert!(Attribute::AbilityModifier(ability).is_tracked());
+        }
+    }
+
+    #[test]
+    fn clone_bonus_return_none_for_ability() {
+        for ability in Ability::ABILITIES {
+            let bonus = ability.clone_bonus(&Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Stacking,
+                1,
+                BonusSource::Debug(0),
+                None,
+            ));
+            assert!(bonus.is_none());
+        }
+    }
+
+    #[test]
+    fn clone_bonus_returns_all_bonuses() {
+        let bonus = Bonus::new(
+            Ability::All,
+            BonusType::Stacking,
+            1,
+            BonusSource::Debug(0),
+            None,
+        );
+
+        let bonuses = Ability::All
+            .clone_bonus(&bonus)
+            .expect("Expected clone_bonus to return Some(_)");
+
+        let attributes = bonuses
+            .into_iter()
+            .map(|bonus| *bonus.get_attribute())
+            .collect::<Vec<_>>();
+
+        for ability in Ability::ABILITIES {
+            assert!(attributes.contains(&Attribute::Ability(ability)));
         }
     }
 }
