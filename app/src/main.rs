@@ -10,6 +10,7 @@ use builder::{
         item::{ArmorType, ShieldType},
         player_class::PlayerClass,
         race::Race,
+        sheltering::Sheltering,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
@@ -74,6 +75,7 @@ fn main() {
             2,
             None,
         ),
+        Bonus::new(Sheltering::Physical, BonusType::Stacking, 500, 2, None),
     ]);
     for bonus in breakdowns.get_bonuses() {
         println!("{bonus}");

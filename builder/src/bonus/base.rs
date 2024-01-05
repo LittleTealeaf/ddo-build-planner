@@ -12,6 +12,7 @@ use crate::{
         item::{ArmorType, ShieldType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,
+        sheltering::Sheltering,
         skill::Skill,
         spell_points::SpellPoints,
         spell_power::SpellPower,
@@ -19,6 +20,8 @@ use crate::{
 };
 
 use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, Value};
+
+const BASE: BonusSource = BonusSource::Base;
 
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
@@ -31,6 +34,8 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         skill(),
         health(),
         spell_points(),
+        sheltering(),
+        sheltering_reduction()
     )
 }
 
@@ -41,7 +46,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
                 Attribute::Ability(ability),
                 BonusType::Stacking,
                 8,
-                BonusSource::Base,
+                BASE,
                 None,
             ),
             Bonus::new(
@@ -50,7 +55,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
                 ((Value::Attribute(Attribute::Ability(ability)) - Value::from(10))
                     / Value::from(2))
                 .floor(),
-                BonusSource::Base,
+                BASE,
                 None,
             ),
         ]
@@ -69,7 +74,7 @@ fn saving_throw() -> impl IntoIterator<Item = Bonus> {
             saving_throw,
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
-            BonusSource::Base,
+            BASE,
             None,
         )
     })
@@ -94,7 +99,7 @@ fn spell_power_skills() -> impl IntoIterator<Item = Bonus> {
             Attribute::SpellPower(SpellPower::Damage(damage_type)),
             BonusType::Stacking,
             Attribute::Skill(skill),
-            BonusSource::Base,
+            BASE,
             None,
         )
     })
@@ -130,7 +135,7 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
             Attribute::Skill(skill),
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
-            BonusSource::Base,
+            BASE,
             None,
         )
     })
@@ -160,7 +165,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                     Decimal::MAX,
                 ),
             ]),
-            BonusSource::Base,
+            BASE,
             None,
         ),
         // Total Armor Class Bonus
@@ -182,7 +187,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
             .sum::<Value>()
                 * (Value::from(1)
                     + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))),
-            BonusSource::Base,
+            BASE,
             None,
         ),
     ]
@@ -195,7 +200,7 @@ fn health() -> impl IntoIterator<Item = Bonus> {
             BonusType::Stacking,
             Value::from(Attribute::Health(Health::Base))
                 * (Value::from(Attribute::Health(Health::BaseModifier)) + Value::from(1)),
-            BonusSource::Base,
+            BASE,
             None,
         ),
         Bonus::new(
@@ -203,7 +208,7 @@ fn health() -> impl IntoIterator<Item = Bonus> {
             BonusType::Stacking,
             Value::from(Attribute::Health(Health::Bonus))
                 * (Value::from(Attribute::Health(Health::Modifier)) + Value::from(1)),
-            BonusSource::Base,
+            BASE,
             None,
         ),
     ]
@@ -219,7 +224,7 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
                     + Value::from(Attribute::ClassLevel(PlayerClass::Sorcerer))
                     + Value::from(20))
                 / Value::from(20),
-            BonusSource::Base,
+            BASE,
             None,
         ),
         Bonus::new(
@@ -227,7 +232,7 @@ fn spell_points() -> impl IntoIterator<Item = Bonus> {
             BonusType::Stacking,
             Value::from(Attribute::SpellPoints(SpellPoints::Base))
                 * (Value::from(1) + Value::from(Attribute::SpellPoints(SpellPoints::Modifier))),
-            BonusSource::Base,
+            BASE,
             None,
         ),
     ]
@@ -246,9 +251,61 @@ fn spell_power_universal() -> impl IntoIterator<Item = Bonus> {
                 attribute(sp),
                 BonusType::Stacking,
                 attribute(SpellPower::Universal),
-                BonusSource::Base,
+                BASE,
                 None,
             )
         })
+    })
+}
+
+fn sheltering() -> impl IntoIterator<Item = Bonus> {
+    [
+        Bonus::new(
+            Sheltering::MagicalCap,
+            BonusType::Stacking,
+            Value::condition(
+                Condition::has(Flag::from(ArmorType::Medium))
+                    | Condition::has(Flag::from(ArmorType::Heavy)),
+                Attribute::Sheltering(Sheltering::Magical),
+                Value::condition(Condition::has(Flag::from(ArmorType::Light)), 100, 50),
+            ),
+            BASE,
+            None,
+        ),
+        Bonus::new(
+            Sheltering::MagicalTotal,
+            BonusType::Stacking,
+            Value::from(Attribute::Sheltering(Sheltering::Magical))
+                .min(Value::from(Attribute::Sheltering(Sheltering::MagicalCap))),
+            BASE,
+            None,
+        ),
+        Bonus::new(
+            Sheltering::PhysicalTotal,
+            BonusType::Stacking,
+            Attribute::Sheltering(Sheltering::Physical),
+            BASE,
+            None,
+        ),
+    ]
+}
+
+fn sheltering_reduction() -> impl IntoIterator<Item = Bonus> {
+    [
+        (Sheltering::PhysicalTotal, Sheltering::PhysicalReduction),
+        (Sheltering::MagicalTotal, Sheltering::MagicalReduction),
+    ]
+    .into_iter()
+    .map(|(total, reduction)| {
+        Bonus::new(
+            reduction,
+            BonusType::Stacking,
+            Value::from(100)
+                * (Value::from(1)
+                    - (Value::from(100)
+                        / (Value::from(100) + Value::from(Attribute::Sheltering(total))))),
+            BASE,
+            None,
+        )
     })
 }
