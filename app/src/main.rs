@@ -75,9 +75,27 @@ fn main() {
             2,
             None,
         ),
-        Bonus::new(Sheltering::Physical, BonusType::Stacking, 500, 2, None),
+        Bonus::new(Sheltering::Magical, BonusType::Stacking, 200, 2, None),
+        Bonus::flag(ArmorType::Light, 2),
     ]);
     for bonus in breakdowns.get_bonuses() {
         println!("{bonus}");
     }
+
+    println!(
+        "MRR {}",
+        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::Magical))
+    );
+    println!(
+        "Cap {}",
+        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::MagicalCap))
+    );
+    println!(
+        "Total {}",
+        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::MagicalTotal))
+    );
+    println!(
+        "Reduction {}",
+        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::MagicalReduction))
+    );
 }
