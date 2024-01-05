@@ -2,7 +2,12 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::item::{ShieldType, WeaponType};
+use crate::{
+    attribute::ToAttribute,
+    types::item::{ShieldType, WeaponType},
+};
+
+use super::Flag;
 
 /// Represents the different types of items the character can wield in their off hand
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -34,5 +39,11 @@ impl From<WeaponType> for OffHandType {
 impl From<ShieldType> for OffHandType {
     fn from(value: ShieldType) -> Self {
         Self::Shield(value)
+    }
+}
+
+impl ToAttribute for OffHandType {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Flag::OffHandType(self).to_attribute()
     }
 }

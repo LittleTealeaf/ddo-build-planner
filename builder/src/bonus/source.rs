@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::Attribute;
+use crate::attribute::{Attribute, ToAttribute};
 
 /// Dictates the source that a bonus comes from.
 ///
@@ -41,5 +41,14 @@ impl From<Attribute> for BonusSource {
 impl From<u8> for BonusSource {
     fn from(value: u8) -> Self {
         Self::Custom(value)
+    }
+}
+
+impl<T> From<T> for BonusSource
+where
+    T: ToAttribute,
+{
+    fn from(value: T) -> Self {
+        value.to_attribute().into()
     }
 }

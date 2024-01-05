@@ -5,6 +5,10 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use utils::public_modules;
 
+use crate::attribute::{Attribute, ToAttribute};
+
+use super::flag::Flag;
+
 /// The different race options that the character can be.
 #[derive(Hash, Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Race {
@@ -86,5 +90,11 @@ impl Display for Race {
             Self::Shadarkai => write!(f, "Shadar-kai"),
             Self::Trailblazer => write!(f, "Tabaxi Trailblazer"),
         }
+    }
+}
+
+impl ToAttribute for Race {
+    fn to_attribute(self) -> Attribute {
+        Flag::Race(self).to_attribute()
     }
 }

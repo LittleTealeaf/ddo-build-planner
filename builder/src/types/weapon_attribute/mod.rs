@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
 use crate::{
-    attribute::{Attribute, GetBonuses, TrackAttribute},
+    attribute::{Attribute, GetBonuses, ToAttribute, TrackAttribute},
     bonus::{Bonus, BonusType, CloneBonus},
 };
 
@@ -94,5 +94,11 @@ impl CloneBonus for WeaponAttribute {
             })
             .to_vec()
         })
+    }
+}
+
+impl ToAttribute for WeaponAttribute {
+    fn to_attribute(self) -> Attribute {
+        Attribute::Weapon(self)
     }
 }

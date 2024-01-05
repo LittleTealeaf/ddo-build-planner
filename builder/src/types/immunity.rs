@@ -3,6 +3,10 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+use crate::attribute::ToAttribute;
+
+use super::flag::Flag;
+
 /// Indicates that the character is immune to certain things
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Immunity {
@@ -21,5 +25,11 @@ impl Display for Immunity {
             Self::Fear => write!(f, "Fear"),
             Self::Knockdown => write!(f, "Knockdown"),
         }
+    }
+}
+
+impl ToAttribute for Immunity {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Flag::Immunity(self).to_attribute()
     }
 }

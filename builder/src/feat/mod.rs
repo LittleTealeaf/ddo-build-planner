@@ -8,7 +8,7 @@ use utils::public_modules;
 use std::fmt::Display;
 
 use crate::{
-    attribute::GetBonuses,
+    attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, CloneBonus},
     race::RacialFeat,
 };
@@ -77,5 +77,11 @@ impl From<RacialFeat> for Feat {
 impl From<Proficiency> for Feat {
     fn from(value: Proficiency) -> Self {
         Self::Proficiency(value)
+    }
+}
+
+impl ToAttribute for Feat {
+    fn to_attribute(self) -> Attribute {
+        Attribute::Feat(self)
     }
 }

@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
 use crate::{
-    attribute::GetBonuses,
+    attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::Bonus,
     types::{alignment::Alignment, immunity::Immunity, race::Race},
 };
@@ -66,6 +66,12 @@ impl GetBonuses for Flag {
     }
 }
 
+impl ToAttribute for Flag {
+    fn to_attribute(self) -> Attribute {
+        Attribute::Flag(self)
+    }
+}
+
 impl From<Toggle> for Flag {
     fn from(value: Toggle) -> Self {
         Self::HasToggle(value)
@@ -99,5 +105,11 @@ impl From<MainHandType> for Flag {
 impl From<ArmorType> for Flag {
     fn from(value: ArmorType) -> Self {
         Self::ArmorType(value)
+    }
+}
+
+impl ToAttribute for ArmorType {
+    fn to_attribute(self) -> Attribute {
+        Flag::ArmorType(self).to_attribute()
     }
 }

@@ -4,6 +4,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+use crate::attribute::{Attribute, ToAttribute};
+
 /// Represents different attributes that relate to Armor Class
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ArmorClass {
@@ -54,5 +56,11 @@ impl Display for ArmorClass {
             Self::NaturalArmor => write!(f, "Natural Armor"),
             Self::TotalScalar => write!(f, "Armor Class Scalar"),
         }
+    }
+}
+
+impl ToAttribute for ArmorClass {
+    fn to_attribute(self) -> Attribute {
+        Attribute::ArmorClass(self)
     }
 }

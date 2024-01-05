@@ -6,6 +6,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
+use crate::attribute::{Attribute, ToAttribute};
+
 /// The different Player Classes that are in the game
 #[derive(Hash, Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum PlayerClass {
@@ -120,5 +122,11 @@ impl Display for PlayerClass {
             Self::Druid => write!(f, "Druid"),
             Self::BlightCaster => write!(f, "Blight Caster"),
         }
+    }
+}
+
+impl ToAttribute for PlayerClass {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Attribute::ClassLevel(self)
     }
 }

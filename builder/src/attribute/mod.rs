@@ -1,7 +1,8 @@
 //! Represents each attribute that a character can have
 mod traits;
 
-mod from;
+mod to_attribute;
+pub use to_attribute::*;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -182,6 +183,12 @@ impl TrackAttribute for Attribute {
             Self::SummonedAttribute(attribute) => attribute.is_tracked(),
             _ => true,
         }
+    }
+}
+
+impl ToAttribute for SpellPoints {
+    fn to_attribute(self) -> Attribute {
+        Attribute::SpellPoints(self)
     }
 }
 

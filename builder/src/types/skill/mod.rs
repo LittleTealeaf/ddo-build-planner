@@ -6,6 +6,8 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
+use crate::attribute::{Attribute, ToAttribute};
+
 use super::ability::Ability;
 
 /// Different skills that the character can have.
@@ -138,6 +140,12 @@ impl Display for Skill {
             Self::UseMagicalDevice => write!(f, "Use Magical Device"),
             Self::All => write!(f, "All Skills"),
         }
+    }
+}
+
+impl ToAttribute for Skill {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Attribute::Skill(self)
     }
 }
 

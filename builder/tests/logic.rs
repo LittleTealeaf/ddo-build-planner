@@ -187,7 +187,7 @@ mod skills {
             let mut breakdowns = Breakdowns::new();
             let initial = breakdowns.get_attribute(&Attribute::Skill(skill));
             breakdowns.insert_bonus(Bonus::new(
-                Attribute::Skill(Skill::All),
+                Skill::All,
                 BonusType::Stacking,
                 10,
                 BonusSource::Debug(0),
@@ -355,6 +355,7 @@ mod sheltering {
                 )
             })
         }
+
         #[test]
         fn physical() {
             let test_points =
@@ -363,7 +364,7 @@ mod sheltering {
             for (input, expected) in test_points {
                 let mut breakdowns = Breakdowns::new();
                 breakdowns.insert_bonus(Bonus::new(
-                    Attribute::Sheltering(Sheltering::Physical),
+                    Sheltering::Physical,
                     BonusType::Stacking,
                     input,
                     BonusSource::Debug(0),
@@ -385,14 +386,14 @@ mod sheltering {
                 let mut breakdowns = Breakdowns::new();
                 breakdowns.insert_bonuses([
                     Bonus::new(
-                        Attribute::Sheltering(Sheltering::MagicalCap),
+                        Sheltering::MagicalCap,
                         BonusType::Stacking,
                         1000,
                         BonusSource::Debug(0),
                         None,
                     ),
                     Bonus::new(
-                        Attribute::Sheltering(Sheltering::Magical),
+                        Sheltering::Magical,
                         BonusType::Stacking,
                         input,
                         BonusSource::Debug(0),
@@ -426,7 +427,7 @@ mod sheltering {
             );
 
             breakdowns.insert_bonus(Bonus::new(
-                Attribute::Sheltering(Sheltering::Magical),
+                Sheltering::Magical,
                 BonusType::Stacking,
                 75,
                 BonusSource::Debug(0),
@@ -460,7 +461,7 @@ mod sheltering {
             assert_eq!(breakdowns.get_attribute(&TOTAL), 0.into());
 
             breakdowns.insert_bonus(Bonus::new(
-                BONUSES,
+                Sheltering::Magical,
                 BonusType::Stacking,
                 125,
                 BonusSource::Debug(1),
@@ -483,7 +484,7 @@ mod sheltering {
                 breakdowns.insert_bonuses([
                     Bonus::flag(armor_type, BonusSource::Debug(0)),
                     Bonus::new(
-                        BONUSES,
+                        Sheltering::Magical,
                         BonusType::Stacking,
                         200,
                         BonusSource::Debug(0),
@@ -493,6 +494,39 @@ mod sheltering {
 
                 assert_eq!(breakdowns.get_attribute(&TOTAL), 200.into());
             }
+        }
+    }
+}
+
+mod race {
+    mod dwarf {
+        use builder::{
+            attribute::Attribute,
+            bonus::{Bonus, BonusSource},
+            breakdowns::Breakdowns,
+            feat::{Feat, Proficiency},
+            types::{item::WeaponType, race::Race},
+        };
+
+        #[test]
+        fn dwarven_war_axe() {
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.insert_bonus(Bonus::flag(Race::Dwarf, BonusSource::Debug(0)));
+            assert!(
+                breakdowns.get_attribute(&Attribute::Feat(Feat::Proficiency(
+                    Proficiency::WeaponProficiency(WeaponType::DwarvenWarAxe)
+                ))) == 0.into()
+            );
+            breakdowns.insert_bonus(Bonus::feat(
+                Proficiency::MartialWeaponProficiency,
+                BonusSource::Debug(1),
+                None,
+            ));
+            assert!(
+                breakdowns.get_attribute(&Attribute::Feat(Feat::Proficiency(
+                    Proficiency::WeaponProficiency(WeaponType::DwarvenWarAxe)
+                ))) > 0.into()
+            );
         }
     }
 }

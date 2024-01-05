@@ -9,7 +9,7 @@ use itertools::Itertools;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::{Attribute, AttributeDependencies};
+use crate::attribute::{Attribute, AttributeDependencies, ToAttribute};
 
 use super::{Condition, Depth};
 
@@ -315,6 +315,15 @@ try_from_primative!(f32, f64);
 impl From<Decimal> for Value {
     fn from(value: Decimal) -> Self {
         Self::Const(value)
+    }
+}
+
+impl<T> From<T> for Value
+where
+    T: ToAttribute,
+{
+    fn from(value: T) -> Self {
+        value.to_attribute().into()
     }
 }
 
