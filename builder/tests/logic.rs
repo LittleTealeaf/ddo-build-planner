@@ -114,25 +114,6 @@ mod skills {
     };
     use rust_decimal::Decimal;
 
-    #[test]
-    fn default_no_skill_bonus() {
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonus(Bonus::new(
-            Ability::All,
-            BonusType::Stacking,
-            2,
-            BonusSource::Debug(0),
-            None,
-        ));
-
-        for skill in Skill::SKILLS {
-            assert_eq!(
-                breakdowns.get_attribute(&Attribute::from(skill)),
-                Decimal::ZERO
-            );
-        }
-    }
-
     mod ability {
         use super::*;
 
@@ -179,6 +160,42 @@ mod skills {
         ability_test!(strength_to_swim, Strength, Swim);
         ability_test!(dexterity_to_tumble, Dexterity, Tumble);
         ability_test!(charisma_to_use_magical_device, Charisma, UseMagicalDevice);
+    }
+
+    #[test]
+    fn default_no_skill_bonus() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonus(Bonus::new(
+            Ability::All,
+            BonusType::Stacking,
+            2,
+            BonusSource::Debug(0),
+            None,
+        ));
+
+        for skill in Skill::SKILLS {
+            assert_eq!(
+                breakdowns.get_attribute(&Attribute::from(skill)),
+                Decimal::ZERO
+            );
+        }
+    }
+
+    #[test]
+    fn all_includes_all_skills() {
+        for skill in Skill::SKILLS {
+            let mut breakdowns = Breakdowns::new();
+            let initial = breakdowns.get_attribute(&Attribute::Skill(skill));
+            breakdowns.insert_bonus(Bonus::new(
+                Attribute::Skill(Skill::All),
+                BonusType::Stacking,
+                10,
+                BonusSource::Debug(0),
+                None,
+            ));
+            let result = breakdowns.get_attribute(&Attribute::Skill(skill));
+            assert_eq!(result - initial, 10.into());
+        }
     }
 }
 
