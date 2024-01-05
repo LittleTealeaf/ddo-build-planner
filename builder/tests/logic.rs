@@ -69,56 +69,39 @@ mod ability {
 }
 
 mod saving_throw {
-    use builder::{
-        attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType},
-        breakdowns::Breakdowns,
-        types::{ability::Ability, saving_throw::SavingThrow},
-    };
 
-    #[test]
-    fn dexterity_increases_reflex() {
-        let mut breakdowns = Breakdowns::new();
-        let initial = breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::Reflex));
-        breakdowns.insert_bonus(Bonus::new(
-            Attribute::Ability(Ability::Dexterity),
-            BonusType::Stacking,
-            10,
-            BonusSource::Debug(0),
-            None,
-        ));
-        let result = breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::Reflex));
-        assert_eq!(result - initial, 5.into());
-    }
+    mod ability {
+        use builder::{
+            attribute::Attribute,
+            bonus::{Bonus, BonusSource, BonusType},
+            breakdowns::Breakdowns,
+            types::{ability::Ability, saving_throw::SavingThrow},
+        };
 
-    #[test]
-    fn wisdom_increases_will() {
-        let mut breakdowns = Breakdowns::new();
-        let initial = breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::Will));
-        breakdowns.insert_bonus(Bonus::new(
-            Attribute::Ability(Ability::Wisdom),
-            BonusType::Stacking,
-            10,
-            BonusSource::Debug(0),
-            None,
-        ));
-        let result = breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::Will));
-        assert_eq!(result - initial, 5.into());
-    }
+        macro_rules! ability_test {
+            ($name: ident, $ability: ident, $save: ident) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+                    let initial =
+                        breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::$save));
+                    breakdowns.insert_bonus(Bonus::new(
+                        Attribute::Ability(Ability::$ability),
+                        BonusType::Stacking,
+                        10,
+                        BonusSource::Debug(0),
+                        None,
+                    ));
+                    let result =
+                        breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::$save));
+                    assert_eq!(result - initial, 5.into());
+                }
+            };
+        }
 
-    #[test]
-    fn constitution_increases_fort() {
-        let mut breakdowns = Breakdowns::new();
-        let initial = breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::Fortitude));
-        breakdowns.insert_bonus(Bonus::new(
-            Attribute::Ability(Ability::Constitution),
-            BonusType::Stacking,
-            10,
-            BonusSource::Debug(0),
-            None,
-        ));
-        let result = breakdowns.get_attribute(&Attribute::SavingThrow(SavingThrow::Fortitude));
-        assert_eq!(result - initial, 5.into());
+        ability_test!(dexterity_to_reflex, Dexterity, Reflex);
+        ability_test!(wisdom_to_will, Wisdom, Will);
+        ability_test!(constitution_to_fortitude, Constitution, Fortitude);
     }
 }
 
@@ -149,6 +132,7 @@ mod skills {
             );
         }
     }
+
     mod ability {
         use super::*;
 
