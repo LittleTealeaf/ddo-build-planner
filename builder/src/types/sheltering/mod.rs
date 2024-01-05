@@ -22,6 +22,22 @@ pub enum Sheltering {
     Magical,
     /// Magical Sheltering Cap
     MagicalCap,
+    /// Final Physical Sheltering value. DO NOT MANUALLY INCREASE. Use [`Physical`] instead.
+    ///
+    /// [`Physical`]: Sheltering::Physical
+    PhysicalTotal,
+    /// Final Magical Sheltering value. DO NOT MANUALLY INCREASE. Use [`Magical`] instead.
+    ///
+    ///[`Magical`]: Sheltering::Magical
+    MagicalTotal,
+    /// % of damage reduced by Physical Sheltering
+    ///
+    /// Value is from 0% - 100% (0-100)
+    PhysicalReduction,
+    /// % of damage reduced by Magical Sheltering.
+    ///
+    /// Value is from 0% - 100% (0-100)
+    MagicalReduction,
 }
 
 impl Display for Sheltering {
@@ -31,6 +47,10 @@ impl Display for Sheltering {
             Self::Magical => write!(f, "Magical Sheltering"),
             Self::MagicalCap => write!(f, "Magical Sheltering Cap"),
             Self::Both => write!(f, "Sheltering"),
+            Self::MagicalTotal => write!(f, "Magical Sheltering Total"),
+            Self::PhysicalTotal => write!(f, "Physical Sheltering Total"),
+            Self::MagicalReduction => write!(f, "Magical Reduction"),
+            Self::PhysicalReduction => write!(f, "Physical Reduction"),
         }
     }
 }

@@ -9,12 +9,6 @@ use crate::{
 
 use super::Attribute;
 
-impl From<&Self> for Attribute {
-    fn from(value: &Self) -> Self {
-        *value
-    }
-}
-
 impl From<Flag> for Attribute {
     fn from(value: Flag) -> Self {
         Self::Flag(value)
