@@ -149,54 +149,56 @@ mod skills {
             );
         }
     }
+    mod ability {
+        use super::*;
 
-    #[test]
-    fn ability_increases_skill() {
-        let pairs = [
-            (Ability::Dexterity, Skill::Balance),
-            (Ability::Charisma, Skill::Bluff),
-            (Ability::Constitution, Skill::Concentration),
-            (Ability::Charisma, Skill::Diplomacy),
-            (Ability::Intelligence, Skill::DisableDevice),
-            (Ability::Charisma, Skill::Haggle),
-            (Ability::Wisdom, Skill::Heal),
-            (Ability::Dexterity, Skill::Hide),
-            (Ability::Charisma, Skill::Intimidate),
-            (Ability::Strength, Skill::Jump),
-            (Ability::Wisdom, Skill::Listen),
-            (Ability::Dexterity, Skill::MoveSilently),
-            (Ability::Dexterity, Skill::OpenLock),
-            (Ability::Charisma, Skill::Perform),
-            (Ability::Intelligence, Skill::Repair),
-            (Ability::Intelligence, Skill::Search),
-            (Ability::Intelligence, Skill::Spellcraft),
-            (Ability::Wisdom, Skill::Spot),
-            (Ability::Strength, Skill::Swim),
-            (Ability::Dexterity, Skill::Tumble),
-            (Ability::Charisma, Skill::UseMagicalDevice),
-        ];
+        macro_rules! ability_test {
+            ($name: ident, $ability:ident, $skill:ident) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
 
-        for (ability, skill) in pairs {
-            let mut breakdowns = Breakdowns::new();
+                    let value = breakdowns.get_attribute(&Attribute::from(Skill::$skill));
 
-            let value = breakdowns.get_attribute(&Attribute::from(skill));
-            assert_eq!(value, Decimal::from(-1));
+                    breakdowns.insert_bonus(Bonus::new(
+                        Ability::$ability,
+                        BonusType::Stacking,
+                        4,
+                        BonusSource::Debug(0),
+                        None,
+                    ));
+                    let result_value = breakdowns.get_attribute(&Attribute::from(Skill::$skill));
 
-            breakdowns.insert_bonus(Bonus::new(
-                ability,
-                BonusType::Stacking,
-                4,
-                BonusSource::Debug(0),
-                None,
-            ));
-            let result_value = breakdowns.get_attribute(&Attribute::from(skill));
-
-            assert_eq!(result_value, Decimal::from(1));
+                    assert_eq!(result_value - value, Decimal::from(2));
+                }
+            };
         }
+
+        ability_test!(dexterity_to_balance, Dexterity, Balance);
+        ability_test!(charisma_to_bluff, Charisma, Bluff);
+        ability_test!(constitution_to_concentration, Constitution, Concentration);
+        ability_test!(charisma_to_diplomacy, Charisma, Diplomacy);
+        ability_test!(intelligence_to_disable_device, Intelligence, DisableDevice);
+        ability_test!(charisma_to_haggle, Charisma, Haggle);
+        ability_test!(wisdom_to_heal, Wisdom, Heal);
+        ability_test!(dexterity_to_hide, Dexterity, Hide);
+        ability_test!(charisma_to_intimidate, Charisma, Intimidate);
+        ability_test!(strength_to_jump, Strength, Jump);
+        ability_test!(wisdom_to_listen, Wisdom, Listen);
+        ability_test!(dexterity_to_move_silently, Dexterity, MoveSilently);
+        ability_test!(dexterity_to_open_lock, Dexterity, OpenLock);
+        ability_test!(charisma_to_perfom, Charisma, Perform);
+        ability_test!(intelligence_to_repair, Intelligence, Repair);
+        ability_test!(intelligence_to_search, Intelligence, Search);
+        ability_test!(intelligence_to_spellcraft, Intelligence, Spellcraft);
+        ability_test!(wisdom_to_spot, Wisdom, Spot);
+        ability_test!(strength_to_swim, Strength, Swim);
+        ability_test!(dexterity_to_tumble, Dexterity, Tumble);
+        ability_test!(charisma_to_use_magical_device, Charisma, UseMagicalDevice);
     }
 }
 
-mod spellcasting {
+mod spells {
     mod spell_power {
         use builder::{
             attribute::Attribute,
@@ -204,36 +206,47 @@ mod spellcasting {
             breakdowns::Breakdowns,
             types::{damage_type::DamageType, skill::Skill, spell_power::SpellPower},
         };
-        use rust_decimal::Decimal;
 
-        #[test]
-        fn skill_increases_spell_power() {
-            let pairs = [
-                (Skill::Heal, DamageType::Positive),
-                (Skill::Heal, DamageType::Negative),
-                (Skill::Perform, DamageType::Sonic),
-                (Skill::Spellcraft, DamageType::Acid),
-                (Skill::Spellcraft, DamageType::Cold),
-                (Skill::Spellcraft, DamageType::Electric),
-                (Skill::Spellcraft, DamageType::Fire),
-                (Skill::Spellcraft, DamageType::Force),
-                (Skill::Spellcraft, DamageType::Light),
-                (Skill::Spellcraft, DamageType::Poison),
-            ];
+        mod skill {
+            use super::*;
 
-            for (skill, damage) in pairs {
-                let mut breakdowns = Breakdowns::new();
-                breakdowns.insert_bonus(Bonus::new(
-                    skill,
-                    BonusType::Stacking,
-                    2,
-                    BonusSource::Debug(0),
-                    None,
-                ));
-                let result =
-                    breakdowns.get_attribute(&Attribute::SpellPower(SpellPower::from(damage)));
-                assert_eq!(result, Decimal::from(1));
+            macro_rules! skill_test {
+                ($name: ident, $skill: ident, $damagetype: ident) => {
+                    #[test]
+                    fn $name() {
+                        let mut breakdowns = Breakdowns::new();
+
+                        let initial = breakdowns.get_attribute(&Attribute::SpellPower(
+                            SpellPower::from(DamageType::$damagetype),
+                        ));
+
+                        breakdowns.insert_bonus(Bonus::new(
+                            Skill::$skill,
+                            BonusType::Stacking,
+                            2,
+                            BonusSource::Debug(0),
+                            None,
+                        ));
+
+                        let result = breakdowns.get_attribute(&Attribute::SpellPower(
+                            SpellPower::from(DamageType::$damagetype),
+                        ));
+
+                        assert_eq!(result - initial, 2.into());
+                    }
+                };
             }
+
+            skill_test!(heal_to_positive, Heal, Positive);
+            skill_test!(heal_to_negative, Heal, Negative);
+            skill_test!(perform_to_sonic, Perform, Sonic);
+            skill_test!(spellcraft_to_acid, Spellcraft, Acid);
+            skill_test!(spellcraft_to_cold, Spellcraft, Cold);
+            skill_test!(spellcraft_to_electric, Spellcraft, Electric);
+            skill_test!(spellcraft_to_fire, Spellcraft, Fire);
+            skill_test!(spellcraft_to_force, Spellcraft, Force);
+            skill_test!(spellcraft_to_light, Spellcraft, Light);
+            skill_test!(spellcraft_to_poison, Spellcraft, Poison);
         }
 
         #[test]
