@@ -155,6 +155,82 @@ mod has_dependency {
             assert!(!value.has_attr_dependency(Attribute::Debug(3)));
         }
     }
+
+    mod condition {
+        use std::ops::Not;
+
+        use builder::{
+            attribute::{Attribute, AttributeDependencies},
+            bonus::{Condition, Value},
+        };
+
+        fn attr_condition(n: u8) -> Condition {
+            Value::from(Attribute::Debug(n)).equal_to(0.into())
+        }
+
+        #[test]
+        fn not() {
+            let condition = attr_condition(0).not();
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(1)));
+        }
+
+        #[test]
+        fn greater_than() {
+            let condition =
+                Value::from(Attribute::Debug(0)).greater_than(Attribute::Debug(1).into());
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn less_than() {
+            let condition = Value::from(Attribute::Debug(0)).less_than(Attribute::Debug(1).into());
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn equal_to() {
+            let condition = Value::from(Attribute::Debug(0)).equal_to(Attribute::Debug(1).into());
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn constant() {
+            let condition = Condition::from(false);
+            // To make sure it's not just returning 0
+            assert!(!condition.has_attr_dependency(Attribute::Debug(0)));
+        }
+
+        #[test]
+        fn and() {
+            let condition = attr_condition(0) & attr_condition(1);
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn or() {
+            let condition = attr_condition(0) | attr_condition(1);
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn xor() {
+            let condition = attr_condition(0) ^ attr_condition(1);
+            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+        }
+    }
 }
 
 mod include_dependencies {
@@ -294,40 +370,90 @@ mod include_dependencies {
             assert!(!deps.contains(&Attribute::Debug(3)));
         }
     }
-}
 
-mod value {
-    mod ops {
-        use builder::bonus::Value;
+    mod condition {
+        use std::ops::Not;
 
-        #[test]
-        fn add() {
-            let value = Value::from(1) + Value::from(2);
-            assert!(matches!(value, Value::Add(_, _)));
+        use builder::{
+            attribute::{Attribute, AttributeDependencies},
+            bonus::{Condition, Value},
+        };
+
+        fn attr_condition(n: u8) -> Condition {
+            Value::from(Attribute::Debug(n)).equal_to(0.into())
         }
 
         #[test]
-        fn sub() {
-            let value = Value::from(1) - Value::from(1);
-            assert!(matches!(value, Value::Sub(_, _)));
+        fn not() {
+            let value = attr_condition(0).not();
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(!deps.contains(&Attribute::Debug(1)));
         }
 
         #[test]
-        fn mul() {
-            let value = Value::from(1) * Value::from(1);
-            assert!(matches!(value, Value::Mul(_, _)));
+        fn greater_than() {
+            let value = Value::from(Attribute::Debug(0)).greater_than(Attribute::Debug(1).into());
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
         }
 
         #[test]
-        fn div() {
-            let value = Value::from(1) / Value::from(1);
-            assert!(matches!(value, Value::Div(_, _)));
+        fn less_than() {
+            let value = Value::from(Attribute::Debug(0)).less_than(Attribute::Debug(1).into());
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
         }
 
         #[test]
-        fn rem() {
-            let value = Value::from(1) % Value::from(1);
-            assert!(matches!(value, Value::Rem(_, _)));
+        fn equal_to() {
+            let value = Value::from(Attribute::Debug(0)).equal_to(Attribute::Debug(1).into());
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn constant() {
+            let value = Condition::from(false);
+            let deps = value.get_attr_dependencies();
+            assert!(deps.is_empty());
+        }
+
+        #[test]
+        fn and() {
+            let condition = attr_condition(0) & attr_condition(1);
+            let deps = condition.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn or() {
+            let condition = attr_condition(0) | attr_condition(1);
+            let deps = condition.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
+        fn xor() {
+            let condition = attr_condition(0) ^ attr_condition(1);
+            let deps = condition.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
         }
     }
 }

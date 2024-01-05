@@ -18,7 +18,7 @@ use super::{Condition, Depth};
 /// [`Bonus`]: crate::bonus::Bonus
 #[derive(Clone, PartialEq, Debug, Hash, Eq, Serialize, Deserialize)]
 pub enum Value {
-    /// Just a simple [`f32`] value.
+    /// Hard codes a specific [`Decimal`] value.
     Const(Decimal),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),
@@ -28,6 +28,10 @@ pub enum Value {
     Max(Box<Value>, Box<Value>),
     /// Floors the inner value to a whole number
     Floor(Box<Value>),
+    /// Ceils the inner value to a whole number
+    Ceil(Box<Value>),
+    /// Makes the value positive if it is negative
+    Abs(Box<Value>),
     /// Adds the first value to the second value
     Add(Box<Value>, Box<Value>),
     /// Subtracts the second value from the first value
@@ -51,7 +55,9 @@ pub enum Value {
 
 /// Operations to simplify writing formulas
 impl Value {
-    /// Conditionally returns a value based on a condition
+    /// Shortcut for [`Condition::If`]
+    ///
+    /// [`Condition::If`]: Self#variant.If
     #[must_use]
     pub fn condition(
         condition: impl Into<Condition>,
@@ -74,7 +80,7 @@ impl Value {
             .into_iter()
             .map(|a| (a, 1))
             .tree_fold1(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
-            .unwrap();
+            .expect("Expected at least one value");
 
         sum / Self::from(count)
     }
@@ -119,33 +125,49 @@ impl Value {
             .expect("Expected at least one value")
     }
 
-    /// Floors the value
+    /// Shortcut for [`Condition::Floor`]
+    ///
+    /// [`Condition::Floor`]: Self#variant.Floor
     #[must_use]
     pub fn floor(self) -> Self {
         Self::Floor(self.into())
     }
 
-    /// Cielings the value
+    /// Shortcut for [`Condition::Ceil`]
+    ///
+    /// [`Condition::Ceil`]: Self#variant.Ceil
     #[must_use]
-    pub fn ciel(self) -> Self {
-        (self + Self::from(1)).floor()
+    pub fn ceil(self) -> Self {
+        Self::Ceil(self.into())
     }
 
-    /// Finds the reciprocol of the value.
+    /// Shortcut for [`Condition::Abs`]
+    ///
+    /// [`Condition::Abs`]: Self#variant.Abs
+    #[must_use]
+    pub fn abs(self) -> Self {
+        Self::Abs(self.into())
+    }
+
+    /// Returns the reciprocol
     ///
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
-        Self::Const(1.into()) / self
+        Self::Const(Decimal::ONE) / self
     }
 
-    /// Returns the maximum of this or another value
+    /// Shortcut for [`Condition::Max`]
+    ///
+    /// [`Condition::Max`]: Self#variant.Min
     #[must_use]
     pub fn max(self, other: Self) -> Self {
         Self::Max(self.into(), other.into())
     }
 
-    /// Returns the minimum of this or another value
+    /// Shortcut for [`Condition::Min`]
+    ///
+    /// [`Condition::Min`]: Self#variant.Min
     #[must_use]
     pub fn min(self, other: Self) -> Self {
         Self::Min(self.into(), other.into())
@@ -163,7 +185,7 @@ impl Depth for Value {
             | Self::Mul(a, b)
             | Self::Div(a, b)
             | Self::Rem(a, b) => a.get_depth().max(b.get_depth()),
-            Self::Floor(a) => a.get_depth(),
+            Self::Abs(a) | Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
             Self::If {
                 condition,
                 if_true,
@@ -189,6 +211,8 @@ impl Display for Value {
             Self::Min(a, b) => write!(f, "Min({a}, {b})"),
             Self::Max(a, b) => write!(f, "Max({a}, {b})"),
             Self::Floor(val) => write!(f, "Floor({val})"),
+            Self::Ceil(val) => write!(f, "Ceil({val})"),
+            Self::Abs(val) => write!(f, "|{val}|"),
             Self::If {
                 condition,
                 if_true,
@@ -214,7 +238,9 @@ impl AttributeDependencies for Value {
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Floor(val) => val.has_attr_dependency(attribute),
+            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
+                val.has_attr_dependency(attribute)
+            }
             Self::If {
                 condition,
                 if_true,
@@ -243,7 +269,7 @@ impl AttributeDependencies for Value {
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,
@@ -357,3 +383,53 @@ impl Product for Value {
         Self::iter_product(iter)
     }
 }
+
+//
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//
+//
+//     mod shortcuts {
+//         use super::*;
+//
+//         #[test]
+//         fn and() {
+//
+//         }
+//     }
+//
+//     mod ops {
+//         use super::*;
+//
+//         #[test]
+//         fn add() {
+//             let value = Value::from(1) + Value::from(2);
+//             let expected = Value::from(1).add(${1:rhs})$0
+//         }
+//
+//         #[test]
+//         fn sub() {
+//             let value = Value::from(1) - Value::from(1);
+//             assert!(matches!(value, Value::Sub(_, _)));
+//         }
+//
+//         #[test]
+//         fn mul() {
+//             let value = Value::from(1) * Value::from(1);
+//             assert!(matches!(value, Value::Mul(_, _)));
+//         }
+//
+//         #[test]
+//         fn div() {
+//             let value = Value::from(1) / Value::from(1);
+//             assert!(matches!(value, Value::Div(_, _)));
+//         }
+//
+//         #[test]
+//         fn rem() {
+//             let value = Value::from(1) % Value::from(1);
+//             assert!(matches!(value, Value::Rem(_, _)));
+//         }
+//     }
+// }

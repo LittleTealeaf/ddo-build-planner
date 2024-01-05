@@ -7,7 +7,8 @@ fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<De
     let mut breakdowns = Breakdowns::new();
     breakdowns.insert_bonuses(bonuses);
     let value = breakdowns.get_attribute(&Attribute::Debug(0));
-    assert_eq!(value, expected.into());
+    let expected: Decimal = expected.into();
+    assert_eq!(value, expected, "Expected {expected}, found {value}",);
 }
 
 mod value {
@@ -94,11 +95,24 @@ mod value {
     #[test]
     fn floor() {
         expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().floor())], 10);
     }
 
     #[test]
-    fn ciel() {
-        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ciel())], 11);
+    fn ceil() {
+        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ceil())], 11);
+        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().ceil())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().ceil())], 11);
+        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().ceil())], 11);
+    }
+
+    #[test]
+    fn abs() {
+        expect_value([dbg_bonus(0, Value::from(2).abs())], 2);
+        expect_value([dbg_bonus(0, Value::from(-3).abs())], 3);
+        expect_value([dbg_bonus(0, Value::from(0).abs())], 0);
     }
 
     #[test]
@@ -289,13 +303,9 @@ mod condition {
     }
 
     #[test]
-    fn const_true() {
-        test_condition(Condition::Constant(true), true, "true");
-    }
-
-    #[test]
-    fn const_false() {
+    fn constant() {
         test_condition(Condition::Constant(false), false, "false");
+        test_condition(Condition::Constant(true), true, "true");
     }
 }
 

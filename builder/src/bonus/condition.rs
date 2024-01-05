@@ -39,6 +39,14 @@ impl From<bool> for Condition {
     }
 }
 
+/// Constants
+impl Condition {
+    /// Constant TRUE value
+    pub const TRUE: Self = Self::Constant(true);
+    /// Constant FALSE value
+    pub const FALSE: Self = Self::Constant(false);
+}
+
 /// Additional constructors for more complicated conditions
 impl Condition {
     /// Requires that the character has some attribute
@@ -97,6 +105,27 @@ impl Condition {
     #[must_use]
     pub fn xnor(self, other: Self) -> Self {
         Self::Not(Box::new(Self::Xor(Box::new(self), Box::new(other))))
+    }
+}
+
+/// [`Condition`] shortcuts
+impl Value {
+    /// Returns a condition that requires that this value is greater than the other value
+    #[must_use]
+    pub const fn greater_than(self, other: Self) -> Condition {
+        Condition::GreaterThan(self, other)
+    }
+
+    /// Returns a condition that requires that this value is less than the other value
+    #[must_use]
+    pub const fn less_than(self, other: Self) -> Condition {
+        Condition::LessThan(self, other)
+    }
+
+    /// Returns a condition that this value is equal to the other valuew
+    #[must_use]
+    pub const fn equal_to(self, other: Self) -> Condition {
+        Condition::EqualTo(self, other)
     }
 }
 
@@ -220,5 +249,131 @@ where
 
     fn cond_not_all(self) -> Option<Condition> {
         self.cond_all().map(Condition::not)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod from {
+        use super::*;
+
+        #[test]
+        fn bool() {
+            assert_eq!(Condition::TRUE, Condition::from(true));
+            assert_eq!(Condition::FALSE, Condition::from(false));
+        }
+    }
+
+    mod chain {
+        use super::*;
+
+        #[test]
+        fn and() {
+            let found = Condition::FALSE.and(Condition::TRUE);
+            let expected = Condition::And(Condition::FALSE.into(), Condition::TRUE.into());
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn or() {
+            let found = Condition::FALSE.or(Condition::TRUE);
+            let expected = Condition::Or(Condition::FALSE.into(), Condition::TRUE.into());
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn xor() {
+            let found = Condition::FALSE.xor(Condition::TRUE);
+            let expected = Condition::Xor(Condition::FALSE.into(), Condition::TRUE.into());
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn nand() {
+            let found = Condition::FALSE.nand(Condition::TRUE);
+            let expected = Condition::Not(Box::new(Condition::And(
+                Box::new(Condition::FALSE),
+                Box::new(Condition::TRUE),
+            )));
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn nor() {
+            let found = Condition::FALSE.nor(Condition::TRUE);
+            let expected = Condition::Not(Box::new(Condition::Or(
+                Box::new(Condition::FALSE),
+                Box::new(Condition::TRUE),
+            )));
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn xnor() {
+            let found = Condition::FALSE.xnor(Condition::TRUE);
+            let expected = Condition::Not(Box::new(Condition::Xor(
+                Box::new(Condition::FALSE),
+                Box::new(Condition::TRUE),
+            )));
+            assert_eq!(found, expected);
+        }
+    }
+
+    mod values {
+        use super::*;
+
+        #[test]
+        fn greater_than() {
+            let found = Value::from(0).greater_than(Value::from(1));
+            let expected = Condition::GreaterThan(Value::from(0), Value::from(1));
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn less_than() {
+            let found = Value::from(0).less_than(Value::from(1));
+            let expected = Condition::LessThan(Value::from(0), Value::from(1));
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn equal_to() {
+            let found = Value::from(0).equal_to(Value::from(1));
+            let expected = Condition::EqualTo(Value::from(0), Value::from(1));
+            assert_eq!(found, expected);
+        }
+    }
+
+    mod ops {
+        use super::*;
+
+        #[test]
+        fn not() {
+            let condition = Condition::from(false).not();
+            assert!(matches!(condition, Condition::Not(_)));
+        }
+
+        #[test]
+        fn bitand() {
+            let found = Condition::FALSE & Condition::TRUE;
+            let expected = Condition::And(Condition::FALSE.into(), Condition::TRUE.into());
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn bitor() {
+            let found = Condition::FALSE | Condition::TRUE;
+            let expected = Condition::Or(Condition::FALSE.into(), Condition::TRUE.into());
+            assert_eq!(found, expected);
+        }
+
+        #[test]
+        fn bitxor() {
+            let found = Condition::FALSE ^ Condition::TRUE;
+            let expected = Condition::Xor(Condition::FALSE.into(), Condition::TRUE.into());
+            assert_eq!(found, expected);
+        }
     }
 }
