@@ -10,8 +10,7 @@ mod has_dependency {
     use super::*;
 
     #[test]
-    /// Tests that querying a bonus dependency will include the value dependencies
-    fn gets_value_dependency() {
+    fn value_from_bonus() {
         let bonus = Bonus::new(
             DebugValue(0),
             BonusType::Stacking,
@@ -25,8 +24,7 @@ mod has_dependency {
     }
 
     #[test]
-    /// Tests that querying a bonus dependency will include the conditional dependencies
-    fn gets_conditional_dependency() {
+    fn conditional_from_bonus() {
         let bonus = Bonus::new(
             DebugValue(0),
             BonusType::Stacking,
@@ -236,7 +234,39 @@ mod has_dependency {
 }
 
 mod include_dependencies {
+    use builder::debug::DebugValue;
+
     use super::*;
+
+    #[test]
+    fn conditional_from_bonus() {
+        let bonus = Bonus::new(
+            DebugValue(0),
+            BonusType::Stacking,
+            Attribute::Debug(1),
+            DebugValue(0),
+            None,
+        );
+
+        let dependencies = bonus.get_attr_dependencies();
+        assert!(dependencies.contains(&Attribute::Debug(1)));
+        assert!(!dependencies.contains(&Attribute::Debug(2)));
+    }
+
+    #[test]
+    fn value_from_bonus() {
+        let bonus = Bonus::new(
+            DebugValue(0),
+            BonusType::Stacking,
+            Attribute::Debug(1),
+            DebugValue(0),
+            None,
+        );
+
+        let dependencies = bonus.get_attr_dependencies();
+        assert!(dependencies.contains(&Attribute::Debug(1)));
+        assert!(!dependencies.contains(&Attribute::Debug(2)));
+    }
 
     mod value {
         use super::*;
