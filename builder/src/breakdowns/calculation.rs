@@ -25,7 +25,7 @@ impl Breakdowns {
     pub(super) fn evaluate_value(&mut self, value: &Value) -> Decimal {
         match value {
             Value::Const(val) => *val,
-            Value::Attribute(attribute) => self.get_attribute(attribute),
+            Value::Attribute(attribute) => self.get_attr(attribute),
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),
             Value::Floor(val) => self.evaluate_value(val).floor(),
@@ -72,7 +72,19 @@ impl Breakdowns {
     }
 
     /// Calculates and retuns the final value for a given [`Attribute`].
-    pub fn get_attribute(&mut self, attribute: &Attribute) -> Decimal {
+    pub fn get_attribute(&mut self, attribute: impl Into<Attribute>) -> Decimal {
+        self.get_attr(&attribute.into())
+    }
+
+    /// Calculates and retuns the final value for a given [`Attribute`].
+    /// This method uses a reference, as internal calculations will be faster by passing a
+    /// reference instead of a cloned attribute.
+    ///
+    /// The function [`Breakdowns::get_attribute()`] dynamically allows any type that implements
+    /// [`Into<Attribute>`]
+    ///
+    /// [`Breakdowns::get_attribute()`]: Breakdowns::get_attribute()
+    pub fn get_attr(&mut self, attribute: &Attribute) -> Decimal {
         if let Some(value) = self.attribute_cache.get(attribute) {
             return *value;
         }
