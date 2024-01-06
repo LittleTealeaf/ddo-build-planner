@@ -82,7 +82,6 @@ fn main() {
         println!("{bonus}");
     }
 
-
     println!(
         "MRR {}",
         breakdowns.get_attr(&Attribute::Sheltering(Sheltering::Magical))
