@@ -35,7 +35,8 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         health(),
         spell_points(),
         sheltering(),
-        sheltering_reduction()
+        sheltering_reduction(),
+        armor_check_penalties()
     )
 }
 
@@ -297,6 +298,27 @@ fn sheltering_reduction() -> impl IntoIterator<Item = Bonus> {
                 * (Value::from(1) - (Value::from(100) / (Value::from(100) + Value::from(total)))),
             BASE,
             None,
+        )
+    })
+}
+
+fn armor_check_penalties() -> impl Iterator<Item = Bonus> {
+    [
+        (Skill::Balance, 1),
+        (Skill::Hide, 1),
+        (Skill::Jump, 1),
+        (Skill::MoveSilently, 1),
+        (Skill::Swim, 2),
+        (Skill::Tumble, 1),
+    ]
+    .into_iter()
+    .map(|(skill, scale)| {
+        Bonus::new(
+            skill,
+            BonusType::Stacking,
+            Value::from(-scale) * Value::from(Attribute::ArmorCheckPenalty),
+            BASE,
+            Value::from(Attribute::ArmorCheckPenalty).greater_than(Value::from(0)),
         )
     })
 }

@@ -792,3 +792,55 @@ mod feats {
         }
     }
 }
+
+mod armor_check_penalty {
+    use builder::{
+        attribute::Attribute, bonus::Bonus, breakdowns::Breakdowns, debug::DebugValue,
+        types::skill::Skill,
+    };
+
+    mod skills {
+        use super::*;
+
+        macro_rules! acp_skill {
+            ($name: ident, $skill: ident, $scale: expr) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+                    let initial = breakdowns.get_attribute(&Attribute::Skill(Skill::$skill));
+                    breakdowns.insert_bonus(Bonus::new(
+                        Attribute::ArmorCheckPenalty,
+                        DebugValue(0),
+                        1,
+                        DebugValue(0),
+                        None,
+                    ));
+                    let result = breakdowns.get_attribute(&Attribute::Skill(Skill::$skill));
+                    assert_eq!(initial - result, $scale.into());
+                }
+            };
+        }
+
+        acp_skill!(balance, Balance, 1);
+        acp_skill!(hide, Hide, 1);
+        acp_skill!(jump, Jump, 1);
+        acp_skill!(move_silently, MoveSilently, 1);
+        acp_skill!(swim, Swim, 2);
+        acp_skill!(tumble, Tumble, 1);
+    }
+
+    #[test]
+    fn ignore_negative_values() {
+        let mut breakdowns = Breakdowns::new();
+        let initial = breakdowns.get_attribute(&Attribute::Skill(Skill::Balance));
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::ArmorCheckPenalty,
+            DebugValue(0),
+            -1,
+            DebugValue(0),
+            None,
+        ));
+        let result = breakdowns.get_attribute(&Attribute::Skill(Skill::Balance));
+        assert_eq!(result, initial);
+    }
+}
