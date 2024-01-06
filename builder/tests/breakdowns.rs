@@ -169,99 +169,86 @@ mod value {
 mod condition {
     use builder::{
         attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType, Condition, Value},
+        bonus::{Bonus, Condition},
         breakdowns::Breakdowns,
+        debug::DebugValue,
     };
 
-    fn test_condition(condition: Condition, expected: bool, error: &'static str) {
-        let mut breakdowns = Breakdowns::default();
+    #[allow(clippy::needless_pass_by_value)]
+    fn test_condition(condition: Condition, expected: bool) {
+        let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonus(Bonus::new(
-            Attribute::Debug(0),
-            BonusType::Stacking,
-            Value::Const(10.into()),
-            BonusSource::Base,
-            Some(condition),
+            DebugValue(0),
+            DebugValue(0),
+            10,
+            DebugValue(0),
+            Some(condition.clone()),
         ));
-        let value = breakdowns.get_attribute(&Attribute::Debug(0));
+
+        let value = breakdowns.get_attribute(&Attribute::from(DebugValue(0)));
         let result = value == 10.into();
 
         assert_eq!(
             result, expected,
-            "Found {result}, expected {expected}, for condition {error}",
+            "Found {result}, expected {expected}, for condition {condition}"
         );
     }
 
     #[test]
     fn not() {
-        test_condition(Condition::Not(Box::new(Condition::TRUE)), false, "!true");
-        test_condition(Condition::Not(Box::new(Condition::FALSE)), true, "true");
+        test_condition(Condition::Not(Box::new(Condition::TRUE)), false);
+        test_condition(Condition::Not(Box::new(Condition::FALSE)), true);
     }
 
     #[test]
     fn greater_than() {
-        test_condition(Condition::GreaterThan(10.into(), 5.into()), true, "10 > 5");
-        test_condition(Condition::GreaterThan(5.into(), 10.into()), false, "5 > 10");
-        test_condition(
-            Condition::GreaterThan(10.into(), 10.into()),
-            false,
-            "10 > 10",
-        );
+        test_condition(Condition::GreaterThan(10.into(), 5.into()), true);
+        test_condition(Condition::GreaterThan(5.into(), 10.into()), false);
+        test_condition(Condition::GreaterThan(10.into(), 10.into()), false);
     }
 
     #[test]
     fn less_than() {
-        test_condition(Condition::LessThan(10.into(), 5.into()), false, "10 < 5");
-        test_condition(Condition::LessThan(5.into(), 10.into()), true, "5 < 10");
-        test_condition(Condition::LessThan(10.into(), 10.into()), false, "10 < 10");
+        test_condition(Condition::LessThan(10.into(), 5.into()), false);
+        test_condition(Condition::LessThan(5.into(), 10.into()), true);
+        test_condition(Condition::LessThan(10.into(), 10.into()), false);
     }
 
     #[test]
     fn equal_to() {
-        test_condition(Condition::EqualTo(10.into(), 5.into()), false, "10 == 5");
-        test_condition(Condition::EqualTo(5.into(), 10.into()), false, "5 == 10");
-        test_condition(Condition::EqualTo(10.into(), 10.into()), true, "10 == 10");
+        test_condition(Condition::EqualTo(10.into(), 5.into()), false);
+        test_condition(Condition::EqualTo(5.into(), 10.into()), false);
+        test_condition(Condition::EqualTo(10.into(), 10.into()), true);
     }
 
     #[test]
     fn and() {
-        test_condition(
-            Condition::FALSE & Condition::FALSE,
-            false,
-            "False and False",
-        );
-        test_condition(Condition::FALSE & Condition::TRUE, false, "False and True");
-        test_condition(Condition::TRUE & Condition::FALSE, false, "True and False");
-        test_condition(Condition::TRUE & Condition::TRUE, true, "True and True");
+        test_condition(Condition::FALSE & Condition::FALSE, false);
+        test_condition(Condition::FALSE & Condition::TRUE, false);
+        test_condition(Condition::TRUE & Condition::FALSE, false);
+        test_condition(Condition::TRUE & Condition::TRUE, true);
     }
 
     #[test]
     fn or() {
-        test_condition(
-            Condition::FALSE | Condition::FALSE,
-            false,
-            "False and False",
-        );
-        test_condition(Condition::FALSE | Condition::TRUE, true, "False and True");
-        test_condition(Condition::TRUE | Condition::FALSE, true, "True and False");
-        test_condition(Condition::TRUE | Condition::TRUE, true, "True and True");
+        test_condition(Condition::FALSE | Condition::FALSE, false);
+        test_condition(Condition::FALSE | Condition::TRUE, true);
+        test_condition(Condition::TRUE | Condition::FALSE, true);
+        test_condition(Condition::TRUE | Condition::TRUE, true);
     }
 
     #[test]
     fn xor() {
-        test_condition(
-            Condition::FALSE ^ Condition::FALSE,
-            false,
-            "False and False",
-        );
-        test_condition(Condition::FALSE ^ Condition::TRUE, true, "False and True");
-        test_condition(Condition::TRUE ^ Condition::FALSE, true, "True and False");
-        test_condition(Condition::TRUE ^ Condition::TRUE, false, "True and True");
+        test_condition(Condition::FALSE ^ Condition::FALSE, false);
+        test_condition(Condition::FALSE ^ Condition::TRUE, true);
+        test_condition(Condition::TRUE ^ Condition::FALSE, true);
+        test_condition(Condition::TRUE ^ Condition::TRUE, false);
     }
 
     #[test]
     fn constant() {
-        test_condition(Condition::Constant(false), false, "false");
-        test_condition(Condition::Constant(true), true, "true");
+        test_condition(Condition::Constant(false), false);
+        test_condition(Condition::Constant(true), true);
     }
 }
 
