@@ -84,18 +84,18 @@ fn main() {
 
     println!(
         "MRR {}",
-        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::Magical))
+        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::Magical))
     );
     println!(
         "Cap {}",
-        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::MagicalCap))
+        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalCap))
     );
     println!(
         "Total {}",
-        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::MagicalTotal))
+        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalTotal))
     );
     println!(
         "Reduction {}",
-        breakdowns.get_attribute(&Attribute::Sheltering(Sheltering::MagicalReduction))
+        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalReduction))
     );
 }

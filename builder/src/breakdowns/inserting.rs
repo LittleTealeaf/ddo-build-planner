@@ -86,7 +86,7 @@ impl Breakdowns {
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            if forced || initial_value != self.get_attribute(&attribute) {
+            if forced || initial_value != self.get_attr(&attribute) {
                 let source = BonusSource::Attribute(attribute);
 
                 let updated_bonuses = chain!(
@@ -101,7 +101,7 @@ impl Breakdowns {
 
                 buffer.insert_attributes(updated_attributes);
 
-                let value = self.get_attribute(&attribute);
+                let value = self.get_attr(&attribute);
 
                 if let Some(bonuses) = attribute.get_bonuses(value) {
                     self.children.insert(

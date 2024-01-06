@@ -6,7 +6,7 @@ use rust_decimal::Decimal;
 fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<Decimal>) {
     let mut breakdowns = Breakdowns::new();
     breakdowns.insert_bonuses(bonuses);
-    let value = breakdowns.get_attribute(&Attribute::Debug(0));
+    let value = breakdowns.get_attr(&Attribute::Debug(0));
     let expected: Decimal = expected.into();
     assert_eq!(value, expected, "Expected {expected}, found {value}",);
 }
@@ -185,7 +185,7 @@ mod condition {
             Some(condition.clone()),
         ));
 
-        let value = breakdowns.get_attribute(&Attribute::from(DebugValue(0)));
+        let value = breakdowns.get_attr(&Attribute::from(DebugValue(0)));
         let result = value == 10.into();
 
         assert_eq!(
@@ -286,9 +286,9 @@ mod sources {
             ),
         ]);
         breakdowns.remove_source(BonusSource::Debug(0));
-        assert!(breakdowns.get_attribute(&Attribute::Debug(0)) == 0.into());
-        assert!(breakdowns.get_attribute(&Attribute::Debug(1)) == 0.into());
-        assert!(breakdowns.get_attribute(&Attribute::Debug(2)) == 1.into());
+        assert!(breakdowns.get_attr(&Attribute::Debug(0)) == 0.into());
+        assert!(breakdowns.get_attr(&Attribute::Debug(1)) == 0.into());
+        assert!(breakdowns.get_attr(&Attribute::Debug(2)) == 1.into());
     }
 
     #[test]
@@ -318,9 +318,9 @@ mod sources {
             ),
         ]);
         breakdowns.remove_sources([BonusSource::Debug(0), BonusSource::Debug(1)]);
-        assert!(breakdowns.get_attribute(&Attribute::Debug(0)) == 0.into());
-        assert!(breakdowns.get_attribute(&Attribute::Debug(1)) == 0.into());
-        assert!(breakdowns.get_attribute(&Attribute::Debug(2)) == 1.into());
+        assert!(breakdowns.get_attr(&Attribute::Debug(0)) == 0.into());
+        assert!(breakdowns.get_attr(&Attribute::Debug(1)) == 0.into());
+        assert!(breakdowns.get_attr(&Attribute::Debug(2)) == 1.into());
     }
 }
 

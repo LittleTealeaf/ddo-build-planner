@@ -55,7 +55,7 @@ impl Breakdowns {
 
         attributes
             .into_iter()
-            .map(|attribute| (attribute, self.get_attribute(&attribute)))
+            .map(|attribute| (attribute, self.get_attr(&attribute)))
     }
 }
 
