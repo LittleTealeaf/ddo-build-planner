@@ -92,6 +92,8 @@ pub enum Attribute {
     TotalCharacterLevel,
     /// Summoned Creature Bonuses
     SummonedAttribute(SummonedAttribute),
+    /// Armor Check Penalty
+    ArmorCheckPenalty,
 }
 
 impl Display for Attribute {
@@ -125,6 +127,7 @@ impl Display for Attribute {
             Self::SpellPoints(sp) => sp.fmt(f),
             Self::TotalCharacterLevel => write!(f, "Total Character Level"),
             Self::SummonedAttribute(attribute) => write!(f, "Summoned Creatures: {attribute}"),
+            Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
         }
     }
 }
