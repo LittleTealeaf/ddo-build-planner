@@ -85,7 +85,7 @@ impl Buffer {
 
 #[cfg(test)]
 mod tests {
-    use crate::bonus::BonusType;
+    use crate::{bonus::BonusType, debug::DebugValue};
 
     use super::*;
 
@@ -150,5 +150,18 @@ mod tests {
         assert_eq!(attribute, Attribute::Debug(0));
         let (attribute, _, _) = buffer.pop().expect("Expected return from buffer.pop()");
         assert_eq!(attribute, Attribute::Debug(1));
+    }
+
+    #[test]
+    fn inserting_bonus_pops() {
+        let mut buffer = Buffer::create([]);
+
+        buffer.insert_bonuses([Bonus::new(
+            DebugValue(0),
+            DebugValue(0),
+            1,
+            DebugValue(0),
+            None,
+        )]);
     }
 }

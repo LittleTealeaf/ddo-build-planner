@@ -71,6 +71,12 @@ impl Value {
         }
     }
 
+    /// Allows the simplification of using impl
+    #[must_use]
+    pub fn attribute(attribute: impl Into<Attribute>) -> Self {
+        Self::Attribute(attribute.into())
+    }
+
     /// Calculates the mean of some list or set
     ///
     /// # Panics

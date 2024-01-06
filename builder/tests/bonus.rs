@@ -5,16 +5,18 @@ use builder::{
 
 mod has_dependency {
 
+    use builder::debug::DebugValue;
+
     use super::*;
 
     #[test]
     /// Tests that querying a bonus dependency will include the value dependencies
     fn gets_value_dependency() {
         let bonus = Bonus::new(
-            Attribute::Debug(0),
+            DebugValue(0),
             BonusType::Stacking,
-            Value::Attribute(Attribute::Debug(1)),
-            BonusSource::Debug(0),
+            Attribute::Debug(1),
+            DebugValue(0),
             None,
         );
 
@@ -26,11 +28,11 @@ mod has_dependency {
     /// Tests that querying a bonus dependency will include the conditional dependencies
     fn gets_conditional_dependency() {
         let bonus = Bonus::new(
-            Attribute::Debug(0),
+            DebugValue(0),
             BonusType::Stacking,
             Value::Const(10.into()),
-            BonusSource::Debug(0),
-            Some(Condition::has(Attribute::Debug(1))),
+            DebugValue(0),
+            Some(Condition::has(DebugValue(0))),
         );
 
         assert!(bonus.has_attr_dependency(Attribute::Debug(1)));

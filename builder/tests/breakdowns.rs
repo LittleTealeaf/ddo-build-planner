@@ -123,7 +123,7 @@ mod value {
             [dbg_bonus(
                 0,
                 Value::If {
-                    condition: Condition::Constant(true).into(),
+                    condition: Condition::TRUE.into(),
                     if_true: Value::from(10).into(),
                     if_false: Value::from(20).into(),
                 },
@@ -134,7 +134,7 @@ mod value {
             [dbg_bonus(
                 0,
                 Value::If {
-                    condition: Condition::Constant(false).into(),
+                    condition: Condition::FALSE.into(),
                     if_true: Value::from(10).into(),
                     if_false: Value::from(20).into(),
                 },
@@ -193,16 +193,8 @@ mod condition {
 
     #[test]
     fn not() {
-        test_condition(
-            Condition::Not(Box::new(Condition::Constant(true))),
-            false,
-            "!true",
-        );
-        test_condition(
-            Condition::Not(Box::new(Condition::Constant(false))),
-            true,
-            "true",
-        );
+        test_condition(Condition::Not(Box::new(Condition::TRUE)), false, "!true");
+        test_condition(Condition::Not(Box::new(Condition::FALSE)), true, "true");
     }
 
     #[test]
@@ -233,73 +225,37 @@ mod condition {
     #[test]
     fn and() {
         test_condition(
-            Condition::from(false) & Condition::from(false),
+            Condition::FALSE & Condition::FALSE,
             false,
             "False and False",
         );
-        test_condition(
-            Condition::from(false) & Condition::from(true),
-            false,
-            "False and True",
-        );
-        test_condition(
-            Condition::from(true) & Condition::from(false),
-            false,
-            "True and False",
-        );
-        test_condition(
-            Condition::from(true) & Condition::from(true),
-            true,
-            "True and True",
-        );
+        test_condition(Condition::FALSE & Condition::TRUE, false, "False and True");
+        test_condition(Condition::TRUE & Condition::FALSE, false, "True and False");
+        test_condition(Condition::TRUE & Condition::TRUE, true, "True and True");
     }
 
     #[test]
     fn or() {
         test_condition(
-            Condition::from(false) | Condition::from(false),
+            Condition::FALSE | Condition::FALSE,
             false,
             "False and False",
         );
-        test_condition(
-            Condition::from(false) | Condition::from(true),
-            true,
-            "False and True",
-        );
-        test_condition(
-            Condition::from(true) | Condition::from(false),
-            true,
-            "True and False",
-        );
-        test_condition(
-            Condition::from(true) | Condition::from(true),
-            true,
-            "True and True",
-        );
+        test_condition(Condition::FALSE | Condition::TRUE, true, "False and True");
+        test_condition(Condition::TRUE | Condition::FALSE, true, "True and False");
+        test_condition(Condition::TRUE | Condition::TRUE, true, "True and True");
     }
 
     #[test]
     fn xor() {
         test_condition(
-            Condition::from(false) ^ Condition::from(false),
+            Condition::FALSE ^ Condition::FALSE,
             false,
             "False and False",
         );
-        test_condition(
-            Condition::from(false) ^ Condition::from(true),
-            true,
-            "False and True",
-        );
-        test_condition(
-            Condition::from(true) ^ Condition::from(false),
-            true,
-            "True and False",
-        );
-        test_condition(
-            Condition::from(true) ^ Condition::from(true),
-            false,
-            "True and True",
-        );
+        test_condition(Condition::FALSE ^ Condition::TRUE, true, "False and True");
+        test_condition(Condition::TRUE ^ Condition::FALSE, true, "True and False");
+        test_condition(Condition::TRUE ^ Condition::TRUE, false, "True and True");
     }
 
     #[test]
@@ -383,8 +339,8 @@ mod sources {
 
 mod stacking {
     use builder::{
-        attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType},
+        bonus::{Bonus, BonusType},
+        debug::DebugValue,
     };
 
     use crate::expect_value;
@@ -393,20 +349,8 @@ mod stacking {
     fn same_types_do_not_stack() {
         expect_value(
             [
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Debug(0),
-                    1,
-                    BonusSource::Debug(0),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Debug(0),
-                    2,
-                    BonusSource::Debug(0),
-                    None,
-                ),
+                Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0), None),
+                Bonus::new(DebugValue(0), DebugValue(0), 2, DebugValue(0), None),
             ],
             2,
         );
@@ -416,20 +360,8 @@ mod stacking {
     fn different_types_stack() {
         expect_value(
             [
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Debug(0),
-                    3,
-                    BonusSource::Debug(0),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Debug(1),
-                    2,
-                    BonusSource::Debug(0),
-                    None,
-                ),
+                Bonus::new(DebugValue(0), DebugValue(0), 3, DebugValue(0), None),
+                Bonus::new(DebugValue(0), DebugValue(1), 2, DebugValue(0), None),
             ],
             5,
         );
@@ -439,20 +371,8 @@ mod stacking {
     fn stacking_stacks_with_others() {
         expect_value(
             [
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Stacking,
-                    1,
-                    BonusSource::Debug(0),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Debug(1),
-                    2,
-                    BonusSource::Debug(0),
-                    None,
-                ),
+                Bonus::new(DebugValue(0), BonusType::Stacking, 1, DebugValue(0), None),
+                Bonus::new(DebugValue(0), DebugValue(0), 2, DebugValue(0), None),
             ],
             3,
         );
@@ -462,20 +382,8 @@ mod stacking {
     fn stacking_stacks_with_stacking() {
         expect_value(
             [
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Stacking,
-                    3,
-                    BonusSource::Debug(0),
-                    None,
-                ),
-                Bonus::new(
-                    Attribute::Debug(0),
-                    BonusType::Stacking,
-                    5,
-                    BonusSource::Debug(0),
-                    None,
-                ),
+                Bonus::new(DebugValue(0), BonusType::Stacking, 3, DebugValue(0), None),
+                Bonus::new(DebugValue(0), BonusType::Stacking, 5, DebugValue(0), None),
             ],
             8,
         );
