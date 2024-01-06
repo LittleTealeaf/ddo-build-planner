@@ -3,6 +3,8 @@
 pub mod attribute;
 pub mod bonus;
 pub mod breakdowns;
+#[cfg(feature = "debug")]
+pub mod debug;
 pub mod equipment;
 pub mod feat;
 pub mod race;

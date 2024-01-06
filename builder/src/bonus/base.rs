@@ -141,7 +141,6 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
     })
 }
 
-//TODO: Tests
 fn armor_class() -> impl IntoIterator<Item = Bonus> {
     [
         // Dexterity Bonus to Armor Class

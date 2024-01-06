@@ -82,3 +82,86 @@ impl Buffer {
         None
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{bonus::BonusType, debug::DebugValue};
+
+    use super::*;
+
+    #[test]
+    fn empty_buffer_returns_none() {
+        let mut buffer = Buffer::create([]);
+        assert!(buffer.pop().is_none());
+    }
+
+    #[test]
+    fn inserting_attribute_always_pops() {
+        let mut buffer = Buffer::create([]);
+        buffer.insert_attributes([Attribute::Debug(0)]);
+
+        let (attribute, bonuses, forced) = buffer.pop().expect("Expected return from buffer.pop()");
+
+        assert_eq!(attribute, Attribute::Debug(0));
+        assert!(bonuses.is_empty());
+        assert!(forced);
+    }
+
+    #[test]
+    fn inserting_attribute_multiple_times_pops_once() {
+        let mut buffer = Buffer::create([]);
+        buffer.insert_attributes([Attribute::Debug(0), Attribute::Debug(0)]);
+
+        let (attribute, _, _) = buffer.pop().expect("Expected return from buffer.pop()");
+        assert_eq!(attribute, Attribute::Debug(0));
+        assert!(buffer.pop().is_none());
+    }
+
+    #[test]
+    fn creating_pops_bonuses() {
+        let mut buffer = Buffer::create([Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            1,
+            BonusSource::Debug(0),
+            None,
+        )]);
+        let (_, bonuses, _) = buffer.pop().expect("Expected return from buffer.pop()");
+        assert!(!bonuses.is_empty());
+        assert_eq!(
+            &bonuses[0],
+            &Bonus::new(
+                Attribute::Debug(0),
+                BonusType::Stacking,
+                1,
+                BonusSource::Debug(0),
+                None,
+            )
+        );
+    }
+
+    #[test]
+    fn attributes_pop_by_ord() {
+        let mut buffer = Buffer::create([]);
+
+        buffer.insert_attributes([Attribute::Debug(1), Attribute::Debug(0)]);
+
+        let (attribute, _, _) = buffer.pop().expect("Expected return from buffer.pop()");
+        assert_eq!(attribute, Attribute::Debug(0));
+        let (attribute, _, _) = buffer.pop().expect("Expected return from buffer.pop()");
+        assert_eq!(attribute, Attribute::Debug(1));
+    }
+
+    #[test]
+    fn inserting_bonus_pops() {
+        let mut buffer = Buffer::create([]);
+
+        buffer.insert_bonuses([Bonus::new(
+            DebugValue(0),
+            DebugValue(0),
+            1,
+            DebugValue(0),
+            None,
+        )]);
+    }
+}

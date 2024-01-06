@@ -5,16 +5,17 @@ use builder::{
 
 mod has_dependency {
 
+    use builder::debug::DebugValue;
+
     use super::*;
 
     #[test]
-    /// Tests that querying a bonus dependency will include the value dependencies
-    fn gets_value_dependency() {
+    fn value_from_bonus() {
         let bonus = Bonus::new(
-            Attribute::Debug(0),
+            DebugValue(0),
             BonusType::Stacking,
-            Value::Attribute(Attribute::Debug(1)),
-            BonusSource::Debug(0),
+            Attribute::Debug(1),
+            DebugValue(0),
             None,
         );
 
@@ -23,14 +24,13 @@ mod has_dependency {
     }
 
     #[test]
-    /// Tests that querying a bonus dependency will include the conditional dependencies
-    fn gets_conditional_dependency() {
+    fn conditional_from_bonus() {
         let bonus = Bonus::new(
-            Attribute::Debug(0),
+            DebugValue(0),
             BonusType::Stacking,
             Value::Const(10.into()),
-            BonusSource::Debug(0),
-            Some(Condition::has(Attribute::Debug(1))),
+            DebugValue(0),
+            Some(Condition::has(DebugValue(1))),
         );
 
         assert!(bonus.has_attr_dependency(Attribute::Debug(1)));
@@ -234,7 +234,39 @@ mod has_dependency {
 }
 
 mod include_dependencies {
+    use builder::debug::DebugValue;
+
     use super::*;
+
+    #[test]
+    fn conditional_from_bonus() {
+        let bonus = Bonus::new(
+            DebugValue(0),
+            BonusType::Stacking,
+            Attribute::Debug(1),
+            DebugValue(0),
+            None,
+        );
+
+        let dependencies = bonus.get_attr_dependencies();
+        assert!(dependencies.contains(&Attribute::Debug(1)));
+        assert!(!dependencies.contains(&Attribute::Debug(2)));
+    }
+
+    #[test]
+    fn value_from_bonus() {
+        let bonus = Bonus::new(
+            DebugValue(0),
+            BonusType::Stacking,
+            Attribute::Debug(1),
+            DebugValue(0),
+            None,
+        );
+
+        let dependencies = bonus.get_attr_dependencies();
+        assert!(dependencies.contains(&Attribute::Debug(1)));
+        assert!(!dependencies.contains(&Attribute::Debug(2)));
+    }
 
     mod value {
         use super::*;

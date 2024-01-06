@@ -376,4 +376,114 @@ mod tests {
             assert_eq!(found, expected);
         }
     }
+
+    mod iterators {
+        use super::*;
+
+        #[test]
+        fn cond_any_returns_none_when_empty() {
+            assert!([].cond_any().is_none());
+        }
+
+        #[test]
+        fn cond_all_returns_none_when_empty() {
+            assert!([].cond_all().is_none());
+        }
+
+        #[test]
+        fn cond_none_returns_none_when_empty() {
+            assert!([].cond_none().is_none());
+        }
+
+        #[test]
+        fn cond_not_all_returns_none_when_empty() {
+            assert!([].cond_not_all().is_none());
+        }
+
+        #[test]
+        fn cond_any() {
+            fn test_condition(condition: Condition) {
+                match condition {
+                    Condition::Constant(_) => {}
+                    Condition::Or(a, b) => {
+                        test_condition(*a);
+                        test_condition(*b);
+                    }
+                    cond => panic!("Found illegal condition: {cond}"),
+                }
+            }
+
+            let condition = [Condition::FALSE; 100]
+                .cond_any()
+                .expect("Expected Some(condition)");
+
+            test_condition(condition);
+        }
+
+        #[test]
+        fn cond_all() {
+            fn test_condition(condition: Condition) {
+                match condition {
+                    Condition::Constant(_) => {}
+                    Condition::And(a, b) => {
+                        test_condition(*a);
+                        test_condition(*b);
+                    }
+                    cond => panic!("Found illegal condition: {cond}"),
+                }
+            }
+
+            let condition = [Condition::FALSE; 100]
+                .cond_all()
+                .expect("Expected Some(condition)");
+
+            test_condition(condition);
+        }
+
+        #[test]
+        fn cond_none() {
+            fn test_condition(condition: Condition) {
+                match condition {
+                    Condition::Constant(_) => {}
+                    Condition::Or(a, b) => {
+                        test_condition(*a);
+                        test_condition(*b);
+                    }
+                    cond => panic!("Found illegal condition: {cond}"),
+                }
+            }
+
+            let condition = [Condition::FALSE; 100]
+                .cond_none()
+                .expect("Expected Some(condition)");
+
+            match condition {
+                Condition::Not(condition) => test_condition(*condition),
+                condition => panic!("Condition does not start with Not: {condition}"),
+            }
+        }
+
+        #[test]
+        fn cond_not_all() {
+            fn test_condition(condition: Condition) {
+                match condition {
+                    Condition::Constant(_) => {}
+                    Condition::And(a, b) => {
+                        test_condition(*a);
+                        test_condition(*b);
+                    }
+                    cond => panic!("Found illegal condition: {cond}"),
+                }
+            }
+
+            let condition = [Condition::FALSE; 100]
+                .cond_not_all()
+                .expect("Expected Some(condition)");
+
+            match condition {
+                Condition::Not(condition) => test_condition(*condition),
+                condition => panic!("Condition does not start with Not: {condition}"),
+            }
+        }
+    }
 }
