@@ -1,4 +1,6 @@
 // Tests that revolve around testing properly implemented logic
+// This does not test the actual content of the game, but rather the universal logic things.
+// Basically, testing logic that should apply to basically all characters
 
 mod ability {
     use builder::{
@@ -493,6 +495,218 @@ mod sheltering {
                 ]);
 
                 assert_eq!(breakdowns.get_attribute(&TOTAL), 200.into());
+            }
+        }
+    }
+}
+
+mod armor_class {
+    use builder::{
+        attribute::Attribute,
+        bonus::Bonus,
+        breakdowns::Breakdowns,
+        debug::DebugValue,
+        types::{ability::Ability, armor_class::ArmorClass},
+    };
+
+    mod bonuses {
+        use super::*;
+
+        macro_rules! attribute_test {
+            ($name: ident, $attribute: expr) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+                    let initial = breakdowns
+                        .get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+                    breakdowns.insert_bonus(Bonus::new(
+                        $attribute,
+                        DebugValue(0),
+                        10,
+                        DebugValue(0),
+                        None,
+                    ));
+                    let result = breakdowns
+                        .get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+                    assert!(result > initial);
+                }
+            };
+        }
+
+        attribute_test!(dexterity, Ability::Dexterity);
+        attribute_test!(natural_armor, ArmorClass::NaturalArmor);
+        attribute_test!(shield_bonus, ArmorClass::ShieldBonus);
+        attribute_test!(armor_bonus, ArmorClass::ArmorBonus);
+    }
+
+    mod scalars {
+        use super::*;
+
+        #[test]
+        fn armor_scalar() {
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.insert_bonus(Bonus::new(
+                ArmorClass::ArmorScalar,
+                DebugValue(0),
+                1,
+                DebugValue(0),
+                None,
+            ));
+            let initial =
+                breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+            breakdowns.insert_bonus(Bonus::new(
+                ArmorClass::ArmorBonus,
+                DebugValue(0),
+                10,
+                DebugValue(1),
+                None,
+            ));
+            let result =
+                breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+            assert_eq!(result - initial, 20.into());
+        }
+
+        #[test]
+        fn shield_scalar() {
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.insert_bonus(Bonus::new(
+                ArmorClass::ShieldScalar,
+                DebugValue(0),
+                1,
+                DebugValue(0),
+                None,
+            ));
+            let initial =
+                breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+            breakdowns.insert_bonus(Bonus::new(
+                ArmorClass::ShieldBonus,
+                DebugValue(0),
+                10,
+                DebugValue(1),
+                None,
+            ));
+            let result =
+                breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+            assert_eq!(result - initial, 20.into());
+        }
+
+        #[test]
+        fn total_scalar() {
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.insert_bonus(Bonus::new(
+                ArmorClass::Bonus,
+                DebugValue(0),
+                100,
+                DebugValue(0),
+                None,
+            ));
+            let initial =
+                breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+            breakdowns.insert_bonus(Bonus::new(
+                ArmorClass::TotalScalar,
+                DebugValue(0),
+                1,
+                DebugValue(1),
+                None,
+            ));
+            let result =
+                breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+
+            assert_eq!(result / initial, 2.into());
+        }
+    }
+
+    mod max_dex_bonus {
+        use builder::types::{
+            flag::OffHandType,
+            item::{ArmorType, ShieldType},
+        };
+
+        use super::*;
+
+        macro_rules! dex_test {
+            ($name: ident, $maxbonus: ident, $flag: expr) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+
+                    breakdowns.insert_bonus(Bonus::new(
+                        Ability::Dexterity,
+                        DebugValue(0),
+                        100,
+                        DebugValue(0),
+                        None,
+                    ));
+
+                    let initial = breakdowns
+                        .get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+
+                    breakdowns.insert_bonus(Bonus::flag($flag, DebugValue(1)));
+
+                    let with_armor = breakdowns
+                        .get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+
+                    assert!(initial > with_armor);
+
+                    breakdowns.insert_bonus(Bonus::new(
+                        ArmorClass::$maxbonus,
+                        DebugValue(0),
+                        2,
+                        DebugValue(2),
+                        None,
+                    ));
+
+                    let with_increased_max = breakdowns
+                        .get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+
+                    assert_eq!(with_increased_max - with_armor, 2.into());
+                }
+            };
+        }
+
+        dex_test!(light_armor, ArmorMaxDex, ArmorType::Light);
+        dex_test!(medium_armor, ArmorMaxDex, ArmorType::Medium);
+        dex_test!(heavy_armor, ArmorMaxDex, ArmorType::Heavy);
+        dex_test!(
+            tower_shield,
+            ShieldMaxDex,
+            OffHandType::from(ShieldType::TowerShield)
+        );
+
+        #[test]
+        fn lowest_max_dex() {
+            for (a, b) in [(2, 1), (1, 2)] {
+                let mut breakdowns = Breakdowns::new();
+                breakdowns.insert_bonuses([
+                    Bonus::flag(OffHandType::from(ShieldType::TowerShield), DebugValue(0)),
+                    Bonus::flag(ArmorType::Heavy, DebugValue(0)),
+                    Bonus::new(Ability::Dexterity, DebugValue(0), 100, DebugValue(0), None),
+                ]);
+
+                let initial =
+                    breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+
+                breakdowns.insert_bonuses([
+                    Bonus::new(
+                        ArmorClass::ShieldMaxDex,
+                        DebugValue(0),
+                        a,
+                        DebugValue(1),
+                        None,
+                    ),
+                    Bonus::new(
+                        ArmorClass::ArmorMaxDex,
+                        DebugValue(0),
+                        b,
+                        DebugValue(1),
+                        None,
+                    ),
+                ]);
+
+                let result =
+                    breakdowns.get_attribute(&Attribute::ArmorClass(ArmorClass::TotalArmorClass));
+
+                assert_eq!(result - initial, 1.into());
             }
         }
     }
