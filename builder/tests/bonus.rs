@@ -32,7 +32,7 @@ mod has_dependency {
             BonusType::Stacking,
             Value::Const(10.into()),
             DebugValue(0),
-            Some(Condition::has(DebugValue(0))),
+            Some(Condition::has(DebugValue(1))),
         );
 
         assert!(bonus.has_attr_dependency(Attribute::Debug(1)));
