@@ -9,8 +9,16 @@ use crate::{
 use super::{Breakdowns, EvalBonus};
 
 impl Breakdowns {
+    pub(super) fn evaluate_some_condition(&mut self, condition: Option<&Condition>) -> bool {
+        condition.map_or(true, |condition| self.evaluate_condition(condition))
+    }
+
     pub(super) fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        match condition {
+        if let Some(value) = self.condition_cache.get(condition) {
+            return *value;
+        }
+
+        let result = match condition {
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
             Condition::LessThan(a, b) => self.evaluate_value(a) < self.evaluate_value(b),
@@ -19,11 +27,18 @@ impl Breakdowns {
             Condition::And(a, b) => self.evaluate_condition(a) && self.evaluate_condition(b),
             Condition::Or(a, b) => self.evaluate_condition(a) || self.evaluate_condition(b),
             Condition::Xor(a, b) => self.evaluate_condition(a) != self.evaluate_condition(b),
-        }
+        };
+
+        self.condition_cache.insert(condition.clone(), result);
+        result
     }
 
     pub(super) fn evaluate_value(&mut self, value: &Value) -> Decimal {
-        match value {
+        if let Some(value) = self.value_cache.get(value) {
+            return *value;
+        }
+
+        let result = match value {
             Value::Const(val) => *val,
             Value::Attribute(attribute) => self.get_attr(attribute),
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
@@ -47,26 +62,16 @@ impl Breakdowns {
             Value::Mul(a, b) => self.evaluate_value(a) * self.evaluate_value(b),
             Value::Div(a, b) => self.evaluate_value(a) / self.evaluate_value(b),
             Value::Rem(a, b) => self.evaluate_value(a) % self.evaluate_value(b),
-        }
+        };
+
+        self.value_cache.insert(value.clone(), result);
+
+        result
     }
 
     pub(super) fn get_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
-        if let Some(eval) = self.bonus_cache.get(bonus) {
-            return *eval;
-        }
-
-        let bonus_eval = self.calculate_bonus(bonus);
-
-        self.bonus_cache.insert(bonus.clone(), bonus_eval);
-
-        bonus_eval
-    }
-
-    pub(super) fn calculate_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
+        let condition = self.evaluate_some_condition(bonus.get_condition());
         let value = self.evaluate_value(bonus.get_value());
-        let condition = bonus
-            .get_condition()
-            .map_or(true, |condition| self.evaluate_condition(condition));
 
         EvalBonus { value, condition }
     }
@@ -89,13 +94,13 @@ impl Breakdowns {
             return *value;
         }
 
-        let value = self
+        let result = self
             .calculate_attribute(*attribute)
             .unwrap_or(Decimal::ZERO);
 
-        self.attribute_cache.insert(*attribute, value);
+        self.attribute_cache.insert(*attribute, result);
 
-        value
+        result
     }
 
     pub(crate) fn calculate_attribute(&mut self, attribute: Attribute) -> Option<Decimal> {

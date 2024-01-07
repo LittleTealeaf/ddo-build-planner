@@ -53,10 +53,9 @@ impl Breakdowns {
 
         let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
 
-        let updated_attributes = updated_bonuses.into_iter().map(|bonus| {
-            self.bonus_cache.remove(&bonus);
-            *bonus.get_attribute()
-        });
+        let updated_attributes = updated_bonuses
+            .into_iter()
+            .map(|bonus| *bonus.get_attribute());
 
         buffer.insert_attributes(updated_attributes);
 
@@ -87,6 +86,11 @@ impl Breakdowns {
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
             if forced || initial_value != self.get_attr(&attribute) {
+                self.value_cache
+                    .retain(|key, _| !key.has_attr_dependency(attribute));
+                self.condition_cache
+                    .retain(|key, _| !key.has_attr_dependency(attribute));
+
                 let source = BonusSource::Attribute(attribute);
 
                 let updated_bonuses = chain!(
@@ -94,10 +98,7 @@ impl Breakdowns {
                     self.get_dependants(attribute).cloned().collect::<Vec<_>>(),
                 );
 
-                let updated_attributes = updated_bonuses.map(|bonus| {
-                    self.bonus_cache.remove(&bonus);
-                    *bonus.get_attribute()
-                });
+                let updated_attributes = updated_bonuses.map(|bonus| *bonus.get_attribute());
 
                 buffer.insert_attributes(updated_attributes);
 
