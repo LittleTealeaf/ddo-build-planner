@@ -9,8 +9,16 @@ use crate::{
 use super::{Breakdowns, EvalBonus};
 
 impl Breakdowns {
+    pub(super) fn evaluate_some_condition(&mut self, condition: Option<&Condition>) -> bool {
+        condition.map_or(true, |condition| self.evaluate_condition(condition))
+    }
+
     pub(super) fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        match condition {
+        if let Some(value) = self.condition_cache.get(condition) {
+            return *value;
+        }
+
+        let result = match condition {
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
             Condition::LessThan(a, b) => self.evaluate_value(a) < self.evaluate_value(b),
@@ -19,13 +27,22 @@ impl Breakdowns {
             Condition::And(a, b) => self.evaluate_condition(a) && self.evaluate_condition(b),
             Condition::Or(a, b) => self.evaluate_condition(a) || self.evaluate_condition(b),
             Condition::Xor(a, b) => self.evaluate_condition(a) != self.evaluate_condition(b),
-        }
+        };
+
+        self.condition_cache.insert(condition.clone(), result);
+        result
     }
 
     pub(super) fn evaluate_value(&mut self, value: &Value) -> Decimal {
-        match value {
-            Value::Const(val) => *val,
-            Value::Attribute(attribute) => self.get_attr(attribute),
+        if let Some(value) = self.value_cache.get(value) {
+            return *value;
+        }
+
+        let result = match value {
+            Value::Const(val) => return *val,
+            Value::Attribute(attribute) => self
+                .calculate_attribute(*attribute)
+                .unwrap_or(Decimal::ZERO),
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),
             Value::Floor(val) => self.evaluate_value(val).floor(),
@@ -47,55 +64,23 @@ impl Breakdowns {
             Value::Mul(a, b) => self.evaluate_value(a) * self.evaluate_value(b),
             Value::Div(a, b) => self.evaluate_value(a) / self.evaluate_value(b),
             Value::Rem(a, b) => self.evaluate_value(a) % self.evaluate_value(b),
-        }
+        };
+
+        self.value_cache.insert(value.clone(), result);
+
+        result
     }
 
     pub(super) fn get_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
-        if let Some(eval) = self.bonus_cache.get(bonus) {
-            return *eval;
-        }
-
-        let bonus_eval = self.calculate_bonus(bonus);
-
-        self.bonus_cache.insert(bonus.clone(), bonus_eval);
-
-        bonus_eval
-    }
-
-    pub(super) fn calculate_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
+        let condition = self.evaluate_some_condition(bonus.get_condition());
         let value = self.evaluate_value(bonus.get_value());
-        let condition = bonus
-            .get_condition()
-            .map_or(true, |condition| self.evaluate_condition(condition));
 
         EvalBonus { value, condition }
     }
 
     /// Calculates and retuns the final value for a given [`Attribute`].
     pub fn get_attribute(&mut self, attribute: impl Into<Attribute>) -> Decimal {
-        self.get_attr(&attribute.into())
-    }
-
-    /// Calculates and retuns the final value for a given [`Attribute`].
-    /// This method uses a reference, as internal calculations will be faster by passing a
-    /// reference instead of a cloned attribute.
-    ///
-    /// The function [`Breakdowns::get_attribute()`] dynamically allows any type that implements
-    /// [`Into<Attribute>`]
-    ///
-    /// [`Breakdowns::get_attribute()`]: Breakdowns::get_attribute()
-    pub fn get_attr(&mut self, attribute: &Attribute) -> Decimal {
-        if let Some(value) = self.attribute_cache.get(attribute) {
-            return *value;
-        }
-
-        let value = self
-            .calculate_attribute(*attribute)
-            .unwrap_or(Decimal::ZERO);
-
-        self.attribute_cache.insert(*attribute, value);
-
-        value
+        self.evaluate_value(&Value::Attribute(attribute.into()))
     }
 
     pub(crate) fn calculate_attribute(&mut self, attribute: Attribute) -> Option<Decimal> {

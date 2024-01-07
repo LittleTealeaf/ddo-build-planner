@@ -11,7 +11,7 @@ use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
-    bonus::{get_base_bonuses, Bonus, BonusSource},
+    bonus::{get_base_bonuses, Bonus, BonusSource, Condition, Value},
 };
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
@@ -21,10 +21,11 @@ struct EvalBonus {
 }
 
 /// Calculates the final attribute values for the character.
+#[derive(Debug)]
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
-    attribute_cache: HashMap<Attribute, Decimal>,
-    bonus_cache: HashMap<Bonus, EvalBonus>,
+    value_cache: HashMap<Value, Decimal>,
+    condition_cache: HashMap<Condition, bool>,
     children: HashMap<BonusSource, Vec<Attribute>>,
 }
 
@@ -34,8 +35,8 @@ impl Breakdowns {
     pub fn new() -> Self {
         let mut breakdowns = Self {
             bonuses: HashMap::new(),
-            attribute_cache: HashMap::new(),
-            bonus_cache: HashMap::new(),
+            value_cache: HashMap::new(),
+            condition_cache: HashMap::new(),
             children: HashMap::new(),
         };
 
@@ -55,7 +56,7 @@ impl Breakdowns {
 
         attributes
             .into_iter()
-            .map(|attribute| (attribute, self.get_attr(&attribute)))
+            .map(|attribute| (attribute, self.get_attribute(attribute)))
     }
 }
 

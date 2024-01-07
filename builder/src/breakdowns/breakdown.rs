@@ -7,7 +7,7 @@ use crate::{
     bonus::{Bonus, BonusType},
 };
 
-use super::{Breakdowns, EvalBonus};
+use super::Breakdowns;
 
 #[derive(Debug)]
 pub struct BonusEntry<'a> {
@@ -25,6 +25,10 @@ pub struct AttributeBreakdown<'a> {
 
 impl Breakdowns {
     /// Returns the bonus breakdowns for a particular attribute in the breakdown
+    ///
+    /// # Panics
+    /// Panics will not happen unless the values in the caches are removed during execution of this
+    /// function
     pub fn get_breakdowns<'a>(
         &'a mut self,
         attribute: &Attribute,
@@ -36,23 +40,25 @@ impl Breakdowns {
             value: self.calculate_attribute(*attribute)?,
         };
 
-        // Assumes that calling self.get_attribute will populate all bonus caches
-
-        let bonuses = self
-            .bonuses
-            .get(attribute)?
-            .iter()
-            .filter_map(|bonus| Some((bonus, self.bonus_cache.get(bonus)?)));
-
         let mut applied: HashMap<BonusType, BonusEntry<'_>> = HashMap::new();
 
-        for (bonus, EvalBonus { value, condition }) in bonuses {
-            if *condition {
+        for bonus in self.bonuses.get(attribute)? {
+            let value = self
+                .value_cache
+                .get(bonus.get_value())
+                .expect("Expected Value to be Cached");
+            if bonus.get_condition().map_or(true, |condition| {
+                *self
+                    .condition_cache
+                    .get(condition)
+                    .expect("Exected Condition to be in Cached")
+            }) {
                 match bonus.get_type() {
                     BonusType::Stacking => breakdown.applied.push(BonusEntry { bonus, value }),
                     bonus_type => {
                         if let Some(existing) = applied.remove(bonus_type) {
                             let bonus = BonusEntry { bonus, value };
+
                             let (larger, smaller) = if existing.value > value {
                                 (existing, bonus)
                             } else {

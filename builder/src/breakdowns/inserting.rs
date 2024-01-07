@@ -6,7 +6,7 @@ use utils::hashmap::MapGetMutOrDefault;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusSource, CloneBonus},
+    bonus::{Bonus, BonusSource, CloneBonus, Value},
 };
 
 use super::{buffer::Buffer, Breakdowns};
@@ -53,10 +53,9 @@ impl Breakdowns {
 
         let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
 
-        let updated_attributes = updated_bonuses.into_iter().map(|bonus| {
-            self.bonus_cache.remove(&bonus);
-            *bonus.get_attribute()
-        });
+        let updated_attributes = updated_bonuses
+            .into_iter()
+            .map(|bonus| *bonus.get_attribute());
 
         buffer.insert_attributes(updated_attributes);
 
@@ -78,15 +77,20 @@ impl Breakdowns {
 
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
-                .attribute_cache
-                .remove(&attribute)
+                .value_cache
+                .remove(&Value::Attribute(attribute))
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(attribute))
                 .unwrap_or(Decimal::ZERO);
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            if forced || initial_value != self.get_attr(&attribute) {
+            if forced || initial_value != self.get_attribute(attribute) {
+                self.value_cache
+                    .retain(|key, _| !key.has_attr_dependency(attribute));
+                self.condition_cache
+                    .retain(|key, _| !key.has_attr_dependency(attribute));
+
                 let source = BonusSource::Attribute(attribute);
 
                 let updated_bonuses = chain!(
@@ -94,14 +98,11 @@ impl Breakdowns {
                     self.get_dependants(attribute).cloned().collect::<Vec<_>>(),
                 );
 
-                let updated_attributes = updated_bonuses.map(|bonus| {
-                    self.bonus_cache.remove(&bonus);
-                    *bonus.get_attribute()
-                });
+                let updated_attributes = updated_bonuses.map(|bonus| *bonus.get_attribute());
 
                 buffer.insert_attributes(updated_attributes);
 
-                let value = self.get_attr(&attribute);
+                let value = self.get_attribute(attribute);
 
                 if let Some(bonuses) = attribute.get_bonuses(value) {
                     self.children.insert(

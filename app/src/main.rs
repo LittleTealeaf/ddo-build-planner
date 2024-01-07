@@ -1,101 +1,28 @@
 //! Application Starting Point
+
 use builder::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType, Condition},
+    bonus::{Bonus, BonusSource, BonusType},
     breakdowns::Breakdowns,
-    types::{
-        ability::Ability,
-        armor_class::ArmorClass,
-        flag::{Flag, OffHandType},
-        item::{ArmorType, ShieldType},
-        player_class::PlayerClass,
-        race::Race,
-        sheltering::Sheltering,
-        weapon_attribute::{WeaponHand, WeaponStat},
-    },
+    types::{ability::Ability, sheltering::Sheltering},
 };
-
-fn is_wearing_armor() -> Condition {
-    Condition::has(Flag::ArmorType(ArmorType::Light))
-        | Condition::has(Flag::ArmorType(ArmorType::Medium))
-        | Condition::has(Flag::ArmorType(ArmorType::Heavy))
-}
-
-fn is_wielding_tower_shield() -> Condition {
-    Condition::has(Attribute::from(Flag::OffHandType(OffHandType::Shield(
-        ShieldType::TowerShield,
-    ))))
-}
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
-
-    breakdowns.insert_bonuses([Bonus::new(
-        Ability::All,
-        BonusType::Stacking,
-        10,
-        BonusSource::Custom(10),
-        None,
-    )]);
-
     breakdowns.insert_bonuses([
-        Bonus::new(PlayerClass::FavoredSoul, BonusType::Stacking, 10, 0, None),
-        Bonus::flag(OffHandType::from(ShieldType::TowerShield), 0),
-        Bonus::flag(Race::Gnome, 0),
         Bonus::new(
-            Attribute::ArmorClass(ArmorClass::ShieldMaxDex),
+            Sheltering::Physical,
             BonusType::Stacking,
-            5,
-            1,
+            100,
+            BonusSource::Custom(0),
             None,
         ),
         Bonus::new(
-            Attribute::ArmorClass(ArmorClass::ArmorMaxDex),
+            Ability::All,
             BonusType::Stacking,
-            10,
-            1,
+            30,
+            BonusSource::Custom(0),
             None,
         ),
-        Bonus::new(Ability::All, BonusType::Stacking, 8, 1, None),
-        Bonus::new(Ability::Dexterity, BonusType::Stacking, 20, 1, None),
-        Bonus::new(Ability::Intelligence, BonusType::Stacking, 20, 1, None),
-        Bonus::new(Ability::Wisdom, BonusType::Enhancement, 20, 1, None),
-        Bonus::new(Ability::Wisdom, BonusType::Insightful, 10, 1, None),
-        Bonus::new(
-            (WeaponHand::Main, WeaponStat::Attack),
-            BonusType::AbilityModifier,
-            Attribute::AbilityModifier(Ability::Intelligence),
-            2,
-            None,
-        ),
-        Bonus::new(
-            (WeaponHand::Main, WeaponStat::Attack),
-            BonusType::AbilityModifier,
-            Attribute::AbilityModifier(Ability::Strength),
-            2,
-            None,
-        ),
-        Bonus::new(Sheltering::Magical, BonusType::Stacking, 200, 2, None),
-        Bonus::flag(ArmorType::Light, 2),
     ]);
-    for bonus in breakdowns.get_bonuses() {
-        println!("{bonus}");
-    }
-
-    println!(
-        "MRR {}",
-        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::Magical))
-    );
-    println!(
-        "Cap {}",
-        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalCap))
-    );
-    println!(
-        "Total {}",
-        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalTotal))
-    );
-    println!(
-        "Reduction {}",
-        breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalReduction))
-    );
+    println!("{breakdowns:?}");
 }
