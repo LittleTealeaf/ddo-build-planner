@@ -280,17 +280,17 @@ mod spells {
         mod universal {
             use super::*;
 
-            universal_to!(SpellPower, universal_to_acid, Acid);
-            universal_to!(SpellPower, universal_to_fire, Fire);
-            universal_to!(SpellPower, universal_to_cold, Cold);
-            universal_to!(SpellPower, universal_to_electric, Electric);
-            universal_to!(SpellPower, universal_to_positive, Positive);
-            universal_to!(SpellPower, universal_to_negative, Negative);
-            universal_to!(SpellPower, universal_to_poison, Poison);
-            universal_to!(SpellPower, universal_to_repair, Repair);
-            universal_to!(SpellPower, universal_to_rust, Rust);
-            universal_to!(SpellPower, universal_to_alignment, Alignment);
-            universal_to!(SpellPower, universal_to_light, Light);
+            universal_to!(SpellPower, to_acid, Acid);
+            universal_to!(SpellPower, to_fire, Fire);
+            universal_to!(SpellPower, to_cold, Cold);
+            universal_to!(SpellPower, to_electric, Electric);
+            universal_to!(SpellPower, to_positive, Positive);
+            universal_to!(SpellPower, to_negative, Negative);
+            universal_to!(SpellPower, to_poison, Poison);
+            universal_to!(SpellPower, to_repair, Repair);
+            universal_to!(SpellPower, to_rust, Rust);
+            universal_to!(SpellPower, to_alignment, Alignment);
+            universal_to!(SpellPower, to_light, Light);
         }
     }
 
@@ -305,17 +305,17 @@ mod spells {
         mod universal {
             use super::*;
 
-            universal_to!(SpellCriticalChance, universal_to_acid, Acid);
-            universal_to!(SpellCriticalChance, universal_to_fire, Fire);
-            universal_to!(SpellCriticalChance, universal_to_cold, Cold);
-            universal_to!(SpellCriticalChance, universal_to_electric, Electric);
-            universal_to!(SpellCriticalChance, universal_to_positive, Positive);
-            universal_to!(SpellCriticalChance, universal_to_negative, Negative);
-            universal_to!(SpellCriticalChance, universal_to_poison, Poison);
-            universal_to!(SpellCriticalChance, universal_to_repair, Repair);
-            universal_to!(SpellCriticalChance, universal_to_rust, Rust);
-            universal_to!(SpellCriticalChance, universal_to_alignment, Alignment);
-            universal_to!(SpellCriticalChance, universal_to_light, Light);
+            universal_to!(SpellCriticalChance, to_acid, Acid);
+            universal_to!(SpellCriticalChance, to_fire, Fire);
+            universal_to!(SpellCriticalChance, to_cold, Cold);
+            universal_to!(SpellCriticalChance, to_electric, Electric);
+            universal_to!(SpellCriticalChance, to_positive, Positive);
+            universal_to!(SpellCriticalChance, to_negative, Negative);
+            universal_to!(SpellCriticalChance, to_poison, Poison);
+            universal_to!(SpellCriticalChance, to_repair, Repair);
+            universal_to!(SpellCriticalChance, to_rust, Rust);
+            universal_to!(SpellCriticalChance, to_alignment, Alignment);
+            universal_to!(SpellCriticalChance, to_light, Light);
         }
     }
     mod critical_damage {
@@ -329,17 +329,17 @@ mod spells {
         mod universal {
             use super::*;
 
-            universal_to!(SpellCriticalDamage, universal_to_acid, Acid);
-            universal_to!(SpellCriticalDamage, universal_to_fire, Fire);
-            universal_to!(SpellCriticalDamage, universal_to_cold, Cold);
-            universal_to!(SpellCriticalDamage, universal_to_electric, Electric);
-            universal_to!(SpellCriticalDamage, universal_to_positive, Positive);
-            universal_to!(SpellCriticalDamage, universal_to_negative, Negative);
-            universal_to!(SpellCriticalDamage, universal_to_poison, Poison);
-            universal_to!(SpellCriticalDamage, universal_to_repair, Repair);
-            universal_to!(SpellCriticalDamage, universal_to_rust, Rust);
-            universal_to!(SpellCriticalDamage, universal_to_alignment, Alignment);
-            universal_to!(SpellCriticalDamage, universal_to_light, Light);
+            universal_to!(SpellCriticalDamage, to_acid, Acid);
+            universal_to!(SpellCriticalDamage, to_fire, Fire);
+            universal_to!(SpellCriticalDamage, to_cold, Cold);
+            universal_to!(SpellCriticalDamage, to_electric, Electric);
+            universal_to!(SpellCriticalDamage, to_positive, Positive);
+            universal_to!(SpellCriticalDamage, to_negative, Negative);
+            universal_to!(SpellCriticalDamage, to_poison, Poison);
+            universal_to!(SpellCriticalDamage, to_repair, Repair);
+            universal_to!(SpellCriticalDamage, to_rust, Rust);
+            universal_to!(SpellCriticalDamage, to_alignment, Alignment);
+            universal_to!(SpellCriticalDamage, to_light, Light);
         }
     }
 }
