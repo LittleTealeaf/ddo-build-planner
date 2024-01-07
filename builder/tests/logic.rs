@@ -254,7 +254,7 @@ mod spells {
             for sp in SpellPower::SPELL_POWERS {
                 let mut breakdowns = Breakdowns::new();
 
-                let initial = breakdowns.get_attr(&Attribute::SpellPower(sp));
+                let initial = breakdowns.get_attribute(Attribute::SpellPower(sp));
 
                 breakdowns.insert_bonus(Bonus::new(
                     Attribute::SpellPower(SpellPower::Universal),
@@ -264,7 +264,7 @@ mod spells {
                     None,
                 ));
 
-                let result = breakdowns.get_attr(&Attribute::SpellPower(sp));
+                let result = breakdowns.get_attribute(Attribute::SpellPower(sp));
 
                 assert_eq!(result - initial, 100.into());
             }
@@ -284,7 +284,7 @@ mod spells {
             for sp in SpellPower::SPELL_POWERS {
                 let mut breakdowns = Breakdowns::new();
 
-                let initial = breakdowns.get_attr(&Attribute::SpellCriticalChance(sp));
+                let initial = breakdowns.get_attribute(Attribute::SpellCriticalChance(sp));
 
                 breakdowns.insert_bonus(Bonus::new(
                     Attribute::SpellCriticalChance(SpellPower::Universal),
@@ -294,7 +294,7 @@ mod spells {
                     None,
                 ));
 
-                let result = breakdowns.get_attr(&Attribute::SpellCriticalChance(sp));
+                let result = breakdowns.get_attribute(Attribute::SpellCriticalChance(sp));
 
                 assert_eq!(result - initial, 100.into());
             }
@@ -313,7 +313,7 @@ mod spells {
             for sp in SpellPower::SPELL_POWERS {
                 let mut breakdowns = Breakdowns::new();
 
-                let initial = breakdowns.get_attr(&Attribute::SpellCriticalDamage(sp));
+                let initial = breakdowns.get_attribute(Attribute::SpellCriticalDamage(sp));
 
                 breakdowns.insert_bonus(Bonus::new(
                     Attribute::SpellCriticalDamage(SpellPower::Universal),
@@ -323,7 +323,7 @@ mod spells {
                     None,
                 ));
 
-                let result = breakdowns.get_attr(&Attribute::SpellCriticalDamage(sp));
+                let result = breakdowns.get_attribute(Attribute::SpellCriticalDamage(sp));
 
                 assert_eq!(result - initial, 100.into());
             }
@@ -420,7 +420,7 @@ mod sheltering {
             let mut breakdowns = Breakdowns::new();
 
             assert_eq!(
-                breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalCap)),
+                breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalCap)),
                 Decimal::from(50)
             );
 
@@ -433,14 +433,14 @@ mod sheltering {
             ));
 
             assert_eq!(
-                breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalTotal)),
+                breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalTotal)),
                 Decimal::from(50)
             );
 
             breakdowns.insert_bonus(Bonus::flag(ArmorType::Cloth, BonusSource::Debug(1)));
 
             assert_eq!(
-                breakdowns.get_attr(&Attribute::Sheltering(Sheltering::MagicalTotal)),
+                breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalTotal)),
                 Decimal::from(50)
             );
         }
@@ -455,8 +455,8 @@ mod sheltering {
 
             breakdowns.insert_bonus(Bonus::flag(ArmorType::Light, BonusSource::Debug(0)));
 
-            assert_eq!(breakdowns.get_attr(&CAP), 100.into());
-            assert_eq!(breakdowns.get_attr(&TOTAL), 0.into());
+            assert_eq!(breakdowns.get_attribute(CAP), 100.into());
+            assert_eq!(breakdowns.get_attribute(TOTAL), 0.into());
 
             breakdowns.insert_bonus(Bonus::new(
                 Sheltering::Magical,
@@ -466,8 +466,8 @@ mod sheltering {
                 None,
             ));
 
-            assert_eq!(breakdowns.get_attr(&CAP), 100.into());
-            assert_eq!(breakdowns.get_attr(&TOTAL), 100.into());
+            assert_eq!(breakdowns.get_attribute(CAP), 100.into());
+            assert_eq!(breakdowns.get_attribute(TOTAL), 100.into());
         }
 
         #[test]
@@ -490,7 +490,7 @@ mod sheltering {
                     ),
                 ]);
 
-                assert_eq!(breakdowns.get_attr(&TOTAL), 200.into());
+                assert_eq!(breakdowns.get_attribute(TOTAL), 200.into());
             }
         }
     }
@@ -749,7 +749,7 @@ mod feats {
             ));
 
             assert!(
-                compiler.get_attr(&Attribute::Feat(Feat::Proficiency(
+                compiler.get_attribute(Attribute::Feat(Feat::Proficiency(
                     Proficiency::WeaponProficiency(WeaponType::Dagger)
                 ))) > 0.into()
             );
@@ -767,7 +767,7 @@ mod feats {
             ));
 
             assert!(
-                compiler.get_attr(&Attribute::Feat(Feat::Proficiency(
+                compiler.get_attribute(Attribute::Feat(Feat::Proficiency(
                     Proficiency::WeaponProficiency(WeaponType::Falchion)
                 ))) > 0.into()
             );
