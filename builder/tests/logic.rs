@@ -199,6 +199,34 @@ mod skills {
 }
 
 mod spells {
+
+    macro_rules! universal_to {
+        ($attribute: ident, $name: ident, $damage: ident) => {
+            #[test]
+            fn $name() {
+                let mut breakdowns = Breakdowns::new();
+
+                let initial = breakdowns.get_attribute(Attribute::$attribute(SpellPower::Damage(
+                    DamageType::$damage,
+                )));
+
+                breakdowns.insert_bonus(Bonus::new(
+                    Attribute::$attribute(SpellPower::Universal),
+                    BonusType::Stacking,
+                    100,
+                    BonusSource::Debug(0),
+                    None,
+                ));
+
+                let result = breakdowns.get_attribute(Attribute::$attribute(SpellPower::Damage(
+                    DamageType::$damage,
+                )));
+
+                assert_eq!(result - initial, 100.into());
+            }
+        };
+    }
+
     mod spell_power {
         use builder::{
             attribute::Attribute,
@@ -249,25 +277,20 @@ mod spells {
             skill_test!(spellcraft_to_poison, Spellcraft, Poison);
         }
 
-        #[test]
-        fn universal_increases_others() {
-            for sp in SpellPower::SPELL_POWERS {
-                let mut breakdowns = Breakdowns::new();
+        mod universal {
+            use super::*;
 
-                let initial = breakdowns.get_attribute(Attribute::SpellPower(sp));
-
-                breakdowns.insert_bonus(Bonus::new(
-                    Attribute::SpellPower(SpellPower::Universal),
-                    BonusType::Stacking,
-                    100,
-                    BonusSource::Debug(0),
-                    None,
-                ));
-
-                let result = breakdowns.get_attribute(Attribute::SpellPower(sp));
-
-                assert_eq!(result - initial, 100.into());
-            }
+            universal_to!(SpellPower, universal_to_acid, Acid);
+            universal_to!(SpellPower, universal_to_fire, Fire);
+            universal_to!(SpellPower, universal_to_cold, Cold);
+            universal_to!(SpellPower, universal_to_electric, Electric);
+            universal_to!(SpellPower, universal_to_positive, Positive);
+            universal_to!(SpellPower, universal_to_negative, Negative);
+            universal_to!(SpellPower, universal_to_poison, Poison);
+            universal_to!(SpellPower, universal_to_repair, Repair);
+            universal_to!(SpellPower, universal_to_rust, Rust);
+            universal_to!(SpellPower, universal_to_alignment, Alignment);
+            universal_to!(SpellPower, universal_to_light, Light);
         }
     }
 
@@ -276,28 +299,23 @@ mod spells {
             attribute::Attribute,
             bonus::{Bonus, BonusSource, BonusType},
             breakdowns::Breakdowns,
-            types::spell_power::SpellPower,
+            types::{damage_type::DamageType, spell_power::SpellPower},
         };
 
-        #[test]
-        fn universal_increases_others() {
-            for sp in SpellPower::SPELL_POWERS {
-                let mut breakdowns = Breakdowns::new();
+        mod universal {
+            use super::*;
 
-                let initial = breakdowns.get_attribute(Attribute::SpellCriticalChance(sp));
-
-                breakdowns.insert_bonus(Bonus::new(
-                    Attribute::SpellCriticalChance(SpellPower::Universal),
-                    BonusType::Stacking,
-                    100,
-                    BonusSource::Debug(0),
-                    None,
-                ));
-
-                let result = breakdowns.get_attribute(Attribute::SpellCriticalChance(sp));
-
-                assert_eq!(result - initial, 100.into());
-            }
+            universal_to!(SpellCriticalChance, universal_to_acid, Acid);
+            universal_to!(SpellCriticalChance, universal_to_fire, Fire);
+            universal_to!(SpellCriticalChance, universal_to_cold, Cold);
+            universal_to!(SpellCriticalChance, universal_to_electric, Electric);
+            universal_to!(SpellCriticalChance, universal_to_positive, Positive);
+            universal_to!(SpellCriticalChance, universal_to_negative, Negative);
+            universal_to!(SpellCriticalChance, universal_to_poison, Poison);
+            universal_to!(SpellCriticalChance, universal_to_repair, Repair);
+            universal_to!(SpellCriticalChance, universal_to_rust, Rust);
+            universal_to!(SpellCriticalChance, universal_to_alignment, Alignment);
+            universal_to!(SpellCriticalChance, universal_to_light, Light);
         }
     }
     mod critical_damage {
@@ -305,28 +323,23 @@ mod spells {
             attribute::Attribute,
             bonus::{Bonus, BonusSource, BonusType},
             breakdowns::Breakdowns,
-            types::spell_power::SpellPower,
+            types::{damage_type::DamageType, spell_power::SpellPower},
         };
 
-        #[test]
-        fn universal_increases_others() {
-            for sp in SpellPower::SPELL_POWERS {
-                let mut breakdowns = Breakdowns::new();
+        mod universal {
+            use super::*;
 
-                let initial = breakdowns.get_attribute(Attribute::SpellCriticalDamage(sp));
-
-                breakdowns.insert_bonus(Bonus::new(
-                    Attribute::SpellCriticalDamage(SpellPower::Universal),
-                    BonusType::Stacking,
-                    100,
-                    BonusSource::Debug(0),
-                    None,
-                ));
-
-                let result = breakdowns.get_attribute(Attribute::SpellCriticalDamage(sp));
-
-                assert_eq!(result - initial, 100.into());
-            }
+            universal_to!(SpellCriticalDamage, universal_to_acid, Acid);
+            universal_to!(SpellCriticalDamage, universal_to_fire, Fire);
+            universal_to!(SpellCriticalDamage, universal_to_cold, Cold);
+            universal_to!(SpellCriticalDamage, universal_to_electric, Electric);
+            universal_to!(SpellCriticalDamage, universal_to_positive, Positive);
+            universal_to!(SpellCriticalDamage, universal_to_negative, Negative);
+            universal_to!(SpellCriticalDamage, universal_to_poison, Poison);
+            universal_to!(SpellCriticalDamage, universal_to_repair, Repair);
+            universal_to!(SpellCriticalDamage, universal_to_rust, Rust);
+            universal_to!(SpellCriticalDamage, universal_to_alignment, Alignment);
+            universal_to!(SpellCriticalDamage, universal_to_light, Light);
         }
     }
 }
