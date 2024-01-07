@@ -1,15 +1,29 @@
 // Tests that revolve around testing properly implemented logic
 // This does not test the actual content of the game, but rather the universal logic things.
 // Basically, testing logic that should apply to basically all characters
+use builder::{
+    attribute::Attribute,
+    bonus::{Bonus, BonusSource, BonusType},
+    breakdowns::Breakdowns,
+    debug::DebugValue,
+    feat::{Feat, Proficiency},
+    types::{
+        ability::Ability,
+        armor_class::ArmorClass,
+        damage_type::DamageType,
+        flag::OffHandType,
+        item::{ArmorType, ShieldType, WeaponType},
+        race::Race,
+        saving_throw::SavingThrow,
+        sheltering::Sheltering,
+        skill::Skill,
+        spell_power::SpellPower,
+    },
+};
+use rust_decimal::Decimal;
 
 mod ability {
-    use builder::{
-        attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType},
-        breakdowns::Breakdowns,
-        types::ability::Ability,
-    };
-    use rust_decimal::Decimal;
+    use super::*;
 
     #[test]
     fn base_score_is_8() {
@@ -74,14 +88,10 @@ mod ability {
 }
 
 mod saving_throw {
+    use super::*;
 
     mod ability {
-        use builder::{
-            attribute::Attribute,
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            types::{ability::Ability, saving_throw::SavingThrow},
-        };
+        use super::*;
 
         macro_rules! ability_test {
             ($name: ident, $ability: ident, $save: ident) => {
@@ -109,12 +119,7 @@ mod saving_throw {
 }
 
 mod skills {
-    use builder::{
-        bonus::{Bonus, BonusSource, BonusType},
-        breakdowns::Breakdowns,
-        types::{ability::Ability, skill::Skill},
-    };
-    use rust_decimal::Decimal;
+    use super::*;
 
     mod ability {
         use super::*;
@@ -199,6 +204,7 @@ mod skills {
 }
 
 mod spells {
+    use super::*;
 
     macro_rules! universal_to {
         ($attribute: ident, $name: ident, $damage: ident) => {
@@ -228,12 +234,7 @@ mod spells {
     }
 
     mod spell_power {
-        use builder::{
-            attribute::Attribute,
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            types::{damage_type::DamageType, skill::Skill, spell_power::SpellPower},
-        };
+        use super::*;
 
         mod skill {
             use super::*;
@@ -295,69 +296,50 @@ mod spells {
     }
 
     mod critical_chance {
-        use builder::{
-            attribute::Attribute,
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            types::{damage_type::DamageType, spell_power::SpellPower},
-        };
+        use super::*;
 
         mod universal {
             use super::*;
 
-            universal_to!(SpellPower, to_acid, Acid);
-            universal_to!(SpellPower, to_fire, Fire);
-            universal_to!(SpellPower, to_cold, Cold);
-            universal_to!(SpellPower, to_electric, Electric);
-            universal_to!(SpellPower, to_positive, Positive);
-            universal_to!(SpellPower, to_negative, Negative);
-            universal_to!(SpellPower, to_poison, Poison);
-            universal_to!(SpellPower, to_repair, Repair);
-            universal_to!(SpellPower, to_rust, Rust);
-            universal_to!(SpellPower, to_alignment, Alignment);
-            universal_to!(SpellPower, to_light, Light);
+            universal_to!(SpellCriticalChance, to_acid, Acid);
+            universal_to!(SpellCriticalChance, to_fire, Fire);
+            universal_to!(SpellCriticalChance, to_cold, Cold);
+            universal_to!(SpellCriticalChance, to_electric, Electric);
+            universal_to!(SpellCriticalChance, to_positive, Positive);
+            universal_to!(SpellCriticalChance, to_negative, Negative);
+            universal_to!(SpellCriticalChance, to_poison, Poison);
+            universal_to!(SpellCriticalChance, to_repair, Repair);
+            universal_to!(SpellCriticalChance, to_rust, Rust);
+            universal_to!(SpellCriticalChance, to_alignment, Alignment);
+            universal_to!(SpellCriticalChance, to_light, Light);
         }
     }
     mod critical_damage {
-        use builder::{
-            attribute::Attribute,
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            types::spell_power::SpellPower,
-        };
+        use super::*;
 
-        #[test]
-        fn universal_increases_others() {
-            for sp in SpellPower::SPELL_POWERS {
-                let mut breakdowns = Breakdowns::new();
+        mod universal {
+            use super::*;
 
-                let initial = breakdowns.get_attribute(Attribute::SpellCriticalDamage(sp));
-
-                breakdowns.insert_bonus(Bonus::new(
-                    Attribute::SpellCriticalDamage(SpellPower::Universal),
-                    BonusType::Stacking,
-                    100,
-                    BonusSource::Debug(0),
-                    None,
-                ));
-
-                let result = breakdowns.get_attribute(Attribute::SpellCriticalDamage(sp));
-
-                assert_eq!(result - initial, 100.into());
-            }
+            universal_to!(SpellCriticalDamage, to_acid, Acid);
+            universal_to!(SpellCriticalDamage, to_fire, Fire);
+            universal_to!(SpellCriticalDamage, to_cold, Cold);
+            universal_to!(SpellCriticalDamage, to_electric, Electric);
+            universal_to!(SpellCriticalDamage, to_positive, Positive);
+            universal_to!(SpellCriticalDamage, to_negative, Negative);
+            universal_to!(SpellCriticalDamage, to_poison, Poison);
+            universal_to!(SpellCriticalDamage, to_repair, Repair);
+            universal_to!(SpellCriticalDamage, to_rust, Rust);
+            universal_to!(SpellCriticalDamage, to_alignment, Alignment);
+            universal_to!(SpellCriticalDamage, to_light, Light);
         }
     }
 }
 
 mod sheltering {
+    use super::*;
 
     mod reduction {
-        use builder::{
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            types::sheltering::Sheltering,
-        };
-        use rust_decimal::Decimal;
+        use super::*;
 
         fn resistance_scale(
             inputs: impl IntoIterator<Item = impl Into<Decimal> + Copy>,
@@ -425,13 +407,7 @@ mod sheltering {
     }
 
     mod mrr_cap {
-        use builder::{
-            attribute::Attribute,
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            types::{item::ArmorType, sheltering::Sheltering},
-        };
-        use rust_decimal::Decimal;
+        use super::*;
 
         #[test]
         fn capped_at_50_in_cloth() {
@@ -515,12 +491,7 @@ mod sheltering {
 }
 
 mod armor_class {
-    use builder::{
-        bonus::Bonus,
-        breakdowns::Breakdowns,
-        debug::DebugValue,
-        types::{ability::Ability, armor_class::ArmorClass},
-    };
+    use super::*;
 
     mod bonuses {
         use super::*;
@@ -622,11 +593,6 @@ mod armor_class {
     }
 
     mod max_dex_bonus {
-        use builder::types::{
-            flag::OffHandType,
-            item::{ArmorType, ShieldType},
-        };
-
         use super::*;
 
         macro_rules! dex_test {
@@ -713,13 +679,9 @@ mod armor_class {
 }
 
 mod race {
+    use super::*;
     mod dwarf {
-        use builder::{
-            bonus::{Bonus, BonusSource},
-            breakdowns::Breakdowns,
-            feat::{Feat, Proficiency},
-            types::{item::WeaponType, race::Race},
-        };
+        use super::*;
 
         #[test]
         fn dwarven_war_axe() {
@@ -746,14 +708,9 @@ mod race {
 }
 
 mod feats {
+    use super::*;
     mod proficiencies {
-        use builder::{
-            attribute::Attribute,
-            bonus::{Bonus, BonusSource, BonusType},
-            breakdowns::Breakdowns,
-            feat::{Feat, Proficiency},
-            types::item::WeaponType,
-        };
+        use super::*;
 
         #[test]
         fn simple_proficiency_provides_proficiencies() {
@@ -794,10 +751,7 @@ mod feats {
 }
 
 mod armor_check_penalty {
-    use builder::{
-        attribute::Attribute, bonus::Bonus, breakdowns::Breakdowns, debug::DebugValue,
-        types::skill::Skill,
-    };
+    use super::*;
 
     mod skills {
         use super::*;
