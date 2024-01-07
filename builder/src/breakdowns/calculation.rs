@@ -39,7 +39,7 @@ impl Breakdowns {
         }
 
         let result = match value {
-            Value::Const(val) => *val,
+            Value::Const(val) => return *val,
             Value::Attribute(attribute) => self
                 .calculate_attribute(*attribute)
                 .unwrap_or(Decimal::ZERO),
