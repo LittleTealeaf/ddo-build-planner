@@ -13,7 +13,7 @@ pub enum MonsterType {
     /// Giants
     Giant,
     /// Outsiders
-    Outsiders
+    Outsiders,
 }
 
 impl Display for MonsterType {

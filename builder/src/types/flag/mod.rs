@@ -78,7 +78,10 @@ pub trait ToFlag {
     fn to_flag(self) -> Flag;
 }
 
-impl<T> From<T> for Flag where T: ToFlag {
+impl<T> From<T> for Flag
+where
+    T: ToFlag,
+{
     fn from(value: T) -> Self {
         value.to_flag()
     }
