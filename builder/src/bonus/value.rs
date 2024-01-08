@@ -30,6 +30,8 @@ pub enum Value {
     Floor(Box<Value>),
     /// Ceils the inner value to a whole number
     Ceil(Box<Value>),
+    /// Rounds the value to the closest whole number
+    Round(Box<Value>),
     /// Makes the value positive if it is negative
     Abs(Box<Value>),
     /// Adds the first value to the second value
@@ -174,6 +176,14 @@ impl Value {
         Self::Ceil(Box::new(self))
     }
 
+    /// Shortcut for [`Condition::Round`]
+    ///
+    /// [`Condition::Round`]: Self#variant.Round
+    #[must_use]
+    pub fn round(self) -> Self {
+        Self::Round(Box::new(self))
+    }
+
     /// Shortcut for [`Condition::Abs`]
     ///
     /// [`Condition::Abs`]: Self#variant.Abs
@@ -218,7 +228,7 @@ impl Depth for Value {
             | Self::Mul(a, b)
             | Self::Div(a, b)
             | Self::Rem(a, b) => a.get_depth().max(b.get_depth()),
-            Self::Abs(a) | Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
+            Self::Round(a) | Self::Abs(a) | Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
             Self::If {
                 condition,
                 if_true,
@@ -246,6 +256,7 @@ impl Display for Value {
             Self::Floor(val) => write!(f, "Floor({val})"),
             Self::Ceil(val) => write!(f, "Ceil({val})"),
             Self::Abs(val) => write!(f, "|{val}|"),
+            Self::Round(val) => write!(f, "Round({val})"),
             Self::If {
                 condition,
                 if_true,
@@ -271,7 +282,7 @@ impl AttributeDependencies for Value {
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
+            Self::Round(val) | Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
                 val.has_attr_dependency(attribute)
             }
             Self::If {
@@ -302,7 +313,7 @@ impl AttributeDependencies for Value {
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Round(val) | Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
             Self::If {
                 condition,
                 if_true,

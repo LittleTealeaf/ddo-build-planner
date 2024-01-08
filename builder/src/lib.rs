@@ -7,5 +7,4 @@ pub mod breakdowns;
 pub mod debug;
 pub mod equipment;
 pub mod feat;
-pub mod race;
 pub mod types;

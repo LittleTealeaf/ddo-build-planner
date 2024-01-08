@@ -108,6 +108,14 @@ mod value {
     }
 
     #[test]
+    fn round() {
+        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().round())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().round())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().round())], 10);
+        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().round())], 11);
+    }
+
+    #[test]
     fn abs() {
         expect_value([dbg_bonus(0, Value::from(2).abs())], 2);
         expect_value([dbg_bonus(0, Value::from(-3).abs())], 3);

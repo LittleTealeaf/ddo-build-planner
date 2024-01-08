@@ -10,7 +10,6 @@ use std::fmt::Display;
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, CloneBonus},
-    race::RacialFeat,
 };
 
 /// All possible feats that the player can have.
@@ -24,7 +23,6 @@ pub enum Feat {
     SkillFocus(SkillFocus),
     /// Spell Focus Feats
     Spellcasting(SpellcastingFeat),
-    // SpellFocus(SpellFocusFeat),
 }
 
 impl Display for Feat {
