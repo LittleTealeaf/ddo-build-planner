@@ -72,44 +72,14 @@ impl ToAttribute for Flag {
     }
 }
 
-impl From<Toggle> for Flag {
-    fn from(value: Toggle) -> Self {
-        Self::HasToggle(value)
-    }
+/// Indicates that this object is a flag
+pub trait ToFlag {
+    /// Converts this object to a flag
+    fn to_flag(self) -> Flag;
 }
 
-impl From<Race> for Flag {
-    fn from(value: Race) -> Self {
-        Self::Race(value)
-    }
-}
-
-impl From<Immunity> for Flag {
-    fn from(value: Immunity) -> Self {
-        Self::Immunity(value)
-    }
-}
-
-impl From<OffHandType> for Flag {
-    fn from(value: OffHandType) -> Self {
-        Self::OffHandType(value)
-    }
-}
-
-impl From<MainHandType> for Flag {
-    fn from(value: MainHandType) -> Self {
-        Self::MainHandType(value)
-    }
-}
-
-impl From<ArmorType> for Flag {
-    fn from(value: ArmorType) -> Self {
-        Self::ArmorType(value)
-    }
-}
-
-impl ToAttribute for ArmorType {
-    fn to_attribute(self) -> Attribute {
-        Flag::ArmorType(self).to_attribute()
+impl<T> From<T> for Flag where T: ToFlag {
+    fn from(value: T) -> Self {
+        value.to_flag()
     }
 }

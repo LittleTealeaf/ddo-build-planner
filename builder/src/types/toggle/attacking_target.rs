@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::{alignment::Alignment, monster_type::MonsterType};
 
+use super::{ToToggle, Toggle};
+
 /// Indicates that the character is attacking / fighting a certain type
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum AttackingTarget {
@@ -22,5 +24,11 @@ impl Display for AttackingTarget {
             Self::MonsterType(monster_type) => monster_type.fmt(f),
             Self::Alignment(alignment) => alignment.fmt(f),
         }
+    }
+}
+
+impl ToToggle for AttackingTarget {
+    fn to_toggle(self) -> super::Toggle {
+        Toggle::Attacking(self)
     }
 }

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::ToAttribute;
 
-use super::flag::Flag;
+use super::flag::{Flag, ToFlag};
 
 /// Indicates that the character is immune to certain things
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -30,6 +30,12 @@ impl Display for Immunity {
 
 impl ToAttribute for Immunity {
     fn to_attribute(self) -> crate::attribute::Attribute {
-        Flag::Immunity(self).to_attribute()
+        self.to_flag().to_attribute()
+    }
+}
+
+impl ToFlag for Immunity {
+    fn to_flag(self) -> Flag {
+        Flag::Immunity(self)
     }
 }

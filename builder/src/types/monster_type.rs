@@ -12,6 +12,8 @@ pub enum MonsterType {
     Goblinoid,
     /// Giants
     Giant,
+    /// Outsiders
+    Outsiders
 }
 
 impl Display for MonsterType {
@@ -19,6 +21,7 @@ impl Display for MonsterType {
         match self {
             Self::Orc => write!(f, "Orc"),
             Self::Goblinoid => write!(f, "Goblinoid"),
+            Self::Outsiders => write!(f, "Outsider"),
             Self::Giant => write!(f, "Giant"),
         }
     }

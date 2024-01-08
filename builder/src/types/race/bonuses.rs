@@ -5,8 +5,17 @@ use crate::{
     bonus::{Bonus, BonusType, Condition},
     feat::{Feat, Proficiency, RacialFeat},
     types::{
-        ability::Ability, damage_type::DamageType, immunity::Immunity, item::WeaponType,
-        race::Race, saving_throw::SavingThrow, skill::Skill,
+        ability::Ability,
+        alignment::Alignment,
+        damage_type::DamageType,
+        immunity::Immunity,
+        item::WeaponType,
+        monster_type::MonsterType,
+        race::Race,
+        saving_throw::SavingThrow,
+        skill::Skill,
+        toggle::AttackingTarget,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
 
@@ -180,8 +189,40 @@ impl GetBonuses for Race {
                     Self::Tiefling,
                     None,
                 ),
-                // TODO: +2 to hit and damage against lawful outsiders and good outsiders
-                // TODO: Fear Immunity
+                Bonus::toggle(
+                    AttackingTarget::Alignment(Alignment::Lawful),
+                    Self::Tiefling,
+                    None,
+                ),
+                Bonus::toggle(
+                    AttackingTarget::Alignment(Alignment::Good),
+                    Self::Tiefling,
+                    None,
+                ),
+                Bonus::toggle(
+                    AttackingTarget::MonsterType(MonsterType::Outsiders),
+                    Self::Tiefling,
+                    None,
+                ),
+                Bonus::new(
+                    (WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Stacking,
+                    2,
+                    Self::Tiefling,
+                    (Condition::toggled(AttackingTarget::Alignment(Alignment::Lawful))
+                        | Condition::toggled(AttackingTarget::Alignment(Alignment::Good)))
+                        & Condition::toggled(AttackingTarget::MonsterType(MonsterType::Outsiders)),
+                ),
+                Bonus::new(
+                    (WeaponHand::Both, WeaponStat::Damage),
+                    BonusType::Stacking,
+                    2,
+                    Self::Tiefling,
+                    (Condition::toggled(AttackingTarget::Alignment(Alignment::Lawful))
+                        | Condition::toggled(AttackingTarget::Alignment(Alignment::Good)))
+                        & Condition::toggled(AttackingTarget::MonsterType(MonsterType::Outsiders)),
+                ),
+                Bonus::flag(Immunity::Fear, Self::Tiefling, None),
             ]),
             Self::Scoundrel => Some(vec![self.ability_modifier(Ability::Charisma, 2)]),
             Self::Warforged => Some(vec![

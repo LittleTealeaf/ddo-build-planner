@@ -13,7 +13,10 @@ use std::{collections::HashSet, fmt::Display};
 use crate::{
     attribute::{Attribute, AttributeDependencies},
     feat::Feat,
-    types::flag::Flag,
+    types::{
+        flag::{Flag, ToFlag},
+        toggle::Toggle,
+    },
 };
 
 pub use base::*;
@@ -111,6 +114,17 @@ impl Bonus {
         condition: impl Into<Option<Condition>>,
     ) -> Self {
         Self::new(feat.into(), BonusType::Stacking, 1, source, condition)
+    }
+
+    /// Provides the use of a toggle
+    #[must_use]
+    pub fn toggle(
+        toggle: impl Into<Toggle>,
+        source: impl Into<BonusSource>,
+        condition: impl Into<Option<Condition>>,
+    ) -> Self {
+        let toggle: Toggle = toggle.into();
+        Self::new(toggle.to_flag(), BonusType::Stacking, 1, source, condition)
     }
 }
 

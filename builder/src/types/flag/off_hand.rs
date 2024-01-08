@@ -7,7 +7,7 @@ use crate::{
     types::item::{ShieldType, WeaponType},
 };
 
-use super::Flag;
+use super::{Flag, ToFlag};
 
 /// Represents the different types of items the character can wield in their off hand
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -44,6 +44,12 @@ impl From<ShieldType> for OffHandType {
 
 impl ToAttribute for OffHandType {
     fn to_attribute(self) -> crate::attribute::Attribute {
-        Flag::OffHandType(self).to_attribute()
+        self.to_flag().to_attribute()
+    }
+}
+
+impl ToFlag for OffHandType {
+    fn to_flag(self) -> Flag {
+        Flag::OffHandType(self)
     }
 }
