@@ -102,12 +102,10 @@ impl GetBonuses for Race {
                 self.bonus_feat(RacialFeat::DwarvenStonecunning),
                 self.bonus_feat(RacialFeat::DwarvenStability),
                 self.bonus_feat(RacialFeat::SpellSaveBonus),
-                Bonus::new(
+                Bonus::feat(
                     Proficiency::from(WeaponType::DwarvenWarAxe),
-                    BonusType::Stacking,
-                    1,
                     Self::Dwarf,
-                    Some(Condition::has(Proficiency::MartialWeaponProficiency)),
+                    Condition::has(Proficiency::MartialWeaponProficiency),
                 ),
             ]),
             Self::Elf => Some(vec![
@@ -144,7 +142,7 @@ impl GetBonuses for Race {
                 Bonus::new(Skill::Listen, BonusType::Racial, 1, Self::HalfElf, None),
                 Bonus::new(Skill::Search, BonusType::Racial, 1, Self::HalfElf, None),
                 Bonus::new(Skill::Spot, BonusType::Racial, 1, Self::HalfElf, None),
-                Bonus::flag(Immunity::Sleep, Self::HalfElf),
+                Bonus::flag(Immunity::Sleep, Self::HalfElf, None),
                 Bonus::new(Skill::Diplomacy, BonusType::Racial, 2, Self::HalfElf, None),
             ]),
             Self::HalfOrc => Some(vec![

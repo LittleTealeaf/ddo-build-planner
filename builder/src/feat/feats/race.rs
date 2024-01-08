@@ -189,6 +189,7 @@ impl GetBonuses for RacialFeat {
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)),
                         Self::GiantEvasion,
+                        None
                     ),
                     Bonus::new(
                         ArmorClass::Bonus,
@@ -206,10 +207,12 @@ impl GetBonuses for RacialFeat {
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)),
                         Self::OrcAndGoblinBonus,
+                        None
                     ),
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid)),
                         Self::OrcAndGoblinBonus,
+                        None
                     ),
                     Bonus::new(
                         (WeaponHand::Both, WeaponStat::Attack),
