@@ -3,8 +3,7 @@ use rust_decimal::Decimal;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
-    feat::{Feat, Proficiency},
-    race::RacialFeat,
+    feat::{Feat, Proficiency, RacialFeat},
     types::{
         ability::Ability, damage_type::DamageType, immunity::Immunity, item::WeaponType,
         race::Race, saving_throw::SavingThrow, skill::Skill,
