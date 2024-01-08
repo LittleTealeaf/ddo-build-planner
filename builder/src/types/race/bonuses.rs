@@ -151,8 +151,8 @@ impl GetBonuses for Race {
                 Bonus::new(Skill::Listen, BonusType::Racial, 1, Self::HalfElf, None),
                 Bonus::new(Skill::Search, BonusType::Racial, 1, Self::HalfElf, None),
                 Bonus::new(Skill::Spot, BonusType::Racial, 1, Self::HalfElf, None),
-                Bonus::flag(Immunity::Sleep, Self::HalfElf, None),
                 Bonus::new(Skill::Diplomacy, BonusType::Racial, 2, Self::HalfElf, None),
+                self.bonus_feat(RacialFeat::ImmunityToSleep),
             ]),
             Self::HalfOrc => Some(vec![
                 self.ability_modifier(Ability::Strength, 2),
