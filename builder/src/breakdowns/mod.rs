@@ -9,6 +9,8 @@ use std::collections::HashMap;
 
 use rust_decimal::Decimal;
 
+pub use breakdown::*;
+
 use crate::{
     attribute::Attribute,
     bonus::{get_base_bonuses, Bonus, BonusSource, Condition, Value},
