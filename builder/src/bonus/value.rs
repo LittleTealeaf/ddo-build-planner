@@ -314,7 +314,7 @@ impl AttributeDependencies for Value {
                 set.insert(*attr);
             }
             Self::Round(val) | Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
-                val.include_attr_dependency(set)
+                val.include_attr_dependency(set);
             }
             Self::If {
                 condition,

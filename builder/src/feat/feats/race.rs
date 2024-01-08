@@ -1,4 +1,3 @@
-
 use std::fmt::Display;
 
 use rust_decimal::Decimal;
@@ -7,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition, ConditionFold},
-    feat::Feat,
+    feat::{Feat, ToFeat},
     types::{
         armor_class::ArmorClass,
         flag::{Flag, MainHandType, OffHandType},
@@ -93,23 +92,17 @@ impl GetBonuses for RacialFeat {
                         (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Size,
                         1,
-                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)),
+                        Self::SmallSizeBonus,
                         None,
                     ),
                     Bonus::new(
                         ArmorClass::Bonus,
                         BonusType::Size,
                         1,
-                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)),
+                        Self::SmallSizeBonus,
                         None,
                     ),
-                    Bonus::new(
-                        Skill::Hide,
-                        BonusType::Size,
-                        4,
-                        Attribute::from(Feat::RacialFeat(Self::SmallSizeBonus)),
-                        None,
-                    ),
+                    Bonus::new(Skill::Hide, BonusType::Size, 4, Self::SmallSizeBonus, None),
                 ]
             }
             Self::GnomishProficiencies => {
@@ -118,14 +111,14 @@ impl GetBonuses for RacialFeat {
                         Skill::Haggle,
                         BonusType::Stacking,
                         2,
-                        Attribute::from(Feat::RacialFeat(Self::GnomishProficiencies)),
+                        Self::GnomishProficiencies,
                         None,
                     ),
                     Bonus::new(
                         Skill::UseMagicalDevice,
                         BonusType::Stacking,
                         22,
-                        Attribute::from(Feat::RacialFeat(Self::GnomishProficiencies)),
+                        Self::GnomishProficiencies,
                         None,
                     ),
                 ]
@@ -135,7 +128,7 @@ impl GetBonuses for RacialFeat {
                     Immunity::Sleep,
                     BonusType::Stacking,
                     1,
-                    Attribute::from(Feat::RacialFeat(Self::ImmunityToSleep)),
+                    Self::ImmunityToSleep,
                     None,
                 )]
             }
@@ -144,7 +137,7 @@ impl GetBonuses for RacialFeat {
                     SavingThrow::Enchantment,
                     BonusType::Stacking,
                     2,
-                    Attribute::from(Feat::RacialFeat(Self::EnchantmentSaveBonus)),
+                    Self::EnchantmentSaveBonus,
                     None,
                 )]
             }
@@ -154,21 +147,21 @@ impl GetBonuses for RacialFeat {
                         Skill::Listen,
                         BonusType::Stacking,
                         2,
-                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)),
+                        Self::ElvenKeenSenses,
                         None,
                     ),
                     Bonus::new(
                         Skill::Search,
                         BonusType::Stacking,
                         2,
-                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)),
+                        Self::ElvenKeenSenses,
                         None,
                     ),
                     Bonus::new(
                         Skill::Spot,
                         BonusType::Stacking,
                         2,
-                        Attribute::from(Feat::RacialFeat(Self::ElvenKeenSenses)),
+                        Self::ElvenKeenSenses,
                         None,
                     ),
                 ]
@@ -178,7 +171,7 @@ impl GetBonuses for RacialFeat {
                     Attribute::SpellResistance,
                     BonusType::Stacking,
                     6,
-                    Attribute::from(Feat::RacialFeat(Self::RacialSpellResistance)),
+                    Self::RacialSpellResistance,
                     None,
                 )]
             }
@@ -187,7 +180,7 @@ impl GetBonuses for RacialFeat {
                     Skill::Balance,
                     BonusType::Stacking,
                     4,
-                    Attribute::from(Feat::RacialFeat(Self::DwarvenStability)),
+                    Self::DwarvenStability,
                     None,
                 )]
             }
@@ -195,15 +188,15 @@ impl GetBonuses for RacialFeat {
                 vec![
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)),
-                        Attribute::from(Feat::RacialFeat(Self::GiantEvasion)),
+                        Self::GiantEvasion,
                     ),
                     Bonus::new(
                         ArmorClass::Bonus,
                         BonusType::Dodge,
                         4,
-                        Attribute::from(Feat::RacialFeat(Self::GiantEvasion)),
-                        Some(Condition::has(Toggle::Attacking(
-                            AttackingTarget::MonsterType(MonsterType::Giant),
+                        Self::GiantEvasion,
+                        Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
+                            MonsterType::Giant,
                         ))),
                     ),
                 ]
@@ -212,17 +205,17 @@ impl GetBonuses for RacialFeat {
                 vec![
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)),
-                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)),
+                        Self::OrcAndGoblinBonus,
                     ),
                     Bonus::flag(
                         Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid)),
-                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)),
+                        Self::OrcAndGoblinBonus,
                     ),
                     Bonus::new(
                         (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Racial,
                         1,
-                        Attribute::from(Feat::RacialFeat(Self::OrcAndGoblinBonus)),
+                        Self::OrcAndGoblinBonus,
                         Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
                             MonsterType::Orc,
                         ))) | Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
@@ -236,7 +229,7 @@ impl GetBonuses for RacialFeat {
                     Skill::Search,
                     BonusType::Stacking,
                     2,
-                    Attribute::from(Feat::RacialFeat(Self::DwarvenStonecunning)),
+                    Self::DwarvenStonecunning,
                     None,
                 )]
             }
@@ -245,7 +238,7 @@ impl GetBonuses for RacialFeat {
                     SavingThrow::Spell,
                     BonusType::Stacking,
                     2,
-                    Attribute::from(Feat::from(Self::SpellSaveBonus)),
+                    Self::SpellSaveBonus,
                     None,
                 )]
             }
@@ -254,7 +247,7 @@ impl GetBonuses for RacialFeat {
                     SavingThrow::Poison,
                     BonusType::Stacking,
                     2,
-                    Attribute::from(Feat::from(Self::PoisonSaveBonus)),
+                    Self::PoisonSaveBonus,
                     None,
                 )]
             }
@@ -263,14 +256,14 @@ impl GetBonuses for RacialFeat {
                     Skill::Jump,
                     BonusType::Stacking,
                     2,
-                    Attribute::from(Feat::from(Self::HalflingAgility)),
+                    Self::HalflingAgility,
                     None,
                 ),
                 Bonus::new(
                     Skill::MoveSilently,
                     BonusType::Stacking,
                     2,
-                    Attribute::from(Feat::from(Self::HalflingAgility)),
+                    Self::HalflingAgility,
                     None,
                 ),
             ],
@@ -278,21 +271,21 @@ impl GetBonuses for RacialFeat {
                 SavingThrow::Fear,
                 BonusType::Morale,
                 2,
-                Attribute::from(Feat::from(Self::HalflingBravery)),
+                Self::HalflingBravery,
                 None,
             )],
             Self::HalflingKeenEars => vec![Bonus::new(
                 Skill::Listen,
                 BonusType::Stacking,
                 2,
-                Attribute::from(Feat::from(Self::HalflingKeenEars)),
+                Self::HalflingKeenEars,
                 None,
             )],
             Self::HalflingLuck => vec![Bonus::new(
                 SavingThrow::All,
                 BonusType::Luck,
                 1,
-                Attribute::from(Feat::from(Self::HalflingLuck)),
+                Self::HalflingLuck,
                 None,
             )],
             Self::HalflingThrownWeaponFocus => {
@@ -301,7 +294,7 @@ impl GetBonuses for RacialFeat {
                         (WeaponHand::Main, WeaponStat::Attack),
                         BonusType::Stacking,
                         1,
-                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)),
+                        Self::HalflingThrownWeaponFocus,
                         WeaponType::THROWING_WEAPONS
                             .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt))))
                             .cond_any(),
@@ -310,7 +303,7 @@ impl GetBonuses for RacialFeat {
                         (WeaponHand::Off, WeaponStat::Attack),
                         BonusType::Stacking,
                         1,
-                        Attribute::from(Feat::from(Self::HalflingThrownWeaponFocus)),
+                        Self::HalflingThrownWeaponFocus,
                         WeaponType::THROWING_WEAPONS
                             .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt))))
                             .cond_any(),
@@ -318,5 +311,11 @@ impl GetBonuses for RacialFeat {
                 ]
             }
         })
+    }
+}
+
+impl ToFeat for RacialFeat {
+    fn to_feat(self) -> Feat {
+        Feat::RacialFeat(self)
     }
 }

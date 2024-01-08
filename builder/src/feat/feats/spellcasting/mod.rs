@@ -6,8 +6,12 @@ use utils::public_modules;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusSource, BonusType, Value},
-    feat::{Feat, FeatRequirement, GetFeatRequirement}, types::{summoned_attribute::SummonedAttribute, ability::Ability, skill::Skill, spell_power::SpellPower, spell_points::SpellPoints, player_class::PlayerClass},
+    bonus::{Bonus, BonusType, Value},
+    feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
+    types::{
+        ability::Ability, player_class::PlayerClass, skill::Skill, spell_points::SpellPoints,
+        spell_power::SpellPower, summoned_attribute::SummonedAttribute,
+    },
 };
 
 public_modules!(spell_focus);
@@ -39,21 +43,19 @@ impl GetBonuses for SpellcastingFeat {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
         (value > Decimal::ZERO).then(|| match self {
             Self::AugmentSummoning => Some(vec![Bonus::new(
-                Attribute::SummonedAttribute(SummonedAttribute::AbilityScore(
-                    Ability::All,
-                )),
+                SummonedAttribute::AbilityScore(Ability::All),
                 BonusType::Stacking,
                 4,
-                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                *self,
                 None,
             )]),
             Self::MobileSpellcasting => None,
             Self::SpellFocus(focus) => focus.get_bonuses(value),
             Self::CombatCasting => Some(vec![Bonus::new(
-                Attribute::Skill(Skill::Concentration),
+                Skill::Concentration,
                 BonusType::Stacking,
                 4,
-                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                *self,
                 None,
             )]),
             Self::MagicalTraining => Some(vec![
@@ -61,31 +63,24 @@ impl GetBonuses for SpellcastingFeat {
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     5,
-                    BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                    *self,
                     None,
                 ),
-                Bonus::new(
-                    Attribute::SpellPoints(SpellPoints::Base),
-                    BonusType::Stacking,
-                    80,
-                    BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
-                    None,
-                ),
+                Bonus::new(SpellPoints::Base, BonusType::Stacking, 80, *self, None),
             ]),
             Self::MentalToughness | Self::ImprovedMentalToughness => Some(vec![
                 Bonus::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     1,
-                    BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                    *self,
                     None,
                 ),
                 Bonus::new(
-                    Attribute::SpellPoints(SpellPoints::Base),
+                    SpellPoints::Base,
                     BonusType::Stacking,
-                    Value::from(5)
-                        + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5)),
-                    BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                    Value::from(5) + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5)),
+                    *self,
                     None,
                 ),
             ]),
@@ -93,7 +88,7 @@ impl GetBonuses for SpellcastingFeat {
                 Attribute::SpellPenetration,
                 BonusType::Stacking,
                 2,
-                BonusSource::Attribute(Attribute::Feat(Feat::Spellcasting(*self))),
+                *self,
                 None,
             )]),
         })?
@@ -188,5 +183,11 @@ impl Display for SpellcastingFeat {
             Self::CombatCasting => write!(f, "Combat Casting"),
             Self::MobileSpellcasting => write!(f, "Mobile Spellcasting"),
         }
+    }
+}
+
+impl ToFeat for SpellcastingFeat {
+    fn to_feat(self) -> Feat {
+        Feat::Spellcasting(self)
     }
 }

@@ -5,7 +5,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{GetBonuses, TrackAttribute},
+    attribute::{Attribute, GetBonuses, ToAttribute, TrackAttribute},
     bonus::{Bonus, CloneBonus},
 };
 
@@ -45,5 +45,11 @@ impl Display for SummonedAttribute {
         match self {
             Self::AbilityScore(ability) => write!(f, "{ability} score"),
         }
+    }
+}
+
+impl ToAttribute for SummonedAttribute {
+    fn to_attribute(self) -> crate::attribute::Attribute {
+        Attribute::SummonedAttribute(self)
     }
 }
