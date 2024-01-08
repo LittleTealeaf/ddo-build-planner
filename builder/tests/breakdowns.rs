@@ -182,7 +182,7 @@ mod condition {
             DebugValue(0),
             10,
             DebugValue(0),
-            Some(condition.clone()),
+            condition.clone(),
         ));
 
         let value = breakdowns.get_attribute(Attribute::from(DebugValue(0)));
