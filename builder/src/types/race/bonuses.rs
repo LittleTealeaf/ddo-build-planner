@@ -22,17 +22,8 @@ impl Race {
         )
     }
 
-    fn bonus_feat<T>(self, feat: T) -> Bonus
-    where
-        Feat: From<T>,
-    {
-        Bonus::new(
-            Attribute::Feat(Feat::from(feat)),
-            BonusType::Stacking,
-            1,
-            self,
-            None,
-        )
+    fn bonus_feat(self, feat: impl Into<Feat>) -> Bonus {
+        Bonus::new(feat.into(), BonusType::Stacking, 1, self, None)
     }
 }
 
@@ -212,5 +203,44 @@ impl GetBonuses for Race {
                 self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
             ]),
         })?
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn zero_returns_nothing() {
+        let races = [
+            Race::Dragonborn,
+            Race::Drow,
+            Race::Dwarf,
+            Race::Elf,
+            Race::Gnome,
+            Race::Halfling,
+            Race::HalfElf,
+            Race::HalfOrc,
+            Race::Human,
+            Race::Tiefling,
+            Race::Warforged,
+            Race::WoodElf,
+            Race::Aasimar,
+            Race::Shifter,
+            Race::Tabaxi,
+            Race::Bladeforged,
+            Race::DeepGnome,
+            Race::Morninglord,
+            Race::PurpleDragonKnight,
+            Race::Razorclaw,
+            Race::Scoundrel,
+            Race::Scourge,
+            Race::Shadarkai,
+            Race::Trailblazer,
+        ];
+
+        for race in races {
+            assert!(race.get_bonuses(Decimal::ZERO).is_none());
+        }
     }
 }

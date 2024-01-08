@@ -5,7 +5,6 @@ use std::{
 };
 
 use itertools::Itertools;
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies};
@@ -52,10 +51,7 @@ impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
     pub fn has(attribute: impl Into<Attribute>) -> Self {
-        Self::GreaterThan(
-            Value::Attribute(attribute.into()),
-            Value::Const(Decimal::ZERO),
-        )
+        Self::GreaterThan(Value::Attribute(attribute.into()), Value::ZERO)
     }
 }
 
@@ -192,7 +188,7 @@ impl Not for Condition {
     type Output = Self;
 
     fn not(self) -> Self::Output {
-        Self::Not(self.into())
+        Self::Not(Box::new(self))
     }
 }
 

@@ -53,6 +53,33 @@ pub enum Value {
     },
 }
 
+/// Constants
+impl Value {
+    /// A constant representing 0
+    pub const ZERO: Self = Self::Const(Decimal::ZERO);
+
+    /// A constant representing 1
+    pub const ONE: Self = Self::Const(Decimal::ONE);
+
+    /// A constant representing -1
+    pub const NEGATIVE_ONE: Self = Self::Const(Decimal::NEGATIVE_ONE);
+
+    /// A constant representing 2
+    pub const TWO: Self = Self::Const(Decimal::TWO);
+
+    /// A constant representing 10
+    pub const TEN: Self = Self::Const(Decimal::TEN);
+
+    /// A constant representing 100
+    pub const ONE_HUNDRED: Self = Self::Const(Decimal::ONE_HUNDRED);
+
+    /// A constant representing the largest value that can be represented
+    pub const MAX: Self = Self::Const(Decimal::MAX);
+
+    /// A constant representing the smallest value that can be represented
+    pub const MIN: Self = Self::Const(Decimal::MIN);
+}
+
 /// Operations to simplify writing formulas
 impl Value {
     /// Shortcut for [`Condition::If`]
@@ -136,7 +163,7 @@ impl Value {
     /// [`Condition::Floor`]: Self#variant.Floor
     #[must_use]
     pub fn floor(self) -> Self {
-        Self::Floor(self.into())
+        Self::Floor(Box::new(self))
     }
 
     /// Shortcut for [`Condition::Ceil`]
@@ -144,7 +171,7 @@ impl Value {
     /// [`Condition::Ceil`]: Self#variant.Ceil
     #[must_use]
     pub fn ceil(self) -> Self {
-        Self::Ceil(self.into())
+        Self::Ceil(Box::new(self))
     }
 
     /// Shortcut for [`Condition::Abs`]
@@ -152,7 +179,7 @@ impl Value {
     /// [`Condition::Abs`]: Self#variant.Abs
     #[must_use]
     pub fn abs(self) -> Self {
-        Self::Abs(self.into())
+        Self::Abs(Box::new(self))
     }
 
     /// Returns the reciprocol
@@ -160,7 +187,7 @@ impl Value {
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
-        Self::Const(Decimal::ONE) / self
+        Self::ONE / self
     }
 
     /// Shortcut for [`Condition::Max`]
@@ -168,7 +195,7 @@ impl Value {
     /// [`Condition::Max`]: Self#variant.Min
     #[must_use]
     pub fn max(self, other: Self) -> Self {
-        Self::Max(self.into(), other.into())
+        Self::Max(Box::new(self), Box::new(other))
     }
 
     /// Shortcut for [`Condition::Min`]
@@ -176,7 +203,7 @@ impl Value {
     /// [`Condition::Min`]: Self#variant.Min
     #[must_use]
     pub fn min(self, other: Self) -> Self {
-        Self::Min(self.into(), other.into())
+        Self::Min(Box::new(self), Box::new(other))
     }
 }
 
@@ -329,7 +356,7 @@ where
     T: ToAttribute,
 {
     fn from(value: T) -> Self {
-        value.to_attribute().into()
+        Self::Attribute(value.to_attribute())
     }
 }
 
@@ -343,7 +370,7 @@ impl Add for Value {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::Add(self.into(), rhs.into())
+        Self::Add(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -351,7 +378,7 @@ impl Sub for Value {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self::Sub(self.into(), rhs.into())
+        Self::Sub(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -359,7 +386,7 @@ impl Mul for Value {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::Mul(self.into(), rhs.into())
+        Self::Mul(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -367,7 +394,7 @@ impl Div for Value {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
-        Self::Div(self.into(), rhs.into())
+        Self::Div(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -375,7 +402,7 @@ impl Rem for Value {
     type Output = Self;
 
     fn rem(self, rhs: Self) -> Self::Output {
-        Self::Rem(self.into(), rhs.into())
+        Self::Rem(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -383,7 +410,7 @@ impl Neg for Value {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self::Mul(self.into(), Self::Const(Decimal::NEGATIVE_ONE).into())
+        Self::Mul(Box::new(self), Box::new(Self::NEGATIVE_ONE))
     }
 }
 
@@ -396,5 +423,49 @@ impl Sum for Value {
 impl Product for Value {
     fn product<I: Iterator<Item = Self>>(iter: I) -> Self {
         Self::iter_product(iter)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod consts {
+        use super::*;
+
+        #[test]
+        fn zero() {
+            assert_eq!(Value::ZERO, Value::from(0));
+        }
+
+        #[test]
+        fn one() {
+            assert_eq!(Value::ONE, Value::from(1));
+        }
+
+        #[test]
+        fn negative_one() {
+            assert_eq!(Value::NEGATIVE_ONE, Value::from(-1));
+        }
+
+        #[test]
+        fn one_hundred() {
+            assert_eq!(Value::ONE_HUNDRED, Value::from(100));
+        }
+
+        #[test]
+        fn two() {
+            assert_eq!(Value::TWO, Value::from(2));
+        }
+
+        #[test]
+        fn max() {
+            assert_eq!(Value::MAX, Value::from(Decimal::MAX));
+        }
+
+        #[test]
+        fn min() {
+            assert_eq!(Value::MIN, Value::from(Decimal::MIN));
+        }
     }
 }

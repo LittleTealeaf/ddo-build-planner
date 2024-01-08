@@ -1,5 +1,11 @@
-use builder::{attribute::Attribute, bonus::Bonus, breakdowns::Breakdowns};
+use builder::{
+    attribute::Attribute,
+    bonus::{Bonus, BonusSource, BonusType, Condition, Value},
+    breakdowns::Breakdowns,
+    debug::DebugValue,
+};
 use rust_decimal::Decimal;
+use std::ops::Neg;
 
 /// Pushes a list of bonuses into a breakdown object and expects [`Attribute::Debug(0)`] to have
 /// the specified value
@@ -12,15 +18,8 @@ fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<De
 }
 
 mod value {
-    use std::ops::Neg;
+    use super::*;
 
-    use builder::{
-        attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType, Condition, Value},
-    };
-    use rust_decimal::Decimal;
-
-    use crate::expect_value;
     fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
         Bonus::new(
             Attribute::Debug(attribute),
@@ -167,12 +166,7 @@ mod value {
 }
 
 mod condition {
-    use builder::{
-        attribute::Attribute,
-        bonus::{Bonus, Condition},
-        breakdowns::Breakdowns,
-        debug::DebugValue,
-    };
+    use super::*;
 
     #[allow(clippy::needless_pass_by_value)]
     fn test_condition(condition: Condition, expected: bool) {
@@ -253,11 +247,7 @@ mod condition {
 }
 
 mod sources {
-    use builder::{
-        attribute::Attribute,
-        bonus::{Bonus, BonusSource, BonusType},
-        breakdowns::Breakdowns,
-    };
+    use super::*;
 
     #[test]
     fn remove_source() {
@@ -325,12 +315,7 @@ mod sources {
 }
 
 mod stacking {
-    use builder::{
-        bonus::{Bonus, BonusType},
-        debug::DebugValue,
-    };
-
-    use crate::expect_value;
+    use super::*;
 
     #[test]
     fn same_types_do_not_stack() {
@@ -378,7 +363,7 @@ mod stacking {
 }
 
 mod breakdowns {
-    use builder::{attribute::Attribute, breakdowns::Breakdowns};
+    use super::*;
 
     #[test]
     fn return_none_for_untracked_bonuses() {
