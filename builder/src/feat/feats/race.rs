@@ -9,13 +9,13 @@ use crate::{
     feat::{Feat, ToFeat},
     types::{
         armor_class::ArmorClass,
-        flag::{Flag, MainHandType, OffHandType},
+        flag::{MainHandType, OffHandType},
         immunity::Immunity,
         item::WeaponType,
         monster_type::MonsterType,
         saving_throw::SavingThrow,
         skill::Skill,
-        toggle::{AttackingTarget, Toggle},
+        toggle::AttackingTarget,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
@@ -124,13 +124,7 @@ impl GetBonuses for RacialFeat {
                 ]
             }
             Self::ImmunityToSleep => {
-                vec![Bonus::new(
-                    Immunity::Sleep,
-                    BonusType::Stacking,
-                    1,
-                    Self::ImmunityToSleep,
-                    None,
-                )]
+                vec![Bonus::flag(Immunity::Sleep, Self::ImmunityToSleep, None)]
             }
             Self::EnchantmentSaveBonus => {
                 vec![Bonus::new(
@@ -186,44 +180,41 @@ impl GetBonuses for RacialFeat {
             }
             Self::GiantEvasion => {
                 vec![
-                    Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Giant)),
+                    Bonus::toggle(
+                        AttackingTarget::MonsterType(MonsterType::Giant),
                         Self::GiantEvasion,
-                        None
+                        None,
                     ),
                     Bonus::new(
                         ArmorClass::Bonus,
                         BonusType::Dodge,
                         4,
                         Self::GiantEvasion,
-                        Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
-                            MonsterType::Giant,
-                        ))),
+                        Condition::toggled(AttackingTarget::MonsterType(MonsterType::Giant)),
                     ),
                 ]
             }
             Self::OrcAndGoblinBonus => {
                 vec![
-                    Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Orc)),
+                    Bonus::toggle(
+                        AttackingTarget::MonsterType(MonsterType::Orc),
                         Self::OrcAndGoblinBonus,
-                        None
+                        None,
                     ),
-                    Bonus::flag(
-                        Toggle::Attacking(AttackingTarget::MonsterType(MonsterType::Goblinoid)),
+                    Bonus::toggle(
+                        AttackingTarget::MonsterType(MonsterType::Goblinoid),
                         Self::OrcAndGoblinBonus,
-                        None
+                        None,
                     ),
                     Bonus::new(
                         (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Racial,
                         1,
                         Self::OrcAndGoblinBonus,
-                        Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
-                            MonsterType::Orc,
-                        ))) | Condition::has(Toggle::Attacking(AttackingTarget::MonsterType(
-                            MonsterType::Goblinoid,
-                        ))),
+                        Condition::toggled(AttackingTarget::MonsterType(MonsterType::Orc))
+                            | Condition::toggled(AttackingTarget::MonsterType(
+                                MonsterType::Goblinoid,
+                            )),
                     ),
                 ]
             }
@@ -299,7 +290,7 @@ impl GetBonuses for RacialFeat {
                         1,
                         Self::HalflingThrownWeaponFocus,
                         WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(Flag::from(MainHandType::Weapon(wt))))
+                            .map(|wt| Condition::has(MainHandType::Weapon(wt)))
                             .cond_any(),
                     ),
                     Bonus::new(
@@ -308,7 +299,7 @@ impl GetBonuses for RacialFeat {
                         1,
                         Self::HalflingThrownWeaponFocus,
                         WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(Flag::from(OffHandType::Weapon(wt))))
+                            .map(|wt| Condition::has(OffHandType::Weapon(wt)))
                             .cond_any(),
                     ),
                 ]

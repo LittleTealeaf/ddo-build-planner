@@ -11,6 +11,7 @@ use builder::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
+        flag::Flag,
         flag::OffHandType,
         item::{ArmorType, ShieldType, WeaponType},
         race::Race,
@@ -18,6 +19,7 @@ use builder::{
         sheltering::Sheltering,
         skill::Skill,
         spell_power::SpellPower,
+        toggle::Toggle,
     },
 };
 use rust_decimal::Decimal;
@@ -884,5 +886,25 @@ mod armor_check_penalty {
         ));
         let result = breakdowns.get_attribute(Skill::Balance);
         assert_eq!(result, initial);
+    }
+}
+
+mod toggles {
+
+    use super::*;
+
+    #[test]
+    fn active_togge_provides_use() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Toggle(Toggle::Blocking),
+            BonusType::Stacking,
+            1,
+            DebugValue(0),
+            None,
+        ));
+
+        assert!(breakdowns.get_attribute(Flag::HasToggle(Toggle::Blocking)) > 0.into());
     }
 }

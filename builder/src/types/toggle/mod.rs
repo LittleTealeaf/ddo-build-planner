@@ -38,9 +38,9 @@ impl Display for Toggle {
     }
 }
 
-impl GetBonuses for Toggle {
-    fn get_bonuses(&self, _value: Decimal) -> Option<Vec<Bonus>> {
-        None
+impl GetBonuses<Self> for Toggle {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+        (value > Decimal::ZERO).then(|| vec![Bonus::toggle(*self, *self, None)])
     }
 }
 
