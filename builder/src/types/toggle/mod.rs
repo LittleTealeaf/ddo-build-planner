@@ -14,6 +14,8 @@ use crate::{
 
 pub use attacking_target::*;
 
+use super::flag::{Flag, ToFlag};
+
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
@@ -36,14 +38,35 @@ impl Display for Toggle {
     }
 }
 
-impl GetBonuses for Toggle {
-    fn get_bonuses(&self, _value: Decimal) -> Option<Vec<Bonus>> {
-        None
+impl GetBonuses<Self> for Toggle {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+        (value > Decimal::ZERO).then(|| vec![Bonus::toggle(*self, *self, None)])
     }
 }
 
 impl ToAttribute for Toggle {
     fn to_attribute(self) -> crate::attribute::Attribute {
         Attribute::Toggle(self)
+    }
+}
+
+impl ToFlag for Toggle {
+    fn to_flag(self) -> Flag {
+        Flag::HasToggle(self)
+    }
+}
+
+/// Indicates that this object is a toggle
+pub trait ToToggle {
+    /// Converts this to a toggle object
+    fn to_toggle(self) -> Toggle;
+}
+
+impl<T> From<T> for Toggle
+where
+    T: ToToggle,
+{
+    fn from(value: T) -> Self {
+        value.to_toggle()
     }
 }

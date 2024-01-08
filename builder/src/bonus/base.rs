@@ -1,5 +1,4 @@
 use itertools::chain;
-use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
@@ -19,7 +18,7 @@ use crate::{
     },
 };
 
-use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, Value};
+use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, ToValue, Value};
 
 const BASE: BonusSource = BonusSource::Base;
 
@@ -53,9 +52,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
             Bonus::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
-                ((Value::Attribute(Attribute::Ability(ability)) - Value::from(10))
-                    / Value::from(2))
-                .floor(),
+                ((Value::Attribute(Attribute::Ability(ability)) - Value::TEN) / Value::TWO).floor(),
                 BASE,
                 None,
             ),
@@ -146,7 +143,7 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
     [
         // Dexterity Bonus to Armor Class
         Bonus::new(
-            Attribute::ArmorClass(ArmorClass::Bonus),
+            ArmorClass::Bonus,
             BonusType::AbilityModifier,
             Value::iter_min([
                 Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
@@ -156,12 +153,12 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                         .cond_any()
                         .unwrap(),
                     ArmorClass::ArmorMaxDex,
-                    Decimal::MAX,
+                    Value::MAX,
                 ),
                 Value::condition(
                     Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
                     ArmorClass::ShieldMaxDex,
-                    Decimal::MAX,
+                    Value::MAX,
                 ),
             ]),
             BASE,
@@ -169,23 +166,15 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
         ),
         // Total Armor Class Bonus
         Bonus::new(
-            Attribute::ArmorClass(ArmorClass::TotalArmorClass),
+            ArmorClass::TotalArmorClass,
             BonusType::Standard,
-            [
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::Bonus)),
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::NaturalArmor)),
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldBonus))
-                    * (Value::Const(1.into())
-                        + Value::Attribute(Attribute::ArmorClass(ArmorClass::ShieldScalar))),
-                Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorBonus))
-                    * (Value::Const(1.into())
-                        + Value::Attribute(Attribute::ArmorClass(ArmorClass::ArmorScalar))),
-                Value::from(10),
-            ]
-            .into_iter()
-            .sum::<Value>()
-                * (Value::from(1)
-                    + Value::Attribute(Attribute::ArmorClass(ArmorClass::TotalScalar))),
+            Value::iter_sum([
+                ArmorClass::Bonus.value(),
+                ArmorClass::NaturalArmor.value(),
+                ArmorClass::ShieldBonus.value() * (Value::ONE + ArmorClass::ShieldScalar.value()),
+                ArmorClass::ArmorBonus.value() * (Value::ONE + ArmorClass::ArmorScalar.value()),
+                Value::TEN,
+            ]) * (Value::ONE + ArmorClass::TotalScalar.value()),
             BASE,
             None,
         ),
@@ -195,16 +184,16 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
 fn health() -> impl IntoIterator<Item = Bonus> {
     [
         Bonus::new(
-            Attribute::Health(Health::Bonus),
+            Health::Bonus,
             BonusType::Stacking,
-            Value::from(Health::Base) * (Value::from(Health::BaseModifier) + Value::from(1)),
+            Health::Base.value() * (Health::BaseModifier.value() + Value::ONE),
             BASE,
             None,
         ),
         Bonus::new(
-            Attribute::Health(Health::Total),
+            Health::Total,
             BonusType::Stacking,
-            Value::from(Health::Bonus) * (Value::from(Health::Modifier) + Value::from(1)),
+            Health::Bonus.value() * (Health::Modifier.value() + Value::ONE),
             BASE,
             None,
         ),
@@ -214,20 +203,18 @@ fn health() -> impl IntoIterator<Item = Bonus> {
 fn spell_points() -> impl IntoIterator<Item = Bonus> {
     [
         Bonus::new(
-            Attribute::SpellPoints(SpellPoints::Base),
+            SpellPoints::Base,
             BonusType::Stacking,
-            Value::from(Attribute::SpellPoints(SpellPoints::Scaled))
-                * (Value::from(PlayerClass::FavoredSoul)
-                    + Value::from(PlayerClass::Sorcerer)
-                    + Value::from(20))
-                / Value::from(20),
+            SpellPoints::Scaled.value()
+                * (PlayerClass::FavoredSoul.value() + PlayerClass::Sorcerer.value() + 20.value())
+                / 20.value(),
             BASE,
             None,
         ),
         Bonus::new(
-            Attribute::SpellPoints(SpellPoints::Total),
+            SpellPoints::Total,
             BonusType::Stacking,
-            Value::from(SpellPoints::Base) * (Value::from(1) + Value::from(SpellPoints::Modifier)),
+            SpellPoints::Base.value() * (Value::ONE + SpellPoints::Modifier.value()),
             BASE,
             None,
         ),
@@ -270,7 +257,9 @@ fn sheltering() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             Sheltering::MagicalTotal,
             BonusType::Stacking,
-            Value::from(Sheltering::Magical).min(Value::from(Sheltering::MagicalCap)),
+            Sheltering::Magical
+                .value()
+                .min(Sheltering::MagicalCap.value()),
             BASE,
             None,
         ),
@@ -294,8 +283,8 @@ fn sheltering_reduction() -> impl IntoIterator<Item = Bonus> {
         Bonus::new(
             reduction,
             BonusType::Stacking,
-            Value::from(100)
-                * (Value::from(1) - (Value::from(100) / (Value::from(100) + Value::from(total)))),
+            Value::ONE_HUNDRED
+                * (Value::ONE - (Value::ONE_HUNDRED / (Value::ONE_HUNDRED + total.value()))),
             BASE,
             None,
         )
@@ -316,9 +305,9 @@ fn armor_check_penalties() -> impl Iterator<Item = Bonus> {
         Bonus::new(
             skill,
             BonusType::Stacking,
-            Value::from(-scale) * Value::from(Attribute::ArmorCheckPenalty),
+            (-scale).value() * Attribute::ArmorCheckPenalty.value(),
             BASE,
-            Value::from(Attribute::ArmorCheckPenalty).greater_than(Value::from(0)),
+            Condition::has(Attribute::ArmorCheckPenalty),
         )
     })
 }

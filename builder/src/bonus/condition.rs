@@ -5,10 +5,12 @@ use std::{
 };
 
 use itertools::Itertools;
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::{Attribute, AttributeDependencies};
+use crate::{
+    attribute::{Attribute, AttributeDependencies},
+    types::{flag::Flag, toggle::Toggle},
+};
 
 use super::{Depth, Value};
 
@@ -52,10 +54,19 @@ impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
     pub fn has(attribute: impl Into<Attribute>) -> Self {
-        Self::GreaterThan(
-            Value::Attribute(attribute.into()),
-            Value::Const(Decimal::ZERO),
-        )
+        Self::GreaterThan(Value::Attribute(attribute.into()), Value::ZERO)
+    }
+
+    /// Condition that returns true if the provided flag is on
+    #[must_use]
+    pub fn flag(flag: impl Into<Flag>) -> Self {
+        Value::Attribute(Attribute::Flag(flag.into())).greater_than(Value::ZERO)
+    }
+
+    /// Condition that returns true if the provided toggle is on
+    #[must_use]
+    pub fn toggled(toggle: impl Into<Toggle>) -> Self {
+        Value::Attribute(Attribute::Toggle(toggle.into())).greater_than(Value::ZERO)
     }
 }
 
@@ -192,7 +203,7 @@ impl Not for Condition {
     type Output = Self;
 
     fn not(self) -> Self::Output {
-        Self::Not(self.into())
+        Self::Not(Box::new(self))
     }
 }
 

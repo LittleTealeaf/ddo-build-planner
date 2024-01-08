@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType},
-    feat::{Feat, FeatRequirement, GetFeatRequirement},
+    feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{player_class::PlayerClass, spell_school::SpellSchool, spell_selector::SpellSelector},
 };
 
@@ -70,5 +70,11 @@ impl Display for SpellFocusFeat {
             Self::SpellFocus(school) => write!(f, "Spell Focus: {school}"),
             Self::GreaterSpellFocus(school) => write!(f, "Greater Spell Focus: {school}"),
         }
+    }
+}
+
+impl ToFeat for SpellFocusFeat {
+    fn to_feat(self) -> Feat {
+        SpellcastingFeat::SpellFocus(self).to_feat()
     }
 }

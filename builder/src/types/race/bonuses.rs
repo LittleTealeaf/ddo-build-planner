@@ -3,11 +3,19 @@ use rust_decimal::Decimal;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusType, Condition},
-    feat::{Feat, Proficiency},
-    race::RacialFeat,
+    feat::{Feat, Proficiency, RacialFeat},
     types::{
-        ability::Ability, damage_type::DamageType, immunity::Immunity, item::WeaponType,
-        race::Race, saving_throw::SavingThrow, skill::Skill,
+        ability::Ability,
+        alignment::Alignment,
+        damage_type::DamageType,
+        immunity::Immunity,
+        item::WeaponType,
+        monster_type::MonsterType,
+        race::Race,
+        saving_throw::SavingThrow,
+        skill::Skill,
+        toggle::AttackingTarget,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
 
@@ -22,17 +30,8 @@ impl Race {
         )
     }
 
-    fn bonus_feat<T>(self, feat: T) -> Bonus
-    where
-        Feat: From<T>,
-    {
-        Bonus::new(
-            Attribute::Feat(Feat::from(feat)),
-            BonusType::Stacking,
-            1,
-            self,
-            None,
-        )
+    fn bonus_feat(self, feat: impl Into<Feat>) -> Bonus {
+        Bonus::new(feat.into(), BonusType::Stacking, 1, self, None)
     }
 }
 
@@ -112,12 +111,10 @@ impl GetBonuses for Race {
                 self.bonus_feat(RacialFeat::DwarvenStonecunning),
                 self.bonus_feat(RacialFeat::DwarvenStability),
                 self.bonus_feat(RacialFeat::SpellSaveBonus),
-                Bonus::new(
+                Bonus::feat(
                     Proficiency::from(WeaponType::DwarvenWarAxe),
-                    BonusType::Stacking,
-                    1,
                     Self::Dwarf,
-                    Some(Condition::has(Proficiency::MartialWeaponProficiency)),
+                    Condition::has(Proficiency::MartialWeaponProficiency),
                 ),
             ]),
             Self::Elf => Some(vec![
@@ -154,8 +151,8 @@ impl GetBonuses for Race {
                 Bonus::new(Skill::Listen, BonusType::Racial, 1, Self::HalfElf, None),
                 Bonus::new(Skill::Search, BonusType::Racial, 1, Self::HalfElf, None),
                 Bonus::new(Skill::Spot, BonusType::Racial, 1, Self::HalfElf, None),
-                Bonus::flag(Immunity::Sleep, Self::HalfElf),
                 Bonus::new(Skill::Diplomacy, BonusType::Racial, 2, Self::HalfElf, None),
+                self.bonus_feat(RacialFeat::ImmunityToSleep),
             ]),
             Self::HalfOrc => Some(vec![
                 self.ability_modifier(Ability::Strength, 2),
@@ -192,8 +189,40 @@ impl GetBonuses for Race {
                     Self::Tiefling,
                     None,
                 ),
-                // TODO: +2 to hit and damage against lawful outsiders and good outsiders
-                // TODO: Fear Immunity
+                Bonus::toggle(
+                    AttackingTarget::Alignment(Alignment::Lawful),
+                    Self::Tiefling,
+                    None,
+                ),
+                Bonus::toggle(
+                    AttackingTarget::Alignment(Alignment::Good),
+                    Self::Tiefling,
+                    None,
+                ),
+                Bonus::toggle(
+                    AttackingTarget::MonsterType(MonsterType::Outsiders),
+                    Self::Tiefling,
+                    None,
+                ),
+                Bonus::new(
+                    (WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Stacking,
+                    2,
+                    Self::Tiefling,
+                    (Condition::toggled(AttackingTarget::Alignment(Alignment::Lawful))
+                        | Condition::toggled(AttackingTarget::Alignment(Alignment::Good)))
+                        & Condition::toggled(AttackingTarget::MonsterType(MonsterType::Outsiders)),
+                ),
+                Bonus::new(
+                    (WeaponHand::Both, WeaponStat::Damage),
+                    BonusType::Stacking,
+                    2,
+                    Self::Tiefling,
+                    (Condition::toggled(AttackingTarget::Alignment(Alignment::Lawful))
+                        | Condition::toggled(AttackingTarget::Alignment(Alignment::Good)))
+                        & Condition::toggled(AttackingTarget::MonsterType(MonsterType::Outsiders)),
+                ),
+                Bonus::flag(Immunity::Fear, Self::Tiefling, None),
             ]),
             Self::Scoundrel => Some(vec![self.ability_modifier(Ability::Charisma, 2)]),
             Self::Warforged => Some(vec![
@@ -212,5 +241,44 @@ impl GetBonuses for Race {
                 self.bonus_feat(Proficiency::from(WeaponType::LongSword)),
             ]),
         })?
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn zero_returns_nothing() {
+        let races = [
+            Race::Dragonborn,
+            Race::Drow,
+            Race::Dwarf,
+            Race::Elf,
+            Race::Gnome,
+            Race::Halfling,
+            Race::HalfElf,
+            Race::HalfOrc,
+            Race::Human,
+            Race::Tiefling,
+            Race::Warforged,
+            Race::WoodElf,
+            Race::Aasimar,
+            Race::Shifter,
+            Race::Tabaxi,
+            Race::Bladeforged,
+            Race::DeepGnome,
+            Race::Morninglord,
+            Race::PurpleDragonKnight,
+            Race::Razorclaw,
+            Race::Scoundrel,
+            Race::Scourge,
+            Race::Shadarkai,
+            Race::Trailblazer,
+        ];
+
+        for race in races {
+            assert!(race.get_bonuses(Decimal::ZERO).is_none());
+        }
     }
 }

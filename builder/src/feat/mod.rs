@@ -1,5 +1,5 @@
 //! Feats that a character can have.
-public_modules!(feats, requirements);
+public_modules!(feats, requirements, to_feat);
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -10,7 +10,6 @@ use std::fmt::Display;
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, CloneBonus},
-    race::RacialFeat,
 };
 
 /// All possible feats that the player can have.
@@ -24,7 +23,6 @@ pub enum Feat {
     SkillFocus(SkillFocus),
     /// Spell Focus Feats
     Spellcasting(SpellcastingFeat),
-    // SpellFocus(SpellFocusFeat),
 }
 
 impl Display for Feat {
@@ -68,20 +66,26 @@ impl GetFeatRequirement for Feat {
     }
 }
 
-impl From<RacialFeat> for Feat {
-    fn from(value: RacialFeat) -> Self {
-        Self::RacialFeat(value)
-    }
-}
-
-impl From<Proficiency> for Feat {
-    fn from(value: Proficiency) -> Self {
-        Self::Proficiency(value)
+impl<T> From<T> for Feat
+where
+    T: ToFeat,
+{
+    fn from(value: T) -> Self {
+        value.to_feat()
     }
 }
 
 impl ToAttribute for Feat {
     fn to_attribute(self) -> Attribute {
         Attribute::Feat(self)
+    }
+}
+
+impl<T> ToAttribute for T
+where
+    T: ToFeat,
+{
+    fn to_attribute(self) -> Attribute {
+        self.to_feat().to_attribute()
     }
 }

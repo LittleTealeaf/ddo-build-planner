@@ -13,7 +13,10 @@ use std::{collections::HashSet, fmt::Display};
 use crate::{
     attribute::{Attribute, AttributeDependencies},
     feat::Feat,
-    types::flag::Flag,
+    types::{
+        flag::{Flag, ToFlag},
+        toggle::Toggle,
+    },
 };
 
 pub use base::*;
@@ -42,6 +45,7 @@ pub struct Bonus {
     condition: Option<Condition>,
 }
 
+/// Constructors
 impl Bonus {
     /// Creates a new bonus with the provided values.
     ///
@@ -94,8 +98,12 @@ impl Bonus {
 
     /// Returns a bonus that gives the character some [`Flag`].
     #[must_use]
-    pub fn flag(flag: impl Into<Flag>, source: impl Into<BonusSource>) -> Self {
-        Self::new(flag.into(), BonusType::Stacking, 1, source, None)
+    pub fn flag(
+        flag: impl Into<Flag>,
+        source: impl Into<BonusSource>,
+        condition: impl Into<Option<Condition>>,
+    ) -> Self {
+        Self::new(flag.into(), BonusType::Stacking, 1, source, condition)
     }
 
     /// Returns a bonus that gives the character some [`Feat`]
@@ -105,15 +113,23 @@ impl Bonus {
         source: impl Into<BonusSource>,
         condition: impl Into<Option<Condition>>,
     ) -> Self {
-        Self::new(
-            Attribute::Feat(feat.into()),
-            BonusType::Stacking,
-            1,
-            source,
-            condition,
-        )
+        Self::new(feat.into(), BonusType::Stacking, 1, source, condition)
     }
 
+    /// Provides the use of a toggle
+    #[must_use]
+    pub fn toggle(
+        toggle: impl Into<Toggle>,
+        source: impl Into<BonusSource>,
+        condition: impl Into<Option<Condition>>,
+    ) -> Self {
+        let toggle: Toggle = toggle.into();
+        Self::new(toggle.to_flag(), BonusType::Stacking, 1, source, condition)
+    }
+}
+
+/// Methods
+impl Bonus {
     /// Returns the attribute that the bonus applies to.
     ///
     /// # Example

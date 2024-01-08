@@ -48,6 +48,7 @@ impl Breakdowns {
             Value::Floor(val) => self.evaluate_value(val).floor(),
             Value::Abs(val) => self.evaluate_value(val).abs(),
             Value::Ceil(val) => self.evaluate_value(val).ceil(),
+            Value::Round(val) => self.evaluate_value(val).round(),
             Value::If {
                 condition,
                 if_true,

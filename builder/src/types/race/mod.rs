@@ -7,7 +7,7 @@ use utils::public_modules;
 
 use crate::attribute::{Attribute, ToAttribute};
 
-use super::flag::Flag;
+use super::flag::{Flag, ToFlag};
 
 /// The different race options that the character can be.
 #[derive(Hash, Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
@@ -95,6 +95,12 @@ impl Display for Race {
 
 impl ToAttribute for Race {
     fn to_attribute(self) -> Attribute {
-        Flag::Race(self).to_attribute()
+        self.to_flag().to_attribute()
+    }
+}
+
+impl ToFlag for Race {
+    fn to_flag(self) -> Flag {
+        Flag::Race(self)
     }
 }

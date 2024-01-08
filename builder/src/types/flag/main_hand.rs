@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{attribute::ToAttribute, types::item::WeaponType};
 
-use super::Flag;
+use super::{Flag, ToFlag};
 
 /// Represents the different options that the character can have in their main hand.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -30,8 +30,14 @@ impl From<WeaponType> for MainHandType {
     }
 }
 
+impl ToFlag for MainHandType {
+    fn to_flag(self) -> Flag {
+        Flag::MainHandType(self)
+    }
+}
+
 impl ToAttribute for MainHandType {
     fn to_attribute(self) -> crate::attribute::Attribute {
-        Flag::MainHandType(self).to_attribute()
+        self.to_flag().to_attribute()
     }
 }

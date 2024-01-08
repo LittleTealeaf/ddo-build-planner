@@ -30,6 +30,8 @@ pub enum Value {
     Floor(Box<Value>),
     /// Ceils the inner value to a whole number
     Ceil(Box<Value>),
+    /// Rounds the value to the closest whole number
+    Round(Box<Value>),
     /// Makes the value positive if it is negative
     Abs(Box<Value>),
     /// Adds the first value to the second value
@@ -51,6 +53,33 @@ pub enum Value {
         /// The value to return if the condition returns false
         if_false: Box<Value>,
     },
+}
+
+/// Constants
+impl Value {
+    /// A constant representing 0
+    pub const ZERO: Self = Self::Const(Decimal::ZERO);
+
+    /// A constant representing 1
+    pub const ONE: Self = Self::Const(Decimal::ONE);
+
+    /// A constant representing -1
+    pub const NEGATIVE_ONE: Self = Self::Const(Decimal::NEGATIVE_ONE);
+
+    /// A constant representing 2
+    pub const TWO: Self = Self::Const(Decimal::TWO);
+
+    /// A constant representing 10
+    pub const TEN: Self = Self::Const(Decimal::TEN);
+
+    /// A constant representing 100
+    pub const ONE_HUNDRED: Self = Self::Const(Decimal::ONE_HUNDRED);
+
+    /// A constant representing the largest value that can be represented
+    pub const MAX: Self = Self::Const(Decimal::MAX);
+
+    /// A constant representing the smallest value that can be represented
+    pub const MIN: Self = Self::Const(Decimal::MIN);
 }
 
 /// Operations to simplify writing formulas
@@ -136,7 +165,7 @@ impl Value {
     /// [`Condition::Floor`]: Self#variant.Floor
     #[must_use]
     pub fn floor(self) -> Self {
-        Self::Floor(self.into())
+        Self::Floor(Box::new(self))
     }
 
     /// Shortcut for [`Condition::Ceil`]
@@ -144,7 +173,15 @@ impl Value {
     /// [`Condition::Ceil`]: Self#variant.Ceil
     #[must_use]
     pub fn ceil(self) -> Self {
-        Self::Ceil(self.into())
+        Self::Ceil(Box::new(self))
+    }
+
+    /// Shortcut for [`Condition::Round`]
+    ///
+    /// [`Condition::Round`]: Self#variant.Round
+    #[must_use]
+    pub fn round(self) -> Self {
+        Self::Round(Box::new(self))
     }
 
     /// Shortcut for [`Condition::Abs`]
@@ -152,7 +189,7 @@ impl Value {
     /// [`Condition::Abs`]: Self#variant.Abs
     #[must_use]
     pub fn abs(self) -> Self {
-        Self::Abs(self.into())
+        Self::Abs(Box::new(self))
     }
 
     /// Returns the reciprocol
@@ -160,7 +197,7 @@ impl Value {
     /// The reciprocol of value `x` is equivilant to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
-        Self::Const(Decimal::ONE) / self
+        Self::ONE / self
     }
 
     /// Shortcut for [`Condition::Max`]
@@ -168,7 +205,7 @@ impl Value {
     /// [`Condition::Max`]: Self#variant.Min
     #[must_use]
     pub fn max(self, other: Self) -> Self {
-        Self::Max(self.into(), other.into())
+        Self::Max(Box::new(self), Box::new(other))
     }
 
     /// Shortcut for [`Condition::Min`]
@@ -176,7 +213,22 @@ impl Value {
     /// [`Condition::Min`]: Self#variant.Min
     #[must_use]
     pub fn min(self, other: Self) -> Self {
-        Self::Min(self.into(), other.into())
+        Self::Min(Box::new(self), Box::new(other))
+    }
+}
+
+/// Implements a shortcut to using [`Value::from`]
+pub trait ToValue {
+    /// Converts this into a value
+    fn value(self) -> Value;
+}
+
+impl<T> ToValue for T
+where
+    Value: From<T>,
+{
+    fn value(self) -> Value {
+        Value::from(self)
     }
 }
 
@@ -191,7 +243,7 @@ impl Depth for Value {
             | Self::Mul(a, b)
             | Self::Div(a, b)
             | Self::Rem(a, b) => a.get_depth().max(b.get_depth()),
-            Self::Abs(a) | Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
+            Self::Round(a) | Self::Abs(a) | Self::Floor(a) | Self::Ceil(a) => a.get_depth(),
             Self::If {
                 condition,
                 if_true,
@@ -219,6 +271,7 @@ impl Display for Value {
             Self::Floor(val) => write!(f, "Floor({val})"),
             Self::Ceil(val) => write!(f, "Ceil({val})"),
             Self::Abs(val) => write!(f, "|{val}|"),
+            Self::Round(val) => write!(f, "Round({val})"),
             Self::If {
                 condition,
                 if_true,
@@ -244,7 +297,7 @@ impl AttributeDependencies for Value {
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
-            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
+            Self::Round(val) | Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
                 val.has_attr_dependency(attribute)
             }
             Self::If {
@@ -275,7 +328,9 @@ impl AttributeDependencies for Value {
             Self::Attribute(attr) => {
                 set.insert(*attr);
             }
-            Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => val.include_attr_dependency(set),
+            Self::Round(val) | Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
+                val.include_attr_dependency(set);
+            }
             Self::If {
                 condition,
                 if_true,
@@ -329,7 +384,7 @@ where
     T: ToAttribute,
 {
     fn from(value: T) -> Self {
-        value.to_attribute().into()
+        Self::Attribute(value.to_attribute())
     }
 }
 
@@ -343,7 +398,7 @@ impl Add for Value {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::Add(self.into(), rhs.into())
+        Self::Add(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -351,7 +406,7 @@ impl Sub for Value {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self::Sub(self.into(), rhs.into())
+        Self::Sub(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -359,7 +414,7 @@ impl Mul for Value {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::Mul(self.into(), rhs.into())
+        Self::Mul(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -367,7 +422,7 @@ impl Div for Value {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
-        Self::Div(self.into(), rhs.into())
+        Self::Div(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -375,7 +430,7 @@ impl Rem for Value {
     type Output = Self;
 
     fn rem(self, rhs: Self) -> Self::Output {
-        Self::Rem(self.into(), rhs.into())
+        Self::Rem(Box::new(self), Box::new(rhs))
     }
 }
 
@@ -383,7 +438,7 @@ impl Neg for Value {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self::Mul(self.into(), Self::Const(Decimal::NEGATIVE_ONE).into())
+        Self::Mul(Box::new(self), Box::new(Self::NEGATIVE_ONE))
     }
 }
 
@@ -396,5 +451,49 @@ impl Sum for Value {
 impl Product for Value {
     fn product<I: Iterator<Item = Self>>(iter: I) -> Self {
         Self::iter_product(iter)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod consts {
+        use super::*;
+
+        #[test]
+        fn zero() {
+            assert_eq!(Value::ZERO, Value::from(0));
+        }
+
+        #[test]
+        fn one() {
+            assert_eq!(Value::ONE, Value::from(1));
+        }
+
+        #[test]
+        fn negative_one() {
+            assert_eq!(Value::NEGATIVE_ONE, Value::from(-1));
+        }
+
+        #[test]
+        fn one_hundred() {
+            assert_eq!(Value::ONE_HUNDRED, Value::from(100));
+        }
+
+        #[test]
+        fn two() {
+            assert_eq!(Value::TWO, Value::from(2));
+        }
+
+        #[test]
+        fn max() {
+            assert_eq!(Value::MAX, Value::from(Decimal::MAX));
+        }
+
+        #[test]
+        fn min() {
+            assert_eq!(Value::MIN, Value::from(Decimal::MIN));
+        }
     }
 }

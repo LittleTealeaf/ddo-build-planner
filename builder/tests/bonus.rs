@@ -154,6 +154,30 @@ mod has_dependency {
             assert!(value.has_attr_dependency(Attribute::Debug(2)));
             assert!(!value.has_attr_dependency(Attribute::Debug(3)));
         }
+
+        #[test]
+        fn abs() {
+            let value = Value::from(Attribute::Debug(0)).abs();
+
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+        }
+
+        #[test]
+        fn ceil() {
+            let value = Value::from(Attribute::Debug(0)).ceil();
+
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+        }
+
+        #[test]
+        fn round() {
+            let value = Value::from(Attribute::Debug(0)).round();
+
+            assert!(value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+        }
     }
 
     mod condition {
@@ -400,6 +424,30 @@ mod include_dependencies {
             assert!(deps.contains(&Attribute::Debug(1)));
             assert!(deps.contains(&Attribute::Debug(2)));
             assert!(!deps.contains(&Attribute::Debug(3)));
+        }
+
+        #[test]
+        fn abs() {
+            let value = Value::from(Attribute::Debug(0)).abs();
+            let deps = value.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(!deps.contains(&Attribute::Debug(1)));
+        }
+
+        #[test]
+        fn ceil() {
+            let value = Value::from(Attribute::Debug(0)).ceil();
+            let deps = value.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(!deps.contains(&Attribute::Debug(1)));
+        }
+
+        #[test]
+        fn round() {
+            let value = Value::from(Attribute::Debug(0)).round();
+            let deps = value.get_attr_dependencies();
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(!deps.contains(&Attribute::Debug(1)));
         }
     }
 

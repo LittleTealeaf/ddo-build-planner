@@ -6,11 +6,12 @@ use builder::{
     bonus::{Bonus, BonusSource, BonusType},
     breakdowns::Breakdowns,
     debug::DebugValue,
-    feat::{Feat, Proficiency},
+    feat::Proficiency,
     types::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
+        flag::Flag,
         flag::OffHandType,
         item::{ArmorType, ShieldType, WeaponType},
         race::Race,
@@ -18,6 +19,7 @@ use builder::{
         sheltering::Sheltering,
         skill::Skill,
         spell_power::SpellPower,
+        toggle::Toggle,
     },
 };
 use rust_decimal::Decimal;
@@ -525,7 +527,7 @@ mod sheltering {
                 Decimal::from(50)
             );
 
-            breakdowns.insert_bonus(Bonus::flag(ArmorType::Cloth, BonusSource::Debug(1)));
+            breakdowns.insert_bonus(Bonus::flag(ArmorType::Cloth, BonusSource::Debug(1), None));
 
             assert_eq!(
                 breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalTotal)),
@@ -541,7 +543,7 @@ mod sheltering {
 
             let mut breakdowns = Breakdowns::new();
 
-            breakdowns.insert_bonus(Bonus::flag(ArmorType::Light, BonusSource::Debug(0)));
+            breakdowns.insert_bonus(Bonus::flag(ArmorType::Light, BonusSource::Debug(0), None));
 
             assert_eq!(breakdowns.get_attribute(CAP), 100.into());
             assert_eq!(breakdowns.get_attribute(TOTAL), 0.into());
@@ -568,7 +570,7 @@ mod sheltering {
                 let mut breakdowns = Breakdowns::new();
 
                 breakdowns.insert_bonuses([
-                    Bonus::flag(armor_type, BonusSource::Debug(0)),
+                    Bonus::flag(armor_type, BonusSource::Debug(0), None),
                     Bonus::new(
                         Sheltering::Magical,
                         BonusType::Stacking,
@@ -705,7 +707,7 @@ mod armor_class {
 
                     let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
 
-                    breakdowns.insert_bonus(Bonus::flag($flag, DebugValue(1)));
+                    breakdowns.insert_bonus(Bonus::flag($flag, DebugValue(1), None));
 
                     let with_armor = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
 
@@ -740,8 +742,12 @@ mod armor_class {
             for (a, b) in [(2, 1), (1, 2)] {
                 let mut breakdowns = Breakdowns::new();
                 breakdowns.insert_bonuses([
-                    Bonus::flag(OffHandType::from(ShieldType::TowerShield), DebugValue(0)),
-                    Bonus::flag(ArmorType::Heavy, DebugValue(0)),
+                    Bonus::flag(
+                        OffHandType::from(ShieldType::TowerShield),
+                        DebugValue(0),
+                        None,
+                    ),
+                    Bonus::flag(ArmorType::Heavy, DebugValue(0), None),
                     Bonus::new(Ability::Dexterity, DebugValue(0), 100, DebugValue(0), None),
                 ]);
 
@@ -774,28 +780,25 @@ mod armor_class {
 
 mod race {
     use super::*;
+
     mod dwarf {
         use super::*;
 
         #[test]
         fn dwarven_war_axe() {
             let mut breakdowns = Breakdowns::new();
-            breakdowns.insert_bonus(Bonus::flag(Race::Dwarf, BonusSource::Debug(0)));
+            breakdowns.insert_bonus(Bonus::flag(Race::Dwarf, DebugValue(0), None));
             assert_eq!(
-                breakdowns.get_attribute(Feat::Proficiency(Proficiency::WeaponProficiency(
-                    WeaponType::DwarvenWarAxe
-                ))),
+                breakdowns.get_attribute(Proficiency::from(WeaponType::DwarvenWarAxe)),
                 0.into()
             );
             breakdowns.insert_bonus(Bonus::feat(
                 Proficiency::MartialWeaponProficiency,
-                BonusSource::Debug(1),
+                DebugValue(1),
                 None,
             ));
             assert!(
-                breakdowns.get_attribute(Feat::Proficiency(Proficiency::WeaponProficiency(
-                    WeaponType::DwarvenWarAxe
-                ))) > 0.into()
+                breakdowns.get_attribute(Proficiency::from(WeaponType::DwarvenWarAxe)) > 0.into()
             );
         }
     }
@@ -803,6 +806,7 @@ mod race {
 
 mod feats {
     use super::*;
+
     mod proficiencies {
         use super::*;
 
@@ -810,36 +814,28 @@ mod feats {
         fn simple_proficiency_provides_proficiencies() {
             let mut compiler = Breakdowns::new();
             compiler.insert_bonus(Bonus::new(
-                Attribute::Feat(Feat::Proficiency(Proficiency::SimpleWeaponProficiency)),
+                Proficiency::SimpleWeaponProficiency,
                 BonusType::Stacking,
                 1,
                 BonusSource::Debug(0),
                 None,
             ));
 
-            assert!(
-                compiler.get_attribute(Attribute::Feat(Feat::Proficiency(
-                    Proficiency::WeaponProficiency(WeaponType::Dagger)
-                ))) > 0.into()
-            );
+            assert!(compiler.get_attribute(Proficiency::from(WeaponType::Dagger)) > 0.into());
         }
 
         #[test]
         fn martial_proficiency_provides_proficiencies() {
             let mut compiler = Breakdowns::new();
             compiler.insert_bonus(Bonus::new(
-                Attribute::Feat(Feat::Proficiency(Proficiency::MartialWeaponProficiency)),
+                Proficiency::MartialWeaponProficiency,
                 BonusType::Stacking,
                 1,
                 BonusSource::Debug(0),
                 None,
             ));
 
-            assert!(
-                compiler.get_attribute(Attribute::Feat(Feat::Proficiency(
-                    Proficiency::WeaponProficiency(WeaponType::Falchion)
-                ))) > 0.into()
-            );
+            assert!(compiler.get_attribute(Proficiency::from(WeaponType::Falchion)) > 0.into());
         }
     }
 }
@@ -890,5 +886,25 @@ mod armor_check_penalty {
         ));
         let result = breakdowns.get_attribute(Skill::Balance);
         assert_eq!(result, initial);
+    }
+}
+
+mod toggles {
+
+    use super::*;
+
+    #[test]
+    fn active_togge_provides_use() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Toggle(Toggle::Blocking),
+            BonusType::Stacking,
+            1,
+            DebugValue(0),
+            None,
+        ));
+
+        assert!(breakdowns.get_attribute(Flag::HasToggle(Toggle::Blocking)) > 0.into());
     }
 }
