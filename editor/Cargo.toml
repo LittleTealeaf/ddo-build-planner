@@ -16,6 +16,6 @@ workspace = true
 [dependencies]
 builder = { path = "../builder/" }
 roc = "0.0.0"
-serde = { version = "1.0.194" }
+serde = { version = "1.0.195" }
 iced = "0.10.0"
 
