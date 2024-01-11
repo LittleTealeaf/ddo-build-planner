@@ -546,8 +546,9 @@ mod base_bonuses {
     #[test]
     fn all_base_bonuses_have_base_source() {
         for bonus in get_base_bonuses() {
-            assert!(
-                matches!(bonus.get_source(), BonusSource::Base),
+            assert_eq!(
+                bonus.get_source(),
+                &BonusSource::Base,
                 "Does not have base bonus: {bonus:?}"
             );
         }
