@@ -1,4 +1,4 @@
-use crate::types::item::WeaponType;
+use crate::types::item_type::WeaponType;
 
 
 /// Proficiency Class for weapons

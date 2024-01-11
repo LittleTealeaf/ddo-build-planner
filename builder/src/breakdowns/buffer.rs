@@ -22,8 +22,8 @@ impl Buffer {
         buffer.bonuses = bonuses
             .into_iter()
             .map(|bonus| {
-                buffer.forced.insert(*bonus.get_attribute());
-                buffer.attributes.push(Reverse(*bonus.get_attribute()));
+                buffer.forced.insert(*bonus.attribute());
+                buffer.attributes.push(Reverse(*bonus.attribute()));
                 bonus
             })
             .collect();
@@ -42,12 +42,12 @@ impl Buffer {
         let bonuses = Vec::from_iter(bonuses);
 
         let sources: HashSet<BonusSource> =
-            bonuses.iter().map(Bonus::get_source).copied().collect();
-        self.bonuses.retain(|i| !sources.contains(i.get_source()));
+            bonuses.iter().map(Bonus::source).copied().collect();
+        self.bonuses.retain(|i| !sources.contains(i.source()));
 
         {
             let attributes: HashSet<Attribute> =
-                bonuses.iter().map(Bonus::get_attribute).copied().collect();
+                bonuses.iter().map(Bonus::attribute).copied().collect();
 
             self.attributes.extend(attributes.into_iter().map(Reverse));
         }
@@ -66,7 +66,7 @@ impl Buffer {
             let mut i = 0;
 
             while i < self.bonuses.len() {
-                if self.bonuses[i].get_attribute().eq(&attribute) {
+                if self.bonuses[i].attribute().eq(&attribute) {
                     bonuses.push(self.bonuses.swap_remove(i));
                 } else {
                     i += 1;

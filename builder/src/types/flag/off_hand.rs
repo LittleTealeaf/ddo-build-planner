@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::ToAttribute,
-    types::item::{ShieldType, WeaponType},
+    types::item_type::{ShieldType, WeaponType},
 };
 
 use super::{Flag, ToFlag};

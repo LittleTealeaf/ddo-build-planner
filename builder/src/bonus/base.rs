@@ -8,7 +8,7 @@ use crate::{
         damage_type::DamageType,
         flag::OffHandType,
         health::Health,
-        item::{ArmorType, ShieldType},
+        item_type::{ArmorType, ShieldType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,
         sheltering::Sheltering,

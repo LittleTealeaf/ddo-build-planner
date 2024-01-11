@@ -86,10 +86,10 @@ impl CloneBonus for WeaponAttribute {
             .map(|stat| {
                 Bonus::new(
                     stat,
-                    *bonus.get_type(),
-                    bonus.get_value().clone(),
-                    *bonus.get_source(),
-                    bonus.get_condition().cloned(),
+                    *bonus.bonus_type(),
+                    bonus.value().clone(),
+                    *bonus.source(),
+                    bonus.condition().cloned(),
                 )
             })
             .to_vec()

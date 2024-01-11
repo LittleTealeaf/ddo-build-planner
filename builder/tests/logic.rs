@@ -13,7 +13,7 @@ use builder::{
         damage_type::DamageType,
         flag::Flag,
         flag::OffHandType,
-        item::{ArmorType, ShieldType, WeaponType},
+        item_type::{ArmorType, ShieldType, WeaponType},
         race::Race,
         saving_throw::SavingThrow,
         sheltering::Sheltering,

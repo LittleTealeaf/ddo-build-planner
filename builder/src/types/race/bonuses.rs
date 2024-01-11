@@ -9,7 +9,7 @@ use crate::{
         alignment::Alignment,
         damage_type::DamageType,
         immunity::Immunity,
-        item::WeaponType,
+        item_type::WeaponType,
         monster_type::MonsterType,
         race::Race,
         saving_throw::SavingThrow,

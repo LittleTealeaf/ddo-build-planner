@@ -141,7 +141,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_attribute(), &Attribute::Dummy);
     /// ```
     #[must_use]
-    pub const fn get_attribute(&self) -> &Attribute {
+    pub const fn attribute(&self) -> &Attribute {
         &self.attribute
     }
 
@@ -156,7 +156,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_type(), &BonusType::Enhancement);
     /// ```
     #[must_use]
-    pub const fn get_type(&self) -> &BonusType {
+    pub const fn bonus_type(&self) -> &BonusType {
         &self.bonus_type
     }
 
@@ -171,7 +171,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_value(), &Value::from(10));
     /// ```
     #[must_use]
-    pub const fn get_value(&self) -> &Value {
+    pub const fn value(&self) -> &Value {
         &self.value
     }
 
@@ -186,7 +186,7 @@ impl Bonus {
     /// assert_eq!(bonus.get_source(), &BonusSource::Base);
     /// ```
     #[must_use]
-    pub const fn get_source(&self) -> &BonusSource {
+    pub const fn source(&self) -> &BonusSource {
         &self.source
     }
 
@@ -208,7 +208,7 @@ impl Bonus {
     ///
     /// ```
     #[must_use]
-    pub const fn get_condition(&self) -> Option<&Condition> {
+    pub const fn condition(&self) -> Option<&Condition> {
         self.condition.as_ref()
     }
 
@@ -327,7 +327,7 @@ mod tests {
         let serialized = ron::to_string(&bonus).unwrap();
         let deserialized: Bonus = ron::from_str(&serialized).unwrap();
 
-        assert_eq!(bonus.get_attribute(), deserialized.get_attribute());
+        assert_eq!(bonus.attribute(), deserialized.attribute());
         assert!(deserialized.condition.is_none());
         assert_eq!(bonus.bonus_type, deserialized.bonus_type);
     }

@@ -11,7 +11,7 @@ use crate::{
         armor_class::ArmorClass,
         flag::{MainHandType, OffHandType},
         immunity::Immunity,
-        item::WeaponType,
+        item_type::WeaponType,
         monster_type::MonsterType,
         saving_throw::SavingThrow,
         skill::Skill,

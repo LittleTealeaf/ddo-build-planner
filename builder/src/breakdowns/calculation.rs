@@ -73,8 +73,8 @@ impl Breakdowns {
     }
 
     pub(super) fn get_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
-        let condition = self.evaluate_some_condition(bonus.get_condition());
-        let value = self.evaluate_value(bonus.get_value());
+        let condition = self.evaluate_some_condition(bonus.condition());
+        let value = self.evaluate_value(bonus.value());
 
         EvalBonus { value, condition }
     }
@@ -90,7 +90,7 @@ impl Breakdowns {
             .get(&attribute)?
             .clone()
             .into_iter()
-            .map(|bonus| (*bonus.get_type(), self.get_bonus(&bonus)))
+            .map(|bonus| (*bonus.bonus_type(), self.get_bonus(&bonus)))
             .filter_map(|(bonus_type, eval)| eval.condition.then_some((bonus_type, eval.value)))
             .into_grouped_hash_map();
 

@@ -76,7 +76,7 @@ mod tests {
 
         let attributes = bonuses
             .into_iter()
-            .map(|bonus| *bonus.get_attribute())
+            .map(|bonus| *bonus.attribute())
             .collect::<Vec<_>>();
 
         for ability in Ability::ABILITIES {

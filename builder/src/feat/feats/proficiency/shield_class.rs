@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::item::ShieldType;
+use crate::types::item_type::ShieldType;
 
 
 /// Shield Proficiencies

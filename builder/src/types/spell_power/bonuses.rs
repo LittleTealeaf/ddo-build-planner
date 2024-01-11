@@ -7,7 +7,7 @@ use crate::{
 impl CloneBonus for SpellPower {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         Some(
-            match bonus.get_attribute() {
+            match bonus.attribute() {
                 Attribute::SpellPower(Self::Potency) => {
                     Some(Self::SPELL_POWERS.map(Attribute::SpellPower))
                 }
