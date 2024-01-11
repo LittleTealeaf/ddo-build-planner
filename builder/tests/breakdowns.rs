@@ -378,4 +378,119 @@ mod breakdowns {
         let mut breakdowns = Breakdowns::new();
         assert!(breakdowns.get_breakdowns(&Attribute::Debug(0)).is_none());
     }
+
+    #[test]
+    fn value_is_correct() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses([
+            Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0), None),
+            Bonus::new(DebugValue(0), DebugValue(1), 4, DebugValue(0), None),
+        ]);
+
+        let expected = breakdowns.get_attribute(DebugValue(0));
+
+        let breakdown = breakdowns
+            .get_breakdowns(&Attribute::Debug(0))
+            .expect("Expected Breakdowns");
+        assert_eq!(breakdown.get_value(), &expected);
+    }
+
+    #[test]
+    fn different_types_in_applied() {
+        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0), None);
+        let b = Bonus::new(DebugValue(0), DebugValue(1), 4, DebugValue(0), None);
+
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses([a.clone(), b.clone()]);
+        let breakdown = breakdowns
+            .get_breakdowns(&Attribute::Debug(0))
+            .expect("Expected Breakdowns");
+
+        assert!(breakdown.get_applied().iter().any(|i| i.get_bonus() == &a));
+        assert!(breakdown.get_applied().iter().any(|i| i.get_bonus() == &b));
+        assert!(!breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &a));
+        assert!(!breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &b));
+        assert!(!breakdown.get_disabled().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.get_disabled().iter().any(|i| i.get_bonus() == &b));
+    }
+
+    #[test]
+    fn stacking_all_in_applied() {
+        let a = Bonus::new(DebugValue(0), BonusType::Stacking, 6, DebugValue(0), None);
+        let b = Bonus::new(DebugValue(0), BonusType::Stacking, 4, DebugValue(0), None);
+
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses([a.clone(), b.clone()]);
+        let breakdown = breakdowns
+            .get_breakdowns(&Attribute::Debug(0))
+            .expect("Expected Breakdowns");
+
+        assert!(breakdown.get_applied().iter().any(|i| i.get_bonus() == &a));
+        assert!(breakdown.get_applied().iter().any(|i| i.get_bonus() == &b));
+        assert!(!breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &a));
+        assert!(!breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &b));
+        assert!(!breakdown.get_disabled().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.get_disabled().iter().any(|i| i.get_bonus() == &b));
+    }
+
+    #[test]
+    fn overwritten_separated() {
+        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0), None);
+        let b = Bonus::new(DebugValue(0), DebugValue(0), 4, DebugValue(0), None);
+
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonuses([a.clone(), b.clone()]);
+        let breakdown = breakdowns
+            .get_breakdowns(&Attribute::Debug(0))
+            .expect("Expected Breakdowns");
+
+        assert!(breakdown.get_applied().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.get_applied().iter().any(|i| i.get_bonus() == &b));
+        assert!(!breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &a));
+        assert!(breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &b));
+        assert!(!breakdown.get_disabled().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.get_disabled().iter().any(|i| i.get_bonus() == &b));
+    }
+
+    #[test]
+    fn disabled_not_included() {
+        let a = Bonus::new(
+            DebugValue(0),
+            DebugValue(0),
+            6,
+            DebugValue(0),
+            Condition::from(false),
+        );
+
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonus(a.clone());
+        let breakdown = breakdowns
+            .get_breakdowns(&Attribute::Debug(0))
+            .expect("Expected Breakdowns");
+
+        assert!(!breakdown.get_applied().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown
+            .get_overwritten()
+            .iter()
+            .any(|i| i.get_bonus() == &a));
+        assert!(breakdown.get_disabled().iter().any(|i| i.get_bonus() == &a));
+    }
 }
