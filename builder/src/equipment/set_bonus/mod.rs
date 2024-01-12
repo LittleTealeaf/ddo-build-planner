@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusTemplate, Condition, ToValue},
+    bonus::{Bonus, BonusTemplate, ToValue},
 };
 
 /// Describes a set bonus with it's name and bonuses
@@ -26,15 +26,17 @@ impl SetBonus {
 
         self.bonuses.into_iter().flat_map(move |(count, bonuses)| {
             let attribute = attribute.clone();
+            let condition = attribute.clone().value().greater_or_equal_to(count.value());
             bonuses.into_iter().map(move |bonus| {
                 Bonus::new(
                     bonus.attribute().clone(),
                     *bonus.bonus_type(),
                     bonus.value().clone(),
                     attribute.clone(),
-                    bonus.condition().clone().unwrap_or(Condition::TRUE)
-                        & (attribute.clone().value().greater_than(count.value())
-                            | attribute.clone().value().equal_to(count.value())),
+                    bonus.condition().as_ref().map_or_else(
+                        || condition.clone(),
+                        |cond| cond.clone() & condition.clone(),
+                    ),
                 )
             })
         })
