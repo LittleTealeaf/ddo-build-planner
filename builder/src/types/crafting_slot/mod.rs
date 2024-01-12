@@ -3,9 +3,13 @@
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
-public_modules!(augment);
+public_modules!(augment, dino_bone);
 
+/// Describes the slot avaliable for the item
 #[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone)]
 pub enum CraftingSlot {
+    /// Augment Slots
     Augment(AugmentSlot),
+    /// Dinosaur Bone Crafting Slots
+    DinoBone(DinoBoneSlot),
 }
