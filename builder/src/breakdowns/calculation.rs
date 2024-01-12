@@ -40,9 +40,9 @@ impl Breakdowns {
 
         let result = match value {
             Value::Const(val) => return *val,
-            Value::Attribute(attribute) => self
-                .calculate_attribute(attribute)
-                .unwrap_or(Decimal::ZERO),
+            Value::Attribute(attribute) => {
+                self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
+            }
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),
             Value::Floor(val) => self.evaluate_value(val).floor(),
