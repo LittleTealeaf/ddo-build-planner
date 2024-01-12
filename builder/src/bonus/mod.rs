@@ -4,9 +4,9 @@ mod bonus_type;
 mod condition;
 mod deserialize;
 mod source;
+mod template;
 mod traits;
 mod value;
-mod template;
 
 use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, fmt::Display};
@@ -24,9 +24,9 @@ pub use base::*;
 pub use bonus_type::*;
 pub use condition::*;
 pub use source::*;
+pub use template::*;
 pub use traits::*;
 pub use value::*;
-pub use template::*;
 
 /// Represents a given bonus to some [`Attribute`].
 ///
