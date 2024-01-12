@@ -19,6 +19,7 @@ use super::{Condition, Depth};
 #[derive(Clone, PartialEq, Debug, Hash, Eq, Serialize, Deserialize)]
 pub enum Value {
     /// Hard codes a specific [`Decimal`] value.
+    #[serde(alias = "val")]
     Const(Decimal),
     /// Copy the total value of some [`Attribute`].
     Attribute(Attribute),

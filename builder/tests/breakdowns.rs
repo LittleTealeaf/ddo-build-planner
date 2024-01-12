@@ -254,6 +254,86 @@ mod condition {
     }
 }
 
+mod dynamic {
+    use builder::types::ability::Ability;
+
+    use super::*;
+
+    #[test]
+    fn bonus_doesnt_apply_by_default() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.import_dynamic_bonus(
+            Attribute::Debug(0),
+            vec![Bonus::new(
+                DebugValue(1),
+                DebugValue(1),
+                10,
+                DebugValue(0),
+                None,
+            )],
+        );
+
+        assert_eq!(breakdowns.get_attribute(DebugValue(1)), 0.into());
+    }
+
+    #[test]
+    fn bonus_applies_if_value_exists() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.import_dynamic_bonus(
+            Attribute::Debug(0),
+            vec![Bonus::new(
+                DebugValue(1),
+                DebugValue(1),
+                10,
+                BonusSource::Attribute(Attribute::Debug(0)),
+                None,
+            )],
+        );
+
+        breakdowns.insert_bonus(Bonus::new(
+            DebugValue(0),
+            DebugValue(0),
+            1,
+            DebugValue(0),
+            None,
+        ));
+
+        assert_eq!(breakdowns.get_attribute(DebugValue(1)), 10.into());
+    }
+
+    #[test]
+    fn bonuses_get_cloned() {
+        let mut breakdowns = Breakdowns::new();
+
+        breakdowns.import_dynamic_bonus(
+            Attribute::Debug(0),
+            vec![Bonus::new(
+                Ability::All,
+                DebugValue(0),
+                10,
+                BonusSource::Attribute(Attribute::Debug(0)),
+                None,
+            )],
+        );
+
+        let before = breakdowns.get_attribute(Ability::Constitution);
+
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            DebugValue(0),
+            1,
+            DebugValue(0),
+            None,
+        ));
+
+        let after = breakdowns.get_attribute(Ability::Constitution);
+
+        assert_eq!(after - before, 10.into());
+    }
+}
+
 mod sources {
     use super::*;
 

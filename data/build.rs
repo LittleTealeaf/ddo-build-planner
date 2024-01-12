@@ -33,6 +33,10 @@ fn write_artifact(name: &str, item: impl Serialize) -> Result<(), Error> {
 
 fn get_data_files(dir: &str) -> Result<ReadDir, Error> {
     let path = Path::new(".").join("data").join(dir);
+    let path_str = path.to_str().unwrap();
+
+    println!("cargo:rerun-if-changed={path_str}");
+
     Ok(read_dir(path)?)
 }
 

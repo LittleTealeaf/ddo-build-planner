@@ -3,6 +3,7 @@
 mod breakdown;
 mod buffer;
 mod calculation;
+mod dynamic;
 mod inserting;
 
 use std::collections::HashMap;
@@ -30,6 +31,7 @@ pub struct Breakdowns {
     value_cache: HashMap<Value, Decimal>,
     condition_cache: HashMap<Condition, bool>,
     children: HashMap<BonusSource, Vec<Attribute>>,
+    dynamic_bonuses: HashMap<Attribute, Vec<Bonus>>,
 }
 
 impl Breakdowns {
@@ -41,9 +43,11 @@ impl Breakdowns {
             value_cache: HashMap::new(),
             condition_cache: HashMap::new(),
             children: HashMap::new(),
+            dynamic_bonuses: HashMap::new(),
         };
 
         breakdowns.insert_bonuses(get_base_bonuses());
+        breakdowns.children.remove(&BonusSource::Base);
 
         breakdowns
     }

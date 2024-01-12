@@ -6,7 +6,7 @@ use utils::hashmap::MapGetMutOrDefault;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusSource, CloneBonus, Value},
+    bonus::{Bonus, BonusSource, Value},
 };
 
 use super::{buffer::Buffer, Breakdowns};
@@ -35,25 +35,33 @@ impl Breakdowns {
     pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
         let mut sources = HashSet::new();
 
-        let bonuses = bonuses
-            .into_iter()
-            .flat_map(|bonus| {
-                sources.insert(bonus.source().clone());
-                [
-                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
-                    vec![bonus],
-                ]
-            })
-            .flatten();
+        let bonuses = bonuses.into_iter().map(|bonus| {
+            sources.insert(bonus.source().clone());
+            bonus
+        });
 
         let mut buffer = Buffer::create(bonuses);
 
         let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
 
-        let updated_attributes = updated_bonuses.into_iter().map(|bonus| bonus.attribute().clone());
+        let updated_attributes = updated_bonuses
+            .into_iter()
+            .map(|bonus| bonus.attribute().clone());
 
         buffer.insert_attributes(updated_attributes);
 
+        self.consume_buffer(buffer);
+    }
+
+    /// Forces the recalculation of an attribute
+    pub fn recalcualte_attribute(&mut self, attribute: Attribute) {
+        self.recalculate_attributes([attribute]);
+    }
+
+    /// Forces the recalculation of several attributes
+    pub fn recalculate_attributes(&mut self, attributes: impl IntoIterator<Item = Attribute>) {
+        let mut buffer = Buffer::create([]);
+        buffer.insert_attributes(attributes);
         self.consume_buffer(buffer);
     }
 }
@@ -89,8 +97,11 @@ impl Breakdowns {
                 let source = BonusSource::Attribute(attribute.clone());
 
                 let updated_bonuses = chain!(
-                    self.remove_bonuses_by_source([source.clone()]).collect::<Vec<_>>(),
-                    self.get_dependants(attribute.clone()).cloned().collect::<Vec<_>>(),
+                    self.remove_bonuses_by_source([source.clone()])
+                        .collect::<Vec<_>>(),
+                    self.get_dependants(attribute.clone())
+                        .cloned()
+                        .collect::<Vec<_>>(),
                 );
 
                 let updated_attributes = updated_bonuses.map(|bonus| bonus.attribute().clone());
@@ -99,13 +110,26 @@ impl Breakdowns {
 
                 let value = self.get_attribute(attribute.clone());
 
-                if let Some(bonuses) = attribute.get_bonuses(value) {
+                let attribute_bonuses = attribute.get_bonuses(value);
+
+                let dynamic_bonuses = (value > Decimal::ZERO)
+                    .then(|| self.dynamic_bonuses.get(&attribute))
+                    .unwrap_or_default();
+
+                let bonuses = chain!(&attribute_bonuses, dynamic_bonuses)
+                    .flatten()
+                    .collect::<Vec<_>>();
+
+                if !bonuses.is_empty() {
                     self.children.insert(
                         source,
-                        bonuses.iter().map(Bonus::attribute).cloned().collect(),
+                        bonuses
+                            .iter()
+                            .map(|bonus| bonus.attribute())
+                            .cloned()
+                            .collect(),
                     );
-
-                    buffer.insert_bonuses(bonuses);
+                    buffer.insert_bonuses(bonuses.into_iter().cloned());
                 }
             }
         }
