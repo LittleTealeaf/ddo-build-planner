@@ -145,10 +145,10 @@ impl AttributeDependencies for Condition {
         match self {
             Self::Not(cond) => cond.has_attr_dependency(attribute),
             Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => {
-                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
+                a.has_attr_dependency(attribute.clone()) || b.has_attr_dependency(attribute)
             }
             Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
-                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
+                a.has_attr_dependency(attribute.clone()) || b.has_attr_dependency(attribute)
             }
             Self::Constant(_) => false,
         }

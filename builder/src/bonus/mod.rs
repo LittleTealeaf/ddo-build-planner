@@ -239,7 +239,7 @@ impl Bonus {
             attribute,
             self.bonus_type,
             self.value.clone(),
-            self.source,
+            self.source.clone(),
             self.condition.clone(),
         )
     }
@@ -247,11 +247,11 @@ impl Bonus {
 
 impl AttributeDependencies for Bonus {
     fn has_attr_dependency(&self, attribute: Attribute) -> bool {
-        self.value.has_attr_dependency(attribute)
+        self.value.has_attr_dependency(attribute.clone())
             || self
                 .condition
                 .as_ref()
-                .map_or(false, |cond| cond.has_attr_dependency(attribute))
+                .map_or(false, |cond| cond.has_attr_dependency(attribute.clone()))
     }
 
     fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {

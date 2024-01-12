@@ -5,7 +5,7 @@ use crate::util::ParseError;
 /// # Errors
 /// Returns errors if it was not able to be parsed
 pub fn get_test_data() -> Result<String, ParseError> {
-    include_data!(String, "test")
+    include_data!("test")
 }
 
 #[test]

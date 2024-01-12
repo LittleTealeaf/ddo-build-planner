@@ -22,7 +22,7 @@ use crate::{
 use std::fmt::Display;
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
-#[derive(Hash, Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
     #[cfg(feature = "debug")]
@@ -94,6 +94,8 @@ pub enum Attribute {
     SummonedAttribute(SummonedAttribute),
     /// Armor Check Penalty
     ArmorCheckPenalty,
+    /// Set Bonus
+    SetBonus(String),
 }
 
 impl Display for Attribute {
@@ -128,6 +130,7 @@ impl Display for Attribute {
             Self::TotalCharacterLevel => write!(f, "Total Character Level"),
             Self::SummonedAttribute(attribute) => write!(f, "Summoned Creatures: {attribute}"),
             Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
+            Self::SetBonus(set) => write!(f, "Set Bonus: {set}"),
         }
     }
 }

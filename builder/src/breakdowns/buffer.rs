@@ -5,7 +5,7 @@ use std::{
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource},
+    bonus::{Bonus, BonusSource, CloneBonus},
 };
 
 #[derive(Default)]
@@ -21,9 +21,16 @@ impl Buffer {
 
         buffer.bonuses = bonuses
             .into_iter()
+            .flat_map(|bonus| {
+                [
+                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
+                    vec![bonus],
+                ]
+            })
+            .flatten()
             .map(|bonus| {
-                buffer.forced.insert(*bonus.attribute());
-                buffer.attributes.push(Reverse(*bonus.attribute()));
+                buffer.forced.insert(bonus.attribute().clone());
+                buffer.attributes.push(Reverse(bonus.attribute().clone()));
                 bonus
             })
             .collect();
@@ -33,20 +40,29 @@ impl Buffer {
 
     pub fn insert_attributes(&mut self, attributes: impl IntoIterator<Item = Attribute>) {
         for attribute in attributes {
-            self.attributes.push(Reverse(attribute));
+            self.attributes.push(Reverse(attribute.clone()));
             self.forced.insert(attribute);
         }
     }
 
     pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
-        let bonuses = Vec::from_iter(bonuses);
+        let bonuses = bonuses
+            .into_iter()
+            .flat_map(|bonus| {
+                [
+                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
+                    vec![bonus],
+                ]
+            })
+            .flatten()
+            .collect::<Vec<_>>();
 
-        let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).copied().collect();
+        let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();
         self.bonuses.retain(|i| !sources.contains(i.source()));
 
         {
             let attributes: HashSet<Attribute> =
-                bonuses.iter().map(Bonus::attribute).copied().collect();
+                bonuses.iter().map(Bonus::attribute).cloned().collect();
 
             self.attributes.extend(attributes.into_iter().map(Reverse));
         }

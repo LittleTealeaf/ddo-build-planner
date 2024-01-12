@@ -7,7 +7,7 @@ use crate::attribute::{Attribute, ToAttribute};
 /// Dictates the source that a bonus comes from.
 ///
 /// Each bonus must have a source that dictates where that bonus came from. For example, if an attribute returns any new bonuses, they must all have a source of that attribute.
-#[derive(Hash, Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum BonusSource {
     /// Indicates that the bonus comes from an attribute.
     Attribute(Attribute),

@@ -5,7 +5,7 @@ use crate::attribute::Attribute;
 use super::{Bonus, BonusSource, BonusType, Condition, Value};
 
 /// Represents a template of a bonus. In other words, a bonus without it's bonus source.
-#[derive(PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct BonusTemplate {
     #[serde(rename = "attr")]
     attribute: Attribute,
@@ -36,7 +36,7 @@ impl BonusTemplate {
 
     /// Converts this bonus template into a bonus
     #[must_use]
-    pub fn to_bonus(self, source: BonusSource) -> Bonus {
+    pub fn to_bonus(self, source: impl Into<BonusSource>) -> Bonus {
         Bonus::new(
             self.attribute,
             self.bonus_type,
