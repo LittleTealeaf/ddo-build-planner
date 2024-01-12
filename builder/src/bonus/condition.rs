@@ -99,7 +99,7 @@ impl Condition {
     /// Returns false if both outputs are true, otherwise returns true
     #[must_use]
     pub fn nand(self, other: Self) -> Self {
-        Self::Not(Box::new(Self::And(Box::new(self), Box::new(other))))
+        Self::Not(Box::new(self.and(other)))
     }
 
     /// Logical NOR
@@ -107,7 +107,7 @@ impl Condition {
     /// Returns true if both outputs are false
     #[must_use]
     pub fn nor(self, other: Self) -> Self {
-        Self::Not(Box::new(Self::Or(Box::new(self), Box::new(other))))
+        Self::Not(Box::new(self.or(other)))
     }
 
     /// Logical XNOR
@@ -115,7 +115,7 @@ impl Condition {
     /// Returns true if the values are either both true or both false
     #[must_use]
     pub fn xnor(self, other: Self) -> Self {
-        Self::Not(Box::new(Self::Xor(Box::new(self), Box::new(other))))
+        Self::Not(Box::new(self.xor(other)))
     }
 }
 
@@ -133,10 +133,22 @@ impl Value {
         Condition::LessThan(self, other)
     }
 
-    /// Returns a condition that this value is equal to the other valuew
+    /// Returns a condition that this value is equal to the other value
     #[must_use]
     pub const fn equal_to(self, other: Self) -> Condition {
         Condition::EqualTo(self, other)
+    }
+
+    /// Returns a condition that this value is greater than or equal to the other value
+    #[must_use]
+    pub fn greater_or_equal_to(self, other: Self) -> Condition {
+        self.clone().greater_than(other.clone()) | self.equal_to(other)
+    }
+
+    /// Returns a condition that this value is equal to or less than the other value
+    #[must_use]
+    pub fn less_or_equal_to(self, other: Self) -> Condition {
+        self.clone().less_than(other.clone()) | self.equal_to(other)
     }
 }
 
@@ -211,7 +223,7 @@ impl BitAnd for Condition {
     type Output = Self;
 
     fn bitand(self, rhs: Self) -> Self::Output {
-        Self::And(Box::new(self), Box::new(rhs))
+        self.and(rhs)
     }
 }
 
@@ -219,14 +231,14 @@ impl BitOr for Condition {
     type Output = Self;
 
     fn bitor(self, rhs: Self) -> Self::Output {
-        Self::Or(Box::new(self), Box::new(rhs))
+        self.or(rhs)
     }
 }
 
 impl BitXor for Condition {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self::Output {
-        Self::Xor(Box::new(self), Box::new(rhs))
+        self.xor(rhs)
     }
 }
 
