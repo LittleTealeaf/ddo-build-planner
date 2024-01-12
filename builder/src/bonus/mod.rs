@@ -6,6 +6,7 @@ mod deserialize;
 mod source;
 mod traits;
 mod value;
+mod template;
 
 use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, fmt::Display};
@@ -25,6 +26,7 @@ pub use condition::*;
 pub use source::*;
 pub use traits::*;
 pub use value::*;
+pub use template::*;
 
 /// Represents a given bonus to some [`Attribute`].
 ///
@@ -85,11 +87,11 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusSource, BonusType, Value}, attribute::Attribute};
     ///
     /// let dummy = Bonus::dummy(BonusSource::Base);
-    /// assert_eq!(dummy.get_attribute(), &Attribute::Dummy);
-    /// assert_eq!(dummy.get_type(), &BonusType::Stacking);
-    /// assert_eq!(dummy.get_value(), &Value::from(0));
-    /// assert_eq!(dummy.get_source(), &BonusSource::Base);
-    /// assert!(dummy.get_condition().is_none());
+    /// assert_eq!(dummy.attribute(), &Attribute::Dummy);
+    /// assert_eq!(dummy.bonus_type(), &BonusType::Stacking);
+    /// assert_eq!(dummy.value(), &Value::from(0));
+    /// assert_eq!(dummy.source(), &BonusSource::Base);
+    /// assert!(dummy.condition().is_none());
     /// ```
     #[must_use]
     pub fn dummy(source: impl Into<BonusSource>) -> Self {
@@ -138,7 +140,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_attribute(), &Attribute::Dummy);
+    /// assert_eq!(bonus.attribute(), &Attribute::Dummy);
     /// ```
     #[must_use]
     pub const fn attribute(&self) -> &Attribute {
@@ -153,7 +155,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_type(), &BonusType::Enhancement);
+    /// assert_eq!(bonus.bonus_type(), &BonusType::Enhancement);
     /// ```
     #[must_use]
     pub const fn bonus_type(&self) -> &BonusType {
@@ -168,7 +170,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_value(), &Value::from(10));
+    /// assert_eq!(bonus.value(), &Value::from(10));
     /// ```
     #[must_use]
     pub const fn value(&self) -> &Value {
@@ -183,7 +185,7 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_source(), &BonusSource::Base);
+    /// assert_eq!(bonus.source(), &BonusSource::Base);
     /// ```
     #[must_use]
     pub const fn source(&self) -> &BonusSource {
@@ -204,7 +206,7 @@ impl Bonus {
     ///     BonusSource::Base,
     ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::from(0)))
     /// );
-    /// assert!(matches!(bonus.get_condition(), Some(_)));
+    /// assert!(matches!(bonus.condition(), Some(_)));
     ///
     /// ```
     #[must_use]
@@ -225,11 +227,11 @@ impl Bonus {
     /// BonusSource::Base, None);
     ///
     /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
-    /// assert_eq!(new_bonus.get_attribute(), &Attribute::Ability(Ability::All));
-    /// assert_eq!(new_bonus.get_type(), &BonusType::Quality);
-    /// assert_eq!(new_bonus.get_value(), &Value::from(10));
-    /// assert_eq!(new_bonus.get_source(), &BonusSource::Base);
-    /// assert!(new_bonus.get_condition().is_none());
+    /// assert_eq!(new_bonus.attribute(), &Attribute::Ability(Ability::All));
+    /// assert_eq!(new_bonus.bonus_type(), &BonusType::Quality);
+    /// assert_eq!(new_bonus.value(), &Value::from(10));
+    /// assert_eq!(new_bonus.source(), &BonusSource::Base);
+    /// assert!(new_bonus.condition().is_none());
     /// ```
     #[must_use]
     pub fn clone_into_attribute(&self, attribute: impl Into<Attribute>) -> Self {

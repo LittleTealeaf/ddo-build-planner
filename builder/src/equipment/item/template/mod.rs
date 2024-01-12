@@ -21,13 +21,13 @@ pub struct ItemTemplate {
 impl ItemTemplate {
     /// Returns a reference to the name of this [`ItemTemplate`].
     #[must_use]
-    pub fn name(&self) -> &str {
+    pub const fn name(&self) -> &String {
         &self.name
     }
 
     /// Returns a reference to the description of this [`ItemTemplate`].
     #[must_use]
-    pub fn description(&self) -> &str {
+    pub const fn description(&self) -> &String {
         &self.description
     }
 

@@ -18,9 +18,9 @@ use crate::{
     },
 };
 
-use super::{Bonus, BonusSource, BonusType, Condition, ConditionFold, ToValue, Value};
-
-const BASE: BonusSource = BonusSource::Base;
+use super::{
+    Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
+};
 
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
@@ -37,30 +37,24 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         sheltering_reduction(),
         armor_check_penalties()
     )
+    .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
 
-fn ability_bonuses() -> impl IntoIterator<Item = Bonus> {
+fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
     Ability::ABILITIES.into_iter().flat_map(|ability| {
         [
-            Bonus::new(
-                Attribute::Ability(ability),
-                BonusType::Stacking,
-                8,
-                BASE,
-                None,
-            ),
-            Bonus::new(
+            BonusTemplate::new(Attribute::Ability(ability), BonusType::Stacking, 8, None),
+            BonusTemplate::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
                 ((Value::Attribute(Attribute::Ability(ability)) - Value::TEN) / Value::TWO).floor(),
-                BASE,
                 None,
             ),
         ]
     })
 }
 
-fn saving_throw() -> impl IntoIterator<Item = Bonus> {
+fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Ability::Dexterity, SavingThrow::Reflex),
         (Ability::Constitution, SavingThrow::Fortitude),
@@ -68,17 +62,16 @@ fn saving_throw() -> impl IntoIterator<Item = Bonus> {
     ]
     .into_iter()
     .map(|(ability, saving_throw)| {
-        Bonus::new(
+        BonusTemplate::new(
             saving_throw,
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
-            BASE,
             None,
         )
     })
 }
 
-fn spell_power_skills() -> impl IntoIterator<Item = Bonus> {
+fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Skill::Heal, DamageType::Positive),
         (Skill::Heal, DamageType::Negative),
@@ -93,17 +86,16 @@ fn spell_power_skills() -> impl IntoIterator<Item = Bonus> {
     ]
     .into_iter()
     .map(|(skill, damage_type)| {
-        Bonus::new(
+        BonusTemplate::new(
             Attribute::SpellPower(SpellPower::Damage(damage_type)),
             BonusType::Stacking,
             Attribute::Skill(skill),
-            BASE,
             None,
         )
     })
 }
 
-fn skill() -> impl IntoIterator<Item = Bonus> {
+fn skill() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Ability::Dexterity, Skill::Balance),
         (Ability::Charisma, Skill::Bluff),
@@ -129,20 +121,19 @@ fn skill() -> impl IntoIterator<Item = Bonus> {
     ]
     .into_iter()
     .map(|(ability, skill)| {
-        Bonus::new(
+        BonusTemplate::new(
             skill,
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
-            BASE,
             None,
         )
     })
 }
 
-fn armor_class() -> impl IntoIterator<Item = Bonus> {
+fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
     [
         // Dexterity Bonus to Armor Class
-        Bonus::new(
+        BonusTemplate::new(
             ArmorClass::Bonus,
             BonusType::AbilityModifier,
             Value::iter_min([
@@ -161,11 +152,10 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                     Value::MAX,
                 ),
             ]),
-            BASE,
             None,
         ),
         // Total Armor Class Bonus
-        Bonus::new(
+        BonusTemplate::new(
             ArmorClass::TotalArmorClass,
             BonusType::Standard,
             Value::iter_sum([
@@ -175,53 +165,48 @@ fn armor_class() -> impl IntoIterator<Item = Bonus> {
                 ArmorClass::ArmorBonus.value() * (Value::ONE + ArmorClass::ArmorScalar.value()),
                 Value::TEN,
             ]) * (Value::ONE + ArmorClass::TotalScalar.value()),
-            BASE,
             None,
         ),
     ]
 }
 
-fn health() -> impl IntoIterator<Item = Bonus> {
+fn health() -> impl IntoIterator<Item = BonusTemplate> {
     [
-        Bonus::new(
+        BonusTemplate::new(
             Health::Bonus,
             BonusType::Stacking,
             Health::Base.value() * (Health::BaseModifier.value() + Value::ONE),
-            BASE,
             None,
         ),
-        Bonus::new(
+        BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
             Health::Bonus.value() * (Health::Modifier.value() + Value::ONE),
-            BASE,
             None,
         ),
     ]
 }
 
-fn spell_points() -> impl IntoIterator<Item = Bonus> {
+fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
     [
-        Bonus::new(
+        BonusTemplate::new(
             SpellPoints::Base,
             BonusType::Stacking,
             SpellPoints::Scaled.value()
                 * (PlayerClass::FavoredSoul.value() + PlayerClass::Sorcerer.value() + 20.value())
                 / 20.value(),
-            BASE,
             None,
         ),
-        Bonus::new(
+        BonusTemplate::new(
             SpellPoints::Total,
             BonusType::Stacking,
             SpellPoints::Base.value() * (Value::ONE + SpellPoints::Modifier.value()),
-            BASE,
             None,
         ),
     ]
 }
 
-fn spell_power_universal() -> impl IntoIterator<Item = Bonus> {
+fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
     [
         Attribute::SpellPower,
         Attribute::SpellCriticalChance,
@@ -230,20 +215,19 @@ fn spell_power_universal() -> impl IntoIterator<Item = Bonus> {
     .into_iter()
     .flat_map(|attribute| {
         SpellPower::SPELL_POWERS.into_iter().map(move |sp| {
-            Bonus::new(
+            BonusTemplate::new(
                 attribute(sp),
                 BonusType::Stacking,
                 attribute(SpellPower::Universal),
-                BASE,
                 None,
             )
         })
     })
 }
 
-fn sheltering() -> impl IntoIterator<Item = Bonus> {
+fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
     [
-        Bonus::new(
+        BonusTemplate::new(
             Sheltering::MagicalCap,
             BonusType::Stacking,
             Value::condition(
@@ -251,47 +235,43 @@ fn sheltering() -> impl IntoIterator<Item = Bonus> {
                 Sheltering::Magical,
                 Value::condition(Condition::has(ArmorType::Light), 100, 50),
             ),
-            BASE,
             None,
         ),
-        Bonus::new(
+        BonusTemplate::new(
             Sheltering::MagicalTotal,
             BonusType::Stacking,
             Sheltering::Magical
                 .value()
                 .min(Sheltering::MagicalCap.value()),
-            BASE,
             None,
         ),
-        Bonus::new(
+        BonusTemplate::new(
             Sheltering::PhysicalTotal,
             BonusType::Stacking,
             Sheltering::Physical,
-            BASE,
             None,
         ),
     ]
 }
 
-fn sheltering_reduction() -> impl IntoIterator<Item = Bonus> {
+fn sheltering_reduction() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Sheltering::PhysicalTotal, Sheltering::PhysicalReduction),
         (Sheltering::MagicalTotal, Sheltering::MagicalReduction),
     ]
     .into_iter()
     .map(|(total, reduction)| {
-        Bonus::new(
+        BonusTemplate::new(
             reduction,
             BonusType::Stacking,
             Value::ONE_HUNDRED
                 * (Value::ONE - (Value::ONE_HUNDRED / (Value::ONE_HUNDRED + total.value()))),
-            BASE,
             None,
         )
     })
 }
 
-fn armor_check_penalties() -> impl Iterator<Item = Bonus> {
+fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
     [
         (Skill::Balance, 1),
         (Skill::Hide, 1),
@@ -302,11 +282,10 @@ fn armor_check_penalties() -> impl Iterator<Item = Bonus> {
     ]
     .into_iter()
     .map(|(skill, scale)| {
-        Bonus::new(
+        BonusTemplate::new(
             skill,
             BonusType::Stacking,
             (-scale).value() * Attribute::ArmorCheckPenalty.value(),
-            BASE,
             Condition::has(Attribute::ArmorCheckPenalty),
         )
     })
