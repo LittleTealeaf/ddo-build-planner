@@ -41,8 +41,7 @@ impl Buffer {
     pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
         let bonuses = Vec::from_iter(bonuses);
 
-        let sources: HashSet<BonusSource> =
-            bonuses.iter().map(Bonus::source).copied().collect();
+        let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).copied().collect();
         self.bonuses.retain(|i| !sources.contains(i.source()));
 
         {

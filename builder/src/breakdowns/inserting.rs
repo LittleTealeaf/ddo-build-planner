@@ -40,10 +40,7 @@ impl Breakdowns {
             .flat_map(|bonus| {
                 sources.insert(*bonus.source());
                 [
-                    bonus
-                        .attribute()
-                        .clone_bonus(&bonus)
-                        .unwrap_or_default(),
+                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
                     vec![bonus],
                 ]
             })
@@ -53,9 +50,7 @@ impl Breakdowns {
 
         let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
 
-        let updated_attributes = updated_bonuses
-            .into_iter()
-            .map(|bonus| *bonus.attribute());
+        let updated_attributes = updated_bonuses.into_iter().map(|bonus| *bonus.attribute());
 
         buffer.insert_attributes(updated_attributes);
 
@@ -137,9 +132,7 @@ impl Breakdowns {
                         let items = set.iter().enumerate();
 
                         let indexes = items
-                            .filter_map(|(index, item)| {
-                                item.source().eq(&source).then_some(index)
-                            })
+                            .filter_map(|(index, item)| item.source().eq(&source).then_some(index))
                             .rev()
                             .collect::<Vec<_>>();
 

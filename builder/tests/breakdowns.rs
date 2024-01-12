@@ -408,14 +408,8 @@ mod breakdowns {
 
         assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &a));
         assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &a));
-        assert!(!breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &b));
+        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &b));
         assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
         assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &b));
     }
@@ -433,14 +427,8 @@ mod breakdowns {
 
         assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &a));
         assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &a));
-        assert!(!breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &b));
+        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &b));
         assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
         assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &b));
     }
@@ -458,14 +446,8 @@ mod breakdowns {
 
         assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &a));
         assert!(!breakdown.applied().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &a));
-        assert!(breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &b));
+        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
+        assert!(breakdown.overwritten().iter().any(|i| i.get_bonus() == &b));
         assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
         assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &b));
     }
@@ -487,10 +469,7 @@ mod breakdowns {
             .expect("Expected Breakdowns");
 
         assert!(!breakdown.applied().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown
-            .overwritten()
-            .iter()
-            .any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
         assert!(breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
     }
 }

@@ -3,6 +3,7 @@
 pub mod ability;
 pub mod alignment;
 pub mod armor_class;
+pub mod crafting_slot;
 pub mod damage_type;
 pub mod flag;
 pub mod gear_slot;
@@ -22,4 +23,3 @@ pub mod spell_selector;
 pub mod summoned_attribute;
 pub mod toggle;
 pub mod weapon_attribute;
-pub mod crafting_slot;
