@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{attribute::ToAttribute, types::item::WeaponType};
+use crate::{attribute::ToAttribute, types::item_type::WeaponType};
 
 use super::{Flag, ToFlag};
 

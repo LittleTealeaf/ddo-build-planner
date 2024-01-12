@@ -3,12 +3,13 @@
 pub mod ability;
 pub mod alignment;
 pub mod armor_class;
+pub mod crafting_slot;
 pub mod damage_type;
 pub mod flag;
 pub mod gear_slot;
 pub mod health;
 pub mod immunity;
-pub mod item;
+pub mod item_type;
 pub mod monster_type;
 pub mod player_class;
 pub mod race;

@@ -4,6 +4,7 @@ mod bonus_type;
 mod condition;
 mod deserialize;
 mod source;
+mod template;
 mod traits;
 mod value;
 
@@ -23,6 +24,7 @@ pub use base::*;
 pub use bonus_type::*;
 pub use condition::*;
 pub use source::*;
+pub use template::*;
 pub use traits::*;
 pub use value::*;
 
@@ -85,11 +87,11 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusSource, BonusType, Value}, attribute::Attribute};
     ///
     /// let dummy = Bonus::dummy(BonusSource::Base);
-    /// assert_eq!(dummy.get_attribute(), &Attribute::Dummy);
-    /// assert_eq!(dummy.get_type(), &BonusType::Stacking);
-    /// assert_eq!(dummy.get_value(), &Value::from(0));
-    /// assert_eq!(dummy.get_source(), &BonusSource::Base);
-    /// assert!(dummy.get_condition().is_none());
+    /// assert_eq!(dummy.attribute(), &Attribute::Dummy);
+    /// assert_eq!(dummy.bonus_type(), &BonusType::Stacking);
+    /// assert_eq!(dummy.value(), &Value::from(0));
+    /// assert_eq!(dummy.source(), &BonusSource::Base);
+    /// assert!(dummy.condition().is_none());
     /// ```
     #[must_use]
     pub fn dummy(source: impl Into<BonusSource>) -> Self {
@@ -138,10 +140,10 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_attribute(), &Attribute::Dummy);
+    /// assert_eq!(bonus.attribute(), &Attribute::Dummy);
     /// ```
     #[must_use]
-    pub const fn get_attribute(&self) -> &Attribute {
+    pub const fn attribute(&self) -> &Attribute {
         &self.attribute
     }
 
@@ -153,10 +155,10 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_type(), &BonusType::Enhancement);
+    /// assert_eq!(bonus.bonus_type(), &BonusType::Enhancement);
     /// ```
     #[must_use]
-    pub const fn get_type(&self) -> &BonusType {
+    pub const fn bonus_type(&self) -> &BonusType {
         &self.bonus_type
     }
 
@@ -168,10 +170,10 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_value(), &Value::from(10));
+    /// assert_eq!(bonus.value(), &Value::from(10));
     /// ```
     #[must_use]
-    pub const fn get_value(&self) -> &Value {
+    pub const fn value(&self) -> &Value {
         &self.value
     }
 
@@ -183,10 +185,10 @@ impl Bonus {
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
     /// BonusSource::Base, None);
-    /// assert_eq!(bonus.get_source(), &BonusSource::Base);
+    /// assert_eq!(bonus.source(), &BonusSource::Base);
     /// ```
     #[must_use]
-    pub const fn get_source(&self) -> &BonusSource {
+    pub const fn source(&self) -> &BonusSource {
         &self.source
     }
 
@@ -204,11 +206,11 @@ impl Bonus {
     ///     BonusSource::Base,
     ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::from(0)))
     /// );
-    /// assert!(matches!(bonus.get_condition(), Some(_)));
+    /// assert!(matches!(bonus.condition(), Some(_)));
     ///
     /// ```
     #[must_use]
-    pub const fn get_condition(&self) -> Option<&Condition> {
+    pub const fn condition(&self) -> Option<&Condition> {
         self.condition.as_ref()
     }
 
@@ -225,11 +227,11 @@ impl Bonus {
     /// BonusSource::Base, None);
     ///
     /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
-    /// assert_eq!(new_bonus.get_attribute(), &Attribute::Ability(Ability::All));
-    /// assert_eq!(new_bonus.get_type(), &BonusType::Quality);
-    /// assert_eq!(new_bonus.get_value(), &Value::from(10));
-    /// assert_eq!(new_bonus.get_source(), &BonusSource::Base);
-    /// assert!(new_bonus.get_condition().is_none());
+    /// assert_eq!(new_bonus.attribute(), &Attribute::Ability(Ability::All));
+    /// assert_eq!(new_bonus.bonus_type(), &BonusType::Quality);
+    /// assert_eq!(new_bonus.value(), &Value::from(10));
+    /// assert_eq!(new_bonus.source(), &BonusSource::Base);
+    /// assert!(new_bonus.condition().is_none());
     /// ```
     #[must_use]
     pub fn clone_into_attribute(&self, attribute: impl Into<Attribute>) -> Self {
@@ -327,7 +329,7 @@ mod tests {
         let serialized = ron::to_string(&bonus).unwrap();
         let deserialized: Bonus = ron::from_str(&serialized).unwrap();
 
-        assert_eq!(bonus.get_attribute(), deserialized.get_attribute());
+        assert_eq!(bonus.attribute(), deserialized.attribute());
         assert!(deserialized.condition.is_none());
         assert_eq!(bonus.bonus_type, deserialized.bonus_type);
     }

@@ -38,12 +38,9 @@ impl Breakdowns {
         let bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
-                sources.insert(*bonus.get_source());
+                sources.insert(*bonus.source());
                 [
-                    bonus
-                        .get_attribute()
-                        .clone_bonus(&bonus)
-                        .unwrap_or_default(),
+                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
                     vec![bonus],
                 ]
             })
@@ -53,9 +50,7 @@ impl Breakdowns {
 
         let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
 
-        let updated_attributes = updated_bonuses
-            .into_iter()
-            .map(|bonus| *bonus.get_attribute());
+        let updated_attributes = updated_bonuses.into_iter().map(|bonus| *bonus.attribute());
 
         buffer.insert_attributes(updated_attributes);
 
@@ -66,8 +61,8 @@ impl Breakdowns {
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
         for bonus in buffer.get_bonuses() {
-            let attribute = bonus.get_attribute();
-            let source = bonus.get_source();
+            let attribute = bonus.attribute();
+            let source = bonus.source();
 
             let set = self.children.get_mut_or_default(source);
             if !set.contains(attribute) {
@@ -98,7 +93,7 @@ impl Breakdowns {
                     self.get_dependants(attribute).cloned().collect::<Vec<_>>(),
                 );
 
-                let updated_attributes = updated_bonuses.map(|bonus| *bonus.get_attribute());
+                let updated_attributes = updated_bonuses.map(|bonus| *bonus.attribute());
 
                 buffer.insert_attributes(updated_attributes);
 
@@ -107,7 +102,7 @@ impl Breakdowns {
                 if let Some(bonuses) = attribute.get_bonuses(value) {
                     self.children.insert(
                         source,
-                        bonuses.iter().map(Bonus::get_attribute).copied().collect(),
+                        bonuses.iter().map(Bonus::attribute).copied().collect(),
                     );
 
                     buffer.insert_bonuses(bonuses);
@@ -137,9 +132,7 @@ impl Breakdowns {
                         let items = set.iter().enumerate();
 
                         let indexes = items
-                            .filter_map(|(index, item)| {
-                                item.get_source().eq(&source).then_some(index)
-                            })
+                            .filter_map(|(index, item)| item.source().eq(&source).then_some(index))
                             .rev()
                             .collect::<Vec<_>>();
 
