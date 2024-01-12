@@ -293,7 +293,7 @@ impl AttributeDependencies for Value {
             | Self::Rem(a, b)
             | Self::Max(a, b)
             | Self::Min(a, b) => {
-                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
+                a.has_attr_dependency(attribute.clone()) || b.has_attr_dependency(attribute)
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
@@ -305,8 +305,8 @@ impl AttributeDependencies for Value {
                 if_true,
                 if_false,
             } => {
-                condition.has_attr_dependency(attribute)
-                    || if_true.has_attr_dependency(attribute)
+                condition.has_attr_dependency(attribute.clone())
+                    || if_true.has_attr_dependency(attribute.clone())
                     || if_false.has_attr_dependency(attribute)
             }
         }
@@ -326,7 +326,7 @@ impl AttributeDependencies for Value {
                 b.include_attr_dependency(set);
             }
             Self::Attribute(attr) => {
-                set.insert(*attr);
+                set.insert(attr.clone());
             }
             Self::Round(val) | Self::Abs(val) | Self::Ceil(val) | Self::Floor(val) => {
                 val.include_attr_dependency(set);

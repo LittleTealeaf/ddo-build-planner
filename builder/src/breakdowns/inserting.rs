@@ -38,7 +38,7 @@ impl Breakdowns {
         let bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
-                sources.insert(*bonus.source());
+                sources.insert(bonus.source().clone());
                 [
                     bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
                     vec![bonus],
@@ -50,7 +50,7 @@ impl Breakdowns {
 
         let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
 
-        let updated_attributes = updated_bonuses.into_iter().map(|bonus| *bonus.attribute());
+        let updated_attributes = updated_bonuses.into_iter().map(|bonus| bonus.attribute().clone());
 
         buffer.insert_attributes(updated_attributes);
 
@@ -66,43 +66,43 @@ impl Breakdowns {
 
             let set = self.children.get_mut_or_default(source);
             if !set.contains(attribute) {
-                set.push(*attribute);
+                set.push(attribute.clone());
             }
         }
 
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .value_cache
-                .remove(&Value::Attribute(attribute))
+                .remove(&Value::Attribute(attribute.clone()))
                 .or_else(|| forced.then_some(Decimal::ZERO))
-                .or_else(|| self.calculate_attribute(attribute))
+                .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            if forced || initial_value != self.get_attribute(attribute) {
+            if forced || initial_value != self.get_attribute(attribute.clone()) {
                 self.value_cache
-                    .retain(|key, _| !key.has_attr_dependency(attribute));
+                    .retain(|key, _| !key.has_attr_dependency(attribute.clone()));
                 self.condition_cache
-                    .retain(|key, _| !key.has_attr_dependency(attribute));
+                    .retain(|key, _| !key.has_attr_dependency(attribute.clone()));
 
-                let source = BonusSource::Attribute(attribute);
+                let source = BonusSource::Attribute(attribute.clone());
 
                 let updated_bonuses = chain!(
-                    self.remove_bonuses_by_source([source]).collect::<Vec<_>>(),
-                    self.get_dependants(attribute).cloned().collect::<Vec<_>>(),
+                    self.remove_bonuses_by_source([source.clone()]).collect::<Vec<_>>(),
+                    self.get_dependants(attribute.clone()).cloned().collect::<Vec<_>>(),
                 );
 
-                let updated_attributes = updated_bonuses.map(|bonus| *bonus.attribute());
+                let updated_attributes = updated_bonuses.map(|bonus| bonus.attribute().clone());
 
                 buffer.insert_attributes(updated_attributes);
 
-                let value = self.get_attribute(attribute);
+                let value = self.get_attribute(attribute.clone());
 
                 if let Some(bonuses) = attribute.get_bonuses(value) {
                     self.children.insert(
                         source,
-                        bonuses.iter().map(Bonus::attribute).copied().collect(),
+                        bonuses.iter().map(Bonus::attribute).cloned().collect(),
                     );
 
                     buffer.insert_bonuses(bonuses);
@@ -113,7 +113,7 @@ impl Breakdowns {
 
     fn get_dependants(&self, attribute: Attribute) -> impl Iterator<Item = &Bonus> + '_ {
         self.get_bonuses()
-            .filter(move |bonus| bonus.has_attr_dependency(attribute))
+            .filter(move |bonus| bonus.has_attr_dependency(attribute.clone()))
     }
 
     fn remove_bonuses_by_source<'a>(

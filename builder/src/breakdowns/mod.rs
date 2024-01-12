@@ -10,6 +10,7 @@ use std::collections::HashMap;
 use rust_decimal::Decimal;
 
 pub use breakdown::*;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::Attribute,
@@ -23,7 +24,7 @@ struct EvalBonus {
 }
 
 /// Calculates the final attribute values for the character.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
     value_cache: HashMap<Value, Decimal>,
@@ -54,11 +55,11 @@ impl Breakdowns {
 
     /// Returns an iterator of attributes and their values
     pub fn iter_attributes(&mut self) -> impl Iterator<Item = (Attribute, Decimal)> + '_ {
-        let attributes = self.bonuses.keys().copied().collect::<Vec<_>>();
+        let attributes = self.bonuses.keys().cloned().collect::<Vec<_>>();
 
         attributes
             .into_iter()
-            .map(|attribute| (attribute, self.get_attribute(attribute)))
+            .map(|attribute| (attribute.clone(), self.get_attribute(attribute)))
     }
 }
 

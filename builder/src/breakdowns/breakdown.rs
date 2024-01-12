@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusType, Value},
+    bonus::{Bonus, BonusType, Condition, Value},
 };
 
 use super::Breakdowns;
@@ -82,7 +82,7 @@ impl Breakdowns {
             applied: Vec::new(),
             overwritten: Vec::new(),
             disabled: Vec::new(),
-            value: self.calculate_attribute(*attribute)?,
+            value: self.calculate_attribute(attribute)?,
         };
 
         let mut applied: HashMap<BonusType, BonusEntry<'_>> = HashMap::new();
@@ -96,11 +96,12 @@ impl Breakdowns {
                     .unwrap_or_else(|| panic!("Expected Value to be Cached: {other}")),
             };
 
-            if bonus.condition().map_or(true, |condition| {
-                *self
+            if bonus.condition().map_or(true, |condition| match condition {
+                Condition::Constant(value) => *value,
+                condition => *self
                     .condition_cache
                     .get(condition)
-                    .unwrap_or_else(|| panic!("Expected Condition to be Cached: {condition}"))
+                    .unwrap_or_else(|| panic!("Expected Condition to be Cached: {condition}")),
             }) {
                 match bonus.bonus_type() {
                     BonusType::Stacking => breakdown.applied.push(BonusEntry { bonus, value }),

@@ -76,7 +76,7 @@ mod tests {
 
         let attributes = bonuses
             .into_iter()
-            .map(|bonus| *bonus.attribute())
+            .map(|bonus| bonus.attribute().clone())
             .collect::<Vec<_>>();
 
         for ability in Ability::ABILITIES {

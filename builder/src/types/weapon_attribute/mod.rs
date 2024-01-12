@@ -88,7 +88,7 @@ impl CloneBonus for WeaponAttribute {
                     stat,
                     *bonus.bonus_type(),
                     bonus.value().clone(),
-                    *bonus.source(),
+                    bonus.source().clone(),
                     bonus.condition().cloned(),
                 )
             })

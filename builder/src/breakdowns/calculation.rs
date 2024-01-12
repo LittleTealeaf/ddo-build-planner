@@ -19,11 +19,11 @@ impl Breakdowns {
         }
 
         let result = match condition {
+            Condition::Constant(value) => return *value,
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
             Condition::LessThan(a, b) => self.evaluate_value(a) < self.evaluate_value(b),
             Condition::EqualTo(a, b) => self.evaluate_value(a) == self.evaluate_value(b),
-            Condition::Constant(value) => *value,
             Condition::And(a, b) => self.evaluate_condition(a) && self.evaluate_condition(b),
             Condition::Or(a, b) => self.evaluate_condition(a) || self.evaluate_condition(b),
             Condition::Xor(a, b) => self.evaluate_condition(a) != self.evaluate_condition(b),
@@ -41,7 +41,7 @@ impl Breakdowns {
         let result = match value {
             Value::Const(val) => return *val,
             Value::Attribute(attribute) => self
-                .calculate_attribute(*attribute)
+                .calculate_attribute(attribute)
                 .unwrap_or(Decimal::ZERO),
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),
@@ -84,10 +84,10 @@ impl Breakdowns {
         self.evaluate_value(&Value::Attribute(attribute.into()))
     }
 
-    pub(crate) fn calculate_attribute(&mut self, attribute: Attribute) -> Option<Decimal> {
+    pub(crate) fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut bonuses = self
             .bonuses
-            .get(&attribute)?
+            .get(attribute)?
             .clone()
             .into_iter()
             .map(|bonus| (*bonus.bonus_type(), self.get_bonus(&bonus)))

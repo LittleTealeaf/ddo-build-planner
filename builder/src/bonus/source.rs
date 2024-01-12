@@ -7,7 +7,7 @@ use crate::attribute::{Attribute, ToAttribute};
 /// Dictates the source that a bonus comes from.
 ///
 /// Each bonus must have a source that dictates where that bonus came from. For example, if an attribute returns any new bonuses, they must all have a source of that attribute.
-#[derive(Hash, Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Hash, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum BonusSource {
     /// Indicates that the bonus comes from an attribute.
     Attribute(Attribute),
@@ -18,6 +18,8 @@ pub enum BonusSource {
     Debug(u8),
     /// Only used for initial values
     Base,
+    /// Only used for the Set Bonus importing
+    SetBonus
 }
 
 impl Display for BonusSource {
@@ -28,6 +30,7 @@ impl Display for BonusSource {
             #[cfg(feature = "debug")]
             Self::Debug(num) => write!(f, "Debug: {num}"),
             Self::Base => write!(f, "Base"),
+            Self::SetBonus => write!(f, "Set Bonus"),
         }
     }
 }

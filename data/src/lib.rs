@@ -7,3 +7,6 @@ mod util;
 mod example;
 #[cfg(feature = "example")]
 pub use example::*;
+
+mod set_bonuses;
+pub use set_bonuses::*;
