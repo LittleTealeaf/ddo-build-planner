@@ -13,7 +13,7 @@ use std::fmt::Display;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::Bonus,
+    bonus::BonusTemplate,
     types::{alignment::Alignment, immunity::Immunity, race::Race},
 };
 
@@ -58,7 +58,7 @@ impl Display for Flag {
 }
 
 impl GetBonuses for Flag {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
             Self::Race(race) => race.get_bonuses(value),
             _ => None,

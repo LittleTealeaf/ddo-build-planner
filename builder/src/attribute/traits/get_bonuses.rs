@@ -1,6 +1,6 @@
 use rust_decimal::Decimal;
 
-use crate::bonus::Bonus;
+use crate::bonus::BonusTemplate;
 
 /// Implements the ability to get bonuses from different [`Attribute`] sub-types.
 ///
@@ -79,5 +79,5 @@ pub trait GetBonuses<T = ()> {
     ///
     /// If there are no bonuses, for this object, this returns [`None`]. If there are bonuses, then
     /// a vector of each [`Bonus`] is returned.
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>>;
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>>;
 }

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute, TrackAttribute},
-    bonus::{Bonus, CloneBonus},
+    bonus::{Bonus, BonusTemplate, CloneBonus},
 };
 
 use super::ability::Ability;
@@ -19,7 +19,7 @@ pub enum SummonedAttribute {
 }
 
 impl GetBonuses for SummonedAttribute {
-    fn get_bonuses(&self, _: Decimal) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, _: Decimal) -> Option<Vec<BonusTemplate>> {
         None
     }
 }

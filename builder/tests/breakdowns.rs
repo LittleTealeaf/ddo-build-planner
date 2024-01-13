@@ -255,7 +255,7 @@ mod condition {
 }
 
 mod dynamic {
-    use builder::types::ability::Ability;
+    use builder::{bonus::BonusTemplate, types::ability::Ability};
 
     use super::*;
 
@@ -265,13 +265,7 @@ mod dynamic {
 
         breakdowns.import_dynamic_bonus(
             Attribute::Debug(0),
-            vec![Bonus::new(
-                DebugValue(1),
-                DebugValue(1),
-                10,
-                DebugValue(0),
-                None,
-            )],
+            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10, None)],
         );
 
         assert_eq!(breakdowns.get_attribute(DebugValue(1)), 0.into());
@@ -283,13 +277,7 @@ mod dynamic {
 
         breakdowns.import_dynamic_bonus(
             Attribute::Debug(0),
-            vec![Bonus::new(
-                DebugValue(1),
-                DebugValue(1),
-                10,
-                BonusSource::Attribute(Attribute::Debug(0)),
-                None,
-            )],
+            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10, None)],
         );
 
         breakdowns.insert_bonus(Bonus::new(
@@ -309,13 +297,7 @@ mod dynamic {
 
         breakdowns.import_dynamic_bonus(
             Attribute::Debug(0),
-            vec![Bonus::new(
-                Ability::All,
-                DebugValue(0),
-                10,
-                BonusSource::Attribute(Attribute::Debug(0)),
-                None,
-            )],
+            vec![BonusTemplate::new(Ability::All, DebugValue(0), 10, None)],
         );
 
         let before = breakdowns.get_attribute(Ability::Constitution);

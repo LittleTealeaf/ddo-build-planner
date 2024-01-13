@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusTemplate, ToValue},
+    bonus::{BonusTemplate, ToValue},
 };
 
 /// Describes a set bonus with it's name and bonuses
@@ -21,18 +21,17 @@ pub struct SetBonus {
 
 impl SetBonus {
     /// Creates an iterator of bonuses pulled from this set bonus
-    pub fn to_bonuses(self) -> impl Iterator<Item = Bonus> {
+    pub fn to_bonuses(self) -> impl Iterator<Item = BonusTemplate> {
         let attribute = Attribute::SetBonus(self.name);
 
         self.bonuses.into_iter().flat_map(move |(count, bonuses)| {
             let attribute = attribute.clone();
-            let condition = attribute.clone().value().greater_or_equal_to(count.value());
+            let condition = attribute.value().greater_or_equal_to(count.value());
             bonuses.into_iter().map(move |bonus| {
-                Bonus::new(
+                BonusTemplate::new(
                     bonus.attribute().clone(),
                     *bonus.bonus_type(),
                     bonus.value().clone(),
-                    attribute.clone(),
                     bonus.condition().as_ref().map_or_else(
                         || condition.clone(),
                         |cond| cond.clone() & condition.clone(),
@@ -44,7 +43,7 @@ impl SetBonus {
 
     /// Converts this set bonus to a dynamic bonus
     #[must_use]
-    pub fn to_dynamic_bonus(self) -> (Attribute, Vec<Bonus>) {
+    pub fn to_dynamic_bonus(self) -> (Attribute, Vec<BonusTemplate>) {
         (
             Attribute::SetBonus(self.name.clone()),
             self.to_bonuses().collect(),

@@ -6,7 +6,7 @@ use utils::public_modules;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType, Value},
+    bonus::{BonusTemplate, BonusType, Value},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{
         ability::Ability, player_class::PlayerClass, skill::Skill, spell_points::SpellPoints,
@@ -40,57 +40,53 @@ pub enum SpellcastingFeat {
 }
 
 impl GetBonuses for SpellcastingFeat {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         (value > Decimal::ZERO).then(|| match self {
-            Self::AugmentSummoning => Some(vec![Bonus::new(
+            Self::AugmentSummoning => Some(vec![BonusTemplate::new(
                 SummonedAttribute::AbilityScore(Ability::All),
                 BonusType::Stacking,
                 4,
-                *self,
                 None,
             )]),
             Self::MobileSpellcasting => None,
             Self::SpellFocus(focus) => focus.get_bonuses(value),
-            Self::CombatCasting => Some(vec![Bonus::new(
+            Self::CombatCasting => Some(vec![BonusTemplate::new(
                 Skill::Concentration,
                 BonusType::Stacking,
                 4,
-                *self,
                 None,
             )]),
             Self::MagicalTraining => Some(vec![
-                Bonus::new(
+                BonusTemplate::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     5,
-                    *self,
                     None,
                 ),
-                Bonus::new(SpellPoints::Base, BonusType::Stacking, 80, *self, None),
+                BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, 80, None),
             ]),
             Self::MentalToughness | Self::ImprovedMentalToughness => Some(vec![
-                Bonus::new(
+                BonusTemplate::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     1,
-                    *self,
                     None,
                 ),
-                Bonus::new(
+                BonusTemplate::new(
                     SpellPoints::Base,
                     BonusType::Stacking,
                     Value::from(5) + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5)),
-                    *self,
                     None,
                 ),
             ]),
-            Self::SpellPenetration | Self::GreaterSpellPenetration => Some(vec![Bonus::new(
-                Attribute::SpellPenetration,
-                BonusType::Stacking,
-                2,
-                *self,
-                None,
-            )]),
+            Self::SpellPenetration | Self::GreaterSpellPenetration => {
+                Some(vec![BonusTemplate::new(
+                    Attribute::SpellPenetration,
+                    BonusType::Stacking,
+                    2,
+                    None,
+                )])
+            }
         })?
     }
 }

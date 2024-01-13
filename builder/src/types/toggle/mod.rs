@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::Bonus,
+    bonus::BonusTemplate,
 };
 
 pub use attacking_target::*;
@@ -39,8 +39,8 @@ impl Display for Toggle {
 }
 
 impl GetBonuses<Self> for Toggle {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
-        (value > Decimal::ZERO).then(|| vec![Bonus::toggle(*self, *self, None)])
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
+        (value > Decimal::ZERO).then(|| vec![BonusTemplate::toggle(*self, None)])
     }
 }
 

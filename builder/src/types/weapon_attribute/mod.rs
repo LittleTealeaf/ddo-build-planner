@@ -9,7 +9,7 @@ use utils::public_modules;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute, TrackAttribute},
-    bonus::{Bonus, BonusType, CloneBonus},
+    bonus::{Bonus, BonusTemplate, BonusType, CloneBonus},
 };
 
 /// A `WeaponStat` that is specifically for a weapon hand.
@@ -36,13 +36,12 @@ impl From<(WeaponHand, WeaponStat)> for Attribute {
 }
 
 impl GetBonuses for WeaponAttribute {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
-            Self(hand, WeaponStat::CriticalMultiplier) => Some(vec![Bonus::new(
+            Self(hand, WeaponStat::CriticalMultiplier) => Some(vec![BonusTemplate::new(
                 (*hand, WeaponStat::CriticalMultiplier1920),
                 BonusType::Stacking,
                 value,
-                Attribute::from((*hand, WeaponStat::CriticalMultiplier)),
                 None,
             )]),
             _ => None,

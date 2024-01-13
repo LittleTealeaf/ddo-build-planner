@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::GetBonuses,
-    bonus::{Bonus, BonusType, Value},
+    bonus::{BonusTemplate, BonusType, Value},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{saving_throw::SavingThrow, skill::Skill},
 };
@@ -40,130 +40,56 @@ pub enum SkillFocus {
 }
 
 impl GetBonuses for SkillFocus {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         (value > Decimal::ZERO).then(|| match self {
-            Self::Focus(skill) => vec![Bonus::new(
-                *skill,
-                BonusType::Stacking,
-                3,
-                Self::Focus(*skill),
-                None,
-            )],
+            Self::Focus(skill) => vec![BonusTemplate::new(*skill, BonusType::Stacking, 3, None)],
             Self::Acrobatic => vec![
-                Bonus::new(Skill::Jump, BonusType::Stacking, 2, Self::Acrobatic, None),
-                Bonus::new(Skill::Tumble, BonusType::Stacking, 2, Self::Acrobatic, None),
+                BonusTemplate::new(Skill::Jump, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::Tumble, BonusType::Stacking, 2, None),
             ],
             Self::Alertness => vec![
-                Bonus::new(Skill::Listen, BonusType::Stacking, 2, Self::Alertness, None),
-                Bonus::new(Skill::Spot, BonusType::Stacking, 2, Self::Alertness, None),
+                BonusTemplate::new(Skill::Listen, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::Spot, BonusType::Stacking, 2, None),
             ],
             Self::Athletic => vec![
-                Bonus::new(Skill::Balance, BonusType::Stacking, 2, Self::Athletic, None),
-                Bonus::new(Skill::Swim, BonusType::Stacking, 2, Self::Athletic, None),
+                BonusTemplate::new(Skill::Balance, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::Swim, BonusType::Stacking, 2, None),
             ],
             Self::Bullheaded => vec![
-                Bonus::new(
-                    SavingThrow::Will,
-                    BonusType::Stacking,
-                    1,
-                    Self::Bullheaded,
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Intimidate,
-                    BonusType::Stacking,
-                    2,
-                    Self::Bullheaded,
-                    None,
-                ),
+                BonusTemplate::new(SavingThrow::Will, BonusType::Stacking, 1, None),
+                BonusTemplate::new(Skill::Intimidate, BonusType::Stacking, 2, None),
             ],
             Self::Discipline => vec![
-                Bonus::new(
-                    SavingThrow::Will,
-                    BonusType::Stacking,
-                    1,
-                    Self::Discipline,
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Concentration,
-                    BonusType::Stacking,
-                    2,
-                    Self::Discipline,
-                    None,
-                ),
+                BonusTemplate::new(SavingThrow::Will, BonusType::Stacking, 1, None),
+                BonusTemplate::new(Skill::Concentration, BonusType::Stacking, 2, None),
             ],
-            Self::LuckOfHeroes => vec![Bonus::new(
+            Self::LuckOfHeroes => vec![BonusTemplate::new(
                 SavingThrow::All,
                 BonusType::Stacking,
                 2,
-                Self::LuckOfHeroes,
                 None,
             )],
             Self::Negotiator => vec![
-                Bonus::new(
-                    Skill::Diplomacy,
-                    BonusType::Stacking,
-                    2,
-                    Self::Negotiator,
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Haggle,
-                    BonusType::Stacking,
-                    2,
-                    Self::Negotiator,
-                    None,
-                ),
+                BonusTemplate::new(Skill::Diplomacy, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::Haggle, BonusType::Stacking, 2, None),
             ],
-            Self::ResistPoison => vec![Bonus::new(
+            Self::ResistPoison => vec![BonusTemplate::new(
                 SavingThrow::Poison,
                 BonusType::Stacking,
                 Value::from(4),
-                Self::ResistPoison,
                 None,
             )],
             Self::SelfSufficient => vec![
-                Bonus::new(
-                    Skill::Heal,
-                    BonusType::Stacking,
-                    2,
-                    Self::SelfSufficient,
-                    None,
-                ),
-                Bonus::new(
-                    Skill::Repair,
-                    BonusType::Stacking,
-                    2,
-                    Self::SelfSufficient,
-                    None,
-                ),
+                BonusTemplate::new(Skill::Heal, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::Repair, BonusType::Stacking, 2, None),
             ],
             Self::SnakeBlood => vec![
-                Bonus::new(
-                    SavingThrow::Reflex,
-                    BonusType::Stacking,
-                    1,
-                    Self::SnakeBlood,
-                    None,
-                ),
-                Bonus::new(
-                    SavingThrow::Poison,
-                    BonusType::Stacking,
-                    2,
-                    Self::SnakeBlood,
-                    None,
-                ),
+                BonusTemplate::new(SavingThrow::Reflex, BonusType::Stacking, 1, None),
+                BonusTemplate::new(SavingThrow::Poison, BonusType::Stacking, 2, None),
             ],
             Self::Stealthy => vec![
-                Bonus::new(Skill::Hide, BonusType::Stacking, 2, Self::Stealthy, None),
-                Bonus::new(
-                    Skill::MoveSilently,
-                    BonusType::Stacking,
-                    2,
-                    Self::Stealthy,
-                    None,
-                ),
+                BonusTemplate::new(Skill::Hide, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::MoveSilently, BonusType::Stacking, 2, None),
             ],
         })
     }

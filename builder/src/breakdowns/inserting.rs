@@ -122,14 +122,19 @@ impl Breakdowns {
 
                 if !bonuses.is_empty() {
                     self.children.insert(
-                        source,
+                        source.clone(),
                         bonuses
                             .iter()
                             .map(|bonus| bonus.attribute())
                             .cloned()
                             .collect(),
                     );
-                    buffer.insert_bonuses(bonuses.into_iter().cloned());
+                    buffer.insert_bonuses(
+                        bonuses
+                            .into_iter()
+                            .cloned()
+                            .map(|bonus| bonus.to_bonus(source.clone())),
+                    );
                 }
             }
         }
