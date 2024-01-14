@@ -6,7 +6,7 @@ use utils::hashmap::MapGetMutOrDefault;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusSource, Value},
+    bonus::{Bonus, BonusSource, ToValue},
 };
 
 use super::{buffer::Buffer, Breakdowns};
@@ -81,7 +81,7 @@ impl Breakdowns {
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .value_cache
-                .remove(&Value::Attribute(attribute.clone()))
+                .remove(&attribute.clone().value())
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
@@ -90,23 +90,21 @@ impl Breakdowns {
 
             if forced || initial_value != self.get_attribute(attribute.clone()) {
                 self.value_cache
-                    .retain(|key, _| !key.has_attr_dependency(attribute.clone()));
+                    .retain(|key, _| !key.has_attr_dependency(&attribute));
                 self.condition_cache
-                    .retain(|key, _| !key.has_attr_dependency(attribute.clone()));
+                    .retain(|key, _| !key.has_attr_dependency(&attribute));
 
                 let source = BonusSource::Attribute(attribute.clone());
 
-                let updated_bonuses = chain!(
+                buffer.insert_attributes(
                     self.remove_bonuses_by_source([source.clone()])
-                        .collect::<Vec<_>>(),
-                    self.get_dependants(attribute.clone())
-                        .cloned()
-                        .collect::<Vec<_>>(),
+                        .map(|bonus| bonus.attribute().clone()),
                 );
 
-                let updated_attributes = updated_bonuses.map(|bonus| bonus.attribute().clone());
-
-                buffer.insert_attributes(updated_attributes);
+                buffer.insert_attributes(
+                    self.get_dependants(&attribute)
+                        .map(|bonus| bonus.attribute().clone()),
+                );
 
                 let value = self.get_attribute(attribute.clone());
 
@@ -140,9 +138,9 @@ impl Breakdowns {
         }
     }
 
-    fn get_dependants(&self, attribute: Attribute) -> impl Iterator<Item = &Bonus> + '_ {
+    fn get_dependants<'a>(&'a self, attribute: &'a Attribute) -> impl Iterator<Item = &Bonus> + '_ {
         self.get_bonuses()
-            .filter(move |bonus| bonus.has_attr_dependency(attribute.clone()))
+            .filter(move |bonus| bonus.has_attr_dependency(attribute))
     }
 
     fn remove_bonuses_by_source<'a>(

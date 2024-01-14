@@ -19,8 +19,8 @@ mod has_dependency {
             None,
         );
 
-        assert!(bonus.has_attr_dependency(Attribute::Debug(1)));
-        assert!(!bonus.has_attr_dependency(Attribute::Debug(2)));
+        assert!(bonus.has_attr_dependency(&Attribute::Debug(1)));
+        assert!(!bonus.has_attr_dependency(&Attribute::Debug(2)));
     }
 
     #[test]
@@ -33,8 +33,8 @@ mod has_dependency {
             Some(Condition::has(DebugValue(1))),
         );
 
-        assert!(bonus.has_attr_dependency(Attribute::Debug(1)));
-        assert!(!bonus.has_attr_dependency(Attribute::Debug(2)));
+        assert!(bonus.has_attr_dependency(&Attribute::Debug(1)));
+        assert!(!bonus.has_attr_dependency(&Attribute::Debug(2)));
     }
 
     mod value {
@@ -44,15 +44,15 @@ mod has_dependency {
         fn value() {
             let value = Value::Const(10.into());
 
-            assert!(!value.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(0)));
         }
 
         #[test]
         fn attribute() {
             let value = Value::Attribute(Attribute::Debug(0));
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(1)));
         }
 
         #[test]
@@ -61,9 +61,9 @@ mod has_dependency {
                 Value::from(Attribute::Debug(0)).into(),
                 Value::from(Attribute::Debug(1)).into(),
             );
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -72,9 +72,9 @@ mod has_dependency {
                 Value::from(Attribute::Debug(0)).into(),
                 Value::from(Attribute::Debug(1)).into(),
             );
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -83,9 +83,9 @@ mod has_dependency {
                 Value::from(Attribute::Debug(0)).into(),
                 Value::from(Attribute::Debug(1)).into(),
             );
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -94,9 +94,9 @@ mod has_dependency {
                 Value::from(Attribute::Debug(0)).into(),
                 Value::from(Attribute::Debug(1)).into(),
             );
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -105,9 +105,9 @@ mod has_dependency {
                 Value::from(Attribute::Debug(0)).into(),
                 Value::from(Attribute::Debug(1)).into(),
             );
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -117,8 +117,8 @@ mod has_dependency {
                 Value::from(10).into(),
             );
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(1)));
         }
 
         #[test]
@@ -128,17 +128,17 @@ mod has_dependency {
                 Value::from(Attribute::Debug(1)).into(),
             );
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(2)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
         fn floor() {
             let value = Value::Floor(Value::Attribute(Attribute::Debug(0)).into());
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(1)));
         }
 
         #[test]
@@ -149,34 +149,34 @@ mod has_dependency {
                 if_false: Value::from(Attribute::Debug(2)).into(),
             };
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(value.has_attr_dependency(Attribute::Debug(1)));
-            assert!(value.has_attr_dependency(Attribute::Debug(2)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(3)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(2)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(3)));
         }
 
         #[test]
         fn abs() {
             let value = Value::from(Attribute::Debug(0)).abs();
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(1)));
         }
 
         #[test]
         fn ceil() {
             let value = Value::from(Attribute::Debug(0)).ceil();
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(1)));
         }
 
         #[test]
         fn round() {
             let value = Value::from(Attribute::Debug(0)).round();
 
-            assert!(value.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!value.has_attr_dependency(Attribute::Debug(1)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(1)));
         }
     }
 
@@ -195,64 +195,64 @@ mod has_dependency {
         #[test]
         fn not() {
             let condition = attr_condition(0).not();
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(1)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(1)));
         }
 
         #[test]
         fn greater_than() {
             let condition =
                 Value::from(Attribute::Debug(0)).greater_than(Attribute::Debug(1).into());
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
         fn less_than() {
             let condition = Value::from(Attribute::Debug(0)).less_than(Attribute::Debug(1).into());
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
         fn equal_to() {
             let condition = Value::from(Attribute::Debug(0)).equal_to(Attribute::Debug(1).into());
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
         fn constant() {
             let condition = Condition::from(false);
             // To make sure it's not just returning 0
-            assert!(!condition.has_attr_dependency(Attribute::Debug(0)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(0)));
         }
 
         #[test]
         fn and() {
             let condition = attr_condition(0) & attr_condition(1);
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
         fn or() {
             let condition = attr_condition(0) | attr_condition(1);
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
         fn xor() {
             let condition = attr_condition(0) ^ attr_condition(1);
-            assert!(condition.has_attr_dependency(Attribute::Debug(0)));
-            assert!(condition.has_attr_dependency(Attribute::Debug(1)));
-            assert!(!condition.has_attr_dependency(Attribute::Debug(2)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(condition.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!condition.has_attr_dependency(&Attribute::Debug(2)));
         }
     }
 }
