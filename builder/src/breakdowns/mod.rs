@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::Attribute,
-    bonus::{get_base_bonuses, Bonus, BonusSource, Condition, Value},
+    bonus::{get_base_bonuses, Bonus, BonusSource, BonusTemplate, Condition, Value},
 };
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
@@ -31,7 +31,7 @@ pub struct Breakdowns {
     value_cache: HashMap<Value, Decimal>,
     condition_cache: HashMap<Condition, bool>,
     children: HashMap<BonusSource, Vec<Attribute>>,
-    dynamic_bonuses: HashMap<Attribute, Vec<Bonus>>,
+    dynamic_bonuses: HashMap<Attribute, Vec<BonusTemplate>>,
 }
 
 impl Breakdowns {

@@ -1,12 +1,12 @@
 use std::collections::HashSet;
 
-use crate::{attribute::Attribute, bonus::Bonus};
+use crate::{attribute::Attribute, bonus::BonusTemplate};
 
 use super::Breakdowns;
 
 impl Breakdowns {
     /// Shortcut for a single dynamic bonus. Uses [`Self::insert_dynamic_bonuses`]
-    pub fn import_dynamic_bonus(&mut self, attribute: Attribute, bonuses: Vec<Bonus>) {
+    pub fn import_dynamic_bonus(&mut self, attribute: Attribute, bonuses: Vec<BonusTemplate>) {
         self.import_dynamic_bonuses([(attribute, bonuses)]);
     }
 
@@ -15,7 +15,7 @@ impl Breakdowns {
     /// given attribute is above 0.
     pub fn import_dynamic_bonuses(
         &mut self,
-        dynamic_bonuses: impl IntoIterator<Item = (Attribute, Vec<Bonus>)>,
+        dynamic_bonuses: impl IntoIterator<Item = (Attribute, Vec<BonusTemplate>)>,
     ) {
         let mut attributes = HashSet::new();
 

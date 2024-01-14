@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 pub use traits::*;
 
 use crate::{
-    bonus::{Bonus, CloneBonus},
+    bonus::{Bonus, BonusTemplate, CloneBonus},
     feat::Feat,
     types::{
         ability::Ability, armor_class::ArmorClass, damage_type::DamageType, flag::Flag,
@@ -143,7 +143,7 @@ impl Attribute {
     ///
     /// If an attribute has no bonuses associated with it, then `None` is returned.
     #[must_use]
-    pub fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+    pub fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::Weapon(stat) => stat.get_bonuses(value),

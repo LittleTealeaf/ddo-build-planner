@@ -1,6 +1,6 @@
 use rust_decimal::Decimal;
 
-use crate::bonus::Bonus;
+use crate::bonus::BonusTemplate;
 
 /// Implements the ability to get bonuses from different [`Attribute`] sub-types.
 ///
@@ -12,7 +12,7 @@ use crate::bonus::Bonus;
 /// # Examples
 ///
 /// ```
-/// use builder::{bonus::Bonus, attribute::GetBonuses};
+/// use builder::{bonus::BonusTemplate, attribute::GetBonuses};
 /// use rust_decimal::Decimal;
 ///
 /// enum Test {
@@ -21,7 +21,7 @@ use crate::bonus::Bonus;
 /// }
 ///
 /// impl GetBonuses for Test {
-///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
 ///         // implementation
 ///         None // return None if there are none
 ///     }
@@ -35,7 +35,7 @@ use crate::bonus::Bonus;
 /// If there are no bonuses for a type, [`None`] is returned.
 ///
 /// ```
-/// use builder::{bonus::Bonus, attribute::GetBonuses};
+/// use builder::{bonus::BonusTemplate, attribute::GetBonuses};
 /// use rust_decimal::Decimal;
 ///
 /// enum Test {
@@ -47,13 +47,13 @@ use crate::bonus::Bonus;
 /// struct _TypeDEF;
 ///
 /// impl GetBonuses<_TypeABC> for Test {
-///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
 ///         None
 ///     }
 /// }
 ///
 /// impl GetBonuses<_TypeDEF> for Test {
-///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+///     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
 ///         Some(Vec::new())
 ///     }
 /// }
@@ -79,5 +79,5 @@ pub trait GetBonuses<T = ()> {
     ///
     /// If there are no bonuses, for this object, this returns [`None`]. If there are bonuses, then
     /// a vector of each [`Bonus`] is returned.
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>>;
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>>;
 }

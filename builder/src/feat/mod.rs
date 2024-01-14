@@ -9,7 +9,7 @@ use std::fmt::Display;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::{Bonus, CloneBonus},
+    bonus::{Bonus, BonusTemplate, CloneBonus},
 };
 
 /// All possible feats that the player can have.
@@ -46,7 +46,7 @@ impl CloneBonus for Feat {
 }
 
 impl GetBonuses for Feat {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
             Self::RacialFeat(feat) => feat.get_bonuses(value),
             Self::Proficiency(_) => None,

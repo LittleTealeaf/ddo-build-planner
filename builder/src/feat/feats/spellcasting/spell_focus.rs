@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusType},
+    bonus::{BonusTemplate, BonusType},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{player_class::PlayerClass, spell_school::SpellSchool, spell_selector::SpellSelector},
 };
@@ -22,13 +22,12 @@ pub enum SpellFocusFeat {
 }
 
 impl GetBonuses for SpellFocusFeat {
-    fn get_bonuses(&self, value: Decimal) -> Option<Vec<crate::bonus::Bonus>> {
+    fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         (value > Decimal::ZERO).then(|| match self {
-            Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![Bonus::new(
+            Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![BonusTemplate::new(
                 Attribute::SpellDC(SpellSelector::School(*school)),
                 BonusType::Stacking,
                 1,
-                Feat::Spellcasting(SpellcastingFeat::SpellFocus(*self)),
                 None,
             )],
         })

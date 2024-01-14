@@ -1,6 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-use crate::attribute::Attribute;
+use crate::{
+    attribute::Attribute,
+    feat::Feat,
+    types::{
+        flag::{Flag, ToFlag},
+        toggle::Toggle,
+    },
+};
 
 use super::{Bonus, BonusSource, BonusType, Condition, Value};
 
@@ -32,6 +39,25 @@ impl BonusTemplate {
             value: value.into(),
             condition: condition.into(),
         }
+    }
+
+    /// Provides the use of a given toggle
+    #[must_use]
+    pub fn toggle(toggle: impl Into<Toggle>, condition: impl Into<Option<Condition>>) -> Self {
+        let toggle: Toggle = toggle.into();
+        Self::new(toggle.to_flag(), BonusType::Stacking, 1, condition)
+    }
+
+    /// Provides the specified flag
+    #[must_use]
+    pub fn flag(flag: impl Into<Flag>, condition: impl Into<Option<Condition>>) -> Self {
+        Self::new(flag.into(), BonusType::Stacking, 1, condition)
+    }
+
+    /// Provides the feat
+    #[must_use]
+    pub fn feat(feat: impl Into<Feat>, condition: impl Into<Option<Condition>>) -> Self {
+        Self::new(feat.into(), BonusType::Stacking, 1, condition)
     }
 
     /// Converts this bonus template into a bonus
