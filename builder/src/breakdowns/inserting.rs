@@ -142,7 +142,7 @@ impl Breakdowns {
 
     fn get_dependants<'a>(&'a self, attribute: &'a Attribute) -> impl Iterator<Item = &Bonus> + '_ {
         self.get_bonuses()
-            .filter(move |bonus| bonus.has_attr_dependency(attribute))
+            .filter(|bonus| bonus.has_attr_dependency(attribute))
     }
 
     fn remove_bonuses_by_source<'a>(
