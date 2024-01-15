@@ -38,7 +38,10 @@ impl Buffer {
         buffer
     }
 
-    pub fn insert_attributes(&mut self, attributes: impl IntoIterator<Item = impl Into<Attribute>>) {
+    pub fn insert_attributes(
+        &mut self,
+        attributes: impl IntoIterator<Item = impl Into<Attribute>>,
+    ) {
         for attribute in attributes {
             let attribute: Attribute = attribute.into();
             self.attributes.push(Reverse(attribute.clone()));
