@@ -2,6 +2,9 @@ use itertools::chain;
 
 use crate::{
     attribute::Attribute,
+    bonus::{
+        Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
+    },
     types::{
         ability::Ability,
         armor_class::ArmorClass,
@@ -18,9 +21,6 @@ use crate::{
     },
 };
 
-use super::{
-    Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
-};
 
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
@@ -159,12 +159,14 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
             ArmorClass::TotalArmorClass,
             BonusType::Standard,
             Value::iter_sum([
-                ArmorClass::Bonus.value(),
-                ArmorClass::NaturalArmor.value(),
-                ArmorClass::ShieldBonus.value() * (Value::ONE + ArmorClass::ShieldScalar.value()),
-                ArmorClass::ArmorBonus.value() * (Value::ONE + ArmorClass::ArmorScalar.value()),
+                ArmorClass::Bonus.to_value(),
+                ArmorClass::NaturalArmor.to_value(),
+                ArmorClass::ShieldBonus.to_value()
+                    * (Value::ONE + ArmorClass::ShieldScalar.to_value()),
+                ArmorClass::ArmorBonus.to_value()
+                    * (Value::ONE + ArmorClass::ArmorScalar.to_value()),
                 Value::TEN,
-            ]) * (Value::ONE + ArmorClass::TotalScalar.value()),
+            ]) * (Value::ONE + ArmorClass::TotalScalar.to_value()),
             None,
         ),
     ]
@@ -175,13 +177,13 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Health::Bonus,
             BonusType::Stacking,
-            Health::Base.value() * (Health::BaseModifier.value() + Value::ONE),
+            Health::Base.to_value() * (Health::BaseModifier.to_value() + Value::ONE),
             None,
         ),
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
-            Health::Bonus.value() * (Health::Modifier.value() + Value::ONE),
+            Health::Bonus.to_value() * (Health::Modifier.to_value() + Value::ONE),
             None,
         ),
     ]
@@ -192,15 +194,17 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             SpellPoints::Base,
             BonusType::Stacking,
-            SpellPoints::Scaled.value()
-                * (PlayerClass::FavoredSoul.value() + PlayerClass::Sorcerer.value() + 20.value())
-                / 20.value(),
+            SpellPoints::Scaled.to_value()
+                * (PlayerClass::FavoredSoul.to_value()
+                    + PlayerClass::Sorcerer.to_value()
+                    + 20.to_value())
+                / 20.to_value(),
             None,
         ),
         BonusTemplate::new(
             SpellPoints::Total,
             BonusType::Stacking,
-            SpellPoints::Base.value() * (Value::ONE + SpellPoints::Modifier.value()),
+            SpellPoints::Base.to_value() * (Value::ONE + SpellPoints::Modifier.to_value()),
             None,
         ),
     ]
@@ -241,8 +245,8 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
             Sheltering::MagicalTotal,
             BonusType::Stacking,
             Sheltering::Magical
-                .value()
-                .min(Sheltering::MagicalCap.value()),
+                .to_value()
+                .min(Sheltering::MagicalCap.to_value()),
             None,
         ),
         BonusTemplate::new(
@@ -265,7 +269,7 @@ fn sheltering_reduction() -> impl IntoIterator<Item = BonusTemplate> {
             reduction,
             BonusType::Stacking,
             Value::ONE_HUNDRED
-                * (Value::ONE - (Value::ONE_HUNDRED / (Value::ONE_HUNDRED + total.value()))),
+                * (Value::ONE - (Value::ONE_HUNDRED / (Value::ONE_HUNDRED + total.to_value()))),
             None,
         )
     })
@@ -285,7 +289,7 @@ fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
         BonusTemplate::new(
             skill,
             BonusType::Stacking,
-            (-scale).value() * Attribute::ArmorCheckPenalty.value(),
+            (-scale).to_value() * Attribute::ArmorCheckPenalty.to_value(),
             Condition::has(Attribute::ArmorCheckPenalty),
         )
     })

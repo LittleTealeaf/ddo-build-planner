@@ -3,12 +3,17 @@ use utils::hashmap::IntoGroupedHashMap;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusType, Condition, Value},
+    bonus::{BonusType, Condition, Value},
 };
 
-use super::{Breakdowns, EvalBonus};
+use super::Breakdowns;
 
 impl Breakdowns {
+    /// Calculates and retuns the final value for a given [`Attribute`].
+    pub fn get_attribute(&mut self, attribute: impl Into<Attribute>) -> Decimal {
+        self.evaluate_value(&Value::Attribute(attribute.into()))
+    }
+
     pub(super) fn evaluate_some_condition(&mut self, condition: Option<&Condition>) -> bool {
         condition.map_or(true, |condition| self.evaluate_condition(condition))
     }
@@ -72,26 +77,16 @@ impl Breakdowns {
         result
     }
 
-    pub(super) fn get_bonus(&mut self, bonus: &Bonus) -> EvalBonus {
-        let condition = self.evaluate_some_condition(bonus.condition());
-        let value = self.evaluate_value(bonus.value());
-
-        EvalBonus { value, condition }
-    }
-
-    /// Calculates and retuns the final value for a given [`Attribute`].
-    pub fn get_attribute(&mut self, attribute: impl Into<Attribute>) -> Decimal {
-        self.evaluate_value(&Value::Attribute(attribute.into()))
-    }
-
     pub(crate) fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut bonuses = self
             .bonuses
             .get(attribute)?
             .clone()
             .into_iter()
-            .map(|bonus| (*bonus.bonus_type(), self.get_bonus(&bonus)))
-            .filter_map(|(bonus_type, eval)| eval.condition.then_some((bonus_type, eval.value)))
+            .filter_map(|bonus| {
+                self.evaluate_some_condition(bonus.condition())
+                    .then(|| (*bonus.bonus_type(), self.evaluate_value(bonus.value())))
+            })
             .into_grouped_hash_map();
 
         let stacking = bonuses

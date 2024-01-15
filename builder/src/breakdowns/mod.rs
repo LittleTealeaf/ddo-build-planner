@@ -1,5 +1,6 @@
 //! Pulls together all the bonuses and calculates the bonuses for each attribute
 
+mod base;
 mod breakdown;
 mod buffer;
 mod calculation;
@@ -15,8 +16,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::Attribute,
-    bonus::{get_base_bonuses, Bonus, BonusSource, BonusTemplate, Condition, Value},
+    bonus::{Bonus, BonusSource, BonusTemplate, Condition, Value},
 };
+
+use self::base::get_base_bonuses;
 
 /// Breakdowns is an object that handles calculating the final attribute values for a character.
 /// This object is used to both display final attribute values ([`Self::get_attribute`]),
@@ -35,7 +38,8 @@ pub struct Breakdowns {
 /// calculated.
 impl Breakdowns {
     /// Creates a new [`Breakdowns`] instance, ready for use.
-    /// This method will populate the object with bonuses from [`get_base_bonuses`].
+    /// This will also populate the instance with all the default bonuses, which implement
+    /// the logic used for all characters.
     ///
     /// # Notes
     /// There are additional methods appended to this object using traits within the `data` crate.
@@ -75,5 +79,21 @@ impl Breakdowns {
 impl Default for Breakdowns {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn all_base_bonuses_have_base_source() {
+        for bonus in get_base_bonuses() {
+            assert_eq!(
+                bonus.source(),
+                &BonusSource::Base,
+                "Does not have base bonus: {bonus:?}"
+            );
+        }
     }
 }

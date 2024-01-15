@@ -42,7 +42,9 @@ impl Breakdowns {
 
         let mut buffer = Buffer::create(bonuses);
 
-        let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
+        let updated_bonuses = self
+            .remove_bonuses_by_source(sources.iter())
+            .collect::<Vec<_>>();
 
         let updated_attributes = updated_bonuses
             .into_iter()
@@ -81,7 +83,7 @@ impl Breakdowns {
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .value_cache
-                .remove(&attribute.clone().value())
+                .remove(&attribute.clone().to_value())
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
@@ -97,7 +99,7 @@ impl Breakdowns {
                 let source = BonusSource::Attribute(attribute.clone());
 
                 buffer.insert_attributes(
-                    self.remove_bonuses_by_source([source.clone()])
+                    self.remove_bonuses_by_source([&source])
                         .map(|bonus| bonus.attribute().clone()),
                 );
 
@@ -145,12 +147,12 @@ impl Breakdowns {
 
     fn remove_bonuses_by_source<'a>(
         &'a mut self,
-        sources: impl IntoIterator<Item = BonusSource> + 'a,
+        sources: impl IntoIterator<Item = &'a BonusSource> + 'a,
     ) -> impl Iterator<Item = Bonus> + 'a {
         sources
             .into_iter()
             .filter_map(|source| {
-                let children = self.children.remove(&source)?;
+                let children = self.children.remove(source)?;
 
                 let mut bonuses = Vec::new();
 
@@ -159,7 +161,7 @@ impl Breakdowns {
                         let items = set.iter().enumerate();
 
                         let indexes = items
-                            .filter_map(|(index, item)| item.source().eq(&source).then_some(index))
+                            .filter_map(|(index, item)| item.source().eq(source).then_some(index))
                             .rev()
                             .collect::<Vec<_>>();
 

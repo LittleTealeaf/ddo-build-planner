@@ -19,13 +19,13 @@ pub struct BonusEntry<'a> {
 impl<'a> BonusEntry<'a> {
     /// Returns a reference to the bonus for this object
     #[must_use]
-    pub const fn get_bonus(&self) -> &'a Bonus {
+    pub const fn bonus(&self) -> &'a Bonus {
         self.bonus
     }
 
     /// Returns a reference to the calculated value for this bonus
     #[must_use]
-    pub const fn get_value(&self) -> &'a Decimal {
+    pub const fn value(&self) -> &'a Decimal {
         self.value
     }
 }

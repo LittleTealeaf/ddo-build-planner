@@ -1,6 +1,6 @@
 use builder::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusSource, BonusType, Condition, Value},
+    bonus::{Bonus, BonusType, Condition, Value},
 };
 
 mod has_dependency {
@@ -534,23 +534,6 @@ mod include_dependencies {
             assert!(deps.contains(&Attribute::Debug(0)));
             assert!(deps.contains(&Attribute::Debug(1)));
             assert!(!deps.contains(&Attribute::Debug(2)));
-        }
-    }
-}
-
-mod base_bonuses {
-    use builder::bonus::get_base_bonuses;
-
-    use super::*;
-
-    #[test]
-    fn all_base_bonuses_have_base_source() {
-        for bonus in get_base_bonuses() {
-            assert_eq!(
-                bonus.source(),
-                &BonusSource::Base,
-                "Does not have base bonus: {bonus:?}"
-            );
         }
     }
 }

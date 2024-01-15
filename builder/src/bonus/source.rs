@@ -52,3 +52,19 @@ where
         value.to_attribute().into()
     }
 }
+
+/// Trait that provides the [`ToSource::to_source`] method
+pub trait ToSource {
+    /// Converts this into a [`BonusSource`].
+    /// Acts as a shortcut for [`BonusSource::from`]
+    fn to_source(self) -> BonusSource;
+}
+
+impl<T> ToSource for T
+where
+    BonusSource: From<T>,
+{
+    fn to_source(self) -> BonusSource {
+        BonusSource::from(self)
+    }
+}

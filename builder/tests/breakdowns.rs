@@ -468,12 +468,12 @@ mod breakdowns {
             .get_breakdowns(&Attribute::Debug(0))
             .expect("Expected Breakdowns");
 
-        assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &a));
-        assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &b));
+        assert!(breakdown.applied().iter().any(|i| i.bonus() == &a));
+        assert!(breakdown.applied().iter().any(|i| i.bonus() == &b));
+        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &b));
+        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &b));
     }
 
     #[test]
@@ -487,12 +487,12 @@ mod breakdowns {
             .get_breakdowns(&Attribute::Debug(0))
             .expect("Expected Breakdowns");
 
-        assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &a));
-        assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &b));
+        assert!(breakdown.applied().iter().any(|i| i.bonus() == &a));
+        assert!(breakdown.applied().iter().any(|i| i.bonus() == &b));
+        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &b));
+        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &b));
     }
 
     #[test]
@@ -506,12 +506,12 @@ mod breakdowns {
             .get_breakdowns(&Attribute::Debug(0))
             .expect("Expected Breakdowns");
 
-        assert!(breakdown.applied().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.applied().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
-        assert!(breakdown.overwritten().iter().any(|i| i.get_bonus() == &b));
-        assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.disabled().iter().any(|i| i.get_bonus() == &b));
+        assert!(breakdown.applied().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.applied().iter().any(|i| i.bonus() == &b));
+        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
+        assert!(breakdown.overwritten().iter().any(|i| i.bonus() == &b));
+        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &b));
     }
 
     #[test]
@@ -530,8 +530,8 @@ mod breakdowns {
             .get_breakdowns(&Attribute::Debug(0))
             .expect("Expected Breakdowns");
 
-        assert!(!breakdown.applied().iter().any(|i| i.get_bonus() == &a));
-        assert!(!breakdown.overwritten().iter().any(|i| i.get_bonus() == &a));
-        assert!(breakdown.disabled().iter().any(|i| i.get_bonus() == &a));
+        assert!(!breakdown.applied().iter().any(|i| i.bonus() == &a));
+        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
+        assert!(breakdown.disabled().iter().any(|i| i.bonus() == &a));
     }
 }

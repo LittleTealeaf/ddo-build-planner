@@ -1,5 +1,4 @@
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
-mod base;
 mod bonus_type;
 mod condition;
 mod deserialize;
@@ -20,7 +19,6 @@ use crate::{
     },
 };
 
-pub use base::*;
 pub use bonus_type::*;
 pub use condition::*;
 pub use source::*;

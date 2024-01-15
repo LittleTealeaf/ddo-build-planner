@@ -17,8 +17,6 @@ pub struct SetBonus {
     bonuses: HashMap<i32, Vec<BonusTemplate>>,
 }
 
-// TODO: Convert all the "get bonus" fields to return BonusTemplate instead of Bonus
-
 impl SetBonus {
     /// Creates an iterator of bonuses pulled from this set bonus
     pub fn to_bonuses(self) -> impl Iterator<Item = BonusTemplate> {
@@ -26,7 +24,7 @@ impl SetBonus {
 
         self.bonuses.into_iter().flat_map(move |(count, bonuses)| {
             let attribute = attribute.clone();
-            let condition = attribute.value().greater_or_equal_to(count.value());
+            let condition = attribute.to_value().greater_or_equal_to(count.to_value());
             bonuses.into_iter().map(move |bonus| {
                 BonusTemplate::new(
                     bonus.attribute().clone(),
