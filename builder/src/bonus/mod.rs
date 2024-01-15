@@ -278,6 +278,18 @@ impl Display for Bonus {
     }
 }
 
+impl From<Bonus> for Value {
+    fn from(value: Bonus) -> Self {
+        value.value
+    }
+}
+
+impl From<Bonus> for Attribute {
+    fn from(value: Bonus) -> Self {
+        value.attribute
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::types::ability::Ability;
