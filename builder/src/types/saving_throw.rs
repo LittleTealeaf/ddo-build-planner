@@ -1,12 +1,12 @@
 //! Each of the possible saving throws
-public_modules!(bonuses);
-
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
 
-use crate::attribute::{Attribute, ToAttribute};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    bonus::{Bonus, CloneBonus},
+};
 
 /// The different saving throws that a character can have bonuses to
 ///
@@ -115,8 +115,20 @@ impl ToAttribute for SavingThrow {
     }
 }
 
+impl CloneBonus for SavingThrow {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::PRIMARY
+                .map(|st| bonus.clone_into_attribute(st))
+                .to_vec()
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use crate::debug::DebugValue;
+
     use super::*;
 
     #[test]
@@ -147,6 +159,27 @@ mod tests {
 
         for (secondary, primary) in list {
             assert_eq!(secondary.get_parent(), Some(primary));
+        }
+    }
+
+    #[test]
+    fn all_clones() {
+        assert!(SavingThrow::All
+            .clone_bonus(&Bonus::dummy(DebugValue(1)))
+            .is_some());
+    }
+
+    #[test]
+    fn primaries_do_not_clone() {
+        for save in SavingThrow::PRIMARY {
+            assert!(save.clone_bonus(&Bonus::dummy(DebugValue(1))).is_none());
+        }
+    }
+
+    #[test]
+    fn secondaries_do_not_clone() {
+        for save in SavingThrow::SECONDARY {
+            assert!(save.clone_bonus(&Bonus::dummy(DebugValue(1))).is_none());
         }
     }
 }

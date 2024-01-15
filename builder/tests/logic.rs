@@ -118,6 +118,39 @@ mod saving_throw {
         ability_test!(wisdom_to_will, Wisdom, Will);
         ability_test!(constitution_to_fortitude, Constitution, Fortitude);
     }
+
+    mod secondary {
+        use super::*;
+
+        macro_rules! secondary_test {
+            ($name: ident, $parent: ident, $save: ident) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+                    let initial = breakdowns.get_attribute(SavingThrow::$save);
+                    breakdowns.insert_bonus(Bonus::new(
+                        SavingThrow::$parent,
+                        DebugValue(0),
+                        10,
+                        DebugValue(0),
+                        None,
+                    ));
+                    let result = breakdowns.get_attribute(SavingThrow::$save);
+                    assert_eq!(result - initial, 10.into());
+                }
+            };
+        }
+
+        secondary_test!(fortitude_to_poison, Fortitude, Poison);
+        secondary_test!(fortitude_to_disease, Fortitude, Disease);
+        secondary_test!(reflex_to_traps, Reflex, Traps);
+        secondary_test!(reflex_to_spell, Reflex, Spell);
+        secondary_test!(reflex_to_magic, Reflex, Magic);
+        secondary_test!(will_to_enchantment, Will, Enchantment);
+        secondary_test!(will_to_illusion, Will, Illusion);
+        secondary_test!(will_to_fear, Will, Fear);
+        secondary_test!(will_to_curse, Will, Curse);
+    }
 }
 
 mod skills {

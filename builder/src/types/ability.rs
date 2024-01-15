@@ -79,7 +79,6 @@ impl CloneBonus for Ability {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
 

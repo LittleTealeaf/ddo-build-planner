@@ -27,6 +27,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         ability_bonuses(),
         armor_class(),
         saving_throw(),
+        secondary_saves(),
         spell_power_skills(),
         spell_power_universal(),
         skill(),
@@ -67,6 +68,17 @@ fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
             Attribute::AbilityModifier(ability),
             None,
         )
+    })
+}
+
+fn secondary_saves() -> impl Iterator<Item = BonusTemplate> {
+    SavingThrow::SECONDARY.into_iter().filter_map(|skill| {
+        Some(BonusTemplate::new(
+            skill,
+            BonusType::Stacking,
+            skill.get_parent()?.to_value(),
+            None,
+        ))
     })
 }
 
