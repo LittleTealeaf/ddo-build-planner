@@ -21,7 +21,6 @@ use crate::{
     },
 };
 
-
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
     chain!(
