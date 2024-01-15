@@ -58,6 +58,23 @@ impl SetBonus {
         }
     }
 
+    /// Returns a reference to the name of this [`SetBonus`].
+    #[must_use]
+    pub const fn name(&self) -> &String {
+        &self.name
+    }
+
+    /// Sets the name of this [`SetBonus`].
+    pub fn set_name(&mut self, name: String) {
+        self.name = name;
+    }
+
+    /// Returns a reference to the bonuses of this [`SetBonus`].
+    #[must_use]
+    pub const fn bonuses(&self) -> &HashMap<i32, Vec<BonusTemplate>> {
+        &self.bonuses
+    }
+
     /// Returns a mutable reference to the bonuses of this [`SetBonus`].
     pub fn bonuses_mut(&mut self) -> &mut HashMap<i32, Vec<BonusTemplate>> {
         &mut self.bonuses
