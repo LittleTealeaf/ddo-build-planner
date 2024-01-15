@@ -18,33 +18,34 @@ pub struct SetBonus {
 }
 
 impl SetBonus {
-    /// Creates an iterator of bonuses pulled from this set bonus
-    pub fn to_bonuses(self) -> impl Iterator<Item = BonusTemplate> {
-        let attribute = Attribute::SetBonus(self.name);
-
-        self.bonuses.into_iter().flat_map(move |(count, bonuses)| {
-            let attribute = attribute.clone();
-            let condition = attribute.to_value().greater_or_equal_to(count.to_value());
-            bonuses.into_iter().map(move |bonus| {
-                BonusTemplate::new(
-                    bonus.attribute().clone(),
-                    *bonus.bonus_type(),
-                    bonus.value().clone(),
-                    bonus.condition().as_ref().map_or_else(
-                        || condition.clone(),
-                        |cond| cond.clone() & condition.clone(),
-                    ),
-                )
-            })
-        })
-    }
-
-    /// Converts this set bonus to a dynamic bonus
+    /// Returns a dynamic bonus entry for [`Breakdowns::import_dynamic_bonuses`]
+    ///
+    /// [`Breakdowns::import_dynamic_bonuses`]:
+    /// crate::breakdowns::Breakdowns::import_dynamic_bonuses
     #[must_use]
     pub fn to_dynamic_bonus(self) -> (Attribute, Vec<BonusTemplate>) {
+        let attribute = Attribute::SetBonus(self.name);
+
         (
-            Attribute::SetBonus(self.name.clone()),
-            self.to_bonuses().collect(),
+            attribute.clone(),
+            self.bonuses
+                .into_iter()
+                .flat_map(move |(count, bonuses)| {
+                    let condition = attribute
+                        .clone()
+                        .to_value()
+                        .greater_or_equal_to(count.to_value());
+                    bonuses.into_iter().map(move |mut bonus| {
+                        bonus.set_condition({
+                            bonus
+                                .condition()
+                                .clone()
+                                .map_or_else(|| condition.clone(), |cond| cond & condition.clone())
+                        });
+                        bonus
+                    })
+                })
+                .collect(),
         )
     }
 
