@@ -196,12 +196,6 @@ impl TrackAttribute for Attribute {
     }
 }
 
-impl ToAttribute for SpellPoints {
-    fn to_attribute(self) -> Attribute {
-        Attribute::SpellPoints(self)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -3,6 +3,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
+use crate::attribute::{Attribute, ToAttribute};
+
 #[derive(
     Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
 )]
@@ -27,5 +29,11 @@ impl Display for SpellPoints {
             Self::Total => write!(f, "Total Spell Points"),
             Self::Scaled => write!(f, "Scaled Spell Points"),
         }
+    }
+}
+
+impl ToAttribute for SpellPoints {
+    fn to_attribute(self) -> Attribute {
+        Attribute::SpellPoints(self)
     }
 }
