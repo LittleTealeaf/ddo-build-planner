@@ -18,13 +18,10 @@ use crate::{
     bonus::{get_base_bonuses, Bonus, BonusSource, BonusTemplate, Condition, Value},
 };
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
-struct EvalBonus {
-    value: Decimal,
-    condition: bool,
-}
-
-/// Calculates the final attribute values for the character.
+/// Breakdowns is an object that handles calculating the final attribute values for a character.
+/// This object is used to both display final attribute values ([`Self::get_attribute`]),
+/// as well as list out the bonus breakdown of on particular attribute ([`Self::get_breakdowns`])
+/// of a particular variable
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
@@ -34,9 +31,17 @@ pub struct Breakdowns {
     dynamic_bonuses: HashMap<Attribute, Vec<BonusTemplate>>,
 }
 
+/// Simple methods for creating new instances, and obtaining a list of bonuses or attributes
+/// calculated.
 impl Breakdowns {
+    /// Creates a new [`Breakdowns`] instance, ready for use.
+    /// This method will populate the object with bonuses from [`get_base_bonuses`].
+    ///
+    /// # Notes
+    /// There are additional methods appended to this object using traits within the `data` crate.
+    /// These methods may add additional 'dynamic' bonuses, other other bonuses generated from
+    /// serialized data.
     #[must_use]
-    /// Creates a new Breakdowns instance
     pub fn new() -> Self {
         let mut breakdowns = Self {
             bonuses: HashMap::new(),
