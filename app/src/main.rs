@@ -7,7 +7,7 @@ use builder::{
     types::{
         ability::Ability, armor_class::ArmorClass, heal_amp::HealingAmplification,
         sheltering::Sheltering, spell_selector::SpellSelector,
-    }, 
+    },
 };
 use ron::ser::PrettyConfig;
 
