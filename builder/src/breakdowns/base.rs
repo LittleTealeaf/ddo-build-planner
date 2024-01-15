@@ -95,37 +95,13 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
 }
 
 fn skill() -> impl IntoIterator<Item = BonusTemplate> {
-    [
-        (Ability::Dexterity, Skill::Balance),
-        (Ability::Charisma, Skill::Bluff),
-        (Ability::Constitution, Skill::Concentration),
-        (Ability::Charisma, Skill::Diplomacy),
-        (Ability::Intelligence, Skill::DisableDevice),
-        (Ability::Charisma, Skill::Haggle),
-        (Ability::Wisdom, Skill::Heal),
-        (Ability::Dexterity, Skill::Hide),
-        (Ability::Charisma, Skill::Intimidate),
-        (Ability::Strength, Skill::Jump),
-        (Ability::Wisdom, Skill::Listen),
-        (Ability::Dexterity, Skill::MoveSilently),
-        (Ability::Dexterity, Skill::OpenLock),
-        (Ability::Charisma, Skill::Perform),
-        (Ability::Intelligence, Skill::Repair),
-        (Ability::Intelligence, Skill::Search),
-        (Ability::Intelligence, Skill::Spellcraft),
-        (Ability::Wisdom, Skill::Spot),
-        (Ability::Strength, Skill::Swim),
-        (Ability::Dexterity, Skill::Tumble),
-        (Ability::Charisma, Skill::UseMagicalDevice),
-    ]
-    .into_iter()
-    .map(|(ability, skill)| {
-        BonusTemplate::new(
+    Skill::SKILLS.into_iter().filter_map(|skill| {
+        Some(BonusTemplate::new(
             skill,
             BonusType::AbilityModifier,
-            Attribute::AbilityModifier(ability),
+            Attribute::AbilityModifier(skill.get_ability()?),
             None,
-        )
+        ))
     })
 }
 
