@@ -52,6 +52,16 @@ impl Breakdowns {
 
         buffer.insert_attributes(updated_attributes);
 
+        for bonus in buffer.get_bonuses() {
+            let attribute = bonus.attribute();
+            let source = bonus.source();
+
+            let set = self.children.get_mut_or_default(source);
+            if !set.contains(attribute) {
+                set.push(attribute.clone());
+            }
+        }
+
         self.consume_buffer(buffer);
     }
 
@@ -70,16 +80,6 @@ impl Breakdowns {
 
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
-        for bonus in buffer.get_bonuses() {
-            let attribute = bonus.attribute();
-            let source = bonus.source();
-
-            let set = self.children.get_mut_or_default(source);
-            if !set.contains(attribute) {
-                set.push(attribute.clone());
-            }
-        }
-
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .value_cache
