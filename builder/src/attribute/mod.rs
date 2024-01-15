@@ -177,37 +177,3 @@ impl CloneBonus for Attribute {
         }
     }
 }
-
-impl TrackAttribute for Attribute {
-    fn is_tracked(&self) -> bool {
-        match self {
-            Self::Dummy => false,
-            Self::Ability(ability) | Self::AbilityModifier(ability) => ability.is_tracked(),
-            Self::Skill(skill) => skill.is_tracked(),
-            Self::SavingThrow(st) => st.is_tracked(),
-            Self::Weapon(stat) => stat.is_tracked(),
-            Self::Sheltering(sheltering) => sheltering.is_tracked(),
-            Self::SpellPower(sp)
-            | Self::SpellCriticalChance(sp)
-            | Self::SpellCriticalDamage(sp) => sp.is_tracked(),
-            Self::SummonedAttribute(attribute) => attribute.is_tracked(),
-            _ => true,
-        }
-    }
-}
-
-impl ToAttribute for SpellPoints {
-    fn to_attribute(self) -> Attribute {
-        Attribute::SpellPoints(self)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn dummy_is_not_tracked() {
-        assert!(!Attribute::Dummy.is_tracked());
-    }
-}

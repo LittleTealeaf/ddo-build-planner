@@ -215,14 +215,14 @@ impl Value {
 /// Implements a shortcut to using [`Value::from`]
 pub trait ToValue {
     /// Converts this into a value
-    fn value(self) -> Value;
+    fn to_value(self) -> Value;
 }
 
 impl<T> ToValue for T
 where
     Value: From<T>,
 {
-    fn value(self) -> Value {
+    fn to_value(self) -> Value {
         Value::from(self)
     }
 }

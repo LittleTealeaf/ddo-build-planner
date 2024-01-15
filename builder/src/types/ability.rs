@@ -1,13 +1,12 @@
 //! Ability types
-
-public_modules!(bonuses);
-
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
 
-use crate::attribute::{Attribute, ToAttribute};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    bonus::{Bonus, CloneBonus},
+};
 
 /// The different abilities that a character has
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -67,5 +66,64 @@ impl Display for Ability {
 impl ToAttribute for Ability {
     fn to_attribute(self) -> Attribute {
         Attribute::Ability(self)
+    }
+}
+
+impl CloneBonus for Ability {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::ABILITIES
+                .map(|ability| bonus.clone_into_attribute(ability))
+                .to_vec()
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use crate::{
+        attribute::Attribute,
+        bonus::{BonusSource, BonusType},
+    };
+
+    use super::*;
+
+    #[test]
+    fn clone_bonus_return_none_for_ability() {
+        for ability in Ability::ABILITIES {
+            let bonus = ability.clone_bonus(&Bonus::new(
+                Attribute::Ability(Ability::Wisdom),
+                BonusType::Stacking,
+                1,
+                BonusSource::Debug(0),
+                None,
+            ));
+            assert!(bonus.is_none());
+        }
+    }
+
+    #[test]
+    fn clone_bonus_returns_all_bonuses() {
+        let bonus = Bonus::new(
+            Ability::All,
+            BonusType::Stacking,
+            1,
+            BonusSource::Debug(0),
+            None,
+        );
+
+        let bonuses = Ability::All
+            .clone_bonus(&bonus)
+            .expect("Expected clone_bonus to return Some(_)");
+
+        let attributes = bonuses
+            .into_iter()
+            .map(|bonus| bonus.attribute().clone())
+            .collect::<Vec<_>>();
+
+        for ability in Ability::ABILITIES {
+            assert!(attributes.contains(&Attribute::Ability(ability)));
+        }
     }
 }

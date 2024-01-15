@@ -42,13 +42,17 @@ impl Breakdowns {
 
         let mut buffer = Buffer::create(bonuses);
 
-        let updated_bonuses = self.remove_bonuses_by_source(sources).collect::<Vec<_>>();
+        buffer.insert_attributes(self.remove_bonuses_by_source(sources.iter()));
 
-        let updated_attributes = updated_bonuses
-            .into_iter()
-            .map(|bonus| bonus.attribute().clone());
+        for bonus in buffer.get_bonuses() {
+            let attribute = bonus.attribute();
+            let source = bonus.source();
 
-        buffer.insert_attributes(updated_attributes);
+            let set = self.children.get_mut_or_default(source);
+            if !set.contains(attribute) {
+                set.push(attribute.clone());
+            }
+        }
 
         self.consume_buffer(buffer);
     }
@@ -68,20 +72,10 @@ impl Breakdowns {
 
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
-        for bonus in buffer.get_bonuses() {
-            let attribute = bonus.attribute();
-            let source = bonus.source();
-
-            let set = self.children.get_mut_or_default(source);
-            if !set.contains(attribute) {
-                set.push(attribute.clone());
-            }
-        }
-
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .value_cache
-                .remove(&attribute.clone().value())
+                .remove(&attribute.clone().to_value())
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
@@ -96,10 +90,7 @@ impl Breakdowns {
 
                 let source = BonusSource::Attribute(attribute.clone());
 
-                buffer.insert_attributes(
-                    self.remove_bonuses_by_source([source.clone()])
-                        .map(|bonus| bonus.attribute().clone()),
-                );
+                buffer.insert_attributes(self.remove_bonuses_by_source([&source]));
 
                 buffer.insert_attributes(
                     self.get_dependants(&attribute)
@@ -140,17 +131,17 @@ impl Breakdowns {
 
     fn get_dependants<'a>(&'a self, attribute: &'a Attribute) -> impl Iterator<Item = &Bonus> + '_ {
         self.get_bonuses()
-            .filter(move |bonus| bonus.has_attr_dependency(attribute))
+            .filter(|bonus| bonus.has_attr_dependency(attribute))
     }
 
     fn remove_bonuses_by_source<'a>(
         &'a mut self,
-        sources: impl IntoIterator<Item = BonusSource> + 'a,
+        sources: impl IntoIterator<Item = &'a BonusSource> + 'a,
     ) -> impl Iterator<Item = Bonus> + 'a {
         sources
             .into_iter()
             .filter_map(|source| {
-                let children = self.children.remove(&source)?;
+                let children = self.children.remove(source)?;
 
                 let mut bonuses = Vec::new();
 
@@ -159,7 +150,7 @@ impl Breakdowns {
                         let items = set.iter().enumerate();
 
                         let indexes = items
-                            .filter_map(|(index, item)| item.source().eq(&source).then_some(index))
+                            .filter_map(|(index, item)| item.source().eq(source).then_some(index))
                             .rev()
                             .collect::<Vec<_>>();
 

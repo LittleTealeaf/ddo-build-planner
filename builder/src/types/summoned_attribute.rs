@@ -5,7 +5,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, GetBonuses, ToAttribute, TrackAttribute},
+    attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, BonusTemplate, CloneBonus},
 };
 
@@ -28,14 +28,6 @@ impl CloneBonus for SummonedAttribute {
     fn clone_bonus(&self, bonus: &crate::bonus::Bonus) -> Option<Vec<Bonus>> {
         match self {
             Self::AbilityScore(ability) => ability.clone_bonus(bonus),
-        }
-    }
-}
-
-impl TrackAttribute for SummonedAttribute {
-    fn is_tracked(&self) -> bool {
-        match self {
-            Self::AbilityScore(ability) => ability.is_tracked(),
         }
     }
 }

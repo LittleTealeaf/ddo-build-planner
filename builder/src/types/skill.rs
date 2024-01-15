@@ -1,12 +1,13 @@
 //! Each of the possile skills
-public_modules!(bonuses);
 
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
 
-use crate::attribute::{Attribute, ToAttribute};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    bonus::{Bonus, CloneBonus},
+};
 
 use super::ability::Ability;
 
@@ -149,9 +150,18 @@ impl ToAttribute for Skill {
     }
 }
 
+impl CloneBonus for Skill {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::SKILLS
+                .map(|skill| bonus.clone_into_attribute(skill))
+                .to_vec()
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
-
     use super::*;
 
     #[test]

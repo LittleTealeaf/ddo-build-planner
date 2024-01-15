@@ -1,22 +1,25 @@
-//! Physical and Magical Sheltering
-public_modules!(bonuses);
-
+//! Describes Physical and Magical Sheltering
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
 
-use crate::attribute::{Attribute, ToAttribute};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    bonus::{Bonus, CloneBonus},
+};
 
 /// Sheltering attributes grant a % reduction to damage from that type.
 ///
 /// Magical Sheltering can be capped at a certain amount based on equipment and enhancements, which is tracked with [`Sheltering::MagicalCap`]
-#[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
+)]
 pub enum Sheltering {
     /// Both [`Physical`] and [`Magical`] Sheltering
     ///
     /// [`Physical`]: Sheltering::Physical
     /// [`Magical`]: Sheltering::Magical
+    #[default]
     Both,
     /// Physical Sheltering
     Physical,
@@ -60,5 +63,15 @@ impl Display for Sheltering {
 impl ToAttribute for Sheltering {
     fn to_attribute(self) -> crate::attribute::Attribute {
         Attribute::Sheltering(self)
+    }
+}
+
+impl CloneBonus for Sheltering {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::Both).then(|| {
+            [Self::Physical, Self::Magical]
+                .map(|sheltering| bonus.clone_into_attribute(sheltering))
+                .to_vec()
+        })
     }
 }

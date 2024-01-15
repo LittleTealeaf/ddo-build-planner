@@ -5,6 +5,4 @@ macro_rules! include_data {
     };
 }
 
-#[allow(dead_code)]
-// TODO: Remove allow
 pub type ParseError = ron::error::SpannedError;

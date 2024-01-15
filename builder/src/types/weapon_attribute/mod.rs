@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
 use crate::{
-    attribute::{Attribute, GetBonuses, ToAttribute, TrackAttribute},
+    attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, BonusTemplate, BonusType, CloneBonus},
 };
 
@@ -46,13 +46,6 @@ impl GetBonuses for WeaponAttribute {
             )]),
             _ => None,
         }
-    }
-}
-
-impl TrackAttribute for WeaponAttribute {
-    fn is_tracked(&self) -> bool {
-        let Self(hand, _) = self;
-        !matches!(hand, WeaponHand::Both)
     }
 }
 

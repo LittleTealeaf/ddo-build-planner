@@ -1,5 +1,4 @@
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
-mod base;
 mod bonus_type;
 mod condition;
 mod deserialize;
@@ -20,7 +19,6 @@ use crate::{
     },
 };
 
-pub use base::*;
 pub use bonus_type::*;
 pub use condition::*;
 pub use source::*;
@@ -277,6 +275,18 @@ impl Display for Bonus {
                 self.value, self.bonus_type, self.attribute
             )
         }
+    }
+}
+
+impl From<Bonus> for Value {
+    fn from(value: Bonus) -> Self {
+        value.value
+    }
+}
+
+impl From<Bonus> for Attribute {
+    fn from(value: Bonus) -> Self {
+        value.attribute
     }
 }
 

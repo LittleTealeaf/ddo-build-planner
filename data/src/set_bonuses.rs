@@ -13,11 +13,11 @@ pub fn get_set_bonuses() -> Result<Vec<SetBonus>, ParseError> {
 /// A trait to implement the `.include_set_bonuses()` to [`Breakdowns`]
 pub trait ImportSetBonuses {
     /// Inserts all set bonuses as dynamic bonuses
-    fn import_set_bonuses(&mut self);
+    fn include_set_bonuses(&mut self);
 }
 
 impl ImportSetBonuses for Breakdowns {
-    fn import_set_bonuses(&mut self) {
+    fn include_set_bonuses(&mut self) {
         self.import_dynamic_bonuses(
             get_set_bonuses()
                 .unwrap()
@@ -27,8 +27,18 @@ impl ImportSetBonuses for Breakdowns {
     }
 }
 
-#[test]
-fn set_bonuses_parses() {
-    let data = get_set_bonuses();
-    assert!(data.is_ok());
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn set_bonuses_parses() {
+        assert!(get_set_bonuses().is_ok());
+    }
+
+    #[test]
+    fn breakdowns_inserts_bonuses() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.include_set_bonuses();
+    }
 }
