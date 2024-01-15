@@ -4,7 +4,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, ToAttribute, TrackAttribute},
+    attribute::{Attribute, ToAttribute},
     bonus::{Bonus, CloneBonus},
 };
 
@@ -79,11 +79,6 @@ impl CloneBonus for Ability {
     }
 }
 
-impl TrackAttribute for Ability {
-    fn is_tracked(&self) -> bool {
-        !matches!(self, Self::All)
-    }
-}
 
 #[cfg(test)]
 mod tests {
@@ -94,22 +89,6 @@ mod tests {
     };
 
     use super::*;
-
-    #[test]
-    fn all_is_not_tracked() {
-        assert!(!Ability::All.is_tracked());
-        assert!(!Attribute::Ability(Ability::All).is_tracked());
-        assert!(!Attribute::AbilityModifier(Ability::All).is_tracked());
-    }
-
-    #[test]
-    fn abilities_are_tracked() {
-        for ability in Ability::ABILITIES {
-            assert!(ability.is_tracked());
-            assert!(Attribute::Ability(ability).is_tracked());
-            assert!(Attribute::AbilityModifier(ability).is_tracked());
-        }
-    }
 
     #[test]
     fn clone_bonus_return_none_for_ability() {

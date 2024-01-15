@@ -4,7 +4,7 @@ use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, ToAttribute, TrackAttribute},
+    attribute::{Attribute, ToAttribute},
     bonus::{Bonus, CloneBonus},
 };
 
@@ -76,8 +76,3 @@ impl CloneBonus for Sheltering {
     }
 }
 
-impl TrackAttribute for Sheltering {
-    fn is_tracked(&self) -> bool {
-        !matches!(self, Self::Both)
-    }
-}
