@@ -7,6 +7,7 @@ pub mod crafting_slot;
 pub mod damage_type;
 pub mod flag;
 pub mod gear_slot;
+pub mod heal_amp;
 pub mod health;
 pub mod immunity;
 pub mod item_type;

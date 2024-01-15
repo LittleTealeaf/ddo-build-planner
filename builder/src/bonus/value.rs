@@ -279,7 +279,7 @@ impl Display for Value {
 }
 
 impl AttributeDependencies for Value {
-    fn has_attr_dependency(&self, attribute: Attribute) -> bool {
+    fn has_attr_dependency(&self, attribute: &Attribute) -> bool {
         match self {
             Self::Add(a, b)
             | Self::Sub(a, b)
@@ -288,7 +288,7 @@ impl AttributeDependencies for Value {
             | Self::Rem(a, b)
             | Self::Max(a, b)
             | Self::Min(a, b) => {
-                a.has_attr_dependency(attribute.clone()) || b.has_attr_dependency(attribute)
+                a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
             Self::Const(_) => false,
             Self::Attribute(attr) => attribute.eq(attr),
@@ -300,8 +300,8 @@ impl AttributeDependencies for Value {
                 if_true,
                 if_false,
             } => {
-                condition.has_attr_dependency(attribute.clone())
-                    || if_true.has_attr_dependency(attribute.clone())
+                condition.has_attr_dependency(attribute)
+                    || if_true.has_attr_dependency(attribute)
                     || if_false.has_attr_dependency(attribute)
             }
         }

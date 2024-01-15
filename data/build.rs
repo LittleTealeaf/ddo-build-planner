@@ -41,31 +41,20 @@ fn get_data_files(dir: &str) -> Result<ReadDir, Error> {
 }
 
 mod data {
-    use std::{fs::File, io::BufReader};
+    use std::{fs::File, io::BufReader, path::Path};
 
     use builder::equipment::set_bonus::SetBonus;
     use ron::de::from_reader;
 
-    use crate::{errors, get_data_files};
+    use crate::errors;
 
     pub fn set_bonuses() -> Result<Vec<SetBonus>, errors::Error> {
-        let read_dir = get_data_files("set_bonuses")?;
-
-        let mut bonuses = Vec::new();
-
-        for entry in read_dir {
-            let path = entry?.path();
-
-            let file = File::open(path)?;
-
-            let reader = BufReader::new(file);
-
-            let item = from_reader(reader)?;
-
-            bonuses.push(item);
-        }
-
-        Ok(bonuses)
+        println!("cargo:rerun-if-changed=./data/set_bonuses.ron");
+        let path = Path::new("./data/set_bonuses.ron");
+        let file = File::open(path)?;
+        let reader = BufReader::new(file);
+        let items = from_reader(reader)?;
+        Ok(items)
     }
 }
 

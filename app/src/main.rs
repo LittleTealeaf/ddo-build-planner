@@ -2,37 +2,126 @@
 
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
-    breakdowns::Breakdowns,
-    types::ability::Ability,
+    bonus::{BonusTemplate, BonusType},
+    equipment::set_bonus::SetBonus,
+    types::{
+        ability::Ability, armor_class::ArmorClass, heal_amp::HealingAmplification,
+        sheltering::Sheltering, spell_selector::SpellSelector,
+    },
 };
-use data::ImportSetBonuses;
 use ron::ser::PrettyConfig;
 
 fn main() {
-    let mut breakdowns = Breakdowns::new();
+    let bonuses = vec![
+        {
+            let mut bonus = SetBonus::new("Might of the Abashai".to_string());
 
-    breakdowns.import_set_bonuses();
+            bonus.bonuses_mut().insert(
+                3,
+                vec![
+                    BonusTemplate::new(ArmorClass::NaturalArmor, BonusType::Profane, 3, None),
+                    BonusTemplate::new(Ability::All, BonusType::Profane, 1, None),
+                    BonusTemplate::new(
+                        Attribute::SpellDC(SpellSelector::All),
+                        BonusType::Profane,
+                        1,
+                        None,
+                    ),
+                ],
+            );
 
-    breakdowns.insert_bonus(Bonus::new(
-        Attribute::SetBonus("Might of the Abashai".to_string()),
-        BonusType::Stacking,
-        5,
-        BonusSource::Custom(0),
-        None,
-    ));
-    // clean up
+            bonus.bonuses_mut().insert(
+                5,
+                vec![
+                    BonusTemplate::new(ArmorClass::NaturalArmor, BonusType::Profane, 5, None),
+                    BonusTemplate::new(Ability::All, BonusType::Profane, 2, None),
+                    BonusTemplate::new(
+                        Attribute::SpellDC(SpellSelector::All),
+                        BonusType::Profane,
+                        2,
+                        None,
+                    ),
+                ],
+            );
 
-    breakdowns.insert_bonus(Bonus::new(
-        Ability::All,
-        BonusType::Stacking,
-        50,
-        BonusSource::Custom(1),
-        None,
-    ));
+            bonus
+        },
+        {
+            let mut bonus = SetBonus::new("Epic Might of the Abashai".to_string());
+
+            bonus.bonuses_mut().insert(
+                3,
+                vec![
+                    BonusTemplate::new(Sheltering::Both, BonusType::Profane, 10, None),
+                    BonusTemplate::new(ArmorClass::NaturalArmor, BonusType::Profane, 5, None),
+                    BonusTemplate::new(Ability::All, BonusType::Profane, 2, None),
+                    BonusTemplate::new(
+                        Attribute::SpellDC(SpellSelector::All),
+                        BonusType::Profane,
+                        2,
+                        None,
+                    ),
+                ],
+            );
+
+            bonus.bonuses_mut().insert(
+                5,
+                vec![
+                    BonusTemplate::new(Sheltering::Both, BonusType::Profane, 15, None),
+                    BonusTemplate::new(ArmorClass::NaturalArmor, BonusType::Profane, 8, None),
+                    BonusTemplate::new(Ability::All, BonusType::Profane, 2, None),
+                    BonusTemplate::new(
+                        Attribute::SpellDC(SpellSelector::All),
+                        BonusType::Profane,
+                        2,
+                        None,
+                    ),
+                ],
+            );
+
+            bonus
+        },
+        {
+            let mut bonus = SetBonus::new("Legendary Might of the Abashai".to_string());
+
+            bonus.bonuses_mut().insert(
+                3,
+                vec![
+                    BonusTemplate::new(Sheltering::Both, BonusType::Profane, 20, None),
+                    BonusTemplate::new(ArmorClass::NaturalArmor, BonusType::Profane, 10, None),
+                    BonusTemplate::new(Ability::All, BonusType::Profane, 2, None),
+                    BonusTemplate::new(
+                        Attribute::SpellDC(SpellSelector::All),
+                        BonusType::Profane,
+                        2,
+                        None,
+                    ),
+                    BonusTemplate::new(HealingAmplification::All, BonusType::Profane, 10, None),
+                ],
+            );
+
+            bonus.bonuses_mut().insert(
+                5,
+                vec![
+                    BonusTemplate::new(Sheltering::Both, BonusType::Profane, 20, None),
+                    BonusTemplate::new(ArmorClass::NaturalArmor, BonusType::Profane, 10, None),
+                    BonusTemplate::new(Ability::All, BonusType::Profane, 3, None),
+                    BonusTemplate::new(
+                        Attribute::SpellDC(SpellSelector::All),
+                        BonusType::Profane,
+                        3,
+                        None,
+                    ),
+                    BonusTemplate::new(HealingAmplification::All, BonusType::Profane, 30, None),
+                ],
+            );
+
+            bonus
+        },
+    ];
 
     println!(
         "{}",
-        ron::ser::to_string_pretty(&breakdowns, PrettyConfig::new()).unwrap()
+        ron::ser::to_string_pretty(&bonuses, PrettyConfig::new()).unwrap()
     );
 }

@@ -1,0 +1,149 @@
+[
+    (
+        name: "Might of the Abashai",
+        bonuses: {
+            5: [
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("5"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+            ],
+            3: [
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("3"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("1"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("1"),
+                ),
+            ],
+        },
+    ),
+    (
+        name: "Epic Might of the Abashai",
+        bonuses: {
+            3: [
+                (
+                    attr: Sheltering(Both),
+                    type: Profane,
+                    val: Const("10"),
+                ),
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("5"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+            ],
+            5: [
+                (
+                    attr: Sheltering(Both),
+                    type: Profane,
+                    val: Const("15"),
+                ),
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("8"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+            ],
+        },
+    ),
+    (
+        name: "Legendary Might of the Abashai",
+        bonuses: {
+            3: [
+                (
+                    attr: Sheltering(Both),
+                    type: Profane,
+                    val: Const("20"),
+                ),
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("10"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: HealingAmplification(All),
+                    type: Profane,
+                    val: Const("10"),
+                ),
+            ],
+            5: [
+                (
+                    attr: Sheltering(Both),
+                    type: Profane,
+                    val: Const("20"),
+                ),
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("10"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("3"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("3"),
+                ),
+                (
+                    attr: HealingAmplification(All),
+                    type: Profane,
+                    val: Const("30"),
+                ),
+            ],
+        },
+    ),
+]
