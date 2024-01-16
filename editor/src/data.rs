@@ -3,6 +3,7 @@
 use builder::equipment::set_bonus::SetBonus;
 use tokio::{fs::File, io::AsyncReadExt};
 
+/// Reads set bonuses from the file
 pub async fn load_set_bonuses() -> Option<Vec<SetBonus>> {
     let mut file = File::open("./data/data/set_bonuses.ron").await.ok()?;
     let mut contents = String::new();

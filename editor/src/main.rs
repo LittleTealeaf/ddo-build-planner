@@ -5,7 +5,7 @@ use editor::data::load_set_bonuses;
 use iced::{
     executor, theme,
     widget::{Scrollable, Text},
-    Application, Command, Settings, Subscription,
+    Application, Command, Settings,
 };
 
 fn main() -> iced::Result {
