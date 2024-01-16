@@ -1,46 +1,56 @@
-//! Handles Application State and misc. logic
+//! Editor Application
 
-mod messages;
+mod state;
+mod tabs;
 
-use builder::equipment::set_bonus::SetBonus;
-
-use iced::{executor, theme, widget::text, Application as IcedApplication, Command, Settings};
-use messages::{DataIOMessage, DataMessage, HandleMessage, Message};
+use iced::{executor, widget::Column, Application, Command, Element, Renderer, Settings, Theme};
+use iced_aw::{TabBar, TabLabel};
+use state::{AppState, AppStateMessage};
+use tabs::{
+    home::{TabHome, TabHomeMessage},
+    set_bonuses::{TabSetBonuses, TabSetBonusesMessage},
+};
 
 fn main() -> iced::Result {
-    Application::run(Settings::default())
+    Editor::run(Settings::default())
 }
 
-/// Application state and additional logic
-#[derive(Debug, Clone)]
-pub struct Application {
-    pub(crate) set_bonuses: Option<Vec<SetBonus>>,
-    pub(crate) state: AppState,
+#[derive(Debug, Clone, Default)]
+struct Editor {
+    state: AppState,
+    tab_home: TabHome,
+    tab_set_bonuses: TabSetBonuses,
+    selected_tab: Tab,
 }
 
-#[derive(Debug, Clone)]
-enum AppState {
+#[derive(Debug, Clone, Default, Eq, PartialEq)]
+enum Tab {
+    #[default]
     Home,
+    SetBonuses,
 }
 
-impl IcedApplication for Application {
+#[derive(Debug, Clone)]
+enum Message {
+    SwitchTab(Tab),
+    AppState(AppStateMessage),
+    TabHome(TabHomeMessage),
+    TabSetBonuses(TabSetBonusesMessage),
+    Error(String),
+}
+
+impl Application for Editor {
     type Executor = executor::Default;
 
     type Message = Message;
 
-    type Theme = theme::Theme;
+    type Theme = Theme;
 
     type Flags = ();
 
-    fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
-        let mut app = Self {
-            set_bonuses: None,
-            state: AppState::Home,
-        };
-
-        let command = Command::batch([app.update(Message::Data(DataMessage::SetBonuses(
-            DataIOMessage::StartLoad,
-        )))]);
+    fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
+        let mut app = Self::default();
+        let command = Command::batch([app.state.update(AppStateMessage::LoadSetBonuses)]);
 
         (app, command)
     }
@@ -49,11 +59,43 @@ impl IcedApplication for Application {
         String::from("DDO Build Planner Data Editor")
     }
 
-    fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
-        message.handle(self)
+    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+        match message {
+            Message::SwitchTab(tab) => {
+                self.selected_tab = tab;
+                Command::none()
+            }
+            Message::AppState(message) => self.state.update(message),
+            Message::TabHome(message) => self.tab_home.update(&mut self.state, message),
+            Message::TabSetBonuses(message) => {
+                self.tab_set_bonuses.update(&mut self.state, message)
+            }
+            Message::Error(err) => panic!("{err}"),
+        }
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        text("HI WORLD").size(100).into()
+        Column::new()
+            .push({
+                [(Tab::Home, "Home"), (Tab::SetBonuses, "Set Bonuses")]
+                    .into_iter()
+                    .fold(TabBar::new(Message::SwitchTab), |bar, (tab, label)| {
+                        bar.push(tab, TabLabel::Text(label.to_owned()))
+                    })
+                    .set_active_tab(&self.selected_tab)
+            })
+            .push(match &self.selected_tab {
+                Tab::Home => self.tab_home.view(&self.state),
+                Tab::SetBonuses => self.tab_set_bonuses.view(&self.state),
+            })
+            .into()
     }
+}
+
+trait EditorTab {
+    type Message;
+
+    fn update(&mut self, state: &mut AppState, message: Self::Message) -> Command<Message>;
+
+    fn view(&self, state: &AppState) -> Element<'_, Message, Renderer<Theme>>;
 }
