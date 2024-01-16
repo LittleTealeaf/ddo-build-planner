@@ -8,12 +8,12 @@ use iced::{executor, theme, widget::text, Application as IcedApplication, Comman
 use messages::{DataIOMessage, DataMessage, HandleMessage, Message};
 
 fn main() -> iced::Result {
-    EditorApp::run(Settings::default())
+    Application::run(Settings::default())
 }
 
 /// Application state and additional logic
 #[derive(Debug, Clone)]
-pub struct EditorApp {
+pub struct Application {
     pub(crate) set_bonuses: Option<Vec<SetBonus>>,
     pub(crate) state: AppState,
 }
@@ -23,7 +23,7 @@ enum AppState {
     Home,
 }
 
-impl IcedApplication for EditorApp {
+impl IcedApplication for Application {
     type Executor = executor::Default;
 
     type Message = Message;
