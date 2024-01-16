@@ -1,50 +1,35 @@
 use builder::equipment::set_bonus::SetBonus;
 use iced::Command;
-use ron::ser::{to_string_pretty, PrettyConfig};
+use ron::ser::PrettyConfig;
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs::File,
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 
-use crate::Message;
+use crate::{Editor, EditorUpdate, Message};
 
-#[derive(Clone, Debug, Default)]
-pub struct AppState {
-    set_bonuses: Option<Vec<SetBonus>>,
-}
-
-#[derive(Clone, Debug)]
-// TODO : remove allow after more are added
-#[allow(clippy::enum_variant_names)]
-pub enum AppStateMessage {
+#[derive(Debug, Clone)]
+pub enum DataMessage {
     LoadSetBonuses,
-    OnLoadedSetBonuses(Vec<SetBonus>),
+    OnSetBonusesLoaded(Vec<SetBonus>),
     SaveSetBonuses(Box<Message>),
 }
 
-impl AppState {
-    pub fn update(&mut self, message: AppStateMessage) -> Command<Message> {
+impl EditorUpdate<DataMessage> for Editor {
+    fn handle_update(&mut self, message: DataMessage) -> Command<Self::Message> {
         match message {
-            AppStateMessage::LoadSetBonuses => Command::perform(
+            DataMessage::LoadSetBonuses => Command::perform(
                 load_data("./data/data/set_bonuses.ron"),
-                |result| match result {
-                    Ok(set_bonuses) => {
-                        Message::AppState(AppStateMessage::OnLoadedSetBonuses(set_bonuses))
-                    }
-                    Err(err) => Message::Error(format!("{err:?}")),
-                },
+                catch_async(|sets| Message::Data(DataMessage::OnSetBonusesLoaded(sets))),
             ),
-            AppStateMessage::OnLoadedSetBonuses(set_bonuses) => {
-                self.set_bonuses = Some(set_bonuses);
+            DataMessage::OnSetBonusesLoaded(bonuses) => {
+                self.set_bonuses = Some(bonuses);
                 Command::none()
             }
-            AppStateMessage::SaveSetBonuses(message) => Command::perform(
+            DataMessage::SaveSetBonuses(message) => Command::perform(
                 save_data("./data/data/set_bonuses.ron", self.set_bonuses.clone()),
-                |result| match result {
-                    Err(err) => Message::Error(format!("{err:?}")),
-                    _ => *message,
-                },
+                catch_async(move |()| *message.clone()),
             ),
         }
     }
@@ -67,10 +52,17 @@ where
     let file = File::open(path).await?;
     let mut writer = BufWriter::new(file);
     writer
-        .write_all(to_string_pretty(&data, PrettyConfig::new())?.as_bytes())
+        .write_all(ron::ser::to_string_pretty(&data, PrettyConfig::new())?.as_bytes())
         .await?;
     writer.flush().await?;
     Ok(())
+}
+
+fn catch_async<T>(function: impl Fn(T) -> Message) -> impl Fn(Result<T, DataError>) -> Message {
+    move |result| match result {
+        Ok(val) => function(val),
+        Err(err) => Message::Error(format!("{err:?}")),
+    }
 }
 
 #[derive(Debug)]

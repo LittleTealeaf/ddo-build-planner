@@ -1,28 +1,18 @@
 use iced::widget::text;
 
-use crate::EditorTab;
+use crate::{EditorView, Editor};
 
-#[derive(Debug, Clone, Default)]
-pub struct TabSetBonuses {}
 
-#[derive(Debug, Clone)]
-pub enum TabSetBonusesMessage {}
 
-impl EditorTab for TabSetBonuses {
-    type Message = TabSetBonusesMessage;
+#[derive(Clone, Debug, Default)]
+pub struct TabSetBonuses {
 
-    fn update(
-        &mut self,
-        _state: &mut crate::state::AppState,
-        _message: Self::Message,
-    ) -> iced::Command<crate::Message> {
-        todo!()
-    }
+}
 
-    fn view(
-        &self,
-        _state: &crate::state::AppState,
-    ) -> iced::Element<'_, crate::Message, iced::Renderer<iced::Theme>> {
-        text("I am a bird").into()
+impl EditorView<TabSetBonuses> for Editor {
+    fn handle_view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
+        text("Set Bonuses").into()
     }
 }
+
+

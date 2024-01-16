@@ -1,15 +1,13 @@
 //! Editor Application
 
-mod state;
+mod data_load;
 mod tabs;
 
+use builder::equipment::set_bonus::SetBonus;
+use data_load::DataMessage;
 use iced::{executor, widget::Column, Application, Command, Element, Renderer, Settings, Theme};
 use iced_aw::{TabBar, TabLabel};
-use state::{AppState, AppStateMessage};
-use tabs::{
-    home::{TabHome, TabHomeMessage},
-    set_bonuses::{TabSetBonuses, TabSetBonusesMessage},
-};
+use tabs::{TabHome, TabSetBonuses};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -17,10 +15,16 @@ fn main() -> iced::Result {
 
 #[derive(Debug, Clone, Default)]
 struct Editor {
-    state: AppState,
+    set_bonuses: Option<Vec<SetBonus>>,
     tab_home: TabHome,
-    tab_set_bonuses: TabSetBonuses,
-    selected_tab: Tab,
+    current_tab: Tab,
+}
+
+#[derive(Debug, Clone)]
+enum Message {
+    Data(DataMessage),
+    Error(String),
+    SetTab(Tab),
 }
 
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
@@ -28,15 +32,6 @@ enum Tab {
     #[default]
     Home,
     SetBonuses,
-}
-
-#[derive(Debug, Clone)]
-enum Message {
-    SwitchTab(Tab),
-    AppState(AppStateMessage),
-    TabHome(TabHomeMessage),
-    TabSetBonuses(TabSetBonusesMessage),
-    Error(String),
 }
 
 impl Application for Editor {
@@ -48,54 +43,50 @@ impl Application for Editor {
 
     type Flags = ();
 
-    fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
+    fn new(_flags: Self::Flags) -> (Self, iced::Command<Self::Message>) {
         let mut app = Self::default();
-        let command = Command::batch([app.state.update(AppStateMessage::LoadSetBonuses)]);
+        let command = Command::batch([app.update(Message::Data(DataMessage::LoadSetBonuses))]);
 
         (app, command)
     }
 
     fn title(&self) -> String {
-        String::from("DDO Build Planner Data Editor")
+        String::from("DDO Build Planner Editor")
     }
 
-    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+    fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
         match message {
-            Message::SwitchTab(tab) => {
-                self.selected_tab = tab;
+            Message::Data(message) => self.handle_update(message),
+            Message::Error(error) => panic!("{error}"),
+            Message::SetTab(tab) => {
+                self.current_tab = tab;
                 Command::none()
             }
-            Message::AppState(message) => self.state.update(message),
-            Message::TabHome(message) => self.tab_home.update(&mut self.state, message),
-            Message::TabSetBonuses(message) => {
-                self.tab_set_bonuses.update(&mut self.state, message)
-            }
-            Message::Error(err) => panic!("{err}"),
         }
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
         Column::new()
-            .push({
+            .push(
                 [(Tab::Home, "Home"), (Tab::SetBonuses, "Set Bonuses")]
                     .into_iter()
-                    .fold(TabBar::new(Message::SwitchTab), |bar, (tab, label)| {
-                        bar.push(tab, TabLabel::Text(label.to_owned()))
+                    .fold(TabBar::new(Message::SetTab), |bar, (id, label)| {
+                        bar.push(id, TabLabel::Text(label.to_owned()))
                     })
-                    .set_active_tab(&self.selected_tab)
-            })
-            .push(match &self.selected_tab {
-                Tab::Home => self.tab_home.view(&self.state),
-                Tab::SetBonuses => self.tab_set_bonuses.view(&self.state),
+                    .set_active_tab(&self.current_tab),
+            )
+            .push(match self.current_tab {
+                Tab::Home => EditorView::<TabHome>::handle_view(self),
+                Tab::SetBonuses => EditorView::<TabSetBonuses>::handle_view(self),
             })
             .into()
     }
 }
 
-trait EditorTab {
-    type Message;
+trait EditorView<T>: Sized + Application {
+    fn handle_view(&self) -> Element<'_, Self::Message, Renderer<Self::Theme>>;
+}
 
-    fn update(&mut self, state: &mut AppState, message: Self::Message) -> Command<Message>;
-
-    fn view(&self, state: &AppState) -> Element<'_, Message, Renderer<Theme>>;
+trait EditorUpdate<M>: Sized + Application {
+    fn handle_update(&mut self, message: M) -> Command<Self::Message>;
 }
