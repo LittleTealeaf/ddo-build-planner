@@ -26,7 +26,7 @@ impl HandleMessage for Message {
     fn handle(self, app: &mut Application) -> Command<Message> {
         match self {
             Self::Data(message) => message.handle(app),
-            Self::Error(error) => panic!("{error}")
+            Self::Error(error) => panic!("{error}"),
         }
     }
 }

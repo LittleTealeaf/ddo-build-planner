@@ -8,7 +8,7 @@ use iced::{
     Application as IcedApplication, Command,
 };
 
-use crate::messages::{HandleMessage, Message};
+use crate::messages::{DataIOMessage, DataMessage, HandleMessage, Message};
 
 /// Application state and additional logic
 #[derive(Debug, Clone)]
@@ -26,12 +26,13 @@ impl IcedApplication for Application {
     type Flags = ();
 
     fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
-        (
-            Self { set_bonuses: None },
-            Command::none(), // Command::perform(load_set_bonuses(), |data| {
-                             //     EditorMessage::LoadedSetBonuses(data.unwrap_or_default())
-                             // }),
-        )
+        let mut app = Self { set_bonuses: None };
+
+        let command = Command::batch([app.update(Message::Data(DataMessage::SetBonuses(
+            DataIOMessage::StartLoad,
+        )))]);
+
+        (app, command)
     }
 
     fn title(&self) -> String {
@@ -43,6 +44,10 @@ impl IcedApplication for Application {
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        Scrollable::new(Text::new("Hi")).into()
+        Scrollable::new(self.set_bonuses.as_ref().map_or_else(
+            || Text::new("none"),
+            |set_bonuses| Text::new(format!("{set_bonuses:?}")),
+        ))
+        .into()
     }
 }
