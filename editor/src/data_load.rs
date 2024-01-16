@@ -9,6 +9,8 @@ use tokio::{
 
 use crate::{Editor, EditorUpdate, Message};
 
+const PATH_SET_BONUSES: &str = "./data/data/set_bonuses.ron";
+
 #[derive(Debug, Clone)]
 pub enum DataMessage {
     LoadSetBonuses,
@@ -20,7 +22,7 @@ impl EditorUpdate<DataMessage> for Editor {
     fn handle_update(&mut self, message: DataMessage) -> Command<Self::Message> {
         match message {
             DataMessage::LoadSetBonuses => Command::perform(
-                load_data("./data/data/set_bonuses.ron"),
+                load_data(PATH_SET_BONUSES),
                 catch_async(|sets| Message::Data(DataMessage::OnSetBonusesLoaded(sets))),
             ),
             DataMessage::OnSetBonusesLoaded(bonuses) => {
@@ -28,14 +30,14 @@ impl EditorUpdate<DataMessage> for Editor {
                 Command::none()
             }
             DataMessage::SaveSetBonuses(message) => Command::perform(
-                save_data("./data/data/set_bonuses.ron", self.set_bonuses.clone()),
+                save_data(PATH_SET_BONUSES, self.set_bonuses.clone()),
                 catch_async(move |()| *message.clone()),
             ),
         }
     }
 }
 
-async fn load_data<T>(path: &'static str) -> Result<T, DataError>
+async fn load_data<T>(path: &str) -> Result<T, DataError>
 where
     for<'de> T: Deserialize<'de>,
 {
@@ -45,7 +47,7 @@ where
     Ok(ron::from_str(contents.as_str())?)
 }
 
-async fn save_data<T>(path: &'static str, data: T) -> Result<(), DataError>
+async fn save_data<T>(path: &str, data: T) -> Result<(), DataError>
 where
     T: Serialize + Sync + Send,
 {
@@ -91,5 +93,16 @@ impl From<ron::de::SpannedError> for DataError {
 impl From<ron::Error> for DataError {
     fn from(value: ron::Error) -> Self {
         Self::Ron(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn set_bonuses_load() {
+        let result = load_data::<Vec<SetBonus>>(format!("../{PATH_SET_BONUSES}").as_str()).await;
+        assert!(result.is_ok(), "{result:?}");
     }
 }
