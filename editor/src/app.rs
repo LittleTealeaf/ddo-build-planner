@@ -4,7 +4,7 @@ use builder::equipment::set_bonus::SetBonus;
 
 use iced::{
     executor, theme,
-    widget::{Scrollable, Text},
+    widget::{Scrollable, Text, text},
     Application as IcedApplication, Command,
 };
 
@@ -14,6 +14,12 @@ use crate::messages::{DataIOMessage, DataMessage, HandleMessage, Message};
 #[derive(Debug, Clone)]
 pub struct Application {
     pub(crate) set_bonuses: Option<Vec<SetBonus>>,
+    pub(crate) state: AppState
+}
+
+#[derive(Debug, Clone)]
+enum AppState {
+    Home,
 }
 
 impl IcedApplication for Application {
@@ -26,7 +32,7 @@ impl IcedApplication for Application {
     type Flags = ();
 
     fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
-        let mut app = Self { set_bonuses: None };
+        let mut app = Self { set_bonuses: None, state: AppState::Home };
 
         let command = Command::batch([app.update(Message::Data(DataMessage::SetBonuses(
             DataIOMessage::StartLoad,
@@ -36,7 +42,7 @@ impl IcedApplication for Application {
     }
 
     fn title(&self) -> String {
-        String::from("Hello World")
+        String::from("DDO Build Planner Data Editor")
     }
 
     fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
@@ -44,10 +50,6 @@ impl IcedApplication for Application {
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        Scrollable::new(self.set_bonuses.as_ref().map_or_else(
-            || Text::new("none"),
-            |set_bonuses| Text::new(format!("{set_bonuses:?}")),
-        ))
-        .into()
+        text("HI WORLD").size(100).into()
     }
 }

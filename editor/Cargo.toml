@@ -21,3 +21,7 @@ serde = { version = "1.0.195" }
 iced = { version = "0.10.0", features = ["tokio"] }
 tokio = { version = "1.35.1", features = ["fs", "io-util"] }
 ron = { version = "0.8.1" }
+iced_aw = { version = "0.7.0", default-features = false, features = [
+	"tabs",
+	"tab_bar",
+] }
