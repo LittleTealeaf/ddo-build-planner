@@ -7,6 +7,8 @@ use tokio::{
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 
+use crate::EditorApp;
+
 use super::{HandleMessage, Message};
 /// Messages for loading / saving data
 #[derive(Debug, Clone)]
@@ -22,7 +24,7 @@ impl From<DataMessage> for Message {
 }
 
 impl HandleMessage for DataMessage {
-    fn handle(self, app: &mut crate::app::Application) -> iced::Command<super::Message> {
+    fn handle(self, app: &mut EditorApp) -> iced::Command<super::Message> {
         match self {
             Self::SetBonuses(message) => match message {
                 DataIOMessage::StartLoad => Command::perform(

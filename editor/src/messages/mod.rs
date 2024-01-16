@@ -3,7 +3,7 @@
 use iced::Command;
 use utils::public_modules;
 
-use crate::app::Application;
+use crate::EditorApp;
 
 public_modules!(data);
 
@@ -19,11 +19,11 @@ pub enum Message {
 /// Handles messages passed from the application
 pub trait HandleMessage {
     /// Handle a message recieved
-    fn handle(self, app: &mut Application) -> Command<Message>;
+    fn handle(self, app: &mut EditorApp) -> Command<Message>;
 }
 
 impl HandleMessage for Message {
-    fn handle(self, app: &mut Application) -> Command<Message> {
+    fn handle(self, app: &mut EditorApp) -> Command<Message> {
         match self {
             Self::Data(message) => message.handle(app),
             Self::Error(error) => panic!("{error}"),
