@@ -12,18 +12,21 @@ public_modules!(data);
 pub enum Message {
     /// Messages for loading / saving data
     Data(DataMessage),
+    /// Errors
+    Error(String),
 }
 
 /// Handles messages passed from the application
 pub trait HandleMessage {
     /// Handle a message recieved
-    fn handle(&self, app: &mut Application) -> Command<Message>;
+    fn handle(self, app: &mut Application) -> Command<Message>;
 }
 
 impl HandleMessage for Message {
-    fn handle(&self, app: &mut Application) -> Command<Message> {
+    fn handle(self, app: &mut Application) -> Command<Message> {
         match self {
             Self::Data(message) => message.handle(app),
+            Self::Error(error) => panic!("{error}")
         }
     }
 }

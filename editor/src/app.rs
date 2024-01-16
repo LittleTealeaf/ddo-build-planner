@@ -13,7 +13,7 @@ use crate::messages::{HandleMessage, Message};
 /// Application state and additional logic
 #[derive(Debug, Clone)]
 pub struct Application {
-    set_bonuses: Option<Vec<SetBonus>>,
+    pub(crate) set_bonuses: Option<Vec<SetBonus>>,
 }
 
 impl IcedApplication for Application {
