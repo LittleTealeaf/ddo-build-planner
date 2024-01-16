@@ -1,2 +1,4 @@
 //! The editor is an application used to modify the data files
-pub mod data;
+pub mod app;
+pub mod io;
+pub mod messages;
