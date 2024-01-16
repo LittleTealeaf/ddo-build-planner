@@ -2,12 +2,13 @@
 
 use iced::{Application, Command, Element, Renderer};
 
-
 /// Provides implementations for an application child
-pub trait ApplicationChild<T> where T: Application {
+pub trait ApplicationChild<T>
+where
+    T: Application,
+{
     /// See [`Application::Message`]
     type Message;
-
 
     /// See [`Application::update`]
     fn update(&mut self, message: Self::Message) -> Command<T::Message>;
