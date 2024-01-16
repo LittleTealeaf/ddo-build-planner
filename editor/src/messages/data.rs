@@ -7,7 +7,6 @@ use tokio::{
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 
-use crate::EditorApp;
 
 use super::{HandleMessage, Message};
 /// Messages for loading / saving data
