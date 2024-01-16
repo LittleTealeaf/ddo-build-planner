@@ -17,5 +17,6 @@ workspace = true
 builder = { path = "../builder/" }
 roc = "0.0.0"
 serde = { version = "1.0.195" }
-iced = "0.10.0"
-
+iced = { version = "0.10.0", features = ["tokio"] }
+tokio = { version = "1.35.1", features = ["fs", "io-util"] }
+ron = {version = "0.8.1"}
