@@ -5,9 +5,13 @@ mod tabs;
 
 use builder::equipment::set_bonus::SetBonus;
 use data_load::DataMessage;
-use iced::{executor, widget::Column, Application, Command, Element, Renderer, Settings, Theme};
-use iced_aw::{TabBar, TabLabel};
-use tabs::{TabHome, TabSetBonuses};
+use iced::{
+    executor, font,
+    widget::{column, container, text},
+    Application, Command, Element, Renderer, Settings, Theme,
+};
+use iced_aw::{graphics::icons::ICON_FONT_BYTES, TabBar, TabLabel};
+use tabs::{MessageSetBonuses, TabHome, TabSetBonuses};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -16,7 +20,9 @@ fn main() -> iced::Result {
 #[derive(Debug, Clone, Default)]
 struct Editor {
     set_bonuses: Option<Vec<SetBonus>>,
+    font_loaded: bool,
     tab_home: TabHome,
+    tab_set_bonuses: TabSetBonuses,
     current_tab: Tab,
 }
 
@@ -25,6 +31,8 @@ enum Message {
     Data(DataMessage),
     Error(String),
     SetTab(Tab),
+    SetBonuses(MessageSetBonuses),
+    FontLoaded,
 }
 
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
@@ -44,8 +52,19 @@ impl Application for Editor {
     type Flags = ();
 
     fn new(_flags: Self::Flags) -> (Self, iced::Command<Self::Message>) {
-        let mut app = Self::default();
-        let command = Command::batch([app.update(Message::Data(DataMessage::LoadSetBonuses))]);
+        let mut app = Self {
+            font_loaded: false,
+            ..Default::default()
+        };
+        let command = Command::batch([
+            app.update(Message::Data(DataMessage::LoadSetBonuses)),
+            font::load(ICON_FONT_BYTES).map(|res| {
+                res.map_or_else(
+                    |e| Message::Error(format!("{e:?}")),
+                    |()| Message::FontLoaded,
+                )
+            }),
+        ]);
 
         (app, command)
     }
@@ -62,24 +81,35 @@ impl Application for Editor {
                 self.current_tab = tab;
                 Command::none()
             }
+            Message::SetBonuses(message) => self.handle_update(message),
+            Message::FontLoaded => {
+                self.font_loaded = true;
+                Command::none()
+            }
         }
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        Column::new()
-            .push(
+        if self.font_loaded {
+            column!(
                 [(Tab::Home, "Home"), (Tab::SetBonuses, "Set Bonuses")]
                     .into_iter()
                     .fold(TabBar::new(Message::SetTab), |bar, (id, label)| {
                         bar.push(id, TabLabel::Text(label.to_owned()))
                     })
                     .set_active_tab(&self.current_tab),
+                match self.current_tab {
+                    Tab::Home => EditorView::<TabHome>::handle_view(self),
+                    Tab::SetBonuses => EditorView::<TabSetBonuses>::handle_view(self),
+                }
             )
-            .push(match self.current_tab {
-                Tab::Home => EditorView::<TabHome>::handle_view(self),
-                Tab::SetBonuses => EditorView::<TabSetBonuses>::handle_view(self),
-            })
             .into()
+        } else {
+            container(text("Loading...").size(10))
+                .center_x()
+                .center_y()
+                .into()
+        }
     }
 }
 

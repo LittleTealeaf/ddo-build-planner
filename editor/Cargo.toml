@@ -25,4 +25,7 @@ ron = { version = "0.8.1" }
 iced_aw = { version = "0.7.0", default-features = false, features = [
 	"tabs",
 	"tab_bar",
+	"floating_element",
+	"icons",
 ] }
+fuzzy-filter = "0.1.0"

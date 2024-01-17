@@ -584,6 +584,7 @@ name = "editor"
 version = "0.0.1"
 dependencies = [
  "builder",
+ "fuzzy-filter",
  "iced",
  "iced_aw",
  "roc",
@@ -791,6 +792,12 @@ dependencies = [
  "pin-utils",
  "slab",
 ]
+
+[[package]]
+name = "fuzzy-filter"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e88dd42064af55b9bd19ea350a7b94f0a5377d334b03d790a26cfd43855e8049"
 
 [[package]]
 name = "gethostname"
