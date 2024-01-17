@@ -1,3 +1,3 @@
 use utils::public_modules;
 
-public_modules!(home, set_bonuses);
+public_modules!(set_bonuses);

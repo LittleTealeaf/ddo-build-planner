@@ -1,46 +1,28 @@
 //! Editor Application
 
-mod data_load;
+mod data_utils;
 mod tabs;
 
-use builder::equipment::set_bonus::SetBonus;
-use data_load::DataMessage;
-use iced::{
-    executor, font,
-    widget::{column, container, text},
-    Application, Command, Settings, Theme,
-};
-use iced_aw::{graphics::icons::ICON_FONT_BYTES, TabBar, TabLabel};
-use tabs::{MessageSetBonuses, TabHome, TabSetBonuses};
-use ui::{HandleMessage, HandleView};
+use iced::{executor, font, Application, Command, Settings, Theme};
+use iced_aw::graphics::icons::ICON_FONT_BYTES;
+use tabs::{MSetBonuses, SetBonuses};
+use ui::HandleMessage;
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Debug)]
 struct Editor {
-    set_bonuses: Option<Vec<SetBonus>>,
-    font_loaded: bool,
-    tab_home: TabHome,
-    tab_set_bonuses: TabSetBonuses,
-    current_tab: Tab,
+    icons_loaded: bool,
+    set_bonuses: SetBonuses,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 enum Message {
-    Data(DataMessage),
+    IconsLoaded,
     Error(String),
-    SetTab(Tab),
-    SetBonuses(MessageSetBonuses),
-    FontLoaded,
-}
-
-#[derive(Debug, Clone, Default, Eq, PartialEq)]
-enum Tab {
-    #[default]
-    Home,
-    SetBonuses,
+    SetBonuses(MSetBonuses),
 }
 
 impl Application for Editor {
@@ -52,17 +34,17 @@ impl Application for Editor {
 
     type Flags = ();
 
-    fn new(_flags: Self::Flags) -> (Self, iced::Command<Self::Message>) {
+    fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
         let mut app = Self {
-            font_loaded: false,
-            ..Default::default()
+            icons_loaded: false,
+            set_bonuses: SetBonuses::default(),
         };
         let command = Command::batch([
-            app.handle_message(Message::Data(DataMessage::LoadSetBonuses)),
+            app.handle_message(MSetBonuses::LoadSets),
             font::load(ICON_FONT_BYTES).map(|res| {
                 res.map_or_else(
                     |e| Message::Error(format!("{e:?}")),
-                    |()| Message::FontLoaded,
+                    |()| Message::IconsLoaded,
                 )
             }),
         ]);
@@ -79,43 +61,19 @@ impl Application for Editor {
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        if self.font_loaded {
-            column!(
-                [(Tab::Home, "Home"), (Tab::SetBonuses, "Set Bonuses")]
-                    .into_iter()
-                    .fold(TabBar::new(Message::SetTab), |bar, (id, label)| {
-                        bar.push(id, TabLabel::Text(label.to_owned()))
-                    })
-                    .set_active_tab(&self.current_tab),
-                match self.current_tab {
-                    Tab::Home => HandleView::<TabHome>::handle_view(self),
-                    Tab::SetBonuses => HandleView::<TabSetBonuses>::handle_view(self),
-                }
-            )
-            .into()
-        } else {
-            container(text("Loading...").size(10))
-                .center_x()
-                .center_y()
-                .into()
-        }
+        todo!()
     }
 }
 
 impl HandleMessage<Message> for Editor {
     fn handle_message(&mut self, message: Message) -> Command<Self::Message> {
         match message {
-            Message::Data(message) => self.handle_message(message),
-            Message::Error(error) => panic!("{error}"),
-            Message::SetTab(tab) => {
-                self.current_tab = tab;
+            Message::IconsLoaded => {
+                self.icons_loaded = true;
                 Command::none()
             }
+            Message::Error(err) => panic!("{err}"),
             Message::SetBonuses(message) => self.handle_message(message),
-            Message::FontLoaded => {
-                self.font_loaded = true;
-                Command::none()
-            }
         }
     }
 }
