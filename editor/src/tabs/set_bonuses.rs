@@ -6,7 +6,7 @@ use iced::{
     Alignment, Command, Length,
 };
 use iced_aw::{floating_element, graphics::icons::icon_to_char, Icon, ICON_FONT};
-use ui::HandleView;
+use ui::{HandleView, HandleMessage};
 
 use crate::{Editor, Message};
 
@@ -32,8 +32,8 @@ impl From<MessageSetBonuses> for Message {
     }
 }
 
-impl EditorUpdate<MessageSetBonuses> for Editor {
-    fn handle_update(&mut self, message: MessageSetBonuses) -> iced::Command<Self::Message> {
+impl HandleMessage<MessageSetBonuses> for Editor {
+    fn handle_message(&mut self, message: MessageSetBonuses) -> iced::Command<Self::Message> {
         match &mut self.set_bonuses {
             None => Command::none(),
             Some(set_bonuses) => match message {
@@ -56,7 +56,7 @@ impl EditorUpdate<MessageSetBonuses> for Editor {
                 MessageSetBonuses::CreateSet => {
                     let index = set_bonuses.len();
                     set_bonuses.push(SetBonus::new(format!("Set {}", &set_bonuses.len())));
-                    self.handle_update(MessageSetBonuses::OpenSet(index))
+                    self.handle_message(MessageSetBonuses::OpenSet(index))
                 }
                 MessageSetBonuses::SetSetName(index, name) => {
                     if let Some(set) = set_bonuses.get_mut(index) {

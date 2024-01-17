@@ -58,7 +58,7 @@ impl Application for Editor {
             ..Default::default()
         };
         let command = Command::batch([
-            app.update(Message::Data(DataMessage::LoadSetBonuses)),
+            app.handle_message(Message::Data(DataMessage::LoadSetBonuses)),
             font::load(ICON_FONT_BYTES).map(|res| {
                 res.map_or_else(
                     |e| Message::Error(format!("{e:?}")),
@@ -75,19 +75,7 @@ impl Application for Editor {
     }
 
     fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
-        match message {
-            Message::Data(message) => self.handle_message(message),
-            Message::Error(error) => panic!("{error}"),
-            Message::SetTab(tab) => {
-                self.current_tab = tab;
-                Command::none()
-            }
-            Message::SetBonuses(message) => self.handle_message(message),
-            Message::FontLoaded => {
-                self.font_loaded = true;
-                Command::none()
-            }
-        }
+        self.handle_message(message)
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
@@ -114,3 +102,20 @@ impl Application for Editor {
     }
 }
 
+impl HandleMessage<Message> for Editor {
+    fn handle_message(&mut self, message: Message) -> Command<Self::Message> {
+        match message {
+            Message::Data(message) => self.handle_message(message),
+            Message::Error(error) => panic!("{error}"),
+            Message::SetTab(tab) => {
+                self.current_tab = tab;
+                Command::none()
+            }
+            Message::SetBonuses(message) => self.handle_message(message),
+            Message::FontLoaded => {
+                self.font_loaded = true;
+                Command::none()
+            }
+        }
+    }
+}
