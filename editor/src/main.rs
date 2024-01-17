@@ -8,10 +8,11 @@ use data_load::DataMessage;
 use iced::{
     executor, font,
     widget::{column, container, text},
-    Application, Command, Element, Renderer, Settings, Theme,
+    Application, Command, Settings, Theme,
 };
 use iced_aw::{graphics::icons::ICON_FONT_BYTES, TabBar, TabLabel};
 use tabs::{MessageSetBonuses, TabHome, TabSetBonuses};
+use ui::{HandleMessage, HandleView};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -75,13 +76,13 @@ impl Application for Editor {
 
     fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
         match message {
-            Message::Data(message) => self.handle_update(message),
+            Message::Data(message) => self.handle_message(message),
             Message::Error(error) => panic!("{error}"),
             Message::SetTab(tab) => {
                 self.current_tab = tab;
                 Command::none()
             }
-            Message::SetBonuses(message) => self.handle_update(message),
+            Message::SetBonuses(message) => self.handle_message(message),
             Message::FontLoaded => {
                 self.font_loaded = true;
                 Command::none()
@@ -99,8 +100,8 @@ impl Application for Editor {
                     })
                     .set_active_tab(&self.current_tab),
                 match self.current_tab {
-                    Tab::Home => EditorView::<TabHome>::handle_view(self),
-                    Tab::SetBonuses => EditorView::<TabSetBonuses>::handle_view(self),
+                    Tab::Home => HandleView::<TabHome>::handle_view(self),
+                    Tab::SetBonuses => HandleView::<TabSetBonuses>::handle_view(self),
                 }
             )
             .into()
@@ -113,10 +114,3 @@ impl Application for Editor {
     }
 }
 
-trait EditorView<T>: Sized + Application {
-    fn handle_view(&self) -> Element<'_, Self::Message, Renderer<Self::Theme>>;
-}
-
-trait EditorUpdate<M>: Sized + Application {
-    fn handle_update(&mut self, message: M) -> Command<Self::Message>;
-}

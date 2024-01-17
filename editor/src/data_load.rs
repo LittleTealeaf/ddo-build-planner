@@ -6,8 +6,9 @@ use tokio::{
     fs::File,
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
+use ui::HandleMessage;
 
-use crate::{Editor, EditorUpdate, Message};
+use crate::{Editor, Message};
 
 const PATH_SET_BONUSES: &str = "./data/data/set_bonuses.ron";
 
@@ -18,8 +19,8 @@ pub enum DataMessage {
     SaveSetBonuses(Box<Message>),
 }
 
-impl EditorUpdate<DataMessage> for Editor {
-    fn handle_update(&mut self, message: DataMessage) -> Command<Self::Message> {
+impl HandleMessage<DataMessage> for Editor {
+    fn handle_message(&mut self, message: DataMessage) -> Command<Self::Message> {
         match message {
             DataMessage::LoadSetBonuses => Command::perform(
                 load_data(PATH_SET_BONUSES),
