@@ -1,5 +1,5 @@
 [package]
-name = "utils"
+name = "ui"
 edition.workspace = true
 version.workspace = true
 repository.workspace = true
@@ -13,9 +13,8 @@ license-file.workspace = true
 [lints]
 workspace = true
 
-[features]
-debug = []
 
 [dependencies]
-im = "15.1.0"
-itertools = "0.12.0"
+iced = { version = "0.10.0", features = ["tokio"] }
+utils = { path = "../utils/" }
+builder = { path = "../builder/" }
