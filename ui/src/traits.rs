@@ -12,7 +12,6 @@ pub trait HandleMessage<T>: Application + Sized {
     fn handle_message(&mut self, message: T) -> Command<Self::Message>;
 }
 
-
 /// Indicates that this can be converted to another message
 pub trait ToMessage<M> {
     /// Converts to another message
