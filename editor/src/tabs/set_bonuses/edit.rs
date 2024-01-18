@@ -1,8 +1,11 @@
 use builder::equipment::set_bonus::SetBonus;
 use iced::{
-    widget::{button, column, text},
-    Command,
+    alignment::{Horizontal, Vertical},
+    theme,
+    widget::{button, column, container, horizontal_space, row, text, text_input, vertical_space},
+    Alignment, Command, Length,
 };
+use iced_aw::{card, modal};
 use ui::{HandleMessage, HandleView};
 
 use crate::{Editor, Message};
@@ -13,6 +16,7 @@ use super::MSetBonuses;
 pub struct EditingSet {
     index: Option<usize>,
     set: SetBonus,
+    confirm_delete: bool,
 }
 
 impl EditingSet {
@@ -20,11 +24,16 @@ impl EditingSet {
         Self {
             index: Some(index),
             set,
+            confirm_delete: false,
         }
     }
 
     pub const fn new(set: SetBonus) -> Self {
-        Self { index: None, set }
+        Self {
+            index: None,
+            set,
+            confirm_delete: false,
+        }
     }
 
     pub const fn index(&self) -> &Option<usize> {
@@ -39,6 +48,9 @@ impl EditingSet {
 #[derive(Debug, Clone)]
 pub enum MEditingSet {
     SetName(String),
+    Delete,
+    CancelDelete,
+    ConfirmDelete,
 }
 
 impl From<MEditingSet> for Message {
@@ -55,6 +67,17 @@ impl HandleMessage<MEditingSet> for Editor {
                     editing.set.set_name(name);
                     Command::none()
                 }
+                MEditingSet::Delete => {
+                    editing.confirm_delete = true;
+                    Command::none()
+                }
+                MEditingSet::CancelDelete => {
+                    editing.confirm_delete = false;
+                    Command::none()
+                }
+                MEditingSet::ConfirmDelete => editing.index.map_or_else(Command::none, |index| {
+                    self.handle_message(MSetBonuses::DeleteSet(index))
+                }),
             }
         } else {
             Command::none()
@@ -65,16 +88,67 @@ impl HandleMessage<MEditingSet> for Editor {
 impl HandleView<Editor> for EditingSet {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
+        _app: &'a Editor,
     ) -> iced::Element<
         '_,
         <Editor as iced::Application>::Message,
         iced::Renderer<<Editor as iced::Application>::Theme>,
     > {
-        column!(
-            button(text("Back")).on_press(MSetBonuses::CancelEdit.into()),
-            text(self.set.name())
+        let content = column!(
+            text_input("Set Name", self.set.name())
+                .size(30)
+                .on_input(|name| MEditingSet::SetName(name).into()),
+            vertical_space(Length::Fill),
+            row!(
+                button(text("Delete").horizontal_alignment(Horizontal::Center))
+                    .on_press(MEditingSet::Delete.into())
+                    .style(theme::Button::Destructive),
+                horizontal_space(Length::Fill),
+                row!(
+                    button(text("Cancel").horizontal_alignment(Horizontal::Center))
+                        .width(Length::Fill)
+                        .on_press(MSetBonuses::CancelEdit.into())
+                        .style(theme::Button::Secondary),
+                    button(text("Save").horizontal_alignment(Horizontal::Center))
+                        .width(Length::Fill)
+                        .on_press(MSetBonuses::SaveEdit.into())
+                        .style(theme::Button::Primary),
+                )
+                .width(Length::Fill),
+            )
+            .align_items(Alignment::Center)
         )
-        .into()
+        .padding(10);
+
+        let confirm_delete_modal = self.confirm_delete.then(|| {
+            row!(
+                horizontal_space(Length::FillPortion(2)),
+                card(
+                    text(format!("Delete {}?", self.set.name())),
+                    text(format!(
+                    "Do you really want to delete {}? If you save, this set will no longer exist",
+                    self.set.name()
+                )),
+                )
+                .foot(row!(
+                    horizontal_space(Length::Fill),
+                    button(text("Cancel"))
+                        .on_press(MEditingSet::CancelDelete.into())
+                        .style(theme::Button::Primary),
+                    horizontal_space(10.0),
+                    button(text("Delete"))
+                        .on_press(MEditingSet::ConfirmDelete.into())
+                        .style(theme::Button::Destructive),
+                ))
+                .width(Length::FillPortion(6)),
+                horizontal_space(Length::FillPortion(2)),
+            )
+        });
+
+        modal(content, confirm_delete_modal)
+            .backdrop(MEditingSet::CancelDelete.into())
+            .on_esc(MEditingSet::CancelDelete.into())
+            .align_y(Vertical::Center)
+            .into()
     }
 }

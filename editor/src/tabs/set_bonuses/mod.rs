@@ -5,7 +5,7 @@ use builder::equipment::set_bonus::SetBonus;
 use fuzzy_filter::matches;
 use iced::{
     theme,
-    widget::{button, column, container, row, scrollable, text, text_input},
+    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
     Alignment, Application, Command, Element, Length, Renderer,
 };
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
@@ -35,7 +35,9 @@ pub enum MSetBonuses {
     SaveSets,
     OnSaveSets,
     OpenSet(usize),
+    NewSet,
     EditSet(EditingSet),
+    DeleteSet(usize),
     CancelEdit,
     SaveEdit,
     Edit(MEditingSet),
@@ -79,7 +81,9 @@ impl HandleMessage<MSetBonuses> for Editor {
                 self.set_bonuses.modified = false;
                 Command::none()
             }
-
+            MSetBonuses::NewSet => self.handle_message(MSetBonuses::EditSet(EditingSet::new(
+                SetBonus::new(self.set_bonuses.filter.clone()),
+            ))),
             MSetBonuses::OpenSet(index) => self
                 .set_bonuses
                 .sets
@@ -116,6 +120,17 @@ impl HandleMessage<MSetBonuses> for Editor {
                 self.set_bonuses.filter = search;
                 Command::none()
             }
+            MSetBonuses::DeleteSet(index) => {
+                if let Some(sets) = &mut self.set_bonuses.sets {
+                    if index < sets.len() {
+                        sets.remove(index);
+                    }
+                }
+                self.set_bonuses.editing = None;
+                self.set_bonuses.modified = true;
+
+                Command::none()
+            }
         }
     }
 }
@@ -132,10 +147,16 @@ impl HandleView<Editor> for TSetBonuses {
                     row!(
                         text_input("Search...", &self.filter)
                             .on_input(|search| MSetBonuses::Filter(search).into()),
+                        button(text('').font(NERD_FONT)).on_press_maybe(
+                            (!&self.filter.is_empty()).then_some(MSetBonuses::NewSet.into())
+                        ),
+                        horizontal_space(10.0),
                         button(text('󰑓').font(NERD_FONT)).on_press(MSetBonuses::LoadSets.into()),
+                        horizontal_space(5.0),
                         button(text('').font(NERD_FONT)).on_press_maybe(
                             (self.modified && !self.saving).then_some(MSetBonuses::SaveSets.into())
                         ),
+                        horizontal_space(2.0),
                     )
                     .into(),
                     self.sets.as_ref().map_or_else(
