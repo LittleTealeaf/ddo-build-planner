@@ -2,11 +2,13 @@
 mod traits;
 
 mod to_attribute;
+use itertools::chain;
 pub use to_attribute::*;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
+use utils::enums::StaticOptions;
 
 use crate::{
     bonus::{Bonus, BonusTemplate, CloneBonus},
@@ -175,5 +177,50 @@ impl CloneBonus for Attribute {
             Self::HealingAmplification(heal_amp) => heal_amp.clone_bonus(bonus),
             _ => None,
         }
+    }
+}
+
+impl StaticOptions for Attribute {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [
+                Self::Dummy,
+                Self::SpellResistance,
+                Self::SpellPenetration,
+                Self::TotalCharacterLevel,
+                Self::ArmorCheckPenalty
+            ],
+            Ability::get_static()
+                .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
+            Skill::get_static().map(Self::Skill),
+            SavingThrow::get_static().map(Self::SavingThrow),
+            SpellPower::get_static().flat_map(|sp| {
+                [
+                    Self::SpellPower(sp),
+                    Self::SpellCriticalChance(sp),
+                    Self::SpellCriticalDamage(sp),
+                ]
+            }),
+            Toggle::get_static().map(Self::Toggle),
+            Flag::get_static().map(Self::Flag),
+            Feat::get_static().map(Self::Feat),
+            PlayerClass::get_static().map(Self::ClassLevel),
+            SpellSelector::get_static().flat_map(|selector| {
+                [
+                    Self::CasterLevel(selector),
+                    Self::MaxCasterLevel(selector),
+                    Self::SpellDC(selector),
+                ]
+            }),
+            WeaponAttribute::get_static().map(Self::Weapon),
+            ArmorClass::get_static().map(Self::ArmorClass),
+            Sheltering::get_static().map(Self::Sheltering),
+            DamageType::get_static()
+                .flat_map(|dt| { [Self::Resistance(dt), Self::Absorption(dt)] }),
+            Health::get_static().map(Self::Health),
+            SpellPoints::get_static().map(Self::SpellPoints),
+            SummonedAttribute::get_static().map(Self::SummonedAttribute),
+            HealingAmplification::get_static().map(Self::HealingAmplification),
+        )
     }
 }
