@@ -6,7 +6,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::{public_modules, enums::StaticOptions};
+use utils::{enums::StaticOptions, public_modules};
 
 use super::damage_type::DamageType;
 

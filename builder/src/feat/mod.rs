@@ -4,7 +4,7 @@ public_modules!(feats, requirements, to_feat);
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{public_modules, enums::StaticOptions};
+use utils::{enums::StaticOptions, public_modules};
 
 use std::fmt::Display;
 
