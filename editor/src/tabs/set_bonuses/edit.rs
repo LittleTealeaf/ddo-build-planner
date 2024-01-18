@@ -101,7 +101,7 @@ impl HandleView<Editor> for EditingSet {
             vertical_space(Length::Fill),
             row!(
                 button(text("Delete").horizontal_alignment(Horizontal::Center))
-                    .on_press(MEditingSet::Delete.into())
+                    .on_press_maybe(self.index.is_some().then_some(MEditingSet::Delete.into()))
                     .style(theme::Button::Destructive),
                 horizontal_space(Length::Fill),
                 row!(
