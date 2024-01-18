@@ -5,8 +5,8 @@ mod tabs;
 
 use iced::{executor, font, Application, Command, Settings, Theme};
 use iced_aw::graphics::icons::ICON_FONT_BYTES;
-use tabs::{MSetBonuses, SetBonuses};
-use ui::HandleMessage;
+use tabs::{MSetBonuses, TSetBonuses, Tab};
+use ui::{HandleMessage, HandleView};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -15,7 +15,8 @@ fn main() -> iced::Result {
 #[derive(Clone, Debug)]
 struct Editor {
     icons_loaded: bool,
-    set_bonuses: SetBonuses,
+    set_bonuses: TSetBonuses,
+    tab: Tab,
 }
 
 #[derive(Clone, Debug)]
@@ -23,6 +24,7 @@ enum Message {
     IconsLoaded,
     Error(String),
     SetBonuses(MSetBonuses),
+    ChangeTab(Tab),
 }
 
 impl Application for Editor {
@@ -37,7 +39,8 @@ impl Application for Editor {
     fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
         let mut app = Self {
             icons_loaded: false,
-            set_bonuses: SetBonuses::default(),
+            set_bonuses: TSetBonuses::default(),
+            tab: Tab::Home,
         };
         let command = Command::batch([
             app.handle_message(MSetBonuses::LoadSets),
@@ -61,7 +64,7 @@ impl Application for Editor {
     }
 
     fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        todo!()
+        HandleView::<Tab>::handle_view(self)
     }
 }
 
@@ -74,6 +77,10 @@ impl HandleMessage<Message> for Editor {
             }
             Message::Error(err) => panic!("{err}"),
             Message::SetBonuses(message) => self.handle_message(message),
+            Message::ChangeTab(tab) => {
+                self.tab = tab;
+                Command::none()
+            }
         }
     }
 }

@@ -1,26 +1,25 @@
+mod edit;
+use edit::EditingSet;
+
 use builder::equipment::set_bonus::SetBonus;
-use iced::Command;
-use ui::HandleMessage;
+use iced::{widget::text, Command};
+use ui::{HandleMessage, HandleView};
 
 use crate::{
     data_utils::{catch_async, load_data, save_data},
     Editor, Message,
 };
 
+use self::edit::MEditingSet;
+
 const DATA_PATH: &str = "./data/data/set_bonuses.ron";
 
 #[derive(Debug, Clone, Default)]
-pub struct SetBonuses {
+pub struct TSetBonuses {
     sets: Option<Vec<SetBonus>>,
     saving: bool,
     editing: Option<EditingSet>,
     modified: bool,
-}
-
-#[derive(Debug, Clone)]
-pub struct EditingSet {
-    index: Option<usize>,
-    set: SetBonus,
 }
 
 #[derive(Debug, Clone)]
@@ -29,9 +28,16 @@ pub enum MSetBonuses {
     OnLoadSets(Vec<SetBonus>),
     SaveSets,
     OnSaveSets,
-    Edit(EditingSet),
+    OpenSet(EditingSet),
     CancelEdit,
     SaveEdit,
+    Edit(MEditingSet),
+}
+
+impl From<MSetBonuses> for Message {
+    fn from(value: MSetBonuses) -> Self {
+        Self::SetBonuses(value)
+    }
 }
 
 impl HandleMessage<MSetBonuses> for Editor {
@@ -41,7 +47,7 @@ impl HandleMessage<MSetBonuses> for Editor {
                 self.set_bonuses.sets = None;
                 Command::perform(
                     load_data(DATA_PATH),
-                    catch_async(|data| Message::SetBonuses(MSetBonuses::OnLoadSets(data))),
+                    catch_async(|data| MSetBonuses::OnLoadSets(data).into()),
                 )
             }
             MSetBonuses::OnLoadSets(sets) => {
@@ -56,7 +62,7 @@ impl HandleMessage<MSetBonuses> for Editor {
                     .map_or_else(Command::none, |sets| {
                         Command::perform(
                             save_data(DATA_PATH, sets.clone()),
-                            catch_async(|()| Message::SetBonuses(MSetBonuses::OnSaveSets)),
+                            catch_async(|()| MSetBonuses::OnSaveSets.into()),
                         )
                     })
             }
@@ -65,7 +71,7 @@ impl HandleMessage<MSetBonuses> for Editor {
                 self.set_bonuses.modified = false;
                 Command::none()
             }
-            MSetBonuses::Edit(set) => {
+            MSetBonuses::OpenSet(set) => {
                 self.set_bonuses.editing = Some(set);
                 Command::none()
             }
@@ -77,16 +83,23 @@ impl HandleMessage<MSetBonuses> for Editor {
                 if let Some(sets) = &mut self.set_bonuses.sets {
                     if let Some(edit) = &self.set_bonuses.editing {
                         self.set_bonuses.modified = true;
-                        if let Some(index) = edit.index {
-                            sets[index] = edit.set.clone();
+                        if let Some(index) = edit.index() {
+                            sets[*index] = edit.set().clone();
                         } else {
-                            sets.push(edit.set.clone());
+                            sets.push(edit.set().clone());
                         }
                     }
                 }
                 self.set_bonuses.editing = None;
                 Command::none()
             }
+            MSetBonuses::Edit(message) => self.handle_message(message),
         }
+    }
+}
+
+impl HandleView<TSetBonuses> for Editor {
+    fn handle_view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
+        text("Hello set bonuses").into()
     }
 }
