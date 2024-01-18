@@ -1,8 +1,7 @@
 //! Set Bonuses are stored in the `data` crate, using the following structure to load. Then, they
 //! are imported into the breakdown object
 
-use std::collections::HashMap;
-
+use im::OrdMap;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -14,7 +13,7 @@ use crate::{
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SetBonus {
     name: String,
-    bonuses: HashMap<i32, Vec<BonusTemplate>>,
+    bonuses: OrdMap<i32, Vec<BonusTemplate>>,
 }
 
 impl SetBonus {
@@ -54,7 +53,7 @@ impl SetBonus {
     pub fn new(name: String) -> Self {
         Self {
             name,
-            bonuses: HashMap::new(),
+            bonuses: OrdMap::new(),
         }
     }
 
@@ -71,12 +70,12 @@ impl SetBonus {
 
     /// Returns a reference to the bonuses of this [`SetBonus`].
     #[must_use]
-    pub const fn bonuses(&self) -> &HashMap<i32, Vec<BonusTemplate>> {
+    pub const fn bonuses(&self) -> &OrdMap<i32, Vec<BonusTemplate>> {
         &self.bonuses
     }
 
     /// Returns a mutable reference to the bonuses of this [`SetBonus`].
-    pub fn bonuses_mut(&mut self) -> &mut HashMap<i32, Vec<BonusTemplate>> {
+    pub fn bonuses_mut(&mut self) -> &mut OrdMap<i32, Vec<BonusTemplate>> {
         &mut self.bonuses
     }
 }

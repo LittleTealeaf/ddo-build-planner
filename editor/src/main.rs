@@ -4,7 +4,6 @@ mod data_utils;
 mod tabs;
 
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
-use iced_aw::graphics::icons::ICON_FONT_BYTES;
 use tabs::{MSetBonuses, TSetBonuses, Tab};
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
 
