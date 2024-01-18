@@ -5,7 +5,7 @@ use std::fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{all::AllStatic, public_modules};
+use utils::{ public_modules, enums::StaticOptions};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -95,8 +95,8 @@ impl ToAttribute for WeaponAttribute {
     }
 }
 
-impl AllStatic for WeaponAttribute {
-    fn all() -> impl Iterator<Item = Self> {
-        WeaponHand::all().flat_map(|hand| WeaponStat::all().map(move |stat| Self(hand, stat)))
+impl StaticOptions for WeaponAttribute {
+    fn get_static() -> impl Iterator<Item = Self> {
+        WeaponHand::get_static().flat_map(|hand| WeaponStat::get_static().map(move |stat| Self(hand, stat)))
     }
 }

@@ -2,7 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::attribute::ToAttribute;
 
@@ -41,8 +41,8 @@ impl ToFlag for Immunity {
     }
 }
 
-impl AllStatic for Immunity {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Immunity {
+    fn get_static() -> impl Iterator<Item = Self> {
         [Self::Sleep, Self::Fear, Self::Knockdown].into_iter()
     }
 }

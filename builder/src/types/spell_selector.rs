@@ -3,7 +3,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::types::spell_school::SpellSchool;
 
@@ -53,13 +53,13 @@ impl From<PlayerClass> for SpellSelector {
     }
 }
 
-impl AllStatic for SpellSelector {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for SpellSelector {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [Self::All],
-            SpellPower::all().map(Self::SpellPower),
-            SpellSchool::all().map(Self::School),
-            PlayerClass::all().map(Self::Class),
+            SpellPower::get_static().map(Self::SpellPower),
+            SpellSchool::get_static().map(Self::School),
+            PlayerClass::get_static().map(Self::Class),
         )
     }
 }

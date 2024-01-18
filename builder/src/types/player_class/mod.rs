@@ -4,7 +4,7 @@ public_modules!(bonuses);
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::{all::AllStatic, public_modules};
+use utils::{public_modules, enums::StaticOptions};
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -131,8 +131,8 @@ impl ToAttribute for PlayerClass {
     }
 }
 
-impl AllStatic for PlayerClass {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for PlayerClass {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Alchemist,
             Self::Artificer,

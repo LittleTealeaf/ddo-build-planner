@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::types::damage_type::DamageType;
 
@@ -48,8 +48,8 @@ impl From<DamageType> for WeaponStat {
     }
 }
 
-impl AllStatic for WeaponStat {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for WeaponStat {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::Attack,
@@ -60,7 +60,7 @@ impl AllStatic for WeaponStat {
                 Self::CriticalMultiplier,
                 Self::CriticalMultiplier1920
             ],
-            DamageType::all().map(Self::DamageType)
+            DamageType::get_static().map(Self::DamageType)
         )
     }
 }

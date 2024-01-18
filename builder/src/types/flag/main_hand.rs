@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::{attribute::ToAttribute, types::item_type::WeaponType};
 
@@ -44,8 +44,8 @@ impl ToAttribute for MainHandType {
     }
 }
 
-impl AllStatic for MainHandType {
-    fn all() -> impl Iterator<Item = Self> {
-        chain!([Self::Wand], WeaponType::all().map(Self::Weapon))
+impl StaticOptions for MainHandType {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!([Self::Wand], WeaponType::get_static().map(Self::Weapon))
     }
 }

@@ -3,7 +3,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use super::alignment::Alignment;
 
@@ -79,8 +79,8 @@ impl Display for DamageType {
     }
 }
 
-impl AllStatic for DamageType {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for DamageType {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::Physical,
@@ -103,7 +103,7 @@ impl AllStatic for DamageType {
                 Self::Untyped,
                 Self::Magical,
             ],
-            Alignment::all().into_iter().map(Self::Aligned)
+            Alignment::get_static().map(Self::Aligned)
         )
     }
 }

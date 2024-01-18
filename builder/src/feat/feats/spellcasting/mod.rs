@@ -3,7 +3,7 @@ use std::fmt::Display;
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{all::AllStatic, public_modules};
+use utils::{public_modules, enums::StaticOptions};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -189,8 +189,8 @@ impl ToFeat for SpellcastingFeat {
     }
 }
 
-impl AllStatic for SpellcastingFeat {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for SpellcastingFeat {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::AugmentSummoning,
@@ -202,7 +202,7 @@ impl AllStatic for SpellcastingFeat {
                 Self::CombatCasting,
                 Self::MobileSpellcasting
             ],
-            SpellFocusFeat::all().map(Self::SpellFocus)
+            SpellFocusFeat::get_static().map(Self::SpellFocus)
         )
     }
 }

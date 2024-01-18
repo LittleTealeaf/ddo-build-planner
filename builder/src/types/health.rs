@@ -2,7 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -42,8 +42,8 @@ impl ToAttribute for Health {
     }
 }
 
-impl AllStatic for Health {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Health {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Base,
             Self::BaseModifier,

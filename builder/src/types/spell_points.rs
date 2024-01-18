@@ -2,7 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -39,8 +39,8 @@ impl ToAttribute for SpellPoints {
     }
 }
 
-impl AllStatic for SpellPoints {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for SpellPoints {
+    fn get_static() -> impl Iterator<Item = Self> {
         [Self::Scaled, Self::Base, Self::Modifier, Self::Total].into_iter()
     }
 }

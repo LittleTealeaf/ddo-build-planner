@@ -6,7 +6,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::{all::AllStatic, public_modules};
+use utils::{public_modules, enums::StaticOptions};
 
 use super::damage_type::DamageType;
 
@@ -56,11 +56,11 @@ impl Display for SpellPower {
     }
 }
 
-impl AllStatic for SpellPower {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for SpellPower {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [Self::Universal, Self::Potency,],
-            DamageType::all().map(Self::Damage)
+            DamageType::get_static().map(Self::Damage)
         )
     }
 }

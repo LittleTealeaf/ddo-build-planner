@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 /// The types of shields.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -32,8 +32,8 @@ impl Display for ShieldType {
     }
 }
 
-impl AllStatic for ShieldType {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for ShieldType {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Buckler,
             Self::SmallShield,

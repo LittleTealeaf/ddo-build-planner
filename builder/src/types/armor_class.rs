@@ -3,7 +3,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -66,8 +66,8 @@ impl ToAttribute for ArmorClass {
     }
 }
 
-impl AllStatic for ArmorClass {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for ArmorClass {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::TotalScalar,
             Self::TotalArmorClass,

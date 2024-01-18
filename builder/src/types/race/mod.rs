@@ -3,7 +3,7 @@ public_modules!(bonuses);
 
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use utils::{all::AllStatic, public_modules};
+use utils::{public_modules, enums::StaticOptions};
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -105,8 +105,8 @@ impl ToFlag for Race {
     }
 }
 
-impl AllStatic for Race {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Race {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Dragonborn,
             Self::Drow,

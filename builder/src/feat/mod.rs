@@ -4,7 +4,7 @@ public_modules!(feats, requirements, to_feat);
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{all::AllStatic, public_modules};
+use utils::{public_modules, enums::StaticOptions};
 
 use std::fmt::Display;
 
@@ -91,13 +91,13 @@ where
     }
 }
 
-impl AllStatic for Feat {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Feat {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
-            RacialFeat::all().map(Self::RacialFeat),
-            Proficiency::all().map(Self::Proficiency),
-            SkillFocus::all().map(Self::SkillFocus),
-            SpellcastingFeat::all().map(Self::Spellcasting)
+            RacialFeat::get_static().map(Self::RacialFeat),
+            Proficiency::get_static().map(Self::Proficiency),
+            SkillFocus::get_static().map(Self::SkillFocus),
+            SpellcastingFeat::get_static().map(Self::Spellcasting)
         )
     }
 }

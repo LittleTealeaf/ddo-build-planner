@@ -7,7 +7,7 @@ use std::fmt::Display;
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -73,11 +73,11 @@ where
     }
 }
 
-impl AllStatic for Toggle {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Toggle {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [Self::Blocking, Self::InReaper],
-            AttackingTarget::all().map(Self::Attacking)
+            AttackingTarget::get_static().map(Self::Attacking)
         )
     }
 }

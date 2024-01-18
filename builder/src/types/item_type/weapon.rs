@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 /// Weapon Types
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -157,8 +157,8 @@ impl Display for WeaponType {
     }
 }
 
-impl AllStatic for WeaponType {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for WeaponType {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Club,
             Self::Quarterstaff,

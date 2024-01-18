@@ -10,7 +10,7 @@ use builder::{
     },
 };
 use itertools::chain;
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 pub enum AttributeOptions {
     Attribute(Attribute),
@@ -32,37 +32,38 @@ pub fn all_attributes() -> impl Iterator<Item = Attribute> {
             Attribute::TotalCharacterLevel,
             Attribute::ArmorCheckPenalty
         ],
-        Ability::all().flat_map(|ability| [
+        Ability::get_static().flat_map(|ability| [
             Attribute::Ability(ability),
             Attribute::AbilityModifier(ability)
         ]),
-        Skill::all().map(Attribute::Skill),
-        SavingThrow::all().map(Attribute::SavingThrow),
-        SpellPower::all().flat_map(|sp| {
+        Skill::get_static().map(Attribute::Skill),
+        SavingThrow::get_static().map(Attribute::SavingThrow),
+        SpellPower::get_static().flat_map(|sp| {
             [
                 Attribute::SpellPower(sp),
                 Attribute::SpellCriticalChance(sp),
                 Attribute::SpellCriticalDamage(sp),
             ]
         }),
-        Toggle::all().map(Attribute::Toggle),
-        Flag::all().map(Attribute::Flag),
-        Feat::all().map(Attribute::Feat),
-        PlayerClass::all().map(Attribute::ClassLevel),
-        SpellSelector::all().flat_map(|selector| {
+        Toggle::get_static().map(Attribute::Toggle),
+        Flag::get_static().map(Attribute::Flag),
+        Feat::get_static().map(Attribute::Feat),
+        PlayerClass::get_static().map(Attribute::ClassLevel),
+        SpellSelector::get_static().flat_map(|selector| {
             [
                 Attribute::CasterLevel(selector),
                 Attribute::MaxCasterLevel(selector),
                 Attribute::SpellDC(selector),
             ]
         }),
-        WeaponAttribute::all().map(Attribute::Weapon),
-        ArmorClass::all().map(Attribute::ArmorClass),
-        Sheltering::all().map(Attribute::Sheltering),
-        DamageType::all().flat_map(|dt| { [Attribute::Resistance(dt), Attribute::Absorption(dt)] }),
-        Health::all().map(Attribute::Health),
-        SpellPoints::all().map(Attribute::SpellPoints),
-        SummonedAttribute::all().map(Attribute::SummonedAttribute),
-        HealingAmplification::all().map(Attribute::HealingAmplification),
+        WeaponAttribute::get_static().map(Attribute::Weapon),
+        ArmorClass::get_static().map(Attribute::ArmorClass),
+        Sheltering::get_static().map(Attribute::Sheltering),
+        DamageType::get_static()
+            .flat_map(|dt| { [Attribute::Resistance(dt), Attribute::Absorption(dt)] }),
+        Health::get_static().map(Attribute::Health),
+        SpellPoints::get_static().map(Attribute::SpellPoints),
+        SummonedAttribute::get_static().map(Attribute::SummonedAttribute),
+        HealingAmplification::get_static().map(Attribute::HealingAmplification),
     )
 }

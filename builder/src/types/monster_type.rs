@@ -2,7 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 /// Different Monster Types that the character may encounter
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -28,8 +28,8 @@ impl Display for MonsterType {
     }
 }
 
-impl AllStatic for MonsterType {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for MonsterType {
+    fn get_static() -> impl Iterator<Item = Self> {
         [Self::Orc, Self::Goblinoid, Self::Giant, Self::Outsiders].into_iter()
     }
 }

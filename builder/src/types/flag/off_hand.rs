@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::ToAttribute,
@@ -56,11 +56,11 @@ impl ToFlag for OffHandType {
     }
 }
 
-impl AllStatic for OffHandType {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for OffHandType {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
-            WeaponType::all().map(Self::Weapon),
-            ShieldType::all().map(Self::Shield),
+            WeaponType::get_static().map(Self::Weapon),
+            ShieldType::get_static().map(Self::Shield),
             [Self::RuneArm]
         )
     }

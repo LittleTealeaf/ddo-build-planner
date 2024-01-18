@@ -2,7 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 /// Determines alignment. To create a complete alignment, two of these attributes are required.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -31,8 +31,8 @@ impl Display for Alignment {
     }
 }
 
-impl AllStatic for Alignment {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Alignment {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Good,
             Self::Evil,

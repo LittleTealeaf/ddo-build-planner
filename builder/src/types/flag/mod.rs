@@ -9,7 +9,7 @@ pub use main_hand::*;
 pub use off_hand::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use std::fmt::Display;
 
@@ -89,16 +89,16 @@ where
     }
 }
 
-impl AllStatic for Flag {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Flag {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
-            Toggle::all().map(Self::HasToggle),
-            Race::all().map(Self::Race),
-            Immunity::all().map(Self::Immunity),
-            Alignment::all().map(Self::Alignment),
-            OffHandType::all().map(Self::OffHandType),
-            MainHandType::all().map(Self::MainHandType),
-            ArmorType::all().map(Self::ArmorType),
+            Toggle::get_static().map(Self::HasToggle),
+            Race::get_static().map(Self::Race),
+            Immunity::get_static().map(Self::Immunity),
+            Alignment::get_static().map(Self::Alignment),
+            OffHandType::get_static().map(Self::OffHandType),
+            MainHandType::get_static().map(Self::MainHandType),
+            ArmorType::get_static().map(Self::ArmorType),
         )
     }
 }

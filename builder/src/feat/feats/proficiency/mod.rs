@@ -4,7 +4,7 @@ mod weapon_class;
 use itertools::chain;
 use serde::{Deserialize, Serialize};
 pub use shield_class::*;
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 pub use weapon_class::*;
 
 use std::fmt::Display;
@@ -111,16 +111,16 @@ impl ToFeat for Proficiency {
     }
 }
 
-impl AllStatic for Proficiency {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Proficiency {
+    fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::SimpleWeaponProficiency,
                 Self::MartialWeaponProficiency,
                 Self::RuneArm
             ],
-            WeaponType::all().map(Self::WeaponProficiency),
-            ShieldProficiency::all().map(Self::Shield),
+            WeaponType::get_static().map(Self::WeaponProficiency),
+            ShieldProficiency::get_static().map(Self::Shield),
         )
     }
 }

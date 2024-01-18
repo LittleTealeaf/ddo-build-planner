@@ -3,7 +3,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -55,8 +55,8 @@ impl CloneBonus for HealingAmplification {
     }
 }
 
-impl AllStatic for HealingAmplification {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for HealingAmplification {
+    fn get_static() -> impl Iterator<Item = Self> {
         [Self::Positive, Self::Negative, Self::Repair, Self::All].into_iter()
     }
 }

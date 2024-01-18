@@ -1,6 +1,6 @@
 //! A collection of utility functions used throughout the project.
 
-pub mod all;
+pub mod enums;
 pub mod bit_ops;
 pub mod float;
 pub mod hashmap;

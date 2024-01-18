@@ -2,7 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -77,8 +77,8 @@ impl CloneBonus for Sheltering {
     }
 }
 
-impl AllStatic for Sheltering {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for Sheltering {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Both,
             Self::Physical,

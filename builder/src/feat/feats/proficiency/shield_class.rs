@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::all::AllStatic;
+use utils::enums::StaticOptions;
 
 use crate::types::item_type::ShieldType;
 
@@ -37,8 +37,8 @@ impl From<ShieldType> for ShieldProficiency {
     }
 }
 
-impl AllStatic for ShieldProficiency {
-    fn all() -> impl Iterator<Item = Self> {
+impl StaticOptions for ShieldProficiency {
+    fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::Orb,
             Self::Shield,
