@@ -41,16 +41,16 @@
     (
         name: "Epic Might of the Abashai",
         bonuses: {
-            3: [
+            5: [
                 (
                     attr: Sheltering(Both),
                     type: Profane,
-                    val: Const("10"),
+                    val: Const("15"),
                 ),
                 (
                     attr: ArmorClass(NaturalArmor),
                     type: Profane,
-                    val: Const("5"),
+                    val: Const("8"),
                 ),
                 (
                     attr: Ability(All),
@@ -63,16 +63,16 @@
                     val: Const("2"),
                 ),
             ],
-            5: [
+            3: [
                 (
                     attr: Sheltering(Both),
                     type: Profane,
-                    val: Const("15"),
+                    val: Const("10"),
                 ),
                 (
                     attr: ArmorClass(NaturalArmor),
                     type: Profane,
-                    val: Const("8"),
+                    val: Const("5"),
                 ),
                 (
                     attr: Ability(All),
