@@ -1,0 +1,21 @@
+[package]
+name = "ui"
+edition.workspace = true
+version.workspace = true
+repository.workspace = true
+authors.workspace = true
+readme.workspace = true
+description.workspace = true
+categories.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+
+[lints]
+workspace = true
+
+
+[dependencies]
+iced = { version = "0.10.0", features = ["tokio"] }
+utils = { path = "../utils/" }
+builder = { path = "../builder/" }
+iced_aw = { version = "0.7.0", default-features = false, features = ["icons"] }

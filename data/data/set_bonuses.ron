@@ -2,23 +2,6 @@
     (
         name: "Might of the Abashai",
         bonuses: {
-            5: [
-                (
-                    attr: ArmorClass(NaturalArmor),
-                    type: Profane,
-                    val: Const("5"),
-                ),
-                (
-                    attr: Ability(All),
-                    type: Profane,
-                    val: Const("2"),
-                ),
-                (
-                    attr: SpellDC(All),
-                    type: Profane,
-                    val: Const("2"),
-                ),
-            ],
             3: [
                 (
                     attr: ArmorClass(NaturalArmor),
@@ -34,6 +17,23 @@
                     attr: SpellDC(All),
                     type: Profane,
                     val: Const("1"),
+                ),
+            ],
+            5: [
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("5"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("2"),
                 ),
             ],
         },
