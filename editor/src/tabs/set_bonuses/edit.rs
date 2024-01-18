@@ -2,7 +2,7 @@ use builder::equipment::set_bonus::SetBonus;
 use iced::{
     alignment::{Horizontal, Vertical},
     theme,
-    widget::{button, column, container, horizontal_space, row, text, text_input, vertical_space},
+    widget::{button, column, horizontal_space, row, text, text_input, vertical_space},
     Alignment, Command, Length,
 };
 use iced_aw::{card, modal};
