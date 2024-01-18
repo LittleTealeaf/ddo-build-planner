@@ -4,8 +4,9 @@ public_modules!(bonuses);
 
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
+use utils::{all::AllStatic, public_modules};
 
 use super::damage_type::DamageType;
 
@@ -52,5 +53,14 @@ impl Display for SpellPower {
             Self::Potency => write!(f, "Potency"),
             Self::Damage(damage) => damage.fmt(f),
         }
+    }
+}
+
+impl AllStatic for SpellPower {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!(
+            [Self::Universal, Self::Potency,],
+            DamageType::all().map(Self::Damage)
+        )
     }
 }

@@ -1,6 +1,8 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{attribute::ToAttribute, types::item_type::WeaponType};
 
@@ -39,5 +41,11 @@ impl ToFlag for MainHandType {
 impl ToAttribute for MainHandType {
     fn to_attribute(self) -> crate::attribute::Attribute {
         self.to_flag().to_attribute()
+    }
+}
+
+impl AllStatic for MainHandType {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!([Self::Wand], WeaponType::all().map(Self::Weapon))
     }
 }

@@ -2,6 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::attribute::ToAttribute;
 
@@ -37,5 +38,11 @@ impl ToAttribute for Immunity {
 impl ToFlag for Immunity {
     fn to_flag(self) -> Flag {
         Flag::Immunity(self)
+    }
+}
+
+impl AllStatic for Immunity {
+    fn all() -> impl Iterator<Item = Self> {
+        [Self::Sleep, Self::Fear, Self::Knockdown].into_iter()
     }
 }

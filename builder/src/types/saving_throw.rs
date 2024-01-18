@@ -1,7 +1,9 @@
 //! Each of the possible saving throws
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -122,6 +124,16 @@ impl CloneBonus for SavingThrow {
                 .map(|st| bonus.clone_into_attribute(st))
                 .to_vec()
         })
+    }
+}
+
+impl AllStatic for SavingThrow {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!(
+            [Self::All],
+            Self::PRIMARY,
+            Self::SECONDARY,
+        )
     }
 }
 

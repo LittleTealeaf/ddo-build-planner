@@ -2,6 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -73,5 +74,20 @@ impl CloneBonus for Sheltering {
                 .map(|sheltering| bonus.clone_into_attribute(sheltering))
                 .to_vec()
         })
+    }
+}
+
+impl AllStatic for Sheltering {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Both,
+            Self::Physical,
+            Self::Magical,
+            Self::MagicalCap,
+            Self::PhysicalTotal,
+            Self::MagicalTotal,
+            Self::PhysicalReduction,
+            Self::MagicalReduction
+        ].into_iter()
     }
 }

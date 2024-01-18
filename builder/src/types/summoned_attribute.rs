@@ -3,6 +3,7 @@ use std::fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -43,5 +44,11 @@ impl Display for SummonedAttribute {
 impl ToAttribute for SummonedAttribute {
     fn to_attribute(self) -> crate::attribute::Attribute {
         Attribute::SummonedAttribute(self)
+    }
+}
+
+impl AllStatic for SummonedAttribute {
+    fn all() -> impl Iterator<Item = Self> {
+        Ability::all().map(Self::AbilityScore)
     }
 }

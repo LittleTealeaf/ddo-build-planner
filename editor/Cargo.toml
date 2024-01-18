@@ -32,3 +32,4 @@ iced_aw = { version = "0.7.0", default-features = false, features = [
 	"card",
 ] }
 fuzzy-filter = "0.1.0"
+itertools = "0.12.0"

@@ -2,6 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -35,5 +36,11 @@ impl Display for SpellPoints {
 impl ToAttribute for SpellPoints {
     fn to_attribute(self) -> Attribute {
         Attribute::SpellPoints(self)
+    }
+}
+
+impl AllStatic for SpellPoints {
+    fn all() -> impl Iterator<Item = Self> {
+        [Self::Scaled, Self::Base, Self::Modifier, Self::Total].into_iter()
     }
 }

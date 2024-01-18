@@ -3,6 +3,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -51,5 +52,16 @@ impl CloneBonus for HealingAmplification {
                 .map(|amp| bonus.clone_into_attribute(amp))
                 .to_vec()
         })
+    }
+}
+
+impl AllStatic for HealingAmplification {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Positive,
+            Self::Negative,
+            Self::Repair,
+            Self::All
+        ].into_iter()
     }
 }

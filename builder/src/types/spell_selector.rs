@@ -1,7 +1,9 @@
 //! Spell Selector
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::types::spell_school::SpellSchool;
 
@@ -48,5 +50,16 @@ impl From<SpellSchool> for SpellSelector {
 impl From<PlayerClass> for SpellSelector {
     fn from(value: PlayerClass) -> Self {
         Self::Class(value)
+    }
+}
+
+impl AllStatic for SpellSelector {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!(
+            [Self::All],
+            SpellPower::all().map(Self::SpellPower),
+            SpellSchool::all().map(Self::School),
+            PlayerClass::all().map(Self::Class),
+        )
     }
 }

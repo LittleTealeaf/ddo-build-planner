@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 /// The types of shields.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -28,5 +29,17 @@ impl Display for ShieldType {
             Self::TowerShield => write!(f, "Tower Shield"),
             Self::Orb => write!(f, "Orb"),
         }
+    }
+}
+
+impl AllStatic for ShieldType {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Buckler,
+            Self::SmallShield,
+            Self::LargeShield,
+            Self::TowerShield,
+            Self::Orb,
+        ].into_iter()
     }
 }

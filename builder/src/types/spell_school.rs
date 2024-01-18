@@ -2,6 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 /// The different schools that a spell might belong to
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -50,5 +51,11 @@ impl Display for SpellSchool {
             Self::Necromancy => write!(f, "Necromancy"),
             Self::Transmutation => write!(f, "Transmutation"),
         }
+    }
+}
+
+impl AllStatic for SpellSchool {
+    fn all() -> impl Iterator<Item = Self> {
+        Self::ALL.into_iter()
     }
 }

@@ -2,6 +2,7 @@ use std::fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -240,5 +241,29 @@ impl GetBonuses for RacialFeat {
 impl ToFeat for RacialFeat {
     fn to_feat(self) -> Feat {
         Feat::RacialFeat(self)
+    }
+}
+
+impl AllStatic for RacialFeat {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::SmallSizeBonus,
+            Self::GnomishProficiencies,
+            Self::ImmunityToSleep,
+            Self::EnchantmentSaveBonus,
+            Self::ElvenKeenSenses,
+            Self::RacialSpellResistance,
+            Self::DwarvenStability,
+            Self::GiantEvasion,
+            Self::OrcAndGoblinBonus,
+            Self::DwarvenStonecunning,
+            Self::SpellSaveBonus,
+            Self::PoisonSaveBonus,
+            Self::HalflingAgility,
+            Self::HalflingBravery,
+            Self::HalflingKeenEars,
+            Self::HalflingLuck,
+            Self::HalflingThrownWeaponFocus,
+        ].into_iter()
     }
 }

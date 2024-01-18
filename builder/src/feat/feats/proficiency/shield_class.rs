@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::types::item_type::ShieldType;
 
@@ -33,5 +34,15 @@ impl From<ShieldType> for ShieldProficiency {
             ShieldType::TowerShield => Self::TowerShield,
             ShieldType::Orb => Self::Orb,
         }
+    }
+}
+
+impl AllStatic for ShieldProficiency {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Orb,
+            Self::Shield,
+            Self::TowerShield
+        ].into_iter()
     }
 }

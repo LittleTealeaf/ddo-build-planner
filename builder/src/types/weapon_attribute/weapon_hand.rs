@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 /// The hand used for a Weapon Attribute
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -25,5 +26,15 @@ impl Display for WeaponHand {
             Self::Off => write!(f, "Off"),
             Self::Both => write!(f, "Both"),
         }
+    }
+}
+
+impl AllStatic for WeaponHand {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Both,
+            Self::Main,
+            Self::Off
+        ].into_iter()
     }
 }

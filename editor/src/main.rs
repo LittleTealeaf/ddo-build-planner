@@ -1,7 +1,7 @@
 //! Editor Application
 
-mod data_utils;
 mod tabs;
+mod utils;
 
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use tabs::{MSetBonuses, TSetBonuses, Tab};

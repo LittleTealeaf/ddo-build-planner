@@ -1,7 +1,9 @@
 //! Ability types
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -76,6 +78,12 @@ impl CloneBonus for Ability {
                 .map(|ability| bonus.clone_into_attribute(ability))
                 .to_vec()
         })
+    }
+}
+
+impl AllStatic for Ability {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!([Self::All], Self::ABILITIES)
     }
 }
 

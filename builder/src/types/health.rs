@@ -2,6 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -38,5 +39,17 @@ impl Display for Health {
 impl ToAttribute for Health {
     fn to_attribute(self) -> crate::attribute::Attribute {
         Attribute::Health(self)
+    }
+}
+
+impl AllStatic for Health {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Base,
+            Self::BaseModifier,
+            Self::Bonus,
+            Self::Modifier,
+            Self::Total
+        ].into_iter()
     }
 }

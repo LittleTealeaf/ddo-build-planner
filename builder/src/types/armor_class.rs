@@ -3,6 +3,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -62,5 +63,22 @@ impl Display for ArmorClass {
 impl ToAttribute for ArmorClass {
     fn to_attribute(self) -> Attribute {
         Attribute::ArmorClass(self)
+    }
+}
+
+impl AllStatic for ArmorClass {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::TotalScalar,
+            Self::TotalArmorClass,
+            Self::Bonus,
+            Self::ArmorBonus,
+            Self::ShieldBonus,
+            Self::ArmorScalar,
+            Self::ShieldScalar,
+            Self::ArmorMaxDex,
+            Self::ShieldMaxDex,
+            Self::NaturalArmor
+        ].into_iter()
     }
 }

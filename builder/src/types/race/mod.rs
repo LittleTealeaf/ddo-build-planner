@@ -3,7 +3,7 @@ public_modules!(bonuses);
 
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use utils::public_modules;
+use utils::{all::AllStatic, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -102,5 +102,36 @@ impl ToAttribute for Race {
 impl ToFlag for Race {
     fn to_flag(self) -> Flag {
         Flag::Race(self)
+    }
+}
+
+impl AllStatic for Race {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Dragonborn,
+            Self::Drow,
+            Self::Dwarf,
+            Self::Elf,
+            Self::Gnome,
+            Self::Halfling,
+            Self::HalfElf,
+            Self::HalfOrc,
+            Self::Human,
+            Self::Tiefling,
+            Self::Warforged,
+            Self::WoodElf,
+            Self::Aasimar,
+            Self::Shifter,
+            Self::Tabaxi,
+            Self::Bladeforged,
+            Self::DeepGnome,
+            Self::Morninglord,
+            Self::PurpleDragonKnight,
+            Self::Razorclaw,
+            Self::Scoundrel,
+            Self::Scourge,
+            Self::Shadarkai,
+            Self::Trailblazer,
+        ].into_iter()
     }
 }

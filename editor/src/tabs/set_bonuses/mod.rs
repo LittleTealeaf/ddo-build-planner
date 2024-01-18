@@ -11,7 +11,7 @@ use iced::{
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
 
 use crate::{
-    data_utils::{catch_async, load_data, save_data},
+    utils::data::{catch_async, load_data, save_data},
     Editor, Message,
 };
 

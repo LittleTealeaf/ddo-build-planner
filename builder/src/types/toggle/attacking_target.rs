@@ -1,6 +1,8 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use crate::types::{alignment::Alignment, monster_type::MonsterType};
 
@@ -30,5 +32,15 @@ impl Display for AttackingTarget {
 impl ToToggle for AttackingTarget {
     fn to_toggle(self) -> super::Toggle {
         Toggle::Attacking(self)
+    }
+}
+
+impl AllStatic for AttackingTarget {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!(
+            [Self::Tripped],
+            MonsterType::all().map(Self::MonsterType),
+            Alignment::all().map(Self::Alignment)
+        )
     }
 }

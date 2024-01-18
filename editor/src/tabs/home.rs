@@ -1,7 +1,10 @@
-use iced::{widget::text, Application, Element, Renderer};
+use iced::{
+    widget::{column, scrollable, text},
+    Application, Element, Renderer,
+};
 use ui::HandleView;
 
-use crate::Editor;
+use crate::{utils::selectors::attribute::all_attributes, Editor};
 
 pub struct THome;
 
@@ -11,6 +14,10 @@ impl HandleView<Editor> for THome {
         _app: &'a Editor,
     ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
     {
-        text("hi").into()
+        scrollable(column(
+            all_attributes()
+                .map(|attribute| text(format!("{attribute}")).into())
+                .collect(),
+        )).into()
     }
 }

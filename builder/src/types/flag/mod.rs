@@ -4,10 +4,12 @@
 mod main_hand;
 mod off_hand;
 
+use itertools::chain;
 pub use main_hand::*;
 pub use off_hand::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::all::AllStatic;
 
 use std::fmt::Display;
 
@@ -84,5 +86,19 @@ where
 {
     fn from(value: T) -> Self {
         value.to_flag()
+    }
+}
+
+impl AllStatic for Flag {
+    fn all() -> impl Iterator<Item = Self> {
+        chain!(
+            Toggle::all().map(Self::HasToggle),
+            Race::all().map(Self::Race),
+            Immunity::all().map(Self::Immunity),
+            Alignment::all().map(Self::Alignment),
+            OffHandType::all().map(Self::OffHandType),
+            MainHandType::all().map(Self::MainHandType),
+            ArmorType::all().map(Self::ArmorType),
+        )
     }
 }

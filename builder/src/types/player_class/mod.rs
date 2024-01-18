@@ -4,7 +4,7 @@ public_modules!(bonuses);
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
+use utils::{all::AllStatic, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -128,5 +128,33 @@ impl Display for PlayerClass {
 impl ToAttribute for PlayerClass {
     fn to_attribute(self) -> crate::attribute::Attribute {
         Attribute::ClassLevel(self)
+    }
+}
+
+impl AllStatic for PlayerClass {
+    fn all() -> impl Iterator<Item = Self> {
+        [
+            Self::Alchemist,
+            Self::Artificer,
+            Self::Barbarian,
+            Self::Fighter,
+            Self::Monk,
+            Self::Rogue,
+            Self::Sorcerer,
+            Self::Wizard,
+            Self::FavoredSoul,
+            Self::Bard,
+            Self::Stormsinger,
+            Self::Cleric,
+            Self::DarkApostate,
+            Self::Druid,
+            Self::BlightCaster,
+            Self::Paladin,
+            Self::SacredFist,
+            Self::Ranger,
+            Self::DarkHunter,
+            Self::Warlock,
+            Self::AcolyteOfTheSkin,
+        ].into_iter()
     }
 }
