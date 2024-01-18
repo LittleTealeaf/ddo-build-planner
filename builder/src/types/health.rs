@@ -49,7 +49,8 @@ impl AllStatic for Health {
             Self::BaseModifier,
             Self::Bonus,
             Self::Modifier,
-            Self::Total
-        ].into_iter()
+            Self::Total,
+        ]
+        .into_iter()
     }
 }

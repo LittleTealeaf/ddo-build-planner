@@ -132,6 +132,7 @@ impl AllStatic for Race {
             Self::Scourge,
             Self::Shadarkai,
             Self::Trailblazer,
-        ].into_iter()
+        ]
+        .into_iter()
     }
 }

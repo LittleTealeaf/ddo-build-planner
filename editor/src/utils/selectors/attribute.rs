@@ -3,10 +3,10 @@ use builder::{
     feat::Feat,
     types::{
         ability::Ability, armor_class::ArmorClass, damage_type::DamageType, flag::Flag,
-        health::Health, player_class::PlayerClass, saving_throw::SavingThrow,
-        sheltering::Sheltering, skill::Skill, spell_points::SpellPoints, spell_power::SpellPower,
-        spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, toggle::Toggle,
-        weapon_attribute::WeaponAttribute, heal_amp::HealingAmplification,
+        heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
+        saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spell_points::SpellPoints,
+        spell_power::SpellPower, spell_selector::SpellSelector,
+        summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
 use itertools::chain;
@@ -63,7 +63,6 @@ pub fn all_attributes() -> impl Iterator<Item = Attribute> {
         Health::all().map(Attribute::Health),
         SpellPoints::all().map(Attribute::SpellPoints),
         SummonedAttribute::all().map(Attribute::SummonedAttribute),
-        HealingAmplification::all().map
-            (Attribute::HealingAmplification),
+        HealingAmplification::all().map(Attribute::HealingAmplification),
     )
 }

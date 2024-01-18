@@ -129,11 +129,7 @@ impl CloneBonus for SavingThrow {
 
 impl AllStatic for SavingThrow {
     fn all() -> impl Iterator<Item = Self> {
-        chain!(
-            [Self::All],
-            Self::PRIMARY,
-            Self::SECONDARY,
-        )
+        chain!([Self::All], Self::PRIMARY, Self::SECONDARY,)
     }
 }
 

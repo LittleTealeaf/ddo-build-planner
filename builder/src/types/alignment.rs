@@ -39,6 +39,7 @@ impl AllStatic for Alignment {
             Self::Neutral,
             Self::Lawful,
             Self::Chaotic,
-        ].into_iter()
+        ]
+        .into_iter()
     }
 }

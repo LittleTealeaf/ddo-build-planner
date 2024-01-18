@@ -57,11 +57,6 @@ impl CloneBonus for HealingAmplification {
 
 impl AllStatic for HealingAmplification {
     fn all() -> impl Iterator<Item = Self> {
-        [
-            Self::Positive,
-            Self::Negative,
-            Self::Repair,
-            Self::All
-        ].into_iter()
+        [Self::Positive, Self::Negative, Self::Repair, Self::All].into_iter()
     }
 }

@@ -87,7 +87,8 @@ impl AllStatic for Sheltering {
             Self::PhysicalTotal,
             Self::MagicalTotal,
             Self::PhysicalReduction,
-            Self::MagicalReduction
-        ].into_iter()
+            Self::MagicalReduction,
+        ]
+        .into_iter()
     }
 }

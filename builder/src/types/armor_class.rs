@@ -78,7 +78,8 @@ impl AllStatic for ArmorClass {
             Self::ShieldScalar,
             Self::ArmorMaxDex,
             Self::ShieldMaxDex,
-            Self::NaturalArmor
-        ].into_iter()
+            Self::NaturalArmor,
+        ]
+        .into_iter()
     }
 }

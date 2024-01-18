@@ -1,4 +1,4 @@
-//! Utility functions for loading and saving data 
+//! Utility functions for loading and saving data
 use ron::ser::PrettyConfig;
 use serde::{Deserialize, Serialize};
 use tokio::{

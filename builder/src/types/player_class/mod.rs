@@ -155,6 +155,7 @@ impl AllStatic for PlayerClass {
             Self::DarkHunter,
             Self::Warlock,
             Self::AcolyteOfTheSkin,
-        ].into_iter()
+        ]
+        .into_iter()
     }
 }
