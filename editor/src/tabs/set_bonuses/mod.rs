@@ -2,9 +2,11 @@ mod edit;
 use edit::EditingSet;
 
 use builder::equipment::set_bonus::SetBonus;
+use fuzzy_filter::matches;
 use iced::{
-    widget::{button, column, row, text, text_input},
-    Application, Command, Element, Renderer,
+    theme,
+    widget::{button, column, container, row, scrollable, text, text_input},
+    Alignment, Application, Command, Element, Length, Renderer,
 };
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
 
@@ -32,7 +34,8 @@ pub enum MSetBonuses {
     OnLoadSets(Vec<SetBonus>),
     SaveSets,
     OnSaveSets,
-    OpenSet(EditingSet),
+    OpenSet(usize),
+    EditSet(EditingSet),
     CancelEdit,
     SaveEdit,
     Edit(MEditingSet),
@@ -60,11 +63,11 @@ impl HandleMessage<MSetBonuses> for Editor {
                 Command::none()
             }
             MSetBonuses::SaveSets => {
-                self.set_bonuses.saving = true;
                 self.set_bonuses
                     .sets
                     .as_ref()
                     .map_or_else(Command::none, |sets| {
+                        self.set_bonuses.saving = true;
                         Command::perform(
                             save_data(DATA_PATH, sets.clone()),
                             catch_async(|()| MSetBonuses::OnSaveSets.into()),
@@ -76,7 +79,17 @@ impl HandleMessage<MSetBonuses> for Editor {
                 self.set_bonuses.modified = false;
                 Command::none()
             }
-            MSetBonuses::OpenSet(set) => {
+
+            MSetBonuses::OpenSet(index) => self
+                .set_bonuses
+                .sets
+                .as_ref()
+                .and_then(|sets| sets.get(index))
+                .cloned()
+                .map_or_else(Command::none, |set| {
+                    self.handle_message(MSetBonuses::EditSet(EditingSet::from_index(index, set)))
+                }),
+            MSetBonuses::EditSet(set) => {
                 self.set_bonuses.editing = Some(set);
                 Command::none()
             }
@@ -115,12 +128,46 @@ impl HandleView<Editor> for TSetBonuses {
     {
         self.editing.as_ref().map_or_else(
             || {
-                column!(row!(
-                    text_input("Search...", &self.filter)
-                        .on_input(|search| MSetBonuses::Filter(search).into()),
-                    button(text('󰑓').font(NERD_FONT)).on_press(MSetBonuses::LoadSets.into()),
-                    button(text('').font(NERD_FONT)).on_press(MSetBonuses::SaveSets.into()),
-                ))
+                column(vec![
+                    row!(
+                        text_input("Search...", &self.filter)
+                            .on_input(|search| MSetBonuses::Filter(search).into()),
+                        button(text('󰑓').font(NERD_FONT)).on_press(MSetBonuses::LoadSets.into()),
+                        button(text('').font(NERD_FONT)).on_press_maybe(
+                            (self.modified && !self.saving).then_some(MSetBonuses::SaveSets.into())
+                        ),
+                    )
+                    .into(),
+                    self.sets.as_ref().map_or_else(
+                        || {
+                            container(text("Loading...").size(30))
+                                .center_x()
+                                .center_y()
+                                .width(Length::Fill)
+                                .height(Length::Fill)
+                                .into()
+                        },
+                        |sets| {
+                            scrollable(column(
+                                sets.iter()
+                                    .enumerate()
+                                    .filter(|(_, set)| matches(&self.filter, set.name()))
+                                    .map(|(index, set)| {
+                                        row!(
+                                            button(text('').font(NERD_FONT))
+                                                .on_press(MSetBonuses::OpenSet(index).into())
+                                                .style(theme::Button::Text),
+                                            text(set.name())
+                                        )
+                                        .align_items(Alignment::Center)
+                                        .into()
+                                    })
+                                    .collect(),
+                            ))
+                            .into()
+                        },
+                    ),
+                ])
                 .into()
             },
             |editing| editing.handle_view(app),
