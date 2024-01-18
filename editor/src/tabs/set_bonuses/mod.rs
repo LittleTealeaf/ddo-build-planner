@@ -2,8 +2,11 @@ mod edit;
 use edit::EditingSet;
 
 use builder::equipment::set_bonus::SetBonus;
-use iced::{widget::text, Command};
-use ui::{HandleMessage, HandleView};
+use iced::{
+    widget::{button, column, row, text, text_input},
+    Application, Command, Element, Renderer,
+};
+use ui::{font::NERD_FONT, HandleMessage, HandleView};
 
 use crate::{
     data_utils::{catch_async, load_data, save_data},
@@ -20,6 +23,7 @@ pub struct TSetBonuses {
     saving: bool,
     editing: Option<EditingSet>,
     modified: bool,
+    filter: String,
 }
 
 #[derive(Debug, Clone)]
@@ -32,6 +36,7 @@ pub enum MSetBonuses {
     CancelEdit,
     SaveEdit,
     Edit(MEditingSet),
+    Filter(String),
 }
 
 impl From<MSetBonuses> for Message {
@@ -94,12 +99,31 @@ impl HandleMessage<MSetBonuses> for Editor {
                 Command::none()
             }
             MSetBonuses::Edit(message) => self.handle_message(message),
+            MSetBonuses::Filter(search) => {
+                self.set_bonuses.filter = search;
+                Command::none()
+            }
         }
     }
 }
 
-impl HandleView<TSetBonuses> for Editor {
-    fn handle_view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        text("Hello set bonuses").into()
+impl HandleView<Editor> for TSetBonuses {
+    fn handle_view<'a>(
+        &'a self,
+        app: &'a Editor,
+    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    {
+        self.editing.as_ref().map_or_else(
+            || {
+                column!(row!(
+                    text_input("Search...", &self.filter)
+                        .on_input(|search| MSetBonuses::Filter(search).into()),
+                    button(text('󰑓').font(NERD_FONT)).on_press(MSetBonuses::LoadSets.into()),
+                    button(text('').font(NERD_FONT)).on_press(MSetBonuses::SaveSets.into()),
+                ))
+                .into()
+            },
+            |editing| editing.handle_view(app),
+        )
     }
 }

@@ -1,9 +1,9 @@
 use iced::{Application, Command, Element, Renderer};
 
-/// Provides a new `handle_view` function
-pub trait HandleView<T>: Application + Sized {
-    /// Handles the view by returning a new element
-    fn handle_view(&self) -> Element<'_, Self::Message, Renderer<Self::Theme>>;
+/// Provide a new `hanle_view` function
+pub trait HandleView<A: Application + Sized> {
+    /// Handes the view with a reference to the application
+    fn handle_view<'a>(&'a self, app: &'a A) -> Element<'_, A::Message, Renderer<A::Theme>>;
 }
 
 /// Provides a new `handle_message` function

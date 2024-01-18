@@ -62,17 +62,18 @@ impl HandleMessage<MEditingSet> for Editor {
     }
 }
 
-impl HandleView<EditingSet> for Editor {
-    fn handle_view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        let editing = self
-            .set_bonuses
-            .editing
-            .as_ref()
-            .expect("Expected Editing to be present");
-
+impl HandleView<Editor> for EditingSet {
+    fn handle_view<'a>(
+        &'a self,
+        app: &'a Editor,
+    ) -> iced::Element<
+        '_,
+        <Editor as iced::Application>::Message,
+        iced::Renderer<<Editor as iced::Application>::Theme>,
+    > {
         column!(
             button(text("Back")).on_press(MSetBonuses::CancelEdit.into()),
-            text(editing.set.name())
+            text(self.set.name())
         )
         .into()
     }

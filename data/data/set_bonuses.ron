@@ -90,33 +90,6 @@
     (
         name: "Legendary Might of the Abashai",
         bonuses: {
-            3: [
-                (
-                    attr: Sheltering(Both),
-                    type: Profane,
-                    val: Const("20"),
-                ),
-                (
-                    attr: ArmorClass(NaturalArmor),
-                    type: Profane,
-                    val: Const("10"),
-                ),
-                (
-                    attr: Ability(All),
-                    type: Profane,
-                    val: Const("2"),
-                ),
-                (
-                    attr: SpellDC(All),
-                    type: Profane,
-                    val: Const("2"),
-                ),
-                (
-                    attr: HealingAmplification(All),
-                    type: Profane,
-                    val: Const("10"),
-                ),
-            ],
             5: [
                 (
                     attr: Sheltering(Both),
@@ -142,6 +115,33 @@
                     attr: HealingAmplification(All),
                     type: Profane,
                     val: Const("30"),
+                ),
+            ],
+            3: [
+                (
+                    attr: Sheltering(Both),
+                    type: Profane,
+                    val: Const("20"),
+                ),
+                (
+                    attr: ArmorClass(NaturalArmor),
+                    type: Profane,
+                    val: Const("10"),
+                ),
+                (
+                    attr: Ability(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: SpellDC(All),
+                    type: Profane,
+                    val: Const("2"),
+                ),
+                (
+                    attr: HealingAmplification(All),
+                    type: Profane,
+                    val: Const("10"),
                 ),
             ],
         },

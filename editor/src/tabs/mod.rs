@@ -1,4 +1,4 @@
-use iced::widget::column;
+use iced::{widget::column, Application, Element, Renderer};
 use iced_aw::{TabBar, TabLabel};
 use ui::HandleView;
 use utils::public_modules;
@@ -13,18 +13,22 @@ pub enum Tab {
     SetBonuses,
 }
 
-impl HandleView<Tab> for Editor {
-    fn handle_view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
+impl HandleView<Editor> for Tab {
+    fn handle_view<'a>(
+        &'a self,
+        app: &'a Editor,
+    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    {
         column!(
-            [(Tab::Home, "Home"), (Tab::SetBonuses, "Set Bonuses"),]
+            [(Self::Home, "Home"), (Self::SetBonuses, "Set Bonuses"),]
                 .into_iter()
                 .fold(TabBar::new(Message::ChangeTab), |bar, (id, label)| {
                     bar.push(id, TabLabel::Text(label.to_string()))
                 })
-                .set_active_tab(&self.tab),
-            match &self.tab {
-                Tab::Home => HandleView::<THome>::handle_view(self),
-                Tab::SetBonuses => HandleView::<TSetBonuses>::handle_view(self),
+                .set_active_tab(self),
+            match &self {
+                Self::Home => THome.handle_view(app),
+                Self::SetBonuses => app.set_bonuses.handle_view(app),
             }
         )
         .into()

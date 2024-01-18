@@ -21,7 +21,7 @@ pub async fn save_data<T>(path: &str, data: T) -> Result<(), DataError>
 where
     T: Serialize + Send + Sync,
 {
-    let file = File::open(path).await?;
+    let file = File::create(path).await?;
     let mut writer = BufWriter::new(file);
     writer
         .write_all(ron::ser::to_string_pretty(&data, PrettyConfig::new())?.as_bytes())

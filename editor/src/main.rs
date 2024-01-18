@@ -3,10 +3,10 @@
 mod data_utils;
 mod tabs;
 
-use iced::{executor, font, Application, Command, Settings, Theme};
+use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use iced_aw::graphics::icons::ICON_FONT_BYTES;
 use tabs::{MSetBonuses, TSetBonuses, Tab};
-use ui::{HandleMessage, HandleView};
+use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -36,7 +36,7 @@ impl Application for Editor {
 
     type Flags = ();
 
-    fn new((): Self::Flags) -> (Self, iced::Command<Self::Message>) {
+    fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
         let mut app = Self {
             icons_loaded: false,
             set_bonuses: TSetBonuses::default(),
@@ -44,7 +44,7 @@ impl Application for Editor {
         };
         let command = Command::batch([
             app.handle_message(MSetBonuses::LoadSets),
-            font::load(ICON_FONT_BYTES).map(|res| {
+            font::load(NERD_FONT_BYTES).map(|res| {
                 res.map_or_else(
                     |e| Message::Error(format!("{e:?}")),
                     |()| Message::IconsLoaded,
@@ -59,12 +59,12 @@ impl Application for Editor {
         String::from("DDO Build Planner Editor")
     }
 
-    fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
+    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
         self.handle_message(message)
     }
 
-    fn view(&self) -> iced::Element<'_, Self::Message, iced::Renderer<Self::Theme>> {
-        HandleView::<Tab>::handle_view(self)
+    fn view(&self) -> Element<'_, Self::Message, Renderer<Self::Theme>> {
+        self.tab.handle_view(self)
     }
 }
 
