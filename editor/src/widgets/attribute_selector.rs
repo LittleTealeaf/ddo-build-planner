@@ -3,10 +3,7 @@ use std::marker::PhantomData;
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
-    widget::{
-        column, container, scrollable, text, text_input,
-        Column,
-    },
+    widget::{column, container, scrollable, text, text_input, Column},
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::card;
