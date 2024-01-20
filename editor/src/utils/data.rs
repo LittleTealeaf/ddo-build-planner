@@ -1,5 +1,7 @@
-//! Utility functions for loading and saving data
-use ron::ser::PrettyConfig;
+use ron::{
+    from_str,
+    ser::{to_string_pretty, PrettyConfig},
+};
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs::File,
@@ -15,7 +17,7 @@ where
     let mut file = File::open(path).await?;
     let mut contents = String::new();
     file.read_to_string(&mut contents).await?;
-    Ok(ron::from_str(contents.as_str())?)
+    Ok(from_str(contents.as_str())?)
 }
 
 pub async fn save_data<T>(path: &str, data: T) -> Result<(), DataError>
@@ -24,9 +26,8 @@ where
 {
     let file = File::create(path).await?;
     let mut writer = BufWriter::new(file);
-    writer
-        .write_all(ron::ser::to_string_pretty(&data, PrettyConfig::new())?.as_bytes())
-        .await?;
+    let serialized = to_string_pretty(&data, PrettyConfig::new())?;
+    writer.write_all(serialized.as_bytes()).await?;
     writer.flush().await?;
     Ok(())
 }
@@ -39,13 +40,9 @@ pub fn catch_async<T>(function: impl Fn(T) -> Message) -> impl Fn(Result<T, Data
 }
 
 #[derive(Debug)]
-/// Describes an error caught from reading or saving data
 pub enum DataError {
-    /// [`std::io::Error`] Errors
     IO(std::io::Error),
-    /// [`ron::de::SpannedError`] Errors
     SpannedError(ron::de::SpannedError),
-    /// Generic Ron Error
     Ron(ron::Error),
 }
 

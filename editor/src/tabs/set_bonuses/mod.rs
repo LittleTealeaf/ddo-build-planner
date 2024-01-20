@@ -51,10 +51,7 @@ impl From<MSetBonuses> for Message {
 }
 
 impl HandleMessage<MSetBonuses> for Editor {
-    fn handle_message(
-        &mut self,
-        message: MSetBonuses,
-    ) -> iced::Command<<Self as Application>::Message> {
+    fn handle_message(&mut self, message: MSetBonuses) -> Command<<Self as Application>::Message> {
         match message {
             MSetBonuses::LoadSets => {
                 self.set_bonuses.sets = None;

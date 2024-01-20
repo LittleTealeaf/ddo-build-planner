@@ -62,7 +62,7 @@ impl<T> HandleMessage<MAttributeSelector, Editor> for AttributeSelector<T> {
     fn handle_message(
         &mut self,
         message: MAttributeSelector,
-    ) -> iced::Command<<Editor as Application>::Message> {
+    ) -> Command<<Editor as Application>::Message> {
         match message {
             MAttributeSelector::Select(selection) => {
                 self.selected = selection;
