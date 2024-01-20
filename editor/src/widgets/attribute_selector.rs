@@ -4,7 +4,7 @@ use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
     widget::{
-        column, container, horizontal_space, row, scrollable, text, text_input, vertical_space,
+        column, container, scrollable, text, text_input,
         Column,
     },
     Application, Command, Element, Length, Renderer,
