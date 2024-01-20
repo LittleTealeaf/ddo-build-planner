@@ -21,7 +21,7 @@ const DATA_PATH: &str = "./data/data/set_bonuses.ron";
 
 #[derive(Debug, Clone, Default)]
 pub struct TSetBonuses {
-    sets: Option<Vec<SetBonus>>,
+    pub sets: Option<Vec<SetBonus>>,
     saving: bool,
     editing: Option<EditingSet>,
     modified: bool,
@@ -51,7 +51,10 @@ impl From<MSetBonuses> for Message {
 }
 
 impl HandleMessage<MSetBonuses> for Editor {
-    fn handle_message(&mut self, message: MSetBonuses) -> iced::Command<Self::Message> {
+    fn handle_message(
+        &mut self,
+        message: MSetBonuses,
+    ) -> iced::Command<<Self as Application>::Message> {
         match message {
             MSetBonuses::LoadSets => {
                 self.set_bonuses.sets = None;

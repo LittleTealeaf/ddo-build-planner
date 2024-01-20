@@ -1,15 +1,15 @@
 use iced::{Application, Command, Element, Renderer};
 
 /// Provide a new `hanle_view` function
-pub trait HandleView<A: Application + Sized> {
+pub trait HandleView<App: Application + Sized> {
     /// Handes the view with a reference to the application
-    fn handle_view<'a>(&'a self, app: &'a A) -> Element<'_, A::Message, Renderer<A::Theme>>;
+    fn handle_view<'a>(&'a self, app: &'a App) -> Element<'_, App::Message, Renderer<App::Theme>>;
 }
 
 /// Provides a new `handle_message` function
-pub trait HandleMessage<T>: Application + Sized {
+pub trait HandleMessage<T, A: Application + Sized = Self>: Sized {
     /// Handles the incoming message
-    fn handle_message(&mut self, message: T) -> Command<Self::Message>;
+    fn handle_message(&mut self, message: T) -> Command<A::Message>;
 }
 
 /// Indicates that this can be converted to another message
