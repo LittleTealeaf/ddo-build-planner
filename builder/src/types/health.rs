@@ -27,11 +27,11 @@ pub enum Health {
 impl Display for Health {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Base => write!(f, "Base Health"),
-            Self::BaseModifier => write!(f, "Base Health Modifier"),
-            Self::Bonus => write!(f, "Bonus Health"),
-            Self::Modifier => write!(f, "Health Modifier"),
-            Self::Total => write!(f, "Total"),
+            Self::Base => write!(f, "Base Hit Points"),
+            Self::BaseModifier => write!(f, "Base Hit Points Modifier"),
+            Self::Bonus => write!(f, "Bonus Hit Points"),
+            Self::Modifier => write!(f, "Hit Point Modifier"),
+            Self::Total => write!(f, "Total Hit Points"),
         }
     }
 }

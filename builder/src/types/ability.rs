@@ -60,7 +60,7 @@ impl Display for Ability {
             Self::Intelligence => write!(f, "Intelligence"),
             Self::Wisdom => write!(f, "Wisdom"),
             Self::Charisma => write!(f, "Charisma"),
-            Self::All => write!(f, "All"),
+            Self::All => write!(f, "All Ability"),
         }
     }
 }

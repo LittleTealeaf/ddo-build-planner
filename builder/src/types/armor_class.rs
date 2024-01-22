@@ -46,7 +46,7 @@ pub enum ArmorClass {
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::TotalArmorClass => write!(f, "Armor Class"),
+            Self::TotalArmorClass => write!(f, "Total Armor Class"),
             Self::Bonus => write!(f, "Armor Class Bonus"),
             Self::ArmorBonus => write!(f, "Armor AC Bonus"),
             Self::ShieldBonus => write!(f, "Shield AC Bonus"),
