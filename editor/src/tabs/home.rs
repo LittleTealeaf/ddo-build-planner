@@ -6,7 +6,7 @@ use iced_aw::modal;
 use ui::{HandleMessage, HandleView};
 
 use crate::{
-    widgets::selectors::attribute::{AttributeSelector, MAttributeSelector},
+    widgets::modals::attribute::{AttributeSelector, MAttributeSelector},
     Editor, Message,
 };
 
