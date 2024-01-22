@@ -7,6 +7,7 @@ mod widgets;
 use ::utils::enums::StaticOptions;
 use builder::attribute::Attribute;
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
+use itertools::chain;
 use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
 
@@ -33,15 +34,17 @@ enum Message {
 
 impl Editor {
     fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        self.set_bonuses
+        let set_bonuses = self
+            .set_bonuses
             .sets
-            .as_ref()
+            .as_deref()
             .into_iter()
             .flat_map(|sets| {
                 sets.iter()
                     .map(|set| Attribute::SetBonus(set.name().clone()))
-            })
-            .chain(Attribute::get_static())
+            });
+
+        chain!(set_bonuses, Attribute::get_static())
     }
 }
 
