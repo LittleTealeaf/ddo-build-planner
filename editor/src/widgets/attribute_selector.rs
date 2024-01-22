@@ -100,7 +100,7 @@ where
                         self.attributes
                             .iter()
                             .map(|attribute| (format!("{attribute}"), attribute))
-                            .filter(|(attr, _)| matches(&filter, attr))
+                            .filter(|(attr, _)| matches(&filter, attr.to_lowercase().as_str()))
                             .map(|(attr, _)| container(text(attr)).into())
                             .collect(),
                     ))
