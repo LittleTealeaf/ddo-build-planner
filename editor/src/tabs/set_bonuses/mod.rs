@@ -11,7 +11,7 @@ use iced::{
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
 
 use crate::{
-    data_utils::{catch_async, load_data, save_data},
+    utils::data::{catch_async, load_data, save_data},
     Editor, Message,
 };
 
@@ -26,6 +26,12 @@ pub struct TSetBonuses {
     editing: Option<EditingSet>,
     modified: bool,
     filter: String,
+}
+
+impl TSetBonuses {
+    pub const fn sets(&self) -> &Option<Vec<SetBonus>> {
+        &self.sets
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -51,7 +57,7 @@ impl From<MSetBonuses> for Message {
 }
 
 impl HandleMessage<MSetBonuses> for Editor {
-    fn handle_message(&mut self, message: MSetBonuses) -> iced::Command<Self::Message> {
+    fn handle_message(&mut self, message: MSetBonuses) -> Command<<Self as Application>::Message> {
         match message {
             MSetBonuses::LoadSets => {
                 self.set_bonuses.sets = None;

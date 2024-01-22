@@ -1,6 +1,8 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::{attribute::ToAttribute, types::item_type::WeaponType};
 
@@ -39,5 +41,11 @@ impl ToFlag for MainHandType {
 impl ToAttribute for MainHandType {
     fn to_attribute(self) -> crate::attribute::Attribute {
         self.to_flag().to_attribute()
+    }
+}
+
+impl StaticOptions for MainHandType {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!([Self::Wand], WeaponType::get_static().map(Self::Weapon))
     }
 }

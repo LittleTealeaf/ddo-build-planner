@@ -1,7 +1,9 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::GetBonuses,
@@ -123,5 +125,26 @@ impl GetFeatRequirement for SkillFocus {
 impl ToFeat for SkillFocus {
     fn to_feat(self) -> Feat {
         Feat::SkillFocus(self)
+    }
+}
+
+impl StaticOptions for SkillFocus {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [
+                Self::Acrobatic,
+                Self::Athletic,
+                Self::Bullheaded,
+                Self::Discipline,
+                Self::LuckOfHeroes,
+                Self::Negotiator,
+                Self::ResistPoison,
+                Self::SelfSufficient,
+                Self::SnakeBlood,
+                Self::Stealthy,
+                Self::Alertness
+            ],
+            Skill::get_static().map(Self::Focus)
+        )
     }
 }

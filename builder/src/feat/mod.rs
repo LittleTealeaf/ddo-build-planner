@@ -1,9 +1,10 @@
 //! Feats that a character can have.
 public_modules!(feats, requirements, to_feat);
 
+use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
+use utils::{enums::StaticOptions, public_modules};
 
 use std::fmt::Display;
 
@@ -87,5 +88,16 @@ where
 {
     fn to_attribute(self) -> Attribute {
         self.to_feat().to_attribute()
+    }
+}
+
+impl StaticOptions for Feat {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            RacialFeat::get_static().map(Self::RacialFeat),
+            Proficiency::get_static().map(Self::Proficiency),
+            SkillFocus::get_static().map(Self::SkillFocus),
+            SpellcastingFeat::get_static().map(Self::Spellcasting)
+        )
     }
 }

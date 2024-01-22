@@ -3,7 +3,7 @@ use iced::{
     alignment::{Horizontal, Vertical},
     theme,
     widget::{button, column, horizontal_space, row, text, text_input, vertical_space},
-    Alignment, Command, Length,
+    Alignment, Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{card, modal};
 use ui::{HandleMessage, HandleView};
@@ -60,7 +60,7 @@ impl From<MEditingSet> for Message {
 }
 
 impl HandleMessage<MEditingSet> for Editor {
-    fn handle_message(&mut self, message: MEditingSet) -> iced::Command<Self::Message> {
+    fn handle_message(&mut self, message: MEditingSet) -> Command<<Self as Application>::Message> {
         if let Some(editing) = &mut self.set_bonuses.editing {
             match message {
                 MEditingSet::SetName(name) => {
@@ -89,11 +89,8 @@ impl HandleView<Editor> for EditingSet {
     fn handle_view<'a>(
         &'a self,
         _app: &'a Editor,
-    ) -> iced::Element<
-        '_,
-        <Editor as iced::Application>::Message,
-        iced::Renderer<<Editor as iced::Application>::Theme>,
-    > {
+    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    {
         let content = column!(
             text_input("Set Name", self.set.name())
                 .size(30)

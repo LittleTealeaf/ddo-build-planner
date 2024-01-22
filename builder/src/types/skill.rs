@@ -2,7 +2,9 @@
 
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -157,6 +159,12 @@ impl CloneBonus for Skill {
                 .map(|skill| bonus.clone_into_attribute(skill))
                 .to_vec()
         })
+    }
+}
+
+impl StaticOptions for Skill {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(Self::SKILLS, [Self::All])
     }
 }
 

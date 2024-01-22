@@ -3,6 +3,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -45,7 +46,7 @@ pub enum ArmorClass {
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::TotalArmorClass => write!(f, "Armor Class"),
+            Self::TotalArmorClass => write!(f, "Total Armor Class"),
             Self::Bonus => write!(f, "Armor Class Bonus"),
             Self::ArmorBonus => write!(f, "Armor AC Bonus"),
             Self::ShieldBonus => write!(f, "Shield AC Bonus"),
@@ -62,5 +63,23 @@ impl Display for ArmorClass {
 impl ToAttribute for ArmorClass {
     fn to_attribute(self) -> Attribute {
         Attribute::ArmorClass(self)
+    }
+}
+
+impl StaticOptions for ArmorClass {
+    fn get_static() -> impl Iterator<Item = Self> {
+        [
+            Self::TotalScalar,
+            Self::TotalArmorClass,
+            Self::Bonus,
+            Self::ArmorBonus,
+            Self::ShieldBonus,
+            Self::ArmorScalar,
+            Self::ShieldScalar,
+            Self::ArmorMaxDex,
+            Self::ShieldMaxDex,
+            Self::NaturalArmor,
+        ]
+        .into_iter()
     }
 }

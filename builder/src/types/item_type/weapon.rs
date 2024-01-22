@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 /// Weapon Types
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -153,6 +154,54 @@ impl Display for WeaponType {
             Self::Dart => write!(f, "Dart"),
             Self::Shuriken => write!(f, "Shuriken"),
         }
+    }
+}
+
+impl StaticOptions for WeaponType {
+    fn get_static() -> impl Iterator<Item = Self> {
+        [
+            Self::Club,
+            Self::Quarterstaff,
+            Self::Dagger,
+            Self::Sickle,
+            Self::LightMace,
+            Self::HeavyMace,
+            Self::Morningstar,
+            Self::HeavyCrossbow,
+            Self::LightCrossbow,
+            Self::Handaxe,
+            Self::BattleAxe,
+            Self::GreatAxe,
+            Self::Kukri,
+            Self::LongSword,
+            Self::GreatSword,
+            Self::Scimitar,
+            Self::Falchion,
+            Self::LongBow,
+            Self::ShortSword,
+            Self::Rapier,
+            Self::HeavyPick,
+            Self::LightPick,
+            Self::LightHammer,
+            Self::WarHammer,
+            Self::Maul,
+            Self::GreatClub,
+            Self::ShortBow,
+            Self::BastardSword,
+            Self::DwarvenWarAxe,
+            Self::Kama,
+            Self::Khopesh,
+            Self::Handwraps,
+            Self::GreatCrossbow,
+            Self::RepeatingHeavyCrossbow,
+            Self::RepeatingLightCrossbow,
+            Self::ThrowingAxe,
+            Self::ThrowingDagger,
+            Self::ThrowingHammer,
+            Self::Dart,
+            Self::Shuriken,
+        ]
+        .into_iter()
     }
 }
 

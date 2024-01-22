@@ -1,8 +1,9 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
+use utils::{public_modules, enums::StaticOptions};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -185,5 +186,23 @@ impl Display for SpellcastingFeat {
 impl ToFeat for SpellcastingFeat {
     fn to_feat(self) -> Feat {
         Feat::Spellcasting(self)
+    }
+}
+
+impl StaticOptions for SpellcastingFeat {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [
+                Self::AugmentSummoning,
+                Self::MentalToughness,
+                Self::ImprovedMentalToughness,
+                Self::MagicalTraining,
+                Self::SpellPenetration,
+                Self::GreaterSpellPenetration,
+                Self::CombatCasting,
+                Self::MobileSpellcasting
+            ],
+            SpellFocusFeat::get_static().map(Self::SpellFocus)
+        )
     }
 }

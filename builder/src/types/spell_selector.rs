@@ -1,7 +1,9 @@
 //! Spell Selector
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::types::spell_school::SpellSchool;
 
@@ -25,10 +27,10 @@ pub enum SpellSelector {
 impl Display for SpellSelector {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::SpellPower(sp) => write!(f, "{sp} Spell Power"),
-            Self::School(school) => write!(f, "{school} Spell School"),
-            Self::Class(cl) => write!(f, "{cl} Spells"),
-            Self::All => write!(f, "All Spells"),
+            Self::SpellPower(sp) => sp.fmt(f),
+            Self::School(school) => school.fmt(f),
+            Self::Class(cl) => cl.fmt(f),
+            Self::All => write!(f, "Spells"),
         }
     }
 }
@@ -48,5 +50,16 @@ impl From<SpellSchool> for SpellSelector {
 impl From<PlayerClass> for SpellSelector {
     fn from(value: PlayerClass) -> Self {
         Self::Class(value)
+    }
+}
+
+impl StaticOptions for SpellSelector {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [Self::All],
+            SpellPower::get_static().map(Self::SpellPower),
+            SpellSchool::get_static().map(Self::School),
+            PlayerClass::get_static().map(Self::Class),
+        )
     }
 }

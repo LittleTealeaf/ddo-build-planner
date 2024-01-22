@@ -5,7 +5,7 @@ use std::fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::public_modules;
+use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -92,5 +92,12 @@ impl CloneBonus for WeaponAttribute {
 impl ToAttribute for WeaponAttribute {
     fn to_attribute(self) -> Attribute {
         Attribute::Weapon(self)
+    }
+}
+
+impl StaticOptions for WeaponAttribute {
+    fn get_static() -> impl Iterator<Item = Self> {
+        WeaponHand::get_static()
+            .flat_map(|hand| WeaponStat::get_static().map(move |stat| Self(hand, stat)))
     }
 }

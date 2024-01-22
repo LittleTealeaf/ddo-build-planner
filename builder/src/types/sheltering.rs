@@ -2,6 +2,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -73,5 +74,21 @@ impl CloneBonus for Sheltering {
                 .map(|sheltering| bonus.clone_into_attribute(sheltering))
                 .to_vec()
         })
+    }
+}
+
+impl StaticOptions for Sheltering {
+    fn get_static() -> impl Iterator<Item = Self> {
+        [
+            Self::Both,
+            Self::Physical,
+            Self::Magical,
+            Self::MagicalCap,
+            Self::PhysicalTotal,
+            Self::MagicalTotal,
+            Self::PhysicalReduction,
+            Self::MagicalReduction,
+        ]
+        .into_iter()
     }
 }

@@ -4,10 +4,12 @@
 mod main_hand;
 mod off_hand;
 
+use itertools::chain;
 pub use main_hand::*;
 pub use off_hand::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use std::fmt::Display;
 
@@ -84,5 +86,19 @@ where
 {
     fn from(value: T) -> Self {
         value.to_flag()
+    }
+}
+
+impl StaticOptions for Flag {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            Toggle::get_static().map(Self::HasToggle),
+            Race::get_static().map(Self::Race),
+            Immunity::get_static().map(Self::Immunity),
+            Alignment::get_static().map(Self::Alignment),
+            OffHandType::get_static().map(Self::OffHandType),
+            MainHandType::get_static().map(Self::MainHandType),
+            ArmorType::get_static().map(Self::ArmorType),
+        )
     }
 }

@@ -1,6 +1,8 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -66,5 +68,11 @@ where
 {
     fn to_source(self) -> BonusSource {
         BonusSource::from(self)
+    }
+}
+
+impl StaticOptions for BonusSource {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!([Self::Base], Attribute::get_static().map(Self::Attribute),)
     }
 }

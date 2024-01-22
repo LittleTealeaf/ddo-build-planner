@@ -1,6 +1,8 @@
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::types::damage_type::DamageType;
 
@@ -43,5 +45,22 @@ impl Display for WeaponStat {
 impl From<DamageType> for WeaponStat {
     fn from(value: DamageType) -> Self {
         Self::DamageType(value)
+    }
+}
+
+impl StaticOptions for WeaponStat {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [
+                Self::Attack,
+                Self::Damage,
+                Self::CriticalAttack,
+                Self::CriticalDamage,
+                Self::CriticalThreatRange,
+                Self::CriticalMultiplier,
+                Self::CriticalMultiplier1920
+            ],
+            DamageType::get_static().map(Self::DamageType)
+        )
     }
 }

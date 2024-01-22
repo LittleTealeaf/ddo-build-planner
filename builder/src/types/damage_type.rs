@@ -1,7 +1,9 @@
 //! Each of the different damage types in the game
 use std::fmt::Display;
 
+use itertools::chain;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use super::alignment::Alignment;
 
@@ -74,5 +76,34 @@ impl Display for DamageType {
             Self::Magical => write!(f, "Magical"),
             Self::Aligned(alignment) => write!(f, "{alignment} aligned"),
         }
+    }
+}
+
+impl StaticOptions for DamageType {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [
+                Self::Physical,
+                Self::Force,
+                Self::Slash,
+                Self::Pierce,
+                Self::Bludgeon,
+                Self::Acid,
+                Self::Fire,
+                Self::Cold,
+                Self::Electric,
+                Self::Sonic,
+                Self::Positive,
+                Self::Negative,
+                Self::Poison,
+                Self::Repair,
+                Self::Rust,
+                Self::Alignment,
+                Self::Light,
+                Self::Untyped,
+                Self::Magical,
+            ],
+            Alignment::get_static().map(Self::Aligned)
+        )
     }
 }

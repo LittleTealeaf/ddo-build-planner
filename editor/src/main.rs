@@ -1,11 +1,20 @@
 //! Editor Application
 
-mod data_utils;
 mod tabs;
+mod utils;
+mod widgets;
 
+use ::utils::enums::StaticOptions;
+use builder::attribute::Attribute;
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
-use tabs::{MSetBonuses, TSetBonuses, Tab};
+use itertools::chain;
+use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
+
+type AppExecutor = executor::Default;
+type AppMessage = Message;
+type AppTheme = Theme;
+type AppFlags = ();
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -15,6 +24,7 @@ fn main() -> iced::Result {
 struct Editor {
     icons_loaded: bool,
     set_bonuses: TSetBonuses,
+    home: THome,
     tab: Tab,
 }
 
@@ -23,7 +33,19 @@ enum Message {
     IconsLoaded,
     Error(String),
     SetBonuses(MSetBonuses),
+    Home(MHome),
     ChangeTab(Tab),
+}
+
+impl Editor {
+    fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
+        let set_bonuses = self.set_bonuses.sets().iter().flat_map(|sets| {
+            sets.iter()
+                .map(|set| Attribute::SetBonus(set.name().clone()))
+        });
+
+        chain!(set_bonuses, Attribute::get_static())
+    }
 }
 
 impl Application for Editor {
@@ -39,6 +61,7 @@ impl Application for Editor {
         let mut app = Self {
             icons_loaded: false,
             set_bonuses: TSetBonuses::default(),
+            home: THome::default(),
             tab: Tab::Home,
         };
         let command = Command::batch([
@@ -68,8 +91,9 @@ impl Application for Editor {
 }
 
 impl HandleMessage<Message> for Editor {
-    fn handle_message(&mut self, message: Message) -> Command<Self::Message> {
+    fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
+            Message::Home(message) => self.handle_message(message),
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()

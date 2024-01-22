@@ -4,8 +4,10 @@ mod attacking_target;
 
 use std::fmt::Display;
 
+use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -68,5 +70,14 @@ where
 {
     fn from(value: T) -> Self {
         value.to_toggle()
+    }
+}
+
+impl StaticOptions for Toggle {
+    fn get_static() -> impl Iterator<Item = Self> {
+        chain!(
+            [Self::Blocking, Self::InReaper],
+            AttackingTarget::get_static().map(Self::Attacking)
+        )
     }
 }

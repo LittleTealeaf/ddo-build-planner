@@ -2,6 +2,7 @@ use std::fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -75,5 +76,12 @@ impl Display for SpellFocusFeat {
 impl ToFeat for SpellFocusFeat {
     fn to_feat(self) -> Feat {
         SpellcastingFeat::SpellFocus(self).to_feat()
+    }
+}
+
+impl StaticOptions for SpellFocusFeat {
+    fn get_static() -> impl Iterator<Item = Self> {
+        SpellSchool::get_static()
+            .flat_map(|school| [Self::SpellFocus(school), Self::GreaterSpellFocus(school)])
     }
 }

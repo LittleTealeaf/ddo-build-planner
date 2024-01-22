@@ -27,7 +27,7 @@ impl HandleView<Editor> for Tab {
                 })
                 .set_active_tab(self),
             match &self {
-                Self::Home => THome.handle_view(app),
+                Self::Home => app.home.handle_view(app),
                 Self::SetBonuses => app.set_bonuses.handle_view(app),
             }
         )
