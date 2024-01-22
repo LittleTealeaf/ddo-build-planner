@@ -29,7 +29,7 @@ pub struct TSetBonuses {
 }
 
 impl TSetBonuses {
-    pub fn sets(&self) -> &Option<Vec<SetBonus>> {
+    pub const fn sets(&self) -> &Option<Vec<SetBonus>> {
         &self.sets
     }
 }
