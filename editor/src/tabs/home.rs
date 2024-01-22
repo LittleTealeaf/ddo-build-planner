@@ -70,6 +70,8 @@ impl HandleView<Editor> for THome {
                 .as_ref()
                 .map(|selector| selector.handle_view(app)),
         )
+        .on_esc(MHome::CancelSelection.into())
+        .backdrop(MHome::CancelSelection.into())
         .into()
     }
 }
