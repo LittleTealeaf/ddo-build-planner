@@ -45,6 +45,7 @@ impl HandleMessage<MHome> for Editor {
             MHome::OpenSelection => {
                 self.home.selector = Some(AttributeSelector::new(
                     self.generate_attributes(),
+                    None,
                     MHome::CancelSelection.into(),
                     MHome::CancelSelection.into(),
                 ));

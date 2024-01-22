@@ -34,19 +34,29 @@ pub enum MAttributeSelector {
 impl<T> AttributeSelector<T> {
     pub fn new(
         attributes: impl IntoIterator<Item = Attribute>,
+        selected: Option<Attribute>,
         on_submit: Message,
         on_cancel: Message,
     ) -> Self {
+        let attributes = attributes
+            .into_iter()
+            .sorted_by_cached_key(|attribute| format!("{attribute}"))
+            .collect::<Vec<_>>();
+
+        let selected = selected.and_then(|selected| {
+            attributes
+                .iter()
+                .enumerate()
+                .find_map(|(index, attr)| selected.eq(attr).then_some(index))
+        });
+
         Self {
             on_submit,
             on_cancel,
             filter: String::new(),
-            selected: None,
+            selected,
             _phantom: PhantomData,
-            attributes: attributes
-                .into_iter()
-                .sorted_by_cached_key(|attribute| format!("{attribute}"))
-                .collect(),
+            attributes,
         }
     }
 
