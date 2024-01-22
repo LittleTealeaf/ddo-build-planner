@@ -3,7 +3,10 @@ use std::marker::PhantomData;
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
-    widget::{column, container, scrollable, text, text_input, Column},
+    theme,
+    widget::{
+        button, column, container, horizontal_space, row, scrollable, text, text_input, Column,
+    },
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::card;
@@ -15,7 +18,7 @@ use crate::{Editor, Message};
 #[derive(Clone, Debug)]
 pub struct AttributeSelector<T> {
     filter: String,
-    on_return: Message,
+    on_submit: Message,
     on_cancel: Message,
     attributes: Vec<Attribute>,
     selected: Option<usize>,
@@ -31,11 +34,11 @@ pub enum MAttributeSelector {
 impl<T> AttributeSelector<T> {
     pub fn new(
         attributes: impl IntoIterator<Item = Attribute>,
-        on_return: Message,
+        on_submit: Message,
         on_cancel: Message,
     ) -> Self {
         Self {
-            on_return,
+            on_submit,
             on_cancel,
             filter: String::new(),
             selected: None,
@@ -47,10 +50,8 @@ impl<T> AttributeSelector<T> {
         }
     }
 
-    pub fn get_selected(&self) -> Option<Attribute> {
-        self.selected
-            .and_then(|index| self.attributes.get(index))
-            .cloned()
+    pub fn get_selected(&self) -> Option<&Attribute> {
+        self.selected.and_then(|index| self.attributes.get(index))
     }
 
     pub fn set_selected(&mut self, index: Option<usize>) {
@@ -78,7 +79,7 @@ impl<T> HandleMessage<MAttributeSelector, Editor> for AttributeSelector<T> {
 
 impl<T> HandleView<Editor> for AttributeSelector<T>
 where
-    T: From<MAttributeSelector>,
+    T: From<MAttributeSelector> + Clone,
     Message: From<T>,
 {
     fn handle_view<'a>(
@@ -87,6 +88,7 @@ where
     ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
     {
         let filter = self.filter.to_lowercase();
+        let selected = self.selected.map_or(self.attributes.len(), |index| index);
 
         card(
             text("Attribute Selector"),
@@ -99,14 +101,40 @@ where
                     scrollable(column(
                         self.attributes
                             .iter()
-                            .map(|attribute| (format!("{attribute}"), attribute))
-                            .filter(|(attr, _)| matches(&filter, attr.to_lowercase().as_str()))
-                            .map(|(attr, _)| container(text(attr)).into())
+                            .enumerate()
+                            .map(|(index, attribute)| (index, format!("{attribute}")))
+                            .filter(|(_, str)| matches(&filter, str.to_lowercase().as_ref()))
+                            .map(|(index, attr)| {
+                                container(
+                                    button(text(attr))
+                                        .on_press(
+                                            T::from(MAttributeSelector::Select(Some(index))).into(),
+                                        )
+                                        .style(if selected == index {
+                                            theme::Button::Primary
+                                        } else {
+                                            theme::Button::Text
+                                        }),
+                                )
+                                .into()
+                            })
                             .collect(),
                     ))
-                    .height(Length::from(100)),
+                    .width(Length::Fill)
+                    .height(Length::from(400)),
                 ),
         )
+        .foot(row!(
+            horizontal_space(Length::Fill),
+            button(text("Cancel"))
+                .style(theme::Button::Secondary)
+                .on_press(self.on_cancel.clone()),
+            horizontal_space(10),
+            button(text("Submit"))
+                .style(theme::Button::Primary)
+                .on_press_maybe(self.selected.map(|_| self.on_submit.clone()))
+        ))
+        .max_width(500.0)
         .into()
     }
 }
