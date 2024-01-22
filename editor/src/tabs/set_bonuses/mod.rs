@@ -21,11 +21,17 @@ const DATA_PATH: &str = "./data/data/set_bonuses.ron";
 
 #[derive(Debug, Clone, Default)]
 pub struct TSetBonuses {
-    pub sets: Option<Vec<SetBonus>>,
+    sets: Option<Vec<SetBonus>>,
     saving: bool,
     editing: Option<EditingSet>,
     modified: bool,
     filter: String,
+}
+
+impl TSetBonuses {
+    pub fn sets(&self) -> &Option<Vec<SetBonus>> {
+        &self.sets
+    }
 }
 
 #[derive(Debug, Clone)]

@@ -34,7 +34,7 @@ enum Message {
 
 impl Editor {
     fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.set_bonuses.sets.as_ref().into_iter().flat_map(|sets| {
+        let set_bonuses = self.set_bonuses.sets().iter().flat_map(|sets| {
             sets.iter()
                 .map(|set| Attribute::SetBonus(set.name().clone()))
         });
