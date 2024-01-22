@@ -6,31 +6,26 @@ use iced_aw::modal;
 use ui::{HandleMessage, HandleView};
 
 use crate::{
-    widgets::attribute_selector::{AttributeSelector, MAttributeSelector},
+    widgets::selectors::attribute::{AttributeSelector, MAttributeSelector},
     Editor, Message,
 };
 
 #[derive(Debug, Clone, Default)]
 pub struct THome {
-    selector: Option<AttributeSelector<MHome>>,
+    selector: Option<AttributeSelector>,
 }
 
 #[derive(Debug, Clone)]
 pub enum MHome {
     Selector(MAttributeSelector),
     OpenSelection,
-    CancelSelection,
+    SubmitSelection,
+    CloseSelection,
 }
 
 impl From<MHome> for Message {
     fn from(value: MHome) -> Self {
         Self::Home(value)
-    }
-}
-
-impl From<MAttributeSelector> for MHome {
-    fn from(value: MAttributeSelector) -> Self {
-        Self::Selector(value)
     }
 }
 
@@ -41,19 +36,28 @@ impl HandleMessage<MHome> for Editor {
                 .home
                 .selector
                 .as_mut()
-                .map_or_else(Command::none, |selector| selector.handle_message(message)),
+                .map_or_else(Command::none, |selector| selector.message(message)),
             MHome::OpenSelection => {
-                self.home.selector = Some(AttributeSelector::new(
-                    self.generate_attributes(),
-                    None,
-                    MHome::CancelSelection.into(),
-                    MHome::CancelSelection.into(),
-                ));
+                self.home.selector = Some(
+                    AttributeSelector::new(self.generate_attributes())
+                        .on_submit(MHome::SubmitSelection.into())
+                        .on_cancel(MHome::CloseSelection.into()),
+                );
                 Command::none()
             }
-            MHome::CancelSelection => {
+            MHome::CloseSelection => {
                 self.home.selector = None;
                 Command::none()
+            }
+            MHome::SubmitSelection => {
+                println!(
+                    "{:?}",
+                    self.home
+                        .selector
+                        .as_ref()
+                        .and_then(|selector| selector.selected())
+                );
+                self.handle_message(MHome::CloseSelection)
             }
         }
     }
@@ -62,17 +66,17 @@ impl HandleMessage<MHome> for Editor {
 impl HandleView<Editor> for THome {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
+        _app: &'a Editor,
     ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
     {
         modal(
             button(text("Open Selection")).on_press(MHome::OpenSelection.into()),
             self.selector
                 .as_ref()
-                .map(|selector| selector.handle_view(app)),
+                .map(|selector| selector.view(|message| MHome::Selector(message).into())),
         )
-        .on_esc(MHome::CancelSelection.into())
-        .backdrop(MHome::CancelSelection.into())
+        .on_esc(MHome::CloseSelection.into())
+        .backdrop(MHome::CloseSelection.into())
         .into()
     }
 }

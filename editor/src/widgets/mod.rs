@@ -1,1 +1,1 @@
-pub mod attribute_selector;
+pub mod selectors;

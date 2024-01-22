@@ -11,6 +11,11 @@ use itertools::chain;
 use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
 
+type AppExecutor = executor::Default;
+type AppMessage = Message;
+type AppTheme = Theme;
+type AppFlags = ();
+
 fn main() -> iced::Result {
     Editor::run(Settings::default())
 }
