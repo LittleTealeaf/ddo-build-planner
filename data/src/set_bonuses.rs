@@ -15,11 +15,11 @@ pub trait IncludeSetBonuses {
     ///
     /// # Errors
     /// Returns a Parsing error if parsing fails
-    fn include_set_bonuses(&mut self) -> Result<(), SpannedError>;
+    fn import_set_bonuses(&mut self) -> Result<(), SpannedError>;
 }
 
 impl IncludeSetBonuses for Breakdowns {
-    fn include_set_bonuses(&mut self) -> Result<(), SpannedError> {
+    fn import_set_bonuses(&mut self) -> Result<(), SpannedError> {
         self.import_dynamic_bonuses(
             get_set_bonuses()?
                 .into_iter()
@@ -42,6 +42,6 @@ mod tests {
     #[test]
     fn breakdowns_inserts_bonuses() {
         let mut breakdowns = Breakdowns::new();
-        assert!(breakdowns.include_set_bonuses().is_ok());
+        assert!(breakdowns.import_set_bonuses().is_ok());
     }
 }
