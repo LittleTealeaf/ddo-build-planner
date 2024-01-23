@@ -1,6 +1,6 @@
 use builder::{breakdowns::Breakdowns, equipment::set_bonus::SetBonus};
 
-use crate::util::ParseError;
+use crate::ParseError;
 
 /// Returns a list of set bonuses pulled from the data source
 ///

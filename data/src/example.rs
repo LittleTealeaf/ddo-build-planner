@@ -1,4 +1,4 @@
-use crate::util::ParseError;
+use crate::ParseError;
 
 /// Returns example data created from build.rs
 ///

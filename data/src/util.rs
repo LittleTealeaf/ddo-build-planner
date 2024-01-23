@@ -4,5 +4,3 @@ macro_rules! include_data {
         ron::from_str(include_str!(concat!(env!("OUT_DIR"), "/", $file)))
     };
 }
-
-pub type ParseError = ron::error::SpannedError;
