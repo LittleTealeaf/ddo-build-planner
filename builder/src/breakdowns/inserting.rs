@@ -42,7 +42,7 @@ impl Breakdowns {
 
         let mut buffer = Buffer::create(bonuses);
 
-        buffer.insert_attributes(self.remove_bonuses_by_source(sources.iter()));
+        buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
 
         for bonus in buffer.get_bonuses() {
             let attribute = bonus.attribute();
@@ -94,7 +94,8 @@ impl Breakdowns {
 
                 buffer.insert_attributes(
                     self.get_dependants(&attribute)
-                        .map(|bonus| bonus.attribute().clone()),
+                        .map(Bonus::attribute)
+                        .cloned(),
                 );
 
                 let value = self.get_attribute(attribute.clone());
