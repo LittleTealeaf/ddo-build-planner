@@ -16,6 +16,10 @@ pub struct Buffer {
 }
 
 impl Buffer {
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
     pub fn create(bonuses: impl IntoIterator<Item = Bonus>) -> Self {
         let mut buffer = Self::default();
 

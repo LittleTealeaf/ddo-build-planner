@@ -16,7 +16,7 @@ impl Breakdowns {
     ///
     /// [`BonusSources`]: BonusSource
     pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = impl Into<BonusSource>>) {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::empty();
 
         let sources = sources.into_iter().map(Into::into).collect::<Vec<_>>();
 
@@ -70,7 +70,7 @@ impl Breakdowns {
 
     /// Forces the recalculation of several attributes
     pub fn recalculate_attributes(&mut self, attributes: impl IntoIterator<Item = Attribute>) {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::empty();
         buffer.insert_attributes(attributes);
         self.consume_buffer(buffer);
     }
