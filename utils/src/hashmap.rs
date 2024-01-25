@@ -12,9 +12,7 @@ use im::OrdMap;
 pub trait MapGetMutOr<K, V> {
     /// Executes and inserts the result of a function if the key is not found within the map.
     /// Otherwise returns the key's value.
-    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
-    where
-        F: Fn() -> V;
+    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V;
 
     /// Inserts a default value if the key is not found within the map
     /// Otherwise returns the key's value.
@@ -26,10 +24,7 @@ where
     K: Hash + Eq + PartialEq + Clone,
     S: BuildHasher,
 {
-    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
-    where
-        F: Fn() -> V,
-    {
+    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
         }
@@ -52,10 +47,7 @@ where
     V: Clone,
     S: BuildHasher,
 {
-    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
-    where
-        F: Fn() -> V,
-    {
+    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
         }
@@ -75,10 +67,7 @@ where
     K: Ord + PartialOrd + Clone,
     V: Clone,
 {
-    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
-    where
-        F: Fn() -> V,
-    {
+    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
         }
