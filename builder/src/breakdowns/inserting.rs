@@ -16,12 +16,18 @@ impl Breakdowns {
     ///
     /// [`BonusSources`]: BonusSource
     pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = impl Into<BonusSource>>) {
-        self.insert_bonuses(sources.into_iter().map(Bonus::dummy));
+        let mut buffer = Buffer::create([]);
+
+        let sources = sources.into_iter().map(Into::into).collect::<Vec<_>>();
+
+        buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
+
+        self.consume_buffer(buffer);
     }
 
     /// Removes all bonuses with the provided [`BonusSource`]
     pub fn remove_source(&mut self, source: impl Into<BonusSource>) {
-        self.insert_bonuses([Bonus::dummy(source)]);
+        self.remove_sources([source]);
     }
 
     /// Inserts a single bonus into the breakdowns. This also removes all bonuses that have the
