@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use itertools::chain;
 use rust_decimal::Decimal;
-use utils::hashmap::MapGetMutOrDefault;
+use utils::{hashmap::MapGetMutOrDefault, vecs::FilterRemove};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -154,16 +154,7 @@ impl Breakdowns {
 
                 for child in &children {
                     if let Some(set) = self.bonuses.get_mut(child) {
-                        let items = set.iter().enumerate();
-
-                        let indexes = items
-                            .filter_map(|(index, item)| item.source().eq(source).then_some(index))
-                            .rev()
-                            .collect::<Vec<_>>();
-
-                        for index in indexes {
-                            bonuses.push(set.swap_remove(index));
-                        }
+                        bonuses.extend(set.remove_filter(|item| item.source().eq(source)));
                     }
                 }
                 Some(bonuses)
