@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 /// Describes the stacking-type of a bonus.
 ///
@@ -150,5 +151,41 @@ impl BonusType {
     #[must_use]
     pub const fn is_stacking(&self) -> bool {
         matches!(self, Self::Stacking)
+    }
+}
+
+impl StaticOptions for BonusType {
+    fn get_static() -> impl Iterator<Item = Self> {
+        [
+            Self::AbilityModifier,
+            Self::ActionBoost,
+            Self::Alchemical,
+            Self::Artifact,
+            Self::Competence,
+            Self::Deflection,
+            Self::Enhancement,
+            Self::Epic,
+            Self::Exceptional,
+            Self::Feat,
+            Self::Festive,
+            Self::Fortune,
+            Self::Insightful,
+            Self::Legendary,
+            Self::Morale,
+            Self::Music,
+            Self::Primal,
+            Self::Profane,
+            Self::Quality,
+            Self::Sacred,
+            Self::Shield,
+            Self::Size,
+            Self::Stacking,
+            Self::Spooky,
+            Self::Standard,
+            Self::Racial,
+            Self::Dodge,
+            Self::Luck,
+        ]
+        .into_iter()
     }
 }
