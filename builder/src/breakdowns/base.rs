@@ -8,7 +8,7 @@ use crate::{
     },
     types::{
         ability::Ability,
-        absorption::Absorption,
+        absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
         damage_type::DamageType,
         flag::OffHandType,
@@ -291,7 +291,7 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
             Absorption::Total(damage_type),
             BonusType::Stacking,
             1.to_value()
-                - Value::iter_product(BonusType::get_static().map(|bonus_type| {
+                - Value::iter_product(AbsorptionSource::get_static().map(|bonus_type| {
                     1.to_value() - Absorption::Bonus(damage_type, bonus_type).to_value()
                 })),
             None,
