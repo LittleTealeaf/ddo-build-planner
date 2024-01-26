@@ -3,6 +3,9 @@
 #[macro_use]
 mod util;
 
+/// Data Parsing Error
+pub type ParseError = ron::error::SpannedError;
+
 #[cfg(feature = "example")]
 mod example;
 #[cfg(feature = "example")]

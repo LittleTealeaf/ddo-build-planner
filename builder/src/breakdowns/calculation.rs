@@ -97,7 +97,7 @@ impl Breakdowns {
             stacking
                 + bonuses
                     .into_values()
-                    .map(|values| values.into_iter().max().unwrap())
+                    .filter_map(|values| values.into_iter().max())
                     .sum::<Decimal>(),
         )
     }

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use itertools::chain;
 use rust_decimal::Decimal;
-use utils::hashmap::MapGetMutOrDefault;
+use utils::{hashmap::MapGetMutOrDefault, vecs::FilterRemove};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -16,12 +16,18 @@ impl Breakdowns {
     ///
     /// [`BonusSources`]: BonusSource
     pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = impl Into<BonusSource>>) {
-        self.insert_bonuses(sources.into_iter().map(Bonus::dummy));
+        let mut buffer = Buffer::empty();
+
+        let sources = sources.into_iter().map(Into::into).collect::<Vec<_>>();
+
+        buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
+
+        self.consume_buffer(buffer);
     }
 
     /// Removes all bonuses with the provided [`BonusSource`]
     pub fn remove_source(&mut self, source: impl Into<BonusSource>) {
-        self.insert_bonuses([Bonus::dummy(source)]);
+        self.remove_sources([source]);
     }
 
     /// Inserts a single bonus into the breakdowns. This also removes all bonuses that have the
@@ -42,7 +48,7 @@ impl Breakdowns {
 
         let mut buffer = Buffer::create(bonuses);
 
-        buffer.insert_attributes(self.remove_bonuses_by_source(sources.iter()));
+        buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
 
         for bonus in buffer.get_bonuses() {
             let attribute = bonus.attribute();
@@ -64,7 +70,7 @@ impl Breakdowns {
 
     /// Forces the recalculation of several attributes
     pub fn recalculate_attributes(&mut self, attributes: impl IntoIterator<Item = Attribute>) {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::empty();
         buffer.insert_attributes(attributes);
         self.consume_buffer(buffer);
     }
@@ -94,7 +100,8 @@ impl Breakdowns {
 
                 buffer.insert_attributes(
                     self.get_dependants(&attribute)
-                        .map(|bonus| bonus.attribute().clone()),
+                        .map(Bonus::attribute)
+                        .cloned(),
                 );
 
                 let value = self.get_attribute(attribute.clone());
@@ -147,16 +154,7 @@ impl Breakdowns {
 
                 for child in &children {
                     if let Some(set) = self.bonuses.get_mut(child) {
-                        let items = set.iter().enumerate();
-
-                        let indexes = items
-                            .filter_map(|(index, item)| item.source().eq(source).then_some(index))
-                            .rev()
-                            .collect::<Vec<_>>();
-
-                        for index in indexes {
-                            bonuses.push(set.swap_remove(index));
-                        }
+                        bonuses.extend(set.remove_filter(|item| item.source().eq(source)));
                     }
                 }
                 Some(bonuses)
