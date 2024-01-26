@@ -14,8 +14,8 @@ use crate::{
     bonus::{Bonus, BonusTemplate, CloneBonus},
     feat::Feat,
     types::{
-        ability::Ability, armor_class::ArmorClass, damage_type::DamageType, flag::Flag,
-        heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
+        ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
+        flag::Flag, heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
         saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spell_points::SpellPoints,
         spell_power::SpellPower, spell_selector::SpellSelector,
         summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
@@ -81,7 +81,7 @@ pub enum Attribute {
     /// Damage reduced from energy sources
     Resistance(DamageType),
     /// % Damage reduced from energy sources
-    Absorption(DamageType),
+    Absorption(Absorption),
     /// Spell Resistance
     SpellResistance,
     /// Spell Penetration
@@ -125,7 +125,7 @@ impl Display for Attribute {
             Self::ClassLevel(cl) => write!(f, "{cl} Level"),
             Self::Flag(flag) => write!(f, "Flag: {flag}"),
             Self::Resistance(energy) => write!(f, "{energy} Resistance"),
-            Self::Absorption(energy) => write!(f, "{energy} Absorption"),
+            Self::Absorption(absorption) => absorption.fmt(f),
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
             Self::SpellResistance => write!(f, "Spell Resistance"),
             Self::SpellPenetration => write!(f, "Spell Penetration"),
@@ -215,8 +215,8 @@ impl StaticOptions for Attribute {
             WeaponAttribute::get_static().map(Self::Weapon),
             ArmorClass::get_static().map(Self::ArmorClass),
             Sheltering::get_static().map(Self::Sheltering),
-            DamageType::get_static()
-                .flat_map(|dt| { [Self::Resistance(dt), Self::Absorption(dt)] }),
+            DamageType::get_static().map(Self::Resistance),
+            Absorption::get_static().map(Self::Absorption),
             Health::get_static().map(Self::Health),
             SpellPoints::get_static().map(Self::SpellPoints),
             SummonedAttribute::get_static().map(Self::SummonedAttribute),
