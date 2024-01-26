@@ -1,6 +1,7 @@
 //! Contains all of the various types within Dungeons & Dragons: Online
 
 pub mod ability;
+pub mod absorption;
 pub mod alignment;
 pub mod armor_class;
 pub mod crafting_slot;
@@ -24,4 +25,3 @@ pub mod spell_selector;
 pub mod summoned_attribute;
 pub mod toggle;
 pub mod weapon_attribute;
-pub mod absorption;

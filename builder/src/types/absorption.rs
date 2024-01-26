@@ -58,7 +58,6 @@ pub enum AbsorptionSource {
     ArcanePastLife,
     /// Guild Ship Buff
     Guild,
-
 }
 
 impl Display for AbsorptionSource {
@@ -74,6 +73,12 @@ impl Display for AbsorptionSource {
 
 impl StaticOptions for AbsorptionSource {
     fn get_static() -> impl Iterator<Item = Self> {
-        [Self::Item, Self::EnergySheathe, Self::ArcanePastLife, Self::Guild].into_iter()
+        [
+            Self::Item,
+            Self::EnergySheathe,
+            Self::ArcanePastLife,
+            Self::Guild,
+        ]
+        .into_iter()
     }
 }
