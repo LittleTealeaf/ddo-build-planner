@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, iter::once};
 
 use itertools::chain;
 use rust_decimal::Decimal;
@@ -27,13 +27,13 @@ impl Breakdowns {
 
     /// Removes all bonuses with the provided [`BonusSource`]
     pub fn remove_source(&mut self, source: impl Into<BonusSource>) {
-        self.remove_sources([source]);
+        self.remove_sources(once(source));
     }
 
     /// Inserts a single bonus into the breakdowns. This also removes all bonuses that have the
     /// same bonus source.
     pub fn insert_bonus(&mut self, bonus: Bonus) {
-        self.insert_bonuses([bonus]);
+        self.insert_bonuses(once(bonus));
     }
 
     /// Inserts several bonuses into the breakdowns. This also removes all bonuses that have the
@@ -65,7 +65,7 @@ impl Breakdowns {
 
     /// Forces the recalculation of an attribute
     pub fn recalcualte_attribute(&mut self, attribute: Attribute) {
-        self.recalculate_attributes([attribute]);
+        self.recalculate_attributes(once(attribute));
     }
 
     /// Forces the recalculation of several attributes
@@ -96,7 +96,7 @@ impl Breakdowns {
 
                 let source = BonusSource::Attribute(attribute.clone());
 
-                buffer.insert_attributes(self.remove_bonuses_by_source([&source]));
+                buffer.insert_attributes(self.remove_bonuses_by_source(once(&source)));
 
                 buffer.insert_attributes(
                     self.get_dependants(&attribute)

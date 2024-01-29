@@ -1,6 +1,7 @@
 //! Contains all of the various types within Dungeons & Dragons: Online
 
 pub mod ability;
+pub mod absorption;
 pub mod alignment;
 pub mod armor_class;
 pub mod crafting_slot;
