@@ -88,10 +88,13 @@ impl Breakdowns {
             .map(|attribute| (attribute.clone(), self.get_attribute(attribute)))
     }
 
-    pub fn dice_strategy(&self) -> DiceStrategy {
+    /// Returns the current dice strategy being used
+    #[must_use]
+    pub const fn dice_strategy(&self) -> DiceStrategy {
         self.dice_strategy
     }
 
+    /// Sets the dice strategy, and recalculates any attributes that depend on any dice value
     pub fn set_dice_strategy(&mut self, strategy: DiceStrategy) {
         self.dice_strategy = strategy;
 

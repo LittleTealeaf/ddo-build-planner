@@ -93,6 +93,10 @@ impl Value {
 /// Operations to simplify writing formulas
 impl Value {
     #[must_use]
+    /// Shortcut for [`Value::Dice`]
+    ///
+    /// Represents a dice roll that can either go from 1 to `size`, and is rolled `count` number of
+    /// times
     pub fn dice(count: impl Into<Self>, size: impl Into<Self>) -> Self {
         Self::Dice {
             count: Box::new(count.into()),
@@ -100,9 +104,7 @@ impl Value {
         }
     }
 
-    /// Shortcut for [`Condition::If`]
-    ///
-    /// [`Condition::If`]: Self#variant.If
+    /// Shortcut for [`Value::If`]
     #[must_use]
     pub fn condition(
         condition: impl Into<Condition>,
@@ -270,8 +272,7 @@ impl Depth for Value {
 impl HasDice for Value {
     fn has_dice(&self) -> bool {
         match self {
-            Self::Const(_) => false,
-            Self::Attribute(_) => false,
+            Self::Const(_) | Self::Attribute(_) => false,
             Self::Min(a, b)
             | Self::Max(a, b)
             | Self::Add(a, b)
@@ -279,7 +280,7 @@ impl HasDice for Value {
             | Self::Mul(a, b)
             | Self::Div(a, b)
             | Self::Rem(a, b) => a.has_dice() || b.has_dice(),
-            Self::Floor(val) | Value::Ceil(val) | Value::Round(val) | Value::Abs(val) => {
+            Self::Floor(val) | Self::Ceil(val) | Self::Round(val) | Self::Abs(val) => {
                 val.has_dice()
             }
             Self::If {

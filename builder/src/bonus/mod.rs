@@ -245,11 +245,7 @@ impl Bonus {
 
 impl HasDice for Bonus {
     fn has_dice(&self) -> bool {
-        self.value.has_dice()
-            || self
-                .condition
-                .as_ref()
-                .is_some_and(HasDice::has_dice)
+        self.value.has_dice() || self.condition.as_ref().is_some_and(HasDice::has_dice)
     }
 }
 
