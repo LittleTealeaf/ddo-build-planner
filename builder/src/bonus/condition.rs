@@ -12,7 +12,7 @@ use crate::{
     types::{flag::Flag, toggle::Toggle},
 };
 
-use super::{Depth, Value};
+use super::{Depth, HasDice, Value};
 
 /// Describes an attribute-based condition that must be met for a bonus to be included.
 #[derive(Hash, Clone, Eq, Debug, Serialize, Deserialize, PartialEq)]
@@ -179,6 +179,19 @@ impl AttributeDependencies for Condition {
                 b.include_attr_dependency(set);
             }
             Self::Constant(_) => {}
+        }
+    }
+}
+
+impl HasDice for Condition {
+    fn has_dice(&self) -> bool {
+        match self {
+            Self::Not(condition) => condition.has_dice(),
+            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+                a.has_dice() || b.has_dice()
+            }
+            Self::Constant(_) => false,
+            Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => a.has_dice() || b.has_dice(),
         }
     }
 }

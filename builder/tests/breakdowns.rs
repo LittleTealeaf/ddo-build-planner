@@ -1,11 +1,12 @@
 use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},
-    breakdowns::Breakdowns,
+    breakdowns::{Breakdowns, DiceStrategy},
     debug::DebugValue,
 };
 use rust_decimal::Decimal;
 use std::ops::Neg;
+use std::str::FromStr;
 
 /// Pushes a list of bonuses into a breakdown object and expects [`Attribute::Debug(0)`] to have
 /// the specified value
@@ -18,9 +19,6 @@ fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<De
 }
 
 mod value {
-    use std::str::FromStr;
-
-    use rust_decimal::prelude::FromPrimitive;
 
     use super::*;
 
@@ -177,19 +175,42 @@ mod value {
     }
 
     #[test]
-    fn dice() {
-        expect_value(
-            [dbg_bonus(0, Value::dice(1, 6))],
-            Decimal::from_str("3.5").unwrap(),
-        );
-        expect_value(
-            [dbg_bonus(0, Value::dice(2, 6))],
-            Decimal::from_str("7").unwrap(),
-        );
-        expect_value(
-            [dbg_bonus(0, Value::dice(1, 20))],
-            Decimal::from_str("10.5").unwrap(),
-        );
+    fn dice_average() {
+        {
+            let bonuses = [dbg_bonus(0, Value::dice(1, 6))];
+            let expected = Decimal::from_str("3.5").unwrap();
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.set_dice_strategy(DiceStrategy::Average);
+            breakdowns.insert_bonuses(bonuses);
+            let value = breakdowns.get_attribute(Attribute::Debug(0));
+            assert_eq!(value, expected, "Expected {expected}, found {value}",);
+        };
+    }
+
+    #[test]
+    fn dice_minimum() {
+        {
+            let bonuses = [dbg_bonus(0, Value::dice(1, 6))];
+            let expected = Decimal::from_str("1").unwrap();
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.set_dice_strategy(DiceStrategy::Minimum);
+            breakdowns.insert_bonuses(bonuses);
+            let value = breakdowns.get_attribute(Attribute::Debug(0));
+            assert_eq!(value, expected, "Expected {expected}, found {value}",);
+        };
+    }
+
+    #[test]
+    fn dice_maximum() {
+        {
+            let bonuses = [dbg_bonus(0, Value::dice(1, 6))];
+            let expected = Decimal::from_str("6").unwrap();
+            let mut breakdowns = Breakdowns::new();
+            breakdowns.set_dice_strategy(DiceStrategy::Maximum);
+            breakdowns.insert_bonuses(bonuses);
+            let value = breakdowns.get_attribute(Attribute::Debug(0));
+            assert_eq!(value, expected, "Expected {expected}, found {value}",);
+        };
     }
 }
 

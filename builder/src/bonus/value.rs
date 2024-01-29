@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies, ToAttribute};
 
-use super::{Condition, Depth};
+use super::{Condition, Depth, HasDice};
 
 /// Represents a value of a [`Bonus`]
 ///
@@ -263,6 +263,31 @@ impl Depth for Value {
                 .max(if_true.get_depth())
                 .max(if_false.get_depth()),
             Self::Dice { count, size } => count.get_depth().max(size.get_depth()),
+        }
+    }
+}
+
+impl HasDice for Value {
+    fn has_dice(&self) -> bool {
+        match self {
+            Self::Const(_) => false,
+            Self::Attribute(_) => false,
+            Self::Min(a, b)
+            | Self::Max(a, b)
+            | Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => a.has_dice() || b.has_dice(),
+            Self::Floor(val) | Value::Ceil(val) | Value::Round(val) | Value::Abs(val) => {
+                val.has_dice()
+            }
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => condition.has_dice() || if_true.has_dice() || if_false.has_dice(),
+            Self::Dice { count: _, size: _ } => true,
         }
     }
 }
