@@ -18,6 +18,10 @@ fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<De
 }
 
 mod value {
+    use std::str::FromStr;
+
+    use rust_decimal::prelude::FromPrimitive;
+
     use super::*;
 
     fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
@@ -169,6 +173,22 @@ mod value {
                 ]),
             )],
             3,
+        );
+    }
+
+    #[test]
+    fn dice() {
+        expect_value(
+            [dbg_bonus(0, Value::dice(1, 6))],
+            Decimal::from_str("3.5").unwrap(),
+        );
+        expect_value(
+            [dbg_bonus(0, Value::dice(2, 6))],
+            Decimal::from_str("7").unwrap(),
+        );
+        expect_value(
+            [dbg_bonus(0, Value::dice(1, 20))],
+            Decimal::from_str("10.5").unwrap(),
         );
     }
 }

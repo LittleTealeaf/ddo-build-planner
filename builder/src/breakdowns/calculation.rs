@@ -70,6 +70,10 @@ impl Breakdowns {
             Value::Mul(a, b) => self.evaluate_value(a) * self.evaluate_value(b),
             Value::Div(a, b) => self.evaluate_value(a) / self.evaluate_value(b),
             Value::Rem(a, b) => self.evaluate_value(a) % self.evaluate_value(b),
+            Value::Dice { count, size } => {
+                self.evaluate_value(count) * (self.evaluate_value(size) + Decimal::ONE)
+                    / Decimal::TWO
+            }
         };
 
         self.value_cache.insert(value.clone(), result);

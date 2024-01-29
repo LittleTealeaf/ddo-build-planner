@@ -48,6 +48,14 @@ mod has_dependency {
         }
 
         #[test]
+        fn dice() {
+            let value = Value::dice(Attribute::Debug(0), Attribute::Debug(1));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
+        }
+
+        #[test]
         fn attribute() {
             let value = Value::Attribute(Attribute::Debug(0));
 
@@ -301,6 +309,16 @@ mod include_dependencies {
             let deps = value.get_attr_dependencies();
 
             assert!(!deps.contains(&Attribute::Debug(0)));
+        }
+
+        #[test]
+        fn dice() {
+            let value = Value::dice(Attribute::Debug(0), Attribute::Debug(1));
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
         }
 
         #[test]

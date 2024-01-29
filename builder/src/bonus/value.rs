@@ -54,6 +54,13 @@ pub enum Value {
         /// The value to return if the condition returns false
         if_false: Box<Value>,
     },
+    /// Represents a die roll. Attributes will be calculated based on the mean roll of the dice
+    Dice {
+        /// The number of dice to roll
+        count: Box<Value>,
+        /// The dice size
+        size: Box<Value>,
+    },
 }
 
 /// Constants
@@ -85,6 +92,14 @@ impl Value {
 
 /// Operations to simplify writing formulas
 impl Value {
+    #[must_use]
+    pub fn dice(count: impl Into<Self>, size: impl Into<Self>) -> Self {
+        Self::Dice {
+            count: Box::new(count.into()),
+            size: Box::new(size.into()),
+        }
+    }
+
     /// Shortcut for [`Condition::If`]
     ///
     /// [`Condition::If`]: Self#variant.If
@@ -229,8 +244,8 @@ where
 
 impl Depth for Value {
     fn get_depth(&self) -> usize {
-        match self {
-            Self::Const(_) | Self::Attribute(_) => 1,
+        1 + match self {
+            Self::Const(_) | Self::Attribute(_) => 0,
             Self::Min(a, b)
             | Self::Max(a, b)
             | Self::Add(a, b)
@@ -247,6 +262,7 @@ impl Depth for Value {
                 .get_depth()
                 .max(if_true.get_depth())
                 .max(if_false.get_depth()),
+            Self::Dice { count, size } => count.get_depth().max(size.get_depth()),
         }
     }
 }
@@ -274,6 +290,7 @@ impl Display for Value {
             } => {
                 write!(f, "If ({condition}) then {if_true} else {if_false}")
             }
+            Self::Dice { count, size } => write!(f, "({count})d({size})"),
         }
     }
 }
@@ -303,6 +320,9 @@ impl AttributeDependencies for Value {
                 condition.has_attr_dependency(attribute)
                     || if_true.has_attr_dependency(attribute)
                     || if_false.has_attr_dependency(attribute)
+            }
+            Self::Dice { count, size } => {
+                count.has_attr_dependency(attribute) || size.has_attr_dependency(attribute)
             }
         }
     }
@@ -334,6 +354,10 @@ impl AttributeDependencies for Value {
                 condition.include_attr_dependency(set);
                 if_true.include_attr_dependency(set);
                 if_false.include_attr_dependency(set);
+            }
+            Self::Dice { count, size } => {
+                count.include_attr_dependency(set);
+                size.include_attr_dependency(set);
             }
         }
     }
