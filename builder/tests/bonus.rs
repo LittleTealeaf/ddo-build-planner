@@ -1,7 +1,8 @@
 use builder::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusType, Condition, Value},
+    bonus::{Bonus, BonusType, Condition, HasDice, ToValue, Value},
 };
+use std::ops::Not;
 
 mod has_dependency {
 
@@ -45,6 +46,14 @@ mod has_dependency {
             let value = Value::Const(10.into());
 
             assert!(!value.has_attr_dependency(&Attribute::Debug(0)));
+        }
+
+        #[test]
+        fn dice() {
+            let value = Value::dice(Attribute::Debug(0), Attribute::Debug(1));
+            assert!(value.has_attr_dependency(&Attribute::Debug(0)));
+            assert!(value.has_attr_dependency(&Attribute::Debug(1)));
+            assert!(!value.has_attr_dependency(&Attribute::Debug(2)));
         }
 
         #[test]
@@ -304,6 +313,16 @@ mod include_dependencies {
         }
 
         #[test]
+        fn dice() {
+            let value = Value::dice(Attribute::Debug(0), Attribute::Debug(1));
+            let deps = value.get_attr_dependencies();
+
+            assert!(deps.contains(&Attribute::Debug(0)));
+            assert!(deps.contains(&Attribute::Debug(1)));
+            assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+
+        #[test]
         fn attribute() {
             let value = Value::Attribute(Attribute::Debug(0));
 
@@ -534,6 +553,174 @@ mod include_dependencies {
             assert!(deps.contains(&Attribute::Debug(0)));
             assert!(deps.contains(&Attribute::Debug(1)));
             assert!(!deps.contains(&Attribute::Debug(2)));
+        }
+    }
+}
+
+mod has_dice {
+    use super::*;
+
+    mod value {
+
+        use super::*;
+
+        fn dice() -> Value {
+            Value::dice(1, 6)
+        }
+
+        #[test]
+        fn constant() {
+            assert!(!Value::from(0).has_dice());
+        }
+
+        #[test]
+        fn attribute() {
+            assert!(!Value::Attribute(Attribute::Debug(0)).has_dice());
+        }
+
+        #[test]
+        fn min() {
+            assert!(!Value::min(Value::from(0), Value::from(0)).has_dice());
+            assert!(Value::min(dice(), Value::from(0)).has_dice());
+            assert!(Value::min(Value::from(0), dice()).has_dice());
+        }
+
+        #[test]
+        fn max() {
+            assert!(!Value::max(Value::from(0), Value::from(0)).has_dice());
+            assert!(Value::max(dice(), Value::from(0)).has_dice());
+            assert!(Value::max(Value::from(0), dice()).has_dice());
+        }
+
+        #[test]
+        fn add() {
+            assert!(!(0.to_value() + 0.to_value()).has_dice());
+            assert!((dice() + 0.to_value()).has_dice());
+            assert!((0.to_value() + dice()).has_dice());
+        }
+
+        #[test]
+        fn sub() {
+            assert!(!(0.to_value() - 0.to_value()).has_dice());
+            assert!((dice() - 0.to_value()).has_dice());
+            assert!((0.to_value() - dice()).has_dice());
+        }
+
+        #[test]
+        fn mul() {
+            assert!(!(0.to_value() * 0.to_value()).has_dice());
+            assert!((dice() * 0.to_value()).has_dice());
+            assert!((0.to_value() * dice()).has_dice());
+        }
+
+        #[test]
+        fn div() {
+            assert!(!(0.to_value() / 0.to_value()).has_dice());
+            assert!((dice() / 0.to_value()).has_dice());
+            assert!((0.to_value() / dice()).has_dice());
+        }
+
+        #[test]
+        fn rem() {
+            assert!(!(0.to_value() % 0.to_value()).has_dice());
+            assert!((dice() % 0.to_value()).has_dice());
+            assert!((0.to_value() % dice()).has_dice());
+        }
+
+        #[test]
+        fn abs() {
+            assert!(!0.to_value().abs().has_dice());
+            assert!(dice().abs().has_dice());
+        }
+
+        #[test]
+        fn round() {
+            assert!(!0.to_value().round().has_dice());
+            assert!(dice().round().has_dice());
+        }
+
+        #[test]
+        fn ceil() {
+            assert!(!0.to_value().ceil().has_dice());
+            assert!(dice().ceil().has_dice());
+        }
+
+        #[test]
+        fn floor() {
+            assert!(!0.to_value().floor().has_dice());
+            assert!(dice().floor().has_dice());
+        }
+
+        #[test]
+        fn condition() {
+            assert!(!Value::condition(false, 0, 0).has_dice());
+            assert!(Value::condition(dice().greater_than(0.to_value()), 0, 0).has_dice());
+            assert!(Value::condition(false, dice(), 0).has_dice());
+            assert!(Value::condition(false, 0, dice()).has_dice());
+        }
+    }
+
+    mod condition {
+
+        use super::*;
+
+        fn dice() -> Value {
+            Value::dice(1, 6)
+        }
+
+        fn dice_cond() -> Condition {
+            dice().greater_than(0.to_value())
+        }
+
+        fn no_cond() -> Condition {
+            0.to_value().greater_than(0.to_value())
+        }
+
+        #[test]
+        fn not() {
+            assert!(!no_cond().not().has_dice());
+            assert!(dice_cond().not().has_dice());
+        }
+
+        #[test]
+        fn less_than() {
+            assert!(!0.to_value().less_than(0.to_value()).has_dice());
+            assert!(dice().less_than(0.to_value()).has_dice());
+            assert!(0.to_value().less_than(dice()).has_dice());
+        }
+
+        #[test]
+        fn equal_to() {
+            assert!(!0.to_value().equal_to(0.to_value()).has_dice());
+            assert!(dice().equal_to(0.to_value()).has_dice());
+            assert!(0.to_value().equal_to(dice()).has_dice());
+        }
+
+        #[test]
+        fn constant() {
+            assert!(!Condition::Constant(false).has_dice());
+            assert!(!Condition::Constant(true).has_dice());
+        }
+
+        #[test]
+        fn and() {
+            assert!(!(no_cond() & no_cond()).has_dice());
+            assert!((dice_cond() & no_cond()).has_dice());
+            assert!((no_cond() & dice_cond()).has_dice());
+        }
+
+        #[test]
+        fn or() {
+            assert!(!(no_cond() | no_cond()).has_dice());
+            assert!((dice_cond() | no_cond()).has_dice());
+            assert!((no_cond() | dice_cond()).has_dice());
+        }
+
+        #[test]
+        fn xor() {
+            assert!(!(no_cond() ^ no_cond()).has_dice());
+            assert!((dice_cond() ^ no_cond()).has_dice());
+            assert!((no_cond() ^ dice_cond()).has_dice());
         }
     }
 }

@@ -74,6 +74,15 @@ impl Breakdowns {
         buffer.insert_attributes(attributes);
         self.consume_buffer(buffer);
     }
+
+    /// Forces the recalculation of all attributes
+    pub fn recalculate_all_attributes(&mut self) {
+        self.value_cache.clear();
+        self.condition_cache.clear();
+        let mut buffer = Buffer::empty();
+        buffer.insert_attributes(self.bonuses.keys().cloned());
+        self.consume_buffer(buffer);
+    }
 }
 
 impl Breakdowns {

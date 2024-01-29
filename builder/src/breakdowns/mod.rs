@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusTemplate, Condition, Value},
+    bonus::{Bonus, BonusSource, BonusTemplate, Condition, HasDice, Value},
 };
 
 use self::base::get_base_bonuses;
@@ -32,6 +32,18 @@ pub struct Breakdowns {
     condition_cache: HashMap<Condition, bool>,
     children: HashMap<BonusSource, Vec<Attribute>>,
     dynamic_bonuses: HashMap<Attribute, Vec<BonusTemplate>>,
+    dice_strategy: DiceStrategy,
+}
+
+/// Determines the strategy used when evaluating dice in bonuses
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum DiceStrategy {
+    /// Dice will always roll 1s, or the lowest value
+    Minimum,
+    /// Dice will evaulate to the average roll
+    Average,
+    /// Dice will always roll the highest value possible
+    Maximum,
 }
 
 /// Simple methods for creating new instances, and obtaining a list of bonuses or attributes
@@ -53,6 +65,7 @@ impl Breakdowns {
             condition_cache: HashMap::new(),
             children: HashMap::new(),
             dynamic_bonuses: HashMap::new(),
+            dice_strategy: DiceStrategy::Average,
         };
 
         breakdowns.insert_bonuses(get_base_bonuses());
@@ -73,6 +86,27 @@ impl Breakdowns {
         attributes
             .into_iter()
             .map(|attribute| (attribute.clone(), self.get_attribute(attribute)))
+    }
+
+    /// Returns the current dice strategy being used
+    #[must_use]
+    pub const fn dice_strategy(&self) -> DiceStrategy {
+        self.dice_strategy
+    }
+
+    /// Sets the dice strategy, and recalculates any attributes that depend on any dice value
+    pub fn set_dice_strategy(&mut self, strategy: DiceStrategy) {
+        self.dice_strategy = strategy;
+
+        self.value_cache
+            .retain(|i, _| !matches!(i, Value::Dice { count: _, size: _ }));
+
+        let attributes = self
+            .get_bonuses()
+            .filter_map(|bonus| bonus.has_dice().then_some(bonus.attribute().clone()))
+            .collect::<Vec<_>>();
+
+        self.recalculate_attributes(attributes);
     }
 }
 

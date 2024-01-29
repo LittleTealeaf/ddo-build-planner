@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attribute::{Attribute, AttributeDependencies, ToAttribute};
 
-use super::{Condition, Depth};
+use super::{Condition, Depth, HasDice};
 
 /// Represents a value of a [`Bonus`]
 ///
@@ -54,6 +54,13 @@ pub enum Value {
         /// The value to return if the condition returns false
         if_false: Box<Value>,
     },
+    /// Represents a die roll. Attributes will be calculated based on the mean roll of the dice
+    Dice {
+        /// The number of dice to roll
+        count: Box<Value>,
+        /// The dice size
+        size: Box<Value>,
+    },
 }
 
 /// Constants
@@ -85,9 +92,19 @@ impl Value {
 
 /// Operations to simplify writing formulas
 impl Value {
-    /// Shortcut for [`Condition::If`]
+    #[must_use]
+    /// Shortcut for [`Value::Dice`]
     ///
-    /// [`Condition::If`]: Self#variant.If
+    /// Represents a dice roll that can either go from 1 to `size`, and is rolled `count` number of
+    /// times
+    pub fn dice(count: impl Into<Self>, size: impl Into<Self>) -> Self {
+        Self::Dice {
+            count: Box::new(count.into()),
+            size: Box::new(size.into()),
+        }
+    }
+
+    /// Shortcut for [`Value::If`]
     #[must_use]
     pub fn condition(
         condition: impl Into<Condition>,
@@ -229,8 +246,8 @@ where
 
 impl Depth for Value {
     fn get_depth(&self) -> usize {
-        match self {
-            Self::Const(_) | Self::Attribute(_) => 1,
+        1 + match self {
+            Self::Const(_) | Self::Attribute(_) => 0,
             Self::Min(a, b)
             | Self::Max(a, b)
             | Self::Add(a, b)
@@ -247,6 +264,31 @@ impl Depth for Value {
                 .get_depth()
                 .max(if_true.get_depth())
                 .max(if_false.get_depth()),
+            Self::Dice { count, size } => count.get_depth().max(size.get_depth()),
+        }
+    }
+}
+
+impl HasDice for Value {
+    fn has_dice(&self) -> bool {
+        match self {
+            Self::Const(_) | Self::Attribute(_) => false,
+            Self::Min(a, b)
+            | Self::Max(a, b)
+            | Self::Add(a, b)
+            | Self::Sub(a, b)
+            | Self::Mul(a, b)
+            | Self::Div(a, b)
+            | Self::Rem(a, b) => a.has_dice() || b.has_dice(),
+            Self::Floor(val) | Self::Ceil(val) | Self::Round(val) | Self::Abs(val) => {
+                val.has_dice()
+            }
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => condition.has_dice() || if_true.has_dice() || if_false.has_dice(),
+            Self::Dice { count: _, size: _ } => true,
         }
     }
 }
@@ -274,6 +316,7 @@ impl Display for Value {
             } => {
                 write!(f, "If ({condition}) then {if_true} else {if_false}")
             }
+            Self::Dice { count, size } => write!(f, "({count})d({size})"),
         }
     }
 }
@@ -303,6 +346,9 @@ impl AttributeDependencies for Value {
                 condition.has_attr_dependency(attribute)
                     || if_true.has_attr_dependency(attribute)
                     || if_false.has_attr_dependency(attribute)
+            }
+            Self::Dice { count, size } => {
+                count.has_attr_dependency(attribute) || size.has_attr_dependency(attribute)
             }
         }
     }
@@ -334,6 +380,10 @@ impl AttributeDependencies for Value {
                 condition.include_attr_dependency(set);
                 if_true.include_attr_dependency(set);
                 if_false.include_attr_dependency(set);
+            }
+            Self::Dice { count, size } => {
+                count.include_attr_dependency(set);
+                size.include_attr_dependency(set);
             }
         }
     }
