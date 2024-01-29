@@ -36,7 +36,7 @@ pub struct Breakdowns {
 }
 
 /// Determines the strategy used when evaluating dice in bonuses
-#[derive(Debug, Serialize, Deserialize, Clone, Copy)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DiceStrategy {
     /// Dice will always roll 1s, or the lowest value
     Minimum,

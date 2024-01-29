@@ -576,3 +576,42 @@ mod breakdowns {
         assert!(breakdown.disabled().iter().any(|i| i.bonus() == &a));
     }
 }
+
+mod dice_strategy {
+
+    use super::*;
+
+    #[test]
+    fn default_is_average() {
+        assert_eq!(Breakdowns::new().dice_strategy(), DiceStrategy::Average);
+    }
+
+    #[test]
+    fn setting_strategy_recalculates_bonuses() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonus(Bonus::new(
+            DebugValue(0),
+            DebugValue(0),
+            Value::dice(1, 6),
+            DebugValue(0),
+            None,
+        ));
+
+        assert_eq!(
+            breakdowns.get_attribute(DebugValue(0)),
+            Decimal::from_str("3.5").unwrap()
+        );
+
+        breakdowns.set_dice_strategy(DiceStrategy::Minimum);
+        assert_eq!(
+            breakdowns.get_attribute(DebugValue(0)),
+            Decimal::from_str("1").unwrap()
+        );
+
+        breakdowns.set_dice_strategy(DiceStrategy::Maximum);
+        assert_eq!(
+            breakdowns.get_attribute(DebugValue(0)),
+            Decimal::from_str("6").unwrap()
+        );
+    }
+}
