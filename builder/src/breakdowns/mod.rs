@@ -99,6 +99,7 @@ impl Breakdowns {
         self.dice_strategy = strategy;
 
         self.value_cache.retain(|val, _| !val.has_dice());
+        self.condition_cache.retain(|val, _| !val.has_dice());
 
         let attributes = self
             .get_bonuses()
