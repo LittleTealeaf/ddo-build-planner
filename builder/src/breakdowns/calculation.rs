@@ -6,7 +6,7 @@ use crate::{
     bonus::{BonusType, Condition, Value},
 };
 
-use super::Breakdowns;
+use super::{Breakdowns, DiceStrategy};
 
 impl Breakdowns {
     /// Calculates and retuns the final value for a given [`Attribute`].
@@ -70,16 +70,16 @@ impl Breakdowns {
             Value::Mul(a, b) => self.evaluate_value(a) * self.evaluate_value(b),
             Value::Div(a, b) => self.evaluate_value(a) / self.evaluate_value(b),
             Value::Rem(a, b) => self.evaluate_value(a) % self.evaluate_value(b),
-            Value::Dice { count, size } => match self.dice_strategy {
-                super::DiceStrategy::Minimum => self.evaluate_value(count),
-                super::DiceStrategy::Average => {
-                    self.evaluate_value(count) * (self.evaluate_value(size) + Decimal::ONE)
-                        / Decimal::TWO
-                }
-                super::DiceStrategy::Maximum => {
-                    self.evaluate_value(count) * self.evaluate_value(size)
-                }
-            },
+            Value::Dice { count, size } => {
+                self.evaluate_value(count)
+                    * match self.dice_strategy {
+                        DiceStrategy::Minimum => Decimal::ONE,
+                        DiceStrategy::Average => {
+                            (self.evaluate_value(size) + Decimal::ONE) / Decimal::TWO
+                        }
+                        DiceStrategy::Maximum => self.evaluate_value(size),
+                    }
+            }
         };
 
         self.value_cache.insert(value.clone(), result);

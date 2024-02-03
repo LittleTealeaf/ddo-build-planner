@@ -1,6 +1,7 @@
 use std::{
     cmp::Reverse,
     collections::{BinaryHeap, HashSet},
+    iter::once,
 };
 
 use crate::{
@@ -57,12 +58,13 @@ impl Buffer {
         let bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
-                [
-                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
-                    vec![bonus],
-                ]
+                bonus
+                    .attribute()
+                    .clone_bonus(&bonus)
+                    .into_iter()
+                    .flatten()
+                    .chain(once(bonus))
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();
