@@ -98,12 +98,13 @@ impl Breakdowns {
     pub fn set_dice_strategy(&mut self, strategy: DiceStrategy) {
         self.dice_strategy = strategy;
 
-        self.value_cache
-            .retain(|i, _| !matches!(i, Value::Dice { count: _, size: _ }));
+        self.value_cache.retain(|val, _| !val.has_dice());
 
         let attributes = self
             .get_bonuses()
-            .filter_map(|bonus| bonus.has_dice().then_some(bonus.attribute().clone()))
+            .filter(|&bonus| bonus.has_dice())
+            .map(Bonus::attribute)
+            .cloned()
             .collect::<Vec<_>>();
 
         self.recalculate_attributes(attributes);
