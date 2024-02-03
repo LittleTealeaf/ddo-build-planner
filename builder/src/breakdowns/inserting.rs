@@ -85,6 +85,13 @@ impl Breakdowns {
     }
 }
 
+fn filter_attr_deps<K, V>(attribute: &Attribute) -> impl Fn(&K, &mut V) -> bool + '_
+where
+    K: AttributeDependencies,
+{
+    |key, _| key.has_attr_dependency(attribute)
+}
+
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
@@ -98,10 +105,8 @@ impl Breakdowns {
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
             if forced || initial_value != self.get_attribute(attribute.clone()) {
-                self.value_cache
-                    .retain(|key, _| !key.has_attr_dependency(&attribute));
-                self.condition_cache
-                    .retain(|key, _| !key.has_attr_dependency(&attribute));
+                self.value_cache.retain(filter_attr_deps(&attribute));
+                self.condition_cache.retain(filter_attr_deps(&attribute));
 
                 let source = BonusSource::Attribute(attribute.clone());
 
