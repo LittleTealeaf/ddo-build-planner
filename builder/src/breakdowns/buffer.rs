@@ -27,12 +27,13 @@ impl Buffer {
         buffer.bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
-                [
-                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
-                    vec![bonus],
-                ]
+                bonus
+                    .attribute()
+                    .clone_bonus(&bonus)
+                    .into_iter()
+                    .flatten()
+                    .chain(once(bonus))
             })
-            .flatten()
             .map(|bonus| {
                 buffer.forced.insert(bonus.attribute().clone());
                 buffer.attributes.push(Reverse(bonus.attribute().clone()));
