@@ -62,6 +62,21 @@ pub enum Race {
     Trailblazer,
 }
 
+impl Race {
+    /// Returns `true` if the race is an iconic
+    #[must_use]
+    pub const fn is_iconic(&self) -> bool {
+        matches!(self, Self::Trailblazer
+            | Self::Shadarkai
+            | Self::Scourge
+            | Self::Razorclaw
+            | Self::PurpleDragonKnight
+            | Self::Morninglord
+            | Self::DeepGnome
+            | Self::Bladeforged)
+    }
+}
+
 impl Display for Race {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
