@@ -25,7 +25,7 @@ use self::base::get_base_bonuses;
 /// This object is used to both display final attribute values ([`Self::get_attribute`]),
 /// as well as list out the bonus breakdown of on particular attribute ([`Self::get_breakdowns`])
 /// of a particular variable
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
     value_cache: HashMap<Value, Decimal>,
@@ -36,7 +36,7 @@ pub struct Breakdowns {
 }
 
 /// Determines the strategy used when evaluating dice in bonuses
-#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum DiceStrategy {
     /// Dice will always roll 1s, or the lowest value
     Minimum,
@@ -98,12 +98,14 @@ impl Breakdowns {
     pub fn set_dice_strategy(&mut self, strategy: DiceStrategy) {
         self.dice_strategy = strategy;
 
-        self.value_cache
-            .retain(|i, _| !matches!(i, Value::Dice { .. }));
+        self.value_cache.retain(|val, _| !val.has_dice());
+        self.condition_cache.retain(|val, _| !val.has_dice());
 
         let attributes = self
             .get_bonuses()
-            .filter_map(|bonus| bonus.has_dice().then_some(bonus.attribute().clone()))
+            .filter(|&bonus| bonus.has_dice())
+            .map(Bonus::attribute)
+            .cloned()
             .collect::<Vec<_>>();
 
         self.recalculate_attributes(attributes);
