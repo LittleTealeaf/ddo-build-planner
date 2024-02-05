@@ -31,7 +31,7 @@ format_push_string = "warn"
 get_unwrap = "warn"
 if_then_some_else_none = "warn"
 missing_assert_message = "warn"
-self_named_module_files = "warn"
+mod_module_files = "warn"
 std_instead_of_core = "warn"
 str_to_string = "warn"
 string_lit_chars_any = "warn"
@@ -41,6 +41,7 @@ unneeded_field_pattern = "warn"
 unwrap_in_result = "warn"
 wildcard_dependencies = "warn"
 redundant_feature_names = "warn"
+impl_trait_in_params = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }

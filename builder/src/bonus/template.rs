@@ -27,12 +27,13 @@ pub struct BonusTemplate {
 impl BonusTemplate {
     /// Creates a new bonus template with the following values
     #[must_use]
-    pub fn new(
-        attribute: impl Into<Attribute>,
-        bonus_type: impl Into<BonusType>,
-        value: impl Into<Value>,
-        condition: impl Into<Option<Condition>>,
-    ) -> Self {
+    pub fn new<A, T, V, C>(attribute: A, bonus_type: T, value: V, condition: C) -> Self
+    where
+        A: Into<Attribute>,
+        T: Into<BonusType>,
+        V: Into<Value>,
+        C: Into<Option<Condition>>,
+    {
         Self {
             attribute: attribute.into(),
             bonus_type: bonus_type.into(),
@@ -43,26 +44,41 @@ impl BonusTemplate {
 
     /// Provides the use of a given toggle
     #[must_use]
-    pub fn toggle(toggle: impl Into<Toggle>, condition: impl Into<Option<Condition>>) -> Self {
+    pub fn toggle<T, C>(toggle: T, condition: C) -> Self
+    where
+        T: Into<Toggle>,
+        C: Into<Option<Condition>>,
+    {
         let toggle: Toggle = toggle.into();
         Self::new(toggle.to_flag(), BonusType::Stacking, 1, condition)
     }
 
     /// Provides the specified flag
     #[must_use]
-    pub fn flag(flag: impl Into<Flag>, condition: impl Into<Option<Condition>>) -> Self {
+    pub fn flag<F, C>(flag: F, condition: C) -> Self
+    where
+        F: Into<Flag>,
+        C: Into<Option<Condition>>,
+    {
         Self::new(flag.into(), BonusType::Stacking, 1, condition)
     }
 
     /// Provides the feat
     #[must_use]
-    pub fn feat(feat: impl Into<Feat>, condition: impl Into<Option<Condition>>) -> Self {
+    pub fn feat<F, C>(feat: F, condition: C) -> Self
+    where
+        F: Into<Feat>,
+        C: Into<Option<Condition>>,
+    {
         Self::new(feat.into(), BonusType::Stacking, 1, condition)
     }
 
     /// Converts this bonus template into a bonus
     #[must_use]
-    pub fn to_bonus(self, source: impl Into<BonusSource>) -> Bonus {
+    pub fn to_bonus<S>(self, source: S) -> Bonus
+    where
+        S: Into<BonusSource>,
+    {
         Bonus::new(
             self.attribute,
             self.bonus_type,
@@ -97,22 +113,34 @@ impl BonusTemplate {
     }
 
     /// Sets the attribute of this [`BonusTemplate`].
-    pub fn set_attribute(&mut self, attribute: impl Into<Attribute>) {
+    pub fn set_attribute<A>(&mut self, attribute: A)
+    where
+        A: Into<Attribute>,
+    {
         self.attribute = attribute.into();
     }
 
     /// Sets the bonus type of this [`BonusTemplate`].
-    pub fn set_bonus_type(&mut self, bonus_type: impl Into<BonusType>) {
+    pub fn set_bonus_type<T>(&mut self, bonus_type: T)
+    where
+        T: Into<BonusType>,
+    {
         self.bonus_type = bonus_type.into();
     }
 
     /// Sets the value of this [`BonusTemplate`].
-    pub fn set_value(&mut self, value: impl Into<Value>) {
+    pub fn set_value<V>(&mut self, value: V)
+    where
+        V: Into<Value>,
+    {
         self.value = value.into();
     }
 
     /// Sets the condition of this [`BonusTemplate`].
-    pub fn set_condition(&mut self, condition: impl Into<Option<Condition>>) {
+    pub fn set_condition<C>(&mut self, condition: C)
+    where
+        C: Into<Option<Condition>>,
+    {
         self.condition = condition.into();
     }
 }

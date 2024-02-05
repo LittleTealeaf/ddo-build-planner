@@ -10,6 +10,7 @@ mod value;
 use core::fmt::{self, Display};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+use utils::from_into::FromInto;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -60,13 +61,20 @@ impl Bonus {
     /// ```
     /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
     #[must_use]
-    pub fn new(
-        attribute: impl Into<Attribute>,
-        bonus_type: impl Into<BonusType>,
-        value: impl Into<Value>,
-        source: impl Into<BonusSource>,
-        condition: impl Into<Option<Condition>>,
-    ) -> Self {
+    pub fn new<A, T, V, S, C>(
+        attribute: A,
+        bonus_type: T,
+        value: V,
+        source: S,
+        condition: C,
+    ) -> Self
+    where
+        A: Into<Attribute>,
+        T: Into<BonusType>,
+        V: Into<Value>,
+        S: Into<BonusSource>,
+        C: Into<Option<Condition>>,
+    {
         Self {
             attribute: attribute.into(),
             bonus_type: bonus_type.into(),
@@ -93,39 +101,50 @@ impl Bonus {
     /// assert!(dummy.condition().is_none());
     /// ```
     #[must_use]
-    pub fn dummy(source: impl Into<BonusSource>) -> Self {
+    pub fn dummy<S>(source: S) -> Self
+    where
+        S: Into<BonusSource>,
+    {
         Self::new(Attribute::Dummy, BonusType::Stacking, 0, source, None)
     }
 
     /// Returns a bonus that gives the character some [`Flag`].
     #[must_use]
-    pub fn flag(
-        flag: impl Into<Flag>,
-        source: impl Into<BonusSource>,
-        condition: impl Into<Option<Condition>>,
-    ) -> Self {
+    pub fn flag<F, S, C>(flag: F, source: S, condition: C) -> Self
+    where
+        F: Into<Flag>,
+        S: Into<BonusSource>,
+        C: Into<Option<Condition>>,
+    {
         Self::new(flag.into(), BonusType::Stacking, 1, source, condition)
     }
 
     /// Returns a bonus that gives the character some [`Feat`]
     #[must_use]
-    pub fn feat(
-        feat: impl Into<Feat>,
-        source: impl Into<BonusSource>,
-        condition: impl Into<Option<Condition>>,
-    ) -> Self {
+    pub fn feat<F, S, C>(feat: F, source: S, condition: C) -> Self
+    where
+        F: Into<Feat>,
+        S: Into<BonusSource>,
+        C: Into<Option<Condition>>,
+    {
         Self::new(feat.into(), BonusType::Stacking, 1, source, condition)
     }
 
     /// Provides the use of a toggle
     #[must_use]
-    pub fn toggle(
-        toggle: impl Into<Toggle>,
-        source: impl Into<BonusSource>,
-        condition: impl Into<Option<Condition>>,
-    ) -> Self {
-        let toggle: Toggle = toggle.into();
-        Self::new(toggle.to_flag(), BonusType::Stacking, 1, source, condition)
+    pub fn toggle<T, S, C>(toggle: T, source: S, condition: C) -> Self
+    where
+        T: Into<Toggle>,
+        S: Into<BonusSource>,
+        C: Into<Option<Condition>>,
+    {
+        Self::new(
+            Toggle::from_into(toggle).to_flag(),
+            BonusType::Stacking,
+            1,
+            source,
+            condition,
+        )
     }
 }
 
@@ -233,7 +252,10 @@ impl Bonus {
     /// assert!(new_bonus.condition().is_none());
     /// ```
     #[must_use]
-    pub fn clone_into_attribute(&self, attribute: impl Into<Attribute>) -> Self {
+    pub fn clone_into_attribute<A>(&self, attribute: A) -> Self
+    where
+        A: Into<Attribute>,
+    {
         Self::new(
             attribute,
             self.bonus_type,

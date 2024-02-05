@@ -14,11 +14,10 @@ use super::Breakdowns;
 /// apply). This means that these bonuses will all show up in the breakdowns.
 impl Breakdowns {
     /// Shortcut for a single dynamic bonus. Uses [`Self::insert_dynamic_bonuses`]
-    pub fn import_dynamic_bonus(
-        &mut self,
-        attribute: Attribute,
-        bonuses: impl IntoIterator<Item = BonusTemplate>,
-    ) {
+    pub fn import_dynamic_bonus<I>(&mut self, attribute: Attribute, bonuses: I)
+    where
+        I: IntoIterator<Item = BonusTemplate>,
+    {
         self.import_dynamic_bonuses([(attribute, bonuses)]);
     }
 
