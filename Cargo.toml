@@ -27,7 +27,7 @@ absolute_paths = "warn"
 assertions_on_result_states = "warn"
 clone_on_ref_ptr = "warn"
 dbg_macro = "warn"
-expect_used = "warn"
+format_push_string = "warn"
 
 
 too_many_lines = { level = "allow", priority = 1 }
