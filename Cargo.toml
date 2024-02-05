@@ -35,6 +35,10 @@ missing_assert_message = "warn"
 self_name_module_files = "warn"
 std_instead_of_core = "warn"
 str_to_string = "warn"
+string_lit_chars_any = "warn"
+string_to_string = "warn"
+unnecessary_self_imports = "warn"
+unneeded_field_pattern = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }

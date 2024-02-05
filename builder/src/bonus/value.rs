@@ -290,7 +290,7 @@ impl HasDice for Value {
                 if_true,
                 if_false,
             } => condition.has_dice() || if_true.has_dice() || if_false.has_dice(),
-            Self::Dice { count: _, size: _ } => true,
+            Self::Dice { .. } => true,
         }
     }
 }
