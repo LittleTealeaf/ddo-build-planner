@@ -17,9 +17,9 @@ use crate::{
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
-        saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spell_points::SpellPoints,
-        spell_power::SpellPower, spell_selector::SpellSelector,
+        dodge::Dodge, flag::Flag, heal_amp::HealingAmplification, health::Health,
+        player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill,
+        spell_points::SpellPoints, spell_power::SpellPower, spell_selector::SpellSelector,
         summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
@@ -102,6 +102,12 @@ pub enum Attribute {
     SetBonus(String),
     /// Healing Amplification
     HealingAmplification(HealingAmplification),
+    /// Double Strike
+    DoubleStrike,
+    /// Double Shot
+    DoubleShot,
+    /// Dodge
+    Dodge(Dodge),
 }
 
 impl Display for Attribute {
@@ -138,6 +144,9 @@ impl Display for Attribute {
             Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
             Self::SetBonus(set) => write!(f, "Set Bonus: {set}"),
             Self::HealingAmplification(heal_amp) => heal_amp.fmt(f),
+            Self::DoubleStrike => write!(f, "Doublestrike"),
+            Self::DoubleShot => write!(f, "Doubleshot"),
+            Self::Dodge(dodge) => dodge.fmt(f),
         }
     }
 }
@@ -223,6 +232,7 @@ impl StaticOptions for Attribute {
             SpellPoints::get_static().map(Self::SpellPoints),
             SummonedAttribute::get_static().map(Self::SummonedAttribute),
             HealingAmplification::get_static().map(Self::HealingAmplification),
+            Dodge::get_static().map(Self::Dodge)
         )
     }
 }

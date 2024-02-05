@@ -24,6 +24,7 @@ ron = "0.8.1"
 log = "0.4.20"
 im = { version = "15.1.0", features = ["serde"] }
 rust_decimal = "1.34.2"
+rust_decimal_macros = "1.34.2"
 
 [dev-dependencies]
 builder = { path = ".", features = ["debug"] }

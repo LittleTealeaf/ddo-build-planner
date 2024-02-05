@@ -1,19 +1,20 @@
 use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 
 use crate::{
     attribute::Attribute,
     bonus::{BonusTemplate, BonusType},
     types::{
-        ability::Ability, damage_type::DamageType, race::Race, saving_throw::SavingThrow,
-        sheltering::Sheltering, skill::Skill, spell_power::SpellPower, spell_school::SpellSchool,
-        spell_selector::SpellSelector,
+        ability::Ability, damage_type::DamageType, dodge::Dodge, race::Race,
+        saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spell_power::SpellPower,
+        spell_school::SpellSchool, spell_selector::SpellSelector,
     },
 };
 
 #[allow(clippy::match_same_arms)]
 pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate>> {
     (value > Decimal::ZERO).then(|| {
-        let value = value.max(Decimal::from(3));
+        let value = value.max(dec!(3));
 
         match race {
             Race::Dragonborn | Race::Tiefling => {
@@ -32,13 +33,16 @@ pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate
             Race::Shifter | Race::WoodElf | Race::Elf => {
                 heroic_past_lives(Skill::Spot, Ability::Dexterity, value)
             }
-            Race::Scourge => vec![
-                // TODO: doublestrike
-            ],
+            Race::Scourge => vec![BonusTemplate::new(
+                Attribute::DoubleStrike,
+                BonusType::Stacking,
+                Decimal::TWO * value,
+                None,
+            )],
             Race::Bladeforged => vec![BonusTemplate::new(
                 Attribute::SpellPower(SpellPower::Damage(DamageType::Repair)),
                 BonusType::Stacking,
-                value * Decimal::from(10),
+                value * Decimal::TEN,
                 None,
             )],
             Race::DeepGnome => vec![BonusTemplate::new(
@@ -50,7 +54,7 @@ pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate
             Race::PurpleDragonKnight => vec![BonusTemplate::new(
                 Sheltering::Physical,
                 BonusType::Stacking,
-                value * Decimal::from(3),
+                value * dec!(3),
                 None,
             )],
             Race::Razorclaw => vec![BonusTemplate::new(
@@ -60,13 +64,16 @@ pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate
                 None,
             )],
 
-            Race::Shadarkai => vec![
-                // TODO: dodge
-            ],
+            Race::Shadarkai => vec![BonusTemplate::new(
+                Dodge::Bonus,
+                BonusType::Stacking,
+                value,
+                None,
+            )],
             Race::Morninglord => vec![BonusTemplate::new(
                 Attribute::SpellPower(SpellPower::Damage(DamageType::Positive)),
                 BonusType::Stacking,
-                value * Decimal::from(3),
+                value * dec!(3),
                 None,
             )],
             Race::Trailblazer => vec![BonusTemplate::new(
@@ -87,8 +94,10 @@ pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate
 
 fn heroic_past_lives(skill: Skill, ability: Ability, value: Decimal) -> Vec<BonusTemplate> {
     [
-        (value >= Decimal::ONE).then(|| BonusTemplate::new(skill, BonusType::Stacking, 1, None)),
-        (value >= Decimal::TWO).then(|| BonusTemplate::new(ability, BonusType::Stacking, 1, None)),
+        (value >= Decimal::ONE)
+            .then(|| BonusTemplate::new(skill, BonusType::Stacking, Decimal::ONE, None)),
+        (value >= Decimal::TWO)
+            .then(|| BonusTemplate::new(ability, BonusType::Stacking, Decimal::ONE, None)),
         // TODO: Bonus racial action point
     ]
     .into_iter()
