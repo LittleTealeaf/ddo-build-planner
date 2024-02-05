@@ -34,6 +34,7 @@ if_then_some_else_none = "warn"
 missing_assert_message = "warn"
 self_name_module_files = "warn"
 std_instead_of_core = "warn"
+str_to_string = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
