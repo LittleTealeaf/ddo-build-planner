@@ -2,7 +2,7 @@
 public_modules!(bonuses);
 
 use serde::{Deserialize, Serialize};
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 use utils::{enums::StaticOptions, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};

@@ -1,5 +1,5 @@
 //! Summoned Attributes
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};

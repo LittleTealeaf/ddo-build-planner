@@ -1,5 +1,5 @@
 //! Describes Physical and Magical Sheltering
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;

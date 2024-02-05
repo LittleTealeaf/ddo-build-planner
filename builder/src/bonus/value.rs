@@ -1,10 +1,11 @@
 use core::fmt;
-use std::{
-    collections::HashSet,
+use core::{
     fmt::Display,
     iter::{Product, Sum},
     ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
+
+use std::collections::HashSet;
 
 use itertools::Itertools;
 use rust_decimal::Decimal;

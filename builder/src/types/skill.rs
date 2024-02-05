@@ -1,6 +1,6 @@
 //! Each of the possile skills
 
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};

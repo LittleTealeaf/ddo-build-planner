@@ -1,9 +1,9 @@
 use core::fmt;
-use std::{
-    collections::HashSet,
+use core::{
     fmt::Display,
     ops::{BitAnd, BitOr, BitXor, Not},
 };
+use std::collections::HashSet;
 
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};

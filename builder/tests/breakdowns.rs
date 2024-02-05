@@ -4,9 +4,8 @@ use builder::{
     breakdowns::{Breakdowns, DiceStrategy},
     debug::DebugValue,
 };
+use core::{ops::Neg, str::FromStr};
 use rust_decimal::Decimal;
-use std::ops::Neg;
-use std::str::FromStr;
 
 /// Pushes a list of bonuses into a breakdown object and expects [`Attribute::Debug(0)`] to have
 /// the specified value

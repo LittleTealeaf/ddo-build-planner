@@ -2,7 +2,7 @@
 // TODO: Merge with a spell category
 public_modules!(bonuses);
 
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};

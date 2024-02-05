@@ -2,7 +2,7 @@
 
 mod attacking_target;
 
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 
 use itertools::chain;
 use rust_decimal::Decimal;

@@ -7,9 +7,9 @@ mod template;
 mod traits;
 mod value;
 
-use core::fmt;
+use core::fmt::{self, Display};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashSet, fmt::Display};
+use std::collections::HashSet;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},

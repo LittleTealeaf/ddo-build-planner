@@ -1,7 +1,7 @@
 //! weapon Attributes
 public_modules!(weapon_hand, weapon_stat);
 
-use std::fmt::{self, Display};
+use core::fmt::{self, Display};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
