@@ -1,8 +1,8 @@
 //! Contains player race
 public_modules!(bonuses);
 
-use serde::{Deserialize, Serialize};
 use core::fmt::{self, Display};
+use serde::{Deserialize, Serialize};
 use utils::{enums::StaticOptions, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};
