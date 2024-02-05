@@ -32,7 +32,7 @@ get_unwrap = "warn"
 if_then_some_else_none = "warn"
 # impl_trait_in_params = "warn"
 missing_assert_message = "warn"
-
+mod_module_files = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
