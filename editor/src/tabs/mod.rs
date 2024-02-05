@@ -23,7 +23,7 @@ impl HandleView<Editor> for Tab {
             [(Self::Home, "Home"), (Self::SetBonuses, "Set Bonuses"),]
                 .into_iter()
                 .fold(TabBar::new(Message::ChangeTab), |bar, (id, label)| {
-                    bar.push(id, TabLabel::Text(label.to_string()))
+                    bar.push(id, TabLabel::Text(label.to_owned()))
                 })
                 .set_active_tab(self),
             match &self {

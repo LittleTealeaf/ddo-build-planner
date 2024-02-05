@@ -1,8 +1,9 @@
-use std::{
-    collections::HashSet,
+use core::fmt;
+use core::{
     fmt::Display,
     ops::{BitAnd, BitOr, BitXor, Not},
 };
+use std::collections::HashSet;
 
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
@@ -210,7 +211,7 @@ impl Depth for Condition {
 }
 
 impl Display for Condition {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Not(condition) => write!(f, "Not ({})", *condition),
             Self::GreaterThan(a, b) => write!(f, "{a} > {b}"),

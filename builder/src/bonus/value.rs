@@ -1,9 +1,11 @@
-use std::{
-    collections::HashSet,
+use core::fmt;
+use core::{
     fmt::Display,
     iter::{Product, Sum},
     ops::{Add, Div, Mul, Neg, Rem, Sub},
 };
+
+use std::collections::HashSet;
 
 use itertools::Itertools;
 use rust_decimal::Decimal;
@@ -288,13 +290,13 @@ impl HasDice for Value {
                 if_true,
                 if_false,
             } => condition.has_dice() || if_true.has_dice() || if_false.has_dice(),
-            Self::Dice { count: _, size: _ } => true,
+            Self::Dice { .. } => true,
         }
     }
 }
 
 impl Display for Value {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Add(a, b) => write!(f, "({a} + {b})"),
             Self::Sub(a, b) => write!(f, "({a} - {b})"),

@@ -1,7 +1,9 @@
 //! Each of the playable player classes and archetypes
 public_modules!(bonuses);
 
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use serde::{Deserialize, Serialize};
 use utils::{enums::StaticOptions, public_modules};
@@ -98,7 +100,7 @@ impl PlayerClass {
 }
 
 impl Display for PlayerClass {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Alchemist => write!(f, "Alchemist"),
             Self::Artificer => write!(f, "Artificer"),
@@ -126,7 +128,7 @@ impl Display for PlayerClass {
 }
 
 impl ToAttribute for PlayerClass {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         Attribute::ClassLevel(self)
     }
 }

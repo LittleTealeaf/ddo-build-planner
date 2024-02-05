@@ -1,8 +1,5 @@
-use std::{
-    cmp::Reverse,
-    collections::{BinaryHeap, HashSet},
-    iter::once,
-};
+use core::{cmp::Reverse, iter::once};
+use std::collections::{BinaryHeap, HashSet};
 
 use crate::{
     attribute::Attribute,

@@ -1,13 +1,15 @@
 //! Healing Amplifcation Types
 
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
-    bonus::CloneBonus,
+    bonus::{Bonus, CloneBonus},
 };
 
 /// Types of Healing Amplification
@@ -29,7 +31,7 @@ impl HealingAmplification {
 }
 
 impl Display for HealingAmplification {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Positive => write!(f, "Positive Healing Amplification"),
             Self::Negative => write!(f, "Negative Healing Amplification"),
@@ -40,13 +42,13 @@ impl Display for HealingAmplification {
 }
 
 impl ToAttribute for HealingAmplification {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         Attribute::HealingAmplification(self)
     }
 }
 
 impl CloneBonus for HealingAmplification {
-    fn clone_bonus(&self, bonus: &crate::bonus::Bonus) -> Option<Vec<crate::bonus::Bonus>> {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             Self::ALL
                 .map(|amp| bonus.clone_into_attribute(amp))

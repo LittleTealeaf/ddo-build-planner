@@ -32,12 +32,14 @@ mod tests {
 
     #[test]
     fn set_bonuses_parses() {
-        assert!(get_set_bonuses().is_ok());
+        get_set_bonuses().expect("Expected Set Bonuses to Parse");
     }
 
     #[test]
     fn breakdowns_inserts_bonuses() {
         let mut breakdowns = Breakdowns::new();
-        assert!(breakdowns.import_set_bonuses().is_ok());
+        breakdowns
+            .import_set_bonuses()
+            .expect("Expected Set Bonuses to be imported");
     }
 }
