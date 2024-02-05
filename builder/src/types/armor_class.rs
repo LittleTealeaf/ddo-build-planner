@@ -1,6 +1,8 @@
 //! Armor class types and calculations
 
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -44,7 +46,7 @@ pub enum ArmorClass {
 }
 
 impl Display for ArmorClass {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::TotalArmorClass => write!(f, "Total Armor Class"),
             Self::Bonus => write!(f, "Armor Class Bonus"),

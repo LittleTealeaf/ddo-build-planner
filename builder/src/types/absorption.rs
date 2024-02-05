@@ -1,6 +1,8 @@
 //! Describes different absorption types, since absorption isn't additive
 
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -20,7 +22,7 @@ pub enum Absorption {
 }
 
 impl Display for Absorption {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Total(dam) => write!(f, "{dam} Absorption"),
             Self::Bonus(dam, bonus_type) => write!(f, "{dam} Absorption Bonus: {bonus_type}"),
@@ -41,7 +43,7 @@ impl StaticOptions for Absorption {
 }
 
 impl ToAttribute for Absorption {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         Attribute::Absorption(self)
     }
 }
@@ -61,7 +63,7 @@ pub enum AbsorptionSource {
 }
 
 impl Display for AbsorptionSource {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Item => write!(f, "Item"),
             Self::EnergySheathe => write!(f, "Energy Sheathe"),

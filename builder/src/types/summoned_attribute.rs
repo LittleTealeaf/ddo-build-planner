@@ -1,5 +1,5 @@
 //! Summoned Attributes
-use std::fmt::Display;
+use core::fmt::{self, Display};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -26,7 +26,7 @@ impl GetBonuses for SummonedAttribute {
 }
 
 impl CloneBonus for SummonedAttribute {
-    fn clone_bonus(&self, bonus: &crate::bonus::Bonus) -> Option<Vec<Bonus>> {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         match self {
             Self::AbilityScore(ability) => ability.clone_bonus(bonus),
         }
@@ -34,7 +34,7 @@ impl CloneBonus for SummonedAttribute {
 }
 
 impl Display for SummonedAttribute {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::AbilityScore(ability) => write!(f, "{ability} score"),
         }
@@ -42,7 +42,7 @@ impl Display for SummonedAttribute {
 }
 
 impl ToAttribute for SummonedAttribute {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         Attribute::SummonedAttribute(self)
     }
 }

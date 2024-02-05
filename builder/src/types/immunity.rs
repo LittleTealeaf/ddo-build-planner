@@ -1,10 +1,12 @@
 //! Immunities
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
-use crate::attribute::ToAttribute;
+use crate::attribute::{Attribute, ToAttribute};
 
 use super::flag::{Flag, ToFlag};
 
@@ -20,7 +22,7 @@ pub enum Immunity {
 }
 
 impl Display for Immunity {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Sleep => write!(f, "Sleep"),
             Self::Fear => write!(f, "Fear"),
@@ -30,7 +32,7 @@ impl Display for Immunity {
 }
 
 impl ToAttribute for Immunity {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         self.to_flag().to_attribute()
     }
 }

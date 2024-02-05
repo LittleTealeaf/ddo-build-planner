@@ -1,5 +1,5 @@
 //! Each of the possible saving throws
-use std::fmt::Display;
+use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -92,7 +92,7 @@ impl SavingThrow {
 }
 
 impl Display for SavingThrow {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Fortitude => write!(f, "Fortitude"),
             Self::Poison => write!(f, "Poison"),

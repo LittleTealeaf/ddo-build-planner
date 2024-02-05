@@ -99,7 +99,7 @@ impl Breakdowns {
         self.dice_strategy = strategy;
 
         self.value_cache
-            .retain(|i, _| !matches!(i, Value::Dice { count: _, size: _ }));
+            .retain(|i, _| !matches!(i, Value::Dice { .. }));
 
         let attributes = self
             .get_bonuses()

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -28,7 +28,7 @@ pub enum WeaponStat {
 }
 
 impl Display for WeaponStat {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Attack => write!(f, "Attack"),
             Self::Damage => write!(f, "Damage"),

@@ -7,8 +7,9 @@ mod template;
 mod traits;
 mod value;
 
+use core::fmt::{self, Display};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashSet, fmt::Display};
+use std::collections::HashSet;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -267,7 +268,7 @@ impl AttributeDependencies for Bonus {
 }
 
 impl Display for Bonus {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(condition) = &self.condition {
             write!(
                 f,
