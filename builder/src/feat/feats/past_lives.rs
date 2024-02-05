@@ -34,7 +34,7 @@ impl Display for PastLife {
 impl GetBonuses for PastLife {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
-            Self::Racial(race) => Some(racial_past_lives(*race, value)),
+            Self::Racial(race) => racial_past_lives(*race, value),
         }
     }
 }
