@@ -27,7 +27,10 @@ pub enum MAttributeSelector {
 }
 
 impl AttributeSelector {
-    pub fn new(attributes: impl IntoIterator<Item = Attribute>) -> Self {
+    pub fn new<I>(attributes: I) -> Self
+    where
+        I: IntoIterator<Item = Attribute>,
+    {
         let attributes = attributes
             .into_iter()
             .sorted_by_cached_key(|attribute| format!("{attribute}"))
@@ -89,10 +92,10 @@ impl AttributeSelector {
         }
     }
 
-    pub fn view<'a>(
-        &'a self,
-        convert_message: impl Fn(MAttributeSelector) -> AppMessage + 'a + Clone,
-    ) -> Element<'_, AppMessage, Renderer<AppTheme>> {
+    pub fn view<'a, F>(&'a self, convert_message: F) -> Element<'_, AppMessage, Renderer<AppTheme>>
+    where
+        F: Fn(MAttributeSelector) -> AppMessage + 'a + Clone,
+    {
         let filter = self.filter.to_lowercase();
         let selected = self.selected.unwrap_or(self.attributes.len());
 

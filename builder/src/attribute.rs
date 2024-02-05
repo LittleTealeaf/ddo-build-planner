@@ -2,6 +2,8 @@
 mod traits;
 
 mod to_attribute;
+use core::fmt;
+
 use itertools::chain;
 pub use to_attribute::*;
 
@@ -21,7 +23,7 @@ use crate::{
         summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
-use std::fmt::Display;
+use fmt::Display;
 
 /// Describes various traits of a character, ranging from having feats, stats, and much more.
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -103,7 +105,7 @@ pub enum Attribute {
 }
 
 impl Display for Attribute {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             #[cfg(feature = "debug")]
             Self::Debug(val) => write!(f, "Debug {val}"),

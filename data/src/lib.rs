@@ -4,7 +4,7 @@
 mod util;
 
 /// Data Parsing Error
-pub type ParseError = ron::error::SpannedError;
+pub type ParseError = SpannedError;
 
 #[cfg(feature = "example")]
 mod example;
@@ -12,4 +12,5 @@ mod example;
 pub use example::*;
 
 mod set_bonuses;
+use ron::error::SpannedError;
 pub use set_bonuses::*;

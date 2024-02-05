@@ -1,8 +1,8 @@
 //! Contains player race
 public_modules!(bonuses);
 
+use core::fmt::{self, Display};
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 use utils::{enums::StaticOptions, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};
@@ -78,7 +78,7 @@ impl Race {
 }
 
 impl Display for Race {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Dragonborn => write!(f, "Dragonborn"),
             Self::Drow => write!(f, "Drow"),

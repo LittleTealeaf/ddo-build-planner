@@ -1,7 +1,5 @@
-use std::{
-    cmp::Reverse,
-    collections::{BinaryHeap, HashSet},
-};
+use core::{cmp::Reverse, iter::once};
+use std::collections::{BinaryHeap, HashSet};
 
 use crate::{
     attribute::Attribute,
@@ -20,18 +18,22 @@ impl Buffer {
         Self::default()
     }
 
-    pub fn create(bonuses: impl IntoIterator<Item = Bonus>) -> Self {
+    pub fn create<I>(bonuses: I) -> Self
+    where
+        I: IntoIterator<Item = Bonus>,
+    {
         let mut buffer = Self::default();
 
         buffer.bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
-                [
-                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
-                    vec![bonus],
-                ]
+                bonus
+                    .attribute()
+                    .clone_bonus(&bonus)
+                    .into_iter()
+                    .flatten()
+                    .chain(once(bonus))
             })
-            .flatten()
             .map(|bonus| {
                 buffer.forced.insert(bonus.attribute().clone());
                 buffer.attributes.push(Reverse(bonus.attribute().clone()));
@@ -42,10 +44,11 @@ impl Buffer {
         buffer
     }
 
-    pub fn insert_attributes(
-        &mut self,
-        attributes: impl IntoIterator<Item = impl Into<Attribute>>,
-    ) {
+    pub fn insert_attributes<A, I>(&mut self, attributes: I)
+    where
+        A: Into<Attribute>,
+        I: IntoIterator<Item = A>,
+    {
         for attribute in attributes {
             let attribute: Attribute = attribute.into();
             self.attributes.push(Reverse(attribute.clone()));
@@ -53,16 +56,20 @@ impl Buffer {
         }
     }
 
-    pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
+    pub fn insert_bonuses<I>(&mut self, bonuses: I)
+    where
+        I: IntoIterator<Item = Bonus>,
+    {
         let bonuses = bonuses
             .into_iter()
             .flat_map(|bonus| {
-                [
-                    bonus.attribute().clone_bonus(&bonus).unwrap_or_default(),
-                    vec![bonus],
-                ]
+                bonus
+                    .attribute()
+                    .clone_bonus(&bonus)
+                    .into_iter()
+                    .flatten()
+                    .chain(once(bonus))
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();

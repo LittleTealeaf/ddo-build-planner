@@ -1,5 +1,5 @@
 //! Spell School
-use std::fmt::Display;
+use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -40,7 +40,7 @@ impl SpellSchool {
 }
 
 impl Display for SpellSchool {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Abjuration => write!(f, "Abjuration"),
             Self::Conjuration => write!(f, "Conjuration"),

@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -61,7 +63,7 @@ pub enum RacialFeat {
 }
 
 impl Display for RacialFeat {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::SmallSizeBonus => write!(f, "Small Size Bonus"),
             Self::GnomishProficiencies => write!(f, "Gnomish Proficiencies"),

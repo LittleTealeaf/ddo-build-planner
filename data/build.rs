@@ -59,16 +59,16 @@ mod data {
 }
 
 mod errors {
-    use std::env::VarError;
+    use std::{env::VarError, io};
 
-    use ron::error::SpannedError;
+    use ron::de::SpannedError;
 
     #[derive(Debug)]
     pub enum Error {
         Environment(VarError),
         Serialize(ron::Error),
-        Spanned(ron::de::SpannedError),
-        IO(std::io::Error),
+        Spanned(SpannedError),
+        IO(io::Error),
     }
 
     impl From<VarError> for Error {
@@ -83,8 +83,8 @@ mod errors {
         }
     }
 
-    impl From<std::io::Error> for Error {
-        fn from(value: std::io::Error) -> Self {
+    impl From<io::Error> for Error {
+        fn from(value: io::Error) -> Self {
             Self::IO(value)
         }
     }

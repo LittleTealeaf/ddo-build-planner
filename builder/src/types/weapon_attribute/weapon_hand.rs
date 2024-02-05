@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -20,7 +20,7 @@ impl WeaponHand {
 }
 
 impl Display for WeaponHand {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Main => write!(f, "Main"),
             Self::Off => write!(f, "Off"),

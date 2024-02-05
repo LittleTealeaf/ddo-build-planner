@@ -20,13 +20,9 @@ pub trait IncludeSetBonuses {
 
 impl IncludeSetBonuses for Breakdowns {
     fn import_set_bonuses(&mut self) -> Result<(), SpannedError> {
-        self.import_dynamic_bonuses(
-            get_set_bonuses()?
-                .into_iter()
-                .map(SetBonus::to_dynamic_bonus),
-        );
-
-        Ok(())
+        get_set_bonuses().map(|bonuses| {
+            self.import_dynamic_bonuses(bonuses.into_iter().map(SetBonus::to_dynamic_bonus));
+        })
     }
 }
 
@@ -36,12 +32,14 @@ mod tests {
 
     #[test]
     fn set_bonuses_parses() {
-        assert!(get_set_bonuses().is_ok());
+        get_set_bonuses().expect("Expected Set Bonuses to Parse");
     }
 
     #[test]
     fn breakdowns_inserts_bonuses() {
         let mut breakdowns = Breakdowns::new();
-        assert!(breakdowns.import_set_bonuses().is_ok());
+        breakdowns
+            .import_set_bonuses()
+            .expect("Expected Set Bonuses to be imported");
     }
 }

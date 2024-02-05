@@ -9,7 +9,7 @@ use builder::{
     },
 };
 use data::IncludeSetBonuses;
-use ron::ser::PrettyConfig;
+use ron::ser::{to_string_pretty, PrettyConfig};
 use rust_decimal::Decimal;
 
 fn main() {
@@ -26,6 +26,6 @@ fn main() {
 
     println!(
         "{}",
-        ron::ser::to_string_pretty(&breakdowns, PrettyConfig::new()).unwrap()
+        to_string_pretty(&breakdowns, PrettyConfig::new()).unwrap()
     );
 }

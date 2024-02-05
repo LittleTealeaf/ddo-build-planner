@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use rust_decimal::Decimal;
@@ -98,7 +100,7 @@ impl GetBonuses for SkillFocus {
 }
 
 impl Display for SkillFocus {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Focus(skill) => write!(f, "Skill Focus: {skill}"),
             Self::Acrobatic => write!(f, "Acrobatic"),
