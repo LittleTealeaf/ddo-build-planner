@@ -21,10 +21,10 @@ impl Breakdowns {
     /// Adds dynamic bonuses to the breakdowns. This is useful for attributes that need to be
     /// included automatically, but shouldn't always be there. Bonuses are only included if the
     /// given attribute is above 0.
-    pub fn import_dynamic_bonuses(
-        &mut self,
-        dynamic_bonuses: impl IntoIterator<Item = (Attribute, Vec<BonusTemplate>)>,
-    ) {
+    pub fn import_dynamic_bonuses<I>(&mut self, dynamic_bonuses: I)
+    where
+        I: IntoIterator<Item = (Attribute, Vec<BonusTemplate>)>,
+    {
         let mut attributes = HashSet::new();
 
         let dynamic_bonuses = dynamic_bonuses.into_iter().map(|bonus| {

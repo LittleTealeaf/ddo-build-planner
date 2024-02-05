@@ -99,7 +99,11 @@ impl Value {
     ///
     /// Represents a dice roll that can either go from 1 to `size`, and is rolled `count` number of
     /// times
-    pub fn dice(count: impl Into<Self>, size: impl Into<Self>) -> Self {
+    pub fn dice<C, I>(count: C, size: I) -> Self
+    where
+        C: Into<Self>,
+        I: Into<Self>,
+    {
         Self::Dice {
             count: Box::new(count.into()),
             size: Box::new(size.into()),
@@ -108,11 +112,12 @@ impl Value {
 
     /// Shortcut for [`Value::If`]
     #[must_use]
-    pub fn condition(
-        condition: impl Into<Condition>,
-        if_true: impl Into<Self>,
-        if_false: impl Into<Self>,
-    ) -> Self {
+    pub fn condition<C, T, F>(condition: C, if_true: T, if_false: F) -> Self
+    where
+        C: Into<Condition>,
+        T: Into<Self>,
+        F: Into<Self>,
+    {
         Self::If {
             condition: Box::new(condition.into()),
             if_true: Box::new(if_true.into()),
@@ -124,7 +129,10 @@ impl Value {
     ///
     /// # Panics
     /// Panics if there are 0 items in the iterator
-    pub fn mean(iter: impl IntoIterator<Item = Self>) -> Self {
+    pub fn mean<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
         let (sum, count) = iter
             .into_iter()
             .map(|a| (a, 1))
@@ -138,7 +146,10 @@ impl Value {
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_min(iter: impl IntoIterator<Item = Self>) -> Self {
+    pub fn iter_min<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
         iter.into_iter()
             .tree_fold1(Self::min)
             .expect("Expected at least one value")
@@ -148,7 +159,10 @@ impl Value {
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_max(iter: impl IntoIterator<Item = Self>) -> Self {
+    pub fn iter_max<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
         iter.into_iter()
             .tree_fold1(Self::max)
             .expect("Expected at least one value")
@@ -158,7 +172,10 @@ impl Value {
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_sum(iter: impl IntoIterator<Item = Self>) -> Self {
+    pub fn iter_sum<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
         iter.into_iter()
             .tree_fold1(Self::add)
             .expect("Expected at least one value")
@@ -168,7 +185,10 @@ impl Value {
     ///
     /// # Panics
     /// Panics if an iterator with no items is passed in
-    pub fn iter_product(iter: impl IntoIterator<Item = Self>) -> Self {
+    pub fn iter_product<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
         iter.into_iter()
             .tree_fold1(Self::mul)
             .expect("Expected at least one value")

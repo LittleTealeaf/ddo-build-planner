@@ -16,7 +16,11 @@ impl Breakdowns {
     /// Removes all bonuses with any of the provided [`BonusSources`]
     ///
     /// [`BonusSources`]: BonusSource
-    pub fn remove_sources(&mut self, sources: impl IntoIterator<Item = impl Into<BonusSource>>) {
+    pub fn remove_sources<I, B>(&mut self, sources: I)
+    where
+        I: IntoIterator<Item = B>,
+        B: Into<BonusSource>,
+    {
         let mut buffer = Buffer::empty();
 
         let sources = sources.into_iter().map(Into::into).collect::<Vec<_>>();
@@ -27,7 +31,7 @@ impl Breakdowns {
     }
 
     /// Removes all bonuses with the provided [`BonusSource`]
-    pub fn remove_source(&mut self, source: impl Into<BonusSource>) {
+    pub fn remove_source<B: Into<BonusSource>>(&mut self, source: B) {
         self.remove_sources(once(source));
     }
 
@@ -39,7 +43,7 @@ impl Breakdowns {
 
     /// Inserts several bonuses into the breakdowns. This also removes all bonuses that have the
     /// same bonus source.
-    pub fn insert_bonuses(&mut self, bonuses: impl IntoIterator<Item = Bonus>) {
+    pub fn insert_bonuses<I: IntoIterator<Item = Bonus>>(&mut self, bonuses: I) {
         let mut sources = HashSet::new();
 
         let bonuses = bonuses.into_iter().map(|bonus| {
@@ -70,7 +74,7 @@ impl Breakdowns {
     }
 
     /// Forces the recalculation of several attributes
-    pub fn recalculate_attributes(&mut self, attributes: impl IntoIterator<Item = Attribute>) {
+    pub fn recalculate_attributes<I: IntoIterator<Item = Attribute>>(&mut self, attributes: I) {
         let mut buffer = Buffer::empty();
         buffer.insert_attributes(attributes);
         self.consume_buffer(buffer);

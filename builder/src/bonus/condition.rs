@@ -54,19 +54,28 @@ impl Condition {
 impl Condition {
     /// Requires that the character has some attribute
     #[must_use]
-    pub fn has(attribute: impl Into<Attribute>) -> Self {
+    pub fn has<A>(attribute: A) -> Self
+    where
+        A: Into<Attribute>,
+    {
         Self::GreaterThan(Value::Attribute(attribute.into()), Value::ZERO)
     }
 
     /// Condition that returns true if the provided flag is on
     #[must_use]
-    pub fn flag(flag: impl Into<Flag>) -> Self {
+    pub fn flag<F>(flag: F) -> Self
+    where
+        F: Into<Flag>,
+    {
         Value::Attribute(Attribute::Flag(flag.into())).greater_than(Value::ZERO)
     }
 
     /// Condition that returns true if the provided toggle is on
     #[must_use]
-    pub fn toggled(toggle: impl Into<Toggle>) -> Self {
+    pub fn toggled<T>(toggle: T) -> Self
+    where
+        T: Into<Toggle>,
+    {
         Value::Attribute(Attribute::Toggle(toggle.into())).greater_than(Value::ZERO)
     }
 }

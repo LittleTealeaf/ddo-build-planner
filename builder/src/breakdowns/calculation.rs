@@ -10,7 +10,10 @@ use super::Breakdowns;
 
 impl Breakdowns {
     /// Calculates and retuns the final value for a given [`Attribute`].
-    pub fn get_attribute(&mut self, attribute: impl Into<Attribute>) -> Decimal {
+    pub fn get_attribute<A>(&mut self, attribute: A) -> Decimal
+    where
+        A: Into<Attribute>,
+    {
         self.evaluate_value(&Value::Attribute(attribute.into()))
     }
 

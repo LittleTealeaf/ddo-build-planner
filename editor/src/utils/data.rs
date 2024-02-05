@@ -34,7 +34,10 @@ where
     Ok(())
 }
 
-pub fn catch_async<T>(function: impl Fn(T) -> Message) -> impl Fn(Result<T, DataError>) -> Message {
+pub fn catch_async<T, F>(function: F) -> impl Fn(Result<T, DataError>) -> Message
+where
+    F: Fn(T) -> Message,
+{
     move |result| match result {
         Ok(val) => function(val),
         Err(err) => Message::Error(format!("{err:?}")),
