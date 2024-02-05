@@ -10,6 +10,7 @@ mod value;
 use core::fmt::{self, Display};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+use utils::from_into::FromInto;
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -137,8 +138,13 @@ impl Bonus {
         S: Into<BonusSource>,
         C: Into<Option<Condition>>,
     {
-        let toggle: Toggle = toggle.into();
-        Self::new(toggle.to_flag(), BonusType::Stacking, 1, source, condition)
+        Self::new(
+            Toggle::from_into(toggle).to_flag(),
+            BonusType::Stacking,
+            1,
+            source,
+            condition,
+        )
     }
 }
 

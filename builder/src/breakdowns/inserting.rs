@@ -31,7 +31,10 @@ impl Breakdowns {
     }
 
     /// Removes all bonuses with the provided [`BonusSource`]
-    pub fn remove_source<B: Into<BonusSource>>(&mut self, source: B) {
+    pub fn remove_source<S>(&mut self, source: S)
+    where
+        S: Into<BonusSource>,
+    {
         self.remove_sources(once(source));
     }
 
@@ -43,7 +46,10 @@ impl Breakdowns {
 
     /// Inserts several bonuses into the breakdowns. This also removes all bonuses that have the
     /// same bonus source.
-    pub fn insert_bonuses<I: IntoIterator<Item = Bonus>>(&mut self, bonuses: I) {
+    pub fn insert_bonuses<I>(&mut self, bonuses: I)
+    where
+        I: IntoIterator<Item = Bonus>,
+    {
         let mut sources = HashSet::new();
 
         let bonuses = bonuses.into_iter().map(|bonus| {
@@ -74,7 +80,10 @@ impl Breakdowns {
     }
 
     /// Forces the recalculation of several attributes
-    pub fn recalculate_attributes<I: IntoIterator<Item = Attribute>>(&mut self, attributes: I) {
+    pub fn recalculate_attributes<I>(&mut self, attributes: I)
+    where
+        I: IntoIterator<Item = Attribute>,
+    {
         let mut buffer = Buffer::empty();
         buffer.insert_attributes(attributes);
         self.consume_buffer(buffer);
@@ -155,10 +164,10 @@ impl Breakdowns {
             .filter(|bonus| bonus.has_attr_dependency(attribute))
     }
 
-    fn remove_bonuses_by_source<'a>(
-        &'a mut self,
-        sources: impl IntoIterator<Item = &'a BonusSource> + 'a,
-    ) -> impl Iterator<Item = Bonus> + 'a {
+    fn remove_bonuses_by_source<'a, I>(&'a mut self, sources: I) -> impl Iterator<Item = Bonus> + 'a
+    where
+        I: IntoIterator<Item = &'a BonusSource> + 'a,
+    {
         sources
             .into_iter()
             .filter_map(|source| {
