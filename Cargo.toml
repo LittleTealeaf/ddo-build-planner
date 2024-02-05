@@ -29,6 +29,9 @@ clone_on_ref_ptr = "warn"
 dbg_macro = "warn"
 format_push_string = "warn"
 get_unwrap = "warn"
+if_then_some_else_none = "warn"
+# impl_trait_in_params = "warn"
+missing_assert_message = "warn"
 
 
 too_many_lines = { level = "allow", priority = 1 }
