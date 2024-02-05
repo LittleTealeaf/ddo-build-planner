@@ -24,6 +24,7 @@ complexity = "warn"
 nursery = "warn"
 
 absolute_paths = "warn"
+assertions_on_result_states = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
