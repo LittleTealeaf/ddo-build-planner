@@ -26,6 +26,7 @@ nursery = "warn"
 absolute_paths = "warn"
 assertions_on_result_states = "warn"
 clone_on_ref_ptr = "warn"
+dbg_macro = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
