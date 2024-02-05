@@ -11,7 +11,6 @@ use crate::{
     },
 };
 
-#[allow(clippy::match_same_arms)]
 pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate>> {
     (value > Decimal::ZERO).then(|| {
         let value = value.max(dec!(3));
