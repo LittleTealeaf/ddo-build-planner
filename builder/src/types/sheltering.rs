@@ -1,5 +1,5 @@
 //! Describes Physical and Magical Sheltering
-use std::fmt::Display;
+use std::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -47,7 +47,7 @@ pub enum Sheltering {
 }
 
 impl Display for Sheltering {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Physical => write!(f, "Physical Sheltering"),
             Self::Magical => write!(f, "Magical Sheltering"),
@@ -62,7 +62,7 @@ impl Display for Sheltering {
 }
 
 impl ToAttribute for Sheltering {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         Attribute::Sheltering(self)
     }
 }

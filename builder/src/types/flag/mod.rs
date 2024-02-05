@@ -4,6 +4,8 @@
 mod main_hand;
 mod off_hand;
 
+use core::fmt;
+
 use itertools::chain;
 pub use main_hand::*;
 pub use off_hand::*;
@@ -11,7 +13,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
-use std::fmt::Display;
+use fmt::Display;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -46,7 +48,7 @@ pub enum Flag {
 }
 
 impl Display for Flag {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::HasToggle(toggle) => write!(f, "Has {toggle} Toggle"),
             Self::Race(race) => write!(f, "{race} Race"),

@@ -1,12 +1,14 @@
 //! Feats that a character can have.
 public_modules!(feats, requirements, to_feat);
 
+use core::fmt;
+
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::{enums::StaticOptions, public_modules};
 
-use std::fmt::Display;
+use fmt::Display;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -27,7 +29,7 @@ pub enum Feat {
 }
 
 impl Display for Feat {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::RacialFeat(feat) => feat.fmt(f),
             Self::Proficiency(prof) => prof.fmt(f),
@@ -38,7 +40,7 @@ impl Display for Feat {
 }
 
 impl CloneBonus for Feat {
-    fn clone_bonus(&self, bonus: &crate::bonus::Bonus) -> Option<Vec<Bonus>> {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         match self {
             Self::Proficiency(feat) => feat.clone_bonus(bonus),
             _ => None,

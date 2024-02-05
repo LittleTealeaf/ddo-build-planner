@@ -1,5 +1,7 @@
 //! Each of the different damage types in the game
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -53,7 +55,7 @@ pub enum DamageType {
 }
 
 impl Display for DamageType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Physical => write!(f, "Physical"),
             Self::Force => write!(f, "Force"),

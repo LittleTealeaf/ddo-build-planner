@@ -1,7 +1,7 @@
 //! weapon Attributes
 public_modules!(weapon_hand, weapon_stat);
 
-use std::fmt::Display;
+use std::fmt::{self, Display};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -17,7 +17,7 @@ use crate::{
 pub struct WeaponAttribute(WeaponHand, WeaponStat);
 
 impl Display for WeaponAttribute {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let Self(hand, stat) = self;
         write!(f, "{hand}-Hand {stat}")
     }

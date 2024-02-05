@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -20,7 +20,7 @@ pub enum AttackingTarget {
 }
 
 impl Display for AttackingTarget {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Tripped => write!(f, "Tripped Target"),
             Self::MonsterType(monster_type) => monster_type.fmt(f),

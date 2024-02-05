@@ -1,3 +1,4 @@
+use core::fmt;
 use std::{
     collections::HashSet,
     fmt::Display,
@@ -210,7 +211,7 @@ impl Depth for Condition {
 }
 
 impl Display for Condition {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Not(condition) => write!(f, "Not ({})", *condition),
             Self::GreaterThan(a, b) => write!(f, "{a} > {b}"),

@@ -1,10 +1,15 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
-use crate::{attribute::ToAttribute, types::item_type::WeaponType};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    types::item_type::WeaponType,
+};
 
 use super::{Flag, ToFlag};
 
@@ -18,7 +23,7 @@ pub enum MainHandType {
 }
 
 impl Display for MainHandType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Wand => write!(f, "Wand"),
             Self::Weapon(weapon) => weapon.fmt(f),
@@ -39,7 +44,7 @@ impl ToFlag for MainHandType {
 }
 
 impl ToAttribute for MainHandType {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         self.to_flag().to_attribute()
     }
 }

@@ -22,6 +22,9 @@ missing_docs = "warn"
 pedantic = "warn"
 complexity = "warn"
 nursery = "warn"
+
+absolute_paths = "warn"
+
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
 needless_collect = { level = "allow", priority = 1 }

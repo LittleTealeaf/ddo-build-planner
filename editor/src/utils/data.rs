@@ -1,5 +1,7 @@
+use std::io;
+
 use ron::{
-    from_str,
+    de, from_str,
     ser::{to_string_pretty, PrettyConfig},
 };
 use serde::{Deserialize, Serialize};
@@ -41,19 +43,19 @@ pub fn catch_async<T>(function: impl Fn(T) -> Message) -> impl Fn(Result<T, Data
 
 #[derive(Debug)]
 pub enum DataError {
-    IO(std::io::Error),
-    SpannedError(ron::de::SpannedError),
+    IO(io::Error),
+    SpannedError(de::SpannedError),
     Ron(ron::Error),
 }
 
-impl From<std::io::Error> for DataError {
-    fn from(value: std::io::Error) -> Self {
+impl From<io::Error> for DataError {
+    fn from(value: io::Error) -> Self {
         Self::IO(value)
     }
 }
 
-impl From<ron::de::SpannedError> for DataError {
-    fn from(value: ron::de::SpannedError) -> Self {
+impl From<de::SpannedError> for DataError {
+    fn from(value: de::SpannedError) -> Self {
         Self::SpannedError(value)
     }
 }

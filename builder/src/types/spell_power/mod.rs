@@ -2,7 +2,7 @@
 // TODO: Merge with a spell category
 public_modules!(bonuses);
 
-use std::fmt::Display;
+use std::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -47,7 +47,7 @@ impl From<DamageType> for SpellPower {
 }
 
 impl Display for SpellPower {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Universal => write!(f, "Universal"),
             Self::Potency => write!(f, "Potency"),

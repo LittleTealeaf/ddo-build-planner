@@ -1,5 +1,5 @@
 //! Spell Points
-use std::fmt::Display;
+use std::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -23,7 +23,7 @@ pub enum SpellPoints {
 }
 
 impl Display for SpellPoints {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Base => write!(f, "Spell Points"),
             Self::Modifier => write!(f, "Spell Point Modifier"),

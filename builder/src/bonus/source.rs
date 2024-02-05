@@ -1,4 +1,5 @@
-use std::fmt::Display;
+use core::fmt;
+use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -23,7 +24,7 @@ pub enum BonusSource {
 }
 
 impl Display for BonusSource {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Attribute(attr) => write!(f, "Attribute: {attr}"),
             Self::Custom(num) => write!(f, "Custom: {num}"),

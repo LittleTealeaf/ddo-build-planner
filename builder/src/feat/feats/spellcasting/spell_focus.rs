@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -65,7 +67,7 @@ impl GetFeatRequirement for SpellFocusFeat {
 }
 
 impl Display for SpellFocusFeat {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::SpellFocus(school) => write!(f, "Spell Focus: {school}"),
             Self::GreaterSpellFocus(school) => write!(f, "Greater Spell Focus: {school}"),

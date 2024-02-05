@@ -1,3 +1,4 @@
+use core::fmt;
 use std::{
     collections::HashSet,
     fmt::Display,
@@ -294,7 +295,7 @@ impl HasDice for Value {
 }
 
 impl Display for Value {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Add(a, b) => write!(f, "({a} + {b})"),
             Self::Sub(a, b) => write!(f, "({a} - {b})"),

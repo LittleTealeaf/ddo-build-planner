@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -21,7 +23,7 @@ pub enum ShieldType {
 }
 
 impl Display for ShieldType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Buckler => write!(f, "Buckler"),
             Self::SmallShield => write!(f, "Small Shield"),

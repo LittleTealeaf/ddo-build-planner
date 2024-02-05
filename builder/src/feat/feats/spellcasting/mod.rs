@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use rust_decimal::Decimal;
@@ -168,7 +170,7 @@ impl GetFeatRequirement for SpellcastingFeat {
 }
 
 impl Display for SpellcastingFeat {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::AugmentSummoning => write!(f, "Augment Summoning"),
             Self::SpellFocus(feat) => feat.fmt(f),

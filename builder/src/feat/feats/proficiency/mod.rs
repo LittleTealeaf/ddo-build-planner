@@ -1,13 +1,15 @@
 mod shield_class;
 mod weapon_class;
 
+use core::fmt;
+
 use itertools::chain;
 use serde::{Deserialize, Serialize};
 pub use shield_class::*;
 use utils::enums::StaticOptions;
 pub use weapon_class::*;
 
-use std::fmt::Display;
+use fmt::Display;
 
 use crate::{
     bonus::{Bonus, CloneBonus},
@@ -82,7 +84,7 @@ impl CloneBonus for Proficiency {
 }
 
 impl Display for Proficiency {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::WeaponProficiency(weapon) => write!(f, "{weapon} Proficiency"),
             Self::SimpleWeaponProficiency => write!(f, "Simple Weapon Proficiency"),

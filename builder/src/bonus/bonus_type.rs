@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -92,7 +94,7 @@ pub enum BonusType {
 }
 
 impl Display for BonusType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             #[cfg(feature = "debug")]
             Self::Debug(channel) => write!(f, "Debug {channel}"),
