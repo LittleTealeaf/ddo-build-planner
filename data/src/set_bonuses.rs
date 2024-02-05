@@ -20,13 +20,9 @@ pub trait IncludeSetBonuses {
 
 impl IncludeSetBonuses for Breakdowns {
     fn import_set_bonuses(&mut self) -> Result<(), SpannedError> {
-        self.import_dynamic_bonuses(
-            get_set_bonuses()?
-                .into_iter()
-                .map(SetBonus::to_dynamic_bonus),
-        );
-
-        Ok(())
+        get_set_bonuses().map(|bonuses| {
+            self.import_dynamic_bonuses(bonuses.into_iter().map(SetBonus::to_dynamic_bonus));
+        })
     }
 }
 
