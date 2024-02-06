@@ -10,7 +10,5 @@ pub fn get_test_data() -> Result<String, ParseError> {
 
 #[test]
 fn test_data_parses() {
-    let data = get_test_data();
-
-    assert!(data.is_ok());
+    get_test_data().expect("Expected Test data to Parse");
 }

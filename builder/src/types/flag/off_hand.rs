@@ -1,11 +1,13 @@
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
 use crate::{
-    attribute::ToAttribute,
+    attribute::{Attribute, ToAttribute},
     types::item_type::{ShieldType, WeaponType},
 };
 
@@ -23,7 +25,7 @@ pub enum OffHandType {
 }
 
 impl Display for OffHandType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Weapon(weapon) => weapon.fmt(f),
             Self::Shield(shield) => shield.fmt(f),
@@ -45,7 +47,7 @@ impl From<ShieldType> for OffHandType {
 }
 
 impl ToAttribute for OffHandType {
-    fn to_attribute(self) -> crate::attribute::Attribute {
+    fn to_attribute(self) -> Attribute {
         self.to_flag().to_attribute()
     }
 }

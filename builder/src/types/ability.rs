@@ -1,5 +1,7 @@
 //! Ability types
-use std::fmt::Display;
+use core::fmt;
+
+use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
@@ -52,7 +54,7 @@ impl Ability {
 }
 
 impl Display for Ability {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Strength => write!(f, "Strength"),
             Self::Dexterity => write!(f, "Dexterity"),

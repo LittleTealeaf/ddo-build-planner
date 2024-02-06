@@ -2,7 +2,7 @@ use builder::{
     attribute::{Attribute, AttributeDependencies},
     bonus::{Bonus, BonusType, Condition, Depth, HasDice, ToValue, Value},
 };
-use std::ops::{Add, Div, Mul, Not, Rem, Sub};
+use core::ops::{Add, Div, Mul, Not, Rem, Sub};
 
 mod has_dependency {
 
@@ -190,7 +190,7 @@ mod has_dependency {
     }
 
     mod condition {
-        use std::ops::Not;
+        use core::ops::Not;
 
         use builder::{
             attribute::{Attribute, AttributeDependencies},
@@ -471,7 +471,7 @@ mod include_dependencies {
     }
 
     mod condition {
-        use std::ops::Not;
+        use core::ops::Not;
 
         use builder::{
             attribute::{Attribute, AttributeDependencies},

@@ -1,9 +1,7 @@
 //! Additinoal generic implementations for ``HashMaps`` to simplify code
 
-use std::{
-    collections::HashMap,
-    hash::{BuildHasher, Hash},
-};
+use core::hash::{BuildHasher, Hash};
+use std::collections::HashMap;
 
 use im::OrdMap;
 

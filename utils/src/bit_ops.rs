@@ -1,6 +1,6 @@
 //! Operator Iterators for bitwise
 
-use std::ops::{BitAnd, BitOr};
+use core::ops::{BitAnd, BitOr};
 
 use itertools::Itertools;
 
