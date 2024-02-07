@@ -223,13 +223,13 @@ impl Display for Condition {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Not(condition) => write!(f, "Not ({})", *condition),
-            Self::GreaterThan(a, b) => write!(f, "{a} > {b}"),
-            Self::LessThan(a, b) => write!(f, "{a} < {b}"),
-            Self::EqualTo(a, b) => write!(f, "{a} == {b}"),
+            Self::GreaterThan(a, b) => write!(f, "({a}) > ({b})"),
+            Self::LessThan(a, b) => write!(f, "({a}) < ({b})"),
+            Self::EqualTo(a, b) => write!(f, "({a}) == ({b})"),
             Self::Constant(value) => write!(f, "{value}"),
             Self::And(a, b) => write!(f, "({a}) AND ({b})"),
             Self::Or(a, b) => write!(f, "({a}) OR ({b})"),
-            Self::Xor(a, b) => write!(f, "({a}) == ({b})"),
+            Self::Xor(a, b) => write!(f, "({a}) != ({b})"),
         }
     }
 }
