@@ -836,4 +836,55 @@ mod depth {
             assert_eq!(Value::dice(value_depth(5), value_depth(3)).get_depth(), 6);
         }
     }
+
+    mod condition {
+        use super::*;
+
+        #[test]
+        fn not() {
+            assert_eq!(condition_depth(1).not().get_depth(), 2);
+        }
+
+        #[test]
+        fn greater_than() {
+            assert_eq!(value_depth(1).greater_than(value_depth(2)).get_depth(), 3);
+            assert_eq!(value_depth(2).greater_than(value_depth(1)).get_depth(), 3);
+        }
+
+        #[test]
+        fn less_than() {
+            assert_eq!(value_depth(1).less_than(value_depth(2)).get_depth(), 3);
+            assert_eq!(value_depth(2).less_than(value_depth(1)).get_depth(), 3);
+        }
+
+        #[test]
+        fn equal_to() {
+            assert_eq!(value_depth(1).equal_to(value_depth(2)).get_depth(), 3);
+            assert_eq!(value_depth(2).equal_to(value_depth(1)).get_depth(), 3);
+        }
+
+        #[test]
+        fn constant() {
+            assert_eq!(Condition::Constant(true).get_depth(), 1);
+            assert_eq!(Condition::Constant(false).get_depth(), 1);
+        }
+
+        #[test]
+        fn and() {
+            assert_eq!(condition_depth(2).and(condition_depth(1)).get_depth(), 3);
+            assert_eq!(condition_depth(1).and(condition_depth(2)).get_depth(), 3);
+        }
+
+        #[test]
+        fn or() {
+            assert_eq!(condition_depth(2).or(condition_depth(1)).get_depth(), 3);
+            assert_eq!(condition_depth(1).or(condition_depth(2)).get_depth(), 3);
+        }
+
+        #[test]
+        fn xor() {
+            assert_eq!(condition_depth(2).xor(condition_depth(1)).get_depth(), 3);
+            assert_eq!(condition_depth(1).xor(condition_depth(2)).get_depth(), 3);
+        }
+    }
 }
