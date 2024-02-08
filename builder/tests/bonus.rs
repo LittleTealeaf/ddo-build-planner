@@ -1,8 +1,8 @@
 use builder::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusType, Condition, HasDice, ToValue, Value},
+    bonus::{Bonus, BonusType, Condition, Depth, HasDice, ToValue, Value},
 };
-use core::ops::Not;
+use core::ops::{Add, Div, Mul, Not, Rem, Sub};
 
 mod has_dependency {
 
@@ -721,6 +721,170 @@ mod has_dice {
             assert!(!(no_cond() ^ no_cond()).has_dice());
             assert!((dice_cond() ^ no_cond()).has_dice());
             assert!((no_cond() ^ dice_cond()).has_dice());
+        }
+    }
+}
+
+mod depth {
+    use super::*;
+
+    fn value_depth(depth: usize) -> Value {
+        assert!(depth != 0, "Depth cannot be 0");
+        let mut value = 0.to_value();
+
+        for _ in 1..depth {
+            value = value.abs();
+        }
+
+        value
+    }
+
+    #[test]
+    fn test_value_depth() {
+        assert_eq!(value_depth(5).get_depth(), 5);
+        assert_eq!(value_depth(6).get_depth(), 6);
+    }
+
+    fn condition_depth(depth: usize) -> Condition {
+        assert!(depth != 0, "Depth cannot be 0");
+        let mut condition = Condition::from(true);
+
+        for _ in 1..depth {
+            condition = condition.not();
+        }
+
+        condition
+    }
+
+    #[test]
+    fn test_condition_depth() {
+        assert_eq!(condition_depth(5).get_depth(), 5);
+        assert_eq!(condition_depth(6).get_depth(), 6);
+    }
+
+    mod value {
+
+        use super::*;
+
+        #[test]
+        fn constant() {
+            assert_eq!(Value::from(3).get_depth(), 1);
+        }
+
+        #[test]
+        fn attribute() {
+            assert_eq!(Attribute::Debug(0).to_value().get_depth(), 1);
+        }
+
+        #[test]
+        fn min() {
+            assert_eq!(Value::min(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::min(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+        #[test]
+        fn max() {
+            assert_eq!(Value::max(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::max(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+        #[test]
+        fn add() {
+            assert_eq!(Value::add(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::add(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+        #[test]
+        fn sub() {
+            assert_eq!(Value::sub(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::sub(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+
+        #[test]
+        fn mul() {
+            assert_eq!(Value::mul(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::mul(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+
+        #[test]
+        fn div() {
+            assert_eq!(Value::div(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::div(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+
+        #[test]
+        fn rem() {
+            assert_eq!(Value::rem(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::rem(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+
+        #[test]
+        fn round() {
+            assert_eq!(Value::round(value_depth(3)).get_depth(), 4);
+        }
+
+        #[test]
+        fn abs() {
+            assert_eq!(Value::abs(value_depth(3)).get_depth(), 4);
+        }
+
+        #[test]
+        fn floor() {
+            assert_eq!(Value::floor(value_depth(3)).get_depth(), 4);
+        }
+
+        #[test]
+        fn dice() {
+            assert_eq!(Value::dice(value_depth(2), value_depth(3)).get_depth(), 4);
+            assert_eq!(Value::dice(value_depth(5), value_depth(3)).get_depth(), 6);
+        }
+    }
+
+    mod condition {
+        use super::*;
+
+        #[test]
+        fn not() {
+            assert_eq!(condition_depth(1).not().get_depth(), 2);
+        }
+
+        #[test]
+        fn greater_than() {
+            assert_eq!(value_depth(1).greater_than(value_depth(2)).get_depth(), 3);
+            assert_eq!(value_depth(2).greater_than(value_depth(1)).get_depth(), 3);
+        }
+
+        #[test]
+        fn less_than() {
+            assert_eq!(value_depth(1).less_than(value_depth(2)).get_depth(), 3);
+            assert_eq!(value_depth(2).less_than(value_depth(1)).get_depth(), 3);
+        }
+
+        #[test]
+        fn equal_to() {
+            assert_eq!(value_depth(1).equal_to(value_depth(2)).get_depth(), 3);
+            assert_eq!(value_depth(2).equal_to(value_depth(1)).get_depth(), 3);
+        }
+
+        #[test]
+        fn constant() {
+            assert_eq!(Condition::Constant(true).get_depth(), 1);
+            assert_eq!(Condition::Constant(false).get_depth(), 1);
+        }
+
+        #[test]
+        fn and() {
+            assert_eq!(condition_depth(2).and(condition_depth(1)).get_depth(), 3);
+            assert_eq!(condition_depth(1).and(condition_depth(2)).get_depth(), 3);
+        }
+
+        #[test]
+        fn or() {
+            assert_eq!(condition_depth(2).or(condition_depth(1)).get_depth(), 3);
+            assert_eq!(condition_depth(1).or(condition_depth(2)).get_depth(), 3);
+        }
+
+        #[test]
+        fn xor() {
+            assert_eq!(condition_depth(2).xor(condition_depth(1)).get_depth(), 3);
+            assert_eq!(condition_depth(1).xor(condition_depth(2)).get_depth(), 3);
         }
     }
 }
