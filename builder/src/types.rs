@@ -25,3 +25,4 @@ pub mod spell_selector;
 pub mod summoned_attribute;
 pub mod toggle;
 pub mod weapon_attribute;
+pub mod toggle_group;
