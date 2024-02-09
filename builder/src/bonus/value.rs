@@ -440,6 +440,16 @@ macro_rules! try_from_primative {
 
 try_from_primative!(f32, f64);
 
+impl From<bool> for Value {
+    fn from(value: bool) -> Self {
+        if value {
+            Self::ONE
+        } else {
+            Self::ZERO
+        }
+    }
+}
+
 impl From<Decimal> for Value {
     fn from(value: Decimal) -> Self {
         Self::Const(value)
