@@ -75,7 +75,7 @@ impl Breakdowns {
     }
 
     /// Forces the recalculation of an attribute
-    pub fn recalcualte_attribute(&mut self, attribute: Attribute) {
+    pub fn recalculate_attribute(&mut self, attribute: Attribute) {
         self.recalculate_attributes(once(attribute));
     }
 
