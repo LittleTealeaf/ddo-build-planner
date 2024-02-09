@@ -1,22 +1,25 @@
 //! Any attribute that requires the user to interact / configure
 
-mod attacking_target;
+public_modules!(attacking_target, iconic_past_life);
 
 use core::fmt::{self, Display};
 
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::BonusTemplate,
+    bonus::{BonusSource, BonusTemplate},
 };
 
-pub use attacking_target::*;
+use self::iconic_past_life::IconicPastLife;
 
-use super::flag::{Flag, ToFlag};
+use super::{
+    flag::{Flag, ToFlag},
+    toggle_group::ToggleGroup,
+};
 
 /// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -27,6 +30,8 @@ pub enum Toggle {
     InReaper,
     /// Is the character attacking a certain target
     Attacking(AttackingTarget),
+    /// Iconic Past Life
+    IconicPastLife(IconicPastLife),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
 
@@ -36,6 +41,7 @@ impl Display for Toggle {
             Self::Blocking => write!(f, "Blocking"),
             Self::InReaper => write!(f, "In Reaper"),
             Self::Attacking(target) => write!(f, "Attacking {target} Target"),
+            Self::IconicPastLife(past_life) => write!(f, "{past_life}"),
         }
     }
 }
@@ -77,7 +83,20 @@ impl StaticOptions for Toggle {
     fn get_static() -> impl Iterator<Item = Self> {
         chain!(
             [Self::Blocking, Self::InReaper],
-            AttackingTarget::get_static().map(Self::Attacking)
+            AttackingTarget::get_static().map(Self::Attacking),
+            IconicPastLife::get_static().map(Self::IconicPastLife),
         )
+    }
+}
+
+/// Indicates that a toggle may have a toggle group that it must specifically entail
+pub trait GetToggleGroup {
+    /// Returns the toggle group for this toggle, if any
+    fn toggle_group(&self) -> Option<ToggleGroup>;
+
+    /// Returns SOME toggle source for the toggle
+    fn get_toggle_source(&self, default_source: BonusSource) -> BonusSource {
+        self.toggle_group()
+            .map_or(default_source, BonusSource::ToggleGroup)
     }
 }
