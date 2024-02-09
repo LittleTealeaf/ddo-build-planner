@@ -100,3 +100,12 @@ pub trait GetToggleGroup {
             .map_or(default_source, BonusSource::ToggleGroup)
     }
 }
+
+impl GetToggleGroup for Toggle {
+    fn toggle_group(&self) -> Option<ToggleGroup> {
+        match self {
+            Self::IconicPastLife(life) => life.toggle_group(),
+            _ => None,
+        }
+    }
+}
