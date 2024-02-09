@@ -11,10 +11,8 @@ use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType, Condition},
 };
-
-use self::iconic_past_life::IconicPastLife;
 
 use super::{
     flag::{Flag, ToFlag},

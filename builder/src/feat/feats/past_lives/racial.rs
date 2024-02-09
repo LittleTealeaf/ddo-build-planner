@@ -3,11 +3,21 @@ use rust_decimal_macros::dec;
 
 use crate::{
     attribute::Attribute,
-    bonus::{BonusTemplate, BonusType},
+    bonus::{BonusTemplate, BonusType, Condition},
     types::{
-        ability::Ability, damage_type::DamageType, dodge::Dodge, race::Race,
-        saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spell_power::SpellPower,
-        spell_school::SpellSchool, spell_selector::SpellSelector,
+        ability::Ability,
+        damage_type::DamageType,
+        dodge::Dodge,
+        flag::ToFlag,
+        race::Race,
+        saving_throw::SavingThrow,
+        sheltering::Sheltering,
+        skill::Skill,
+        spell_power::SpellPower,
+        spell_school::SpellSchool,
+        spell_selector::SpellSelector,
+        toggle::{IconicPastLife, ToToggle},
+        weapon_attribute::{WeaponAttribute, WeaponHand, WeaponStat},
     },
 };
 
@@ -32,61 +42,157 @@ pub fn racial_past_lives(race: Race, value: Decimal) -> Option<Vec<BonusTemplate
             Race::Shifter | Race::WoodElf | Race::Elf => {
                 heroic_past_lives(Skill::Spot, Ability::Dexterity, value)
             }
-            Race::Scourge => vec![BonusTemplate::new(
-                Attribute::DoubleStrike,
-                BonusType::Stacking,
-                Decimal::TWO * value,
-                None,
-            )],
-            Race::Bladeforged => vec![BonusTemplate::new(
-                Attribute::SpellPower(SpellPower::Damage(DamageType::Repair)),
-                BonusType::Stacking,
-                value * Decimal::TEN,
-                None,
-            )],
-            Race::DeepGnome => vec![BonusTemplate::new(
-                Attribute::SpellDC(SpellSelector::School(SpellSchool::Illusion)),
-                BonusType::Stacking,
-                value,
-                None,
-            )],
-            Race::PurpleDragonKnight => vec![BonusTemplate::new(
-                Sheltering::Physical,
-                BonusType::Stacking,
-                value * dec!(3),
-                None,
-            )],
-            Race::Razorclaw => vec![BonusTemplate::new(
-                SavingThrow::Will,
-                BonusType::Stacking,
-                value,
-                None,
-            )],
-
-            Race::Shadarkai => vec![BonusTemplate::new(
-                Dodge::Bonus,
-                BonusType::Stacking,
-                value,
-                None,
-            )],
-            Race::Morninglord => vec![BonusTemplate::new(
-                Attribute::SpellPower(SpellPower::Damage(DamageType::Positive)),
-                BonusType::Stacking,
-                value * dec!(3),
-                None,
-            )],
-            Race::Trailblazer => vec![BonusTemplate::new(
-                SavingThrow::Traps,
-                BonusType::Stacking,
-                value,
-                None,
-            )],
-            Race::Scoundrel => vec![BonusTemplate::new(
-                SavingThrow::Reflex,
-                BonusType::Stacking,
-                value,
-                None,
-            )],
+            Race::Scourge => vec![
+                BonusTemplate::new(SavingThrow::Fortitude, BonusType::Stacking, value, None),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Scourge).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                BonusTemplate::new(
+                    Attribute::DoubleStrike,
+                    BonusType::Stacking,
+                    value * Decimal::TWO,
+                    Condition::has(IconicPastLife(Race::Scourge).to_toggle()),
+                ),
+            ],
+            Race::Bladeforged => vec![
+                BonusTemplate::new(
+                    Attribute::Fortification,
+                    BonusType::Stacking,
+                    dec!(5) * value,
+                    None,
+                ),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Bladeforged).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                BonusTemplate::new(
+                    Attribute::SpellPower(SpellPower::Damage(DamageType::Repair)),
+                    BonusType::Stacking,
+                    Decimal::TEN * value,
+                    Condition::has(IconicPastLife(Race::Bladeforged).to_toggle()),
+                ),
+            ],
+            Race::DeepGnome => vec![
+                BonusTemplate::new(
+                    Sheltering::Magical,
+                    BonusType::Stacking,
+                    dec!(3) * value,
+                    None,
+                ),
+                BonusTemplate::new(
+                    IconicPastLife(Race::DeepGnome).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                BonusTemplate::new(
+                    Attribute::SpellDC(SpellSelector::School(SpellSchool::Illusion)),
+                    BonusType::Stacking,
+                    value,
+                    Condition::has(IconicPastLife(Race::DeepGnome).to_toggle()),
+                ),
+                BonusTemplate::new(
+                    Attribute::SpellPower(SpellPower::Damage(DamageType::Acid)),
+                    BonusType::Stacking,
+                    value * dec!(5),
+                    Condition::has(IconicPastLife(Race::DeepGnome).to_toggle()),
+                ),
+            ],
+            Race::PurpleDragonKnight => vec![
+                BonusTemplate::new(
+                    Sheltering::Physical,
+                    BonusType::Stacking,
+                    value * dec!(3),
+                    None,
+                ),
+                BonusTemplate::new(
+                    IconicPastLife(Race::PurpleDragonKnight).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+            ],
+            Race::Razorclaw => vec![
+                BonusTemplate::new(SavingThrow::Will, BonusType::Stacking, value, None),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Razorclaw).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                BonusTemplate::new(
+                    WeaponAttribute(WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Stacking,
+                    value,
+                    Condition::has(IconicPastLife(Race::Razorclaw).to_toggle()),
+                ),
+                BonusTemplate::new(
+                    WeaponAttribute(WeaponHand::Both, WeaponStat::Damage),
+                    BonusType::Stacking,
+                    value,
+                    Condition::has(IconicPastLife(Race::Razorclaw).to_toggle()),
+                ),
+            ],
+            Race::Shadarkai => vec![
+                BonusTemplate::new(Dodge::Bonus, BonusType::Stacking, value, None),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Shadarkai).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+            ],
+            Race::Morninglord => vec![
+                BonusTemplate::new(
+                    Attribute::SpellPower(SpellPower::Damage(DamageType::Positive)),
+                    BonusType::Stacking,
+                    value * dec!(3),
+                    None,
+                ),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Morninglord).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                BonusTemplate::new(
+                    Attribute::SpellPower(SpellPower::Damage(DamageType::Light)),
+                    BonusType::Stacking,
+                    Decimal::TEN * value,
+                    Condition::has(IconicPastLife(Race::Morninglord).to_toggle()),
+                ),
+                BonusTemplate::new(
+                    Attribute::SpellPower(SpellPower::Damage(DamageType::Alignment)),
+                    BonusType::Stacking,
+                    Decimal::TEN * value,
+                    Condition::has(IconicPastLife(Race::Morninglord).to_toggle()),
+                ),
+            ],
+            Race::Trailblazer => vec![
+                BonusTemplate::new(SavingThrow::Traps, BonusType::Stacking, value, None),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Trailblazer).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                // TODO: Add Attribute for Tactics
+            ],
+            Race::Scoundrel => vec![
+                BonusTemplate::new(SavingThrow::Reflex, BonusType::Stacking, value, None),
+                BonusTemplate::new(
+                    IconicPastLife(Race::Scoundrel).to_flag(),
+                    BonusType::Stacking,
+                    1,
+                    None,
+                ),
+                // TODO: Add Attribute for Movement Speed
+            ],
         }
     })
 }

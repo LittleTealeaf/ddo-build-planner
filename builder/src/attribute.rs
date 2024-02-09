@@ -108,6 +108,8 @@ pub enum Attribute {
     DoubleShot,
     /// Dodge
     Dodge(Dodge),
+    /// Fortification
+    Fortification,
 }
 
 impl Display for Attribute {
@@ -147,6 +149,7 @@ impl Display for Attribute {
             Self::DoubleStrike => write!(f, "Doublestrike"),
             Self::DoubleShot => write!(f, "Doubleshot"),
             Self::Dodge(dodge) => dodge.fmt(f),
+            Self::Fortification => write!(f, "Fortification"),
         }
     }
 }
