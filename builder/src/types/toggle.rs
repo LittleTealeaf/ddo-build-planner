@@ -11,7 +11,7 @@ use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::{Bonus, BonusSource, BonusTemplate, BonusType, Condition},
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
 };
 
 use super::{

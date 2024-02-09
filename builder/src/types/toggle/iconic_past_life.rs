@@ -7,6 +7,7 @@ use crate::types::{race::Race, toggle_group::ToggleGroup};
 
 use super::{GetToggleGroup, ToToggle, Toggle};
 
+/// Depicts an Iconic Past Life
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct IconicPastLife(pub Race);
 
