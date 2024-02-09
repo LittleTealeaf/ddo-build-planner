@@ -11,7 +11,7 @@ use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::{BonusSource, BonusTemplate},
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
 };
 
 use self::iconic_past_life::IconicPastLife;
@@ -34,6 +34,26 @@ pub enum Toggle {
     IconicPastLife(IconicPastLife),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
+
+impl Toggle {
+    /// Returns the toggle source used to enable this toggle
+    #[must_use]
+    pub fn get_toggle_source(&self) -> BonusSource {
+        BonusSource::ToggleGroup(self.toggle_group().unwrap_or(ToggleGroup::Toggle(*self)))
+    }
+
+    /// Creates a bonus that either enables or disables this toggle
+    #[must_use]
+    pub fn toggle_bonus(&self, enable: bool) -> Bonus {
+        Bonus::new(
+            self.to_attribute(),
+            BonusType::Stacking,
+            i32::from(enable),
+            self.get_toggle_source(),
+            None,
+        )
+    }
+}
 
 impl Display for Toggle {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -93,12 +113,6 @@ impl StaticOptions for Toggle {
 pub trait GetToggleGroup {
     /// Returns the toggle group for this toggle, if any
     fn toggle_group(&self) -> Option<ToggleGroup>;
-
-    /// Returns SOME toggle source for the toggle
-    fn get_toggle_source(&self, default_source: BonusSource) -> BonusSource {
-        self.toggle_group()
-            .map_or(default_source, BonusSource::ToggleGroup)
-    }
 }
 
 impl GetToggleGroup for Toggle {

@@ -4,6 +4,8 @@ use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 
+use super::toggle::Toggle;
+
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone, Copy)]
 /// Describes different toggle groups within the game. Each toggle group can only have one toggle
 /// at a time.
@@ -15,6 +17,8 @@ use serde::{Deserialize, Serialize};
 /// While this solution is a little weird, as it abuses some mechanics, this is the simplest
 /// solution until a more integrated solution can be resolved.
 pub enum ToggleGroup {
+    /// Individual
+    Toggle(Toggle),
     /// Defensive combat stance
     DefensiveCombat,
     /// Monk Stance
@@ -38,6 +42,7 @@ pub enum ToggleGroup {
 impl Display for ToggleGroup {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::Toggle(toggle) => write!(f, "Toggle: {toggle}"),
             Self::DefensiveCombat => write!(f, "Defensive Combat"),
             Self::MonkStance => write!(f, "Monk Stance"),
             Self::MajorForm => write!(f, "Major Form"),
