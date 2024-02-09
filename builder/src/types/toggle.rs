@@ -99,6 +99,15 @@ where
     }
 }
 
+impl<T> ToFlag for T
+where
+    T: ToToggle,
+{
+    fn to_flag(self) -> Flag {
+        self.to_toggle().to_flag()
+    }
+}
+
 impl StaticOptions for Toggle {
     fn get_static() -> impl Iterator<Item = Self> {
         chain!(
