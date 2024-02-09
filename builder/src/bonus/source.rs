@@ -5,7 +5,10 @@ use itertools::chain;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
-use crate::attribute::{Attribute, ToAttribute};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    types::toggle_group::ToggleGroup,
+};
 
 /// Dictates the source that a bonus comes from.
 ///
@@ -14,6 +17,8 @@ use crate::attribute::{Attribute, ToAttribute};
 pub enum BonusSource {
     /// Indicates that the bonus comes from an attribute.
     Attribute(Attribute),
+    /// Toggle Group Specific
+    ToggleGroup(ToggleGroup),
     /// Dictates any custom bonuses for general uses. When possible, do not use this source
     Custom(u8),
     /// Used for debugging purposes.
@@ -31,6 +36,7 @@ impl Display for BonusSource {
             #[cfg(feature = "debug")]
             Self::Debug(num) => write!(f, "Debug: {num}"),
             Self::Base => write!(f, "Base"),
+            Self::ToggleGroup(group) => write!(f, "Toggle Group: {group}"),
         }
     }
 }
