@@ -1,11 +1,12 @@
 //! Editor Application
 
+mod data;
 mod tabs;
-mod utils;
 mod widgets;
 
 use ::utils::enums::StaticOptions;
 use builder::attribute::Attribute;
+use data::{Data, MData, MDataContainer};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use itertools::chain;
 use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
@@ -22,6 +23,7 @@ fn main() -> iced::Result {
 
 #[derive(Clone, Debug)]
 struct Editor {
+    data: Data,
     icons_loaded: bool,
     set_bonuses: TSetBonuses,
     home: THome,
@@ -30,6 +32,7 @@ struct Editor {
 
 #[derive(Clone, Debug)]
 enum Message {
+    Data(MData),
     IconsLoaded,
     Error(String),
     SetBonuses(MSetBonuses),
@@ -39,7 +42,7 @@ enum Message {
 
 impl Editor {
     fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.set_bonuses.sets().iter().flat_map(|sets| {
+        let set_bonuses = self.data.set_bonuses.data.iter().flat_map(|sets| {
             sets.iter()
                 .map(|set| Attribute::SetBonus(set.name().clone()))
         });
@@ -59,13 +62,14 @@ impl Application for Editor {
 
     fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
         let mut app = Self {
+            data: Data::default(),
             icons_loaded: false,
             set_bonuses: TSetBonuses::default(),
             home: THome::default(),
             tab: Tab::Home,
         };
         let command = Command::batch([
-            app.handle_message(MSetBonuses::LoadSets),
+            app.handle_message(MData::SetBonus(MDataContainer::Load)),
             font::load(NERD_FONT_BYTES).map(|res| {
                 res.map_or_else(
                     |e| Message::Error(format!("{e:?}")),
@@ -93,6 +97,7 @@ impl Application for Editor {
 impl HandleMessage<Message> for Editor {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
+            Message::Data(m) => self.handle_message(m),
             Message::Home(message) => self.handle_message(message),
             Message::IconsLoaded => {
                 self.icons_loaded = true;
