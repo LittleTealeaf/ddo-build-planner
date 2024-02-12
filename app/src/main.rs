@@ -1,22 +1,12 @@
 //! Application Starting Point
 
-use std::ops::Not;
+use core::ops::Not;
 
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType, Condition, ToValue, Value},
-    breakdowns::Breakdowns,
-    types::{
-        absorption::{Absorption, AbsorptionSource},
-        damage_type::DamageType,
-    },
+    bonus::{Condition, ToValue, Value},
 };
-use data::IncludeSetBonuses;
-use ron::{
-    ser::{to_string_pretty, PrettyConfig},
-    to_string,
-};
-use rust_decimal::Decimal;
+use ron::to_string;
 
 fn main() {
     let value = Value::dice(3, 5)
@@ -32,20 +22,4 @@ fn main() {
             );
 
     println!("{}", to_string(&value).unwrap());
-
-    // let mut breakdowns = Breakdowns::new();
-    // breakdowns.import_set_bonuses().unwrap();
-    //
-    // breakdowns.insert_bonus(Bonus::new(
-    //     Absorption::Bonus(DamageType::Fire, AbsorptionSource::EnergySheathe),
-    //     BonusType::Standard,
-    //     Decimal::try_from(0.5).unwrap(),
-    //     BonusSource::Custom(0),
-    //     None,
-    // ));
-    //
-    // println!(
-    //     "{}",
-    //     to_string_pretty(&breakdowns, PrettyConfig::new()).unwrap()
-    // );
 }
