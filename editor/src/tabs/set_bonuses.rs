@@ -11,7 +11,7 @@ use iced::{
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
 
 use crate::{
-    utils::data::{catch_async, load_data, save_data},
+    data::{MData, MDataContainer},
     Editor, Message,
 };
 
@@ -21,25 +21,12 @@ const DATA_PATH: &str = "./data/data/set_bonuses.ron";
 
 #[derive(Debug, Clone, Default)]
 pub struct TSetBonuses {
-    sets: Option<Vec<SetBonus>>,
-    saving: bool,
     editing: Option<EditingSet>,
-    modified: bool,
     filter: String,
-}
-
-impl TSetBonuses {
-    pub const fn sets(&self) -> &Option<Vec<SetBonus>> {
-        &self.sets
-    }
 }
 
 #[derive(Debug, Clone)]
 pub enum MSetBonuses {
-    LoadSets,
-    OnLoadSets(Vec<SetBonus>),
-    SaveSets,
-    OnSaveSets,
     OpenSet(usize),
     NewSet,
     EditSet(EditingSet),
@@ -59,40 +46,13 @@ impl From<MSetBonuses> for Message {
 impl HandleMessage<MSetBonuses> for Editor {
     fn handle_message(&mut self, message: MSetBonuses) -> Command<<Self as Application>::Message> {
         match message {
-            MSetBonuses::LoadSets => {
-                self.set_bonuses.sets = None;
-                Command::perform(
-                    load_data(DATA_PATH),
-                    catch_async(|data| MSetBonuses::OnLoadSets(data).into()),
-                )
-            }
-            MSetBonuses::OnLoadSets(sets) => {
-                self.set_bonuses.sets = Some(sets);
-                Command::none()
-            }
-            MSetBonuses::SaveSets => {
-                self.set_bonuses
-                    .sets
-                    .as_ref()
-                    .map_or_else(Command::none, |sets| {
-                        self.set_bonuses.saving = true;
-                        Command::perform(
-                            save_data(DATA_PATH, sets.clone()),
-                            catch_async(|()| MSetBonuses::OnSaveSets.into()),
-                        )
-                    })
-            }
-            MSetBonuses::OnSaveSets => {
-                self.set_bonuses.saving = false;
-                self.set_bonuses.modified = false;
-                Command::none()
-            }
             MSetBonuses::NewSet => self.handle_message(MSetBonuses::EditSet(EditingSet::new(
                 SetBonus::new(self.set_bonuses.filter.clone()),
             ))),
             MSetBonuses::OpenSet(index) => self
+                .data
                 .set_bonuses
-                .sets
+                .data
                 .as_ref()
                 .and_then(|sets| sets.get(index))
                 .cloned()
@@ -108,9 +68,9 @@ impl HandleMessage<MSetBonuses> for Editor {
                 Command::none()
             }
             MSetBonuses::SaveEdit => {
-                if let Some(sets) = &mut self.set_bonuses.sets {
+                if let Some(sets) = &mut self.data.set_bonuses.data {
                     if let Some(edit) = &self.set_bonuses.editing {
-                        self.set_bonuses.modified = true;
+                        self.data.set_bonuses.modified = true;
                         if let Some(index) = edit.index() {
                             sets[*index] = edit.set().clone();
                         } else {
@@ -127,13 +87,13 @@ impl HandleMessage<MSetBonuses> for Editor {
                 Command::none()
             }
             MSetBonuses::DeleteSet(index) => {
-                if let Some(sets) = &mut self.set_bonuses.sets {
+                if let Some(sets) = &mut self.data.set_bonuses.data {
                     if index < sets.len() {
                         sets.remove(index);
                     }
                 }
                 self.set_bonuses.editing = None;
-                self.set_bonuses.modified = true;
+                self.data.set_bonuses.modified = true;
 
                 Command::none()
             }
@@ -157,15 +117,17 @@ impl HandleView<Editor> for TSetBonuses {
                             (!&self.filter.is_empty()).then_some(MSetBonuses::NewSet.into())
                         ),
                         horizontal_space(10.0),
-                        button(text('󰑓').font(NERD_FONT)).on_press(MSetBonuses::LoadSets.into()),
+                        button(text('󰑓').font(NERD_FONT))
+                            .on_press(MData::SetBonus(MDataContainer::Load).into()),
                         horizontal_space(5.0),
                         button(text('').font(NERD_FONT)).on_press_maybe(
-                            (self.modified && !self.saving).then_some(MSetBonuses::SaveSets.into())
+                            (app.data.set_bonuses.modified && !app.data.set_bonuses.saving)
+                                .then_some(MData::SetBonus(MDataContainer::Save).into())
                         ),
                         horizontal_space(2.0),
                     )
                     .into(),
-                    self.sets.as_ref().map_or_else(
+                    app.data.set_bonuses.data.as_ref().map_or_else(
                         || {
                             container(text("Loading...").size(30))
                                 .center_x()
