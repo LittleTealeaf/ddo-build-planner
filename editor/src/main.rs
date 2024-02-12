@@ -41,7 +41,6 @@ enum Message {
 }
 
 impl Editor {
-
     fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
         let set_bonuses = self.data.set_bonuses.data.iter().flat_map(|sets| {
             sets.iter()
