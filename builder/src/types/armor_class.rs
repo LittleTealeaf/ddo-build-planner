@@ -16,7 +16,7 @@ pub enum ArmorClass {
     ///
     /// Do not add bonuses to this. This attribute will be automatically calculated from other
     /// attributes
-    TotalArmorClass,
+    Total,
     /// Generic bonuses to Armor Class
     Bonus,
     /// Bonuses from the Armor
@@ -48,7 +48,7 @@ pub enum ArmorClass {
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::TotalArmorClass => write!(f, "Total Armor Class"),
+            Self::Total => write!(f, "Total Armor Class"),
             Self::Bonus => write!(f, "Armor Class Bonus"),
             Self::ArmorBonus => write!(f, "Armor AC Bonus"),
             Self::ShieldBonus => write!(f, "Shield AC Bonus"),
@@ -72,7 +72,7 @@ impl StaticOptions for ArmorClass {
     fn get_static() -> impl Iterator<Item = Self> {
         [
             Self::TotalScalar,
-            Self::TotalArmorClass,
+            Self::Total,
             Self::Bonus,
             Self::ArmorBonus,
             Self::ShieldBonus,

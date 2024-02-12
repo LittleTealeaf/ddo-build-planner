@@ -663,7 +663,7 @@ mod armor_class {
                 DebugValue(0),
                 None,
             ));
-            let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+            let initial = breakdowns.get_attribute(ArmorClass::Total);
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::ArmorBonus,
                 DebugValue(0),
@@ -671,7 +671,7 @@ mod armor_class {
                 DebugValue(1),
                 None,
             ));
-            let result = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+            let result = breakdowns.get_attribute(ArmorClass::Total);
             assert_eq!(result - initial, 20.into());
         }
 
@@ -685,7 +685,7 @@ mod armor_class {
                 DebugValue(0),
                 None,
             ));
-            let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+            let initial = breakdowns.get_attribute(ArmorClass::Total);
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::ShieldBonus,
                 DebugValue(0),
@@ -693,7 +693,7 @@ mod armor_class {
                 DebugValue(1),
                 None,
             ));
-            let result = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+            let result = breakdowns.get_attribute(ArmorClass::Total);
             assert_eq!(result - initial, 20.into());
         }
 
@@ -707,7 +707,7 @@ mod armor_class {
                 DebugValue(0),
                 None,
             ));
-            let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+            let initial = breakdowns.get_attribute(ArmorClass::Total);
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::TotalScalar,
                 DebugValue(0),
@@ -715,7 +715,7 @@ mod armor_class {
                 DebugValue(1),
                 None,
             ));
-            let result = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+            let result = breakdowns.get_attribute(ArmorClass::Total);
 
             assert_eq!(result / initial, 2.into());
         }
@@ -784,7 +784,7 @@ mod armor_class {
                     Bonus::new(Ability::Dexterity, DebugValue(0), 100, DebugValue(0), None),
                 ]);
 
-                let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                let initial = breakdowns.get_attribute(ArmorClass::Total);
 
                 breakdowns.insert_bonuses([
                     Bonus::new(
@@ -803,7 +803,7 @@ mod armor_class {
                     ),
                 ]);
 
-                let result = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                let result = breakdowns.get_attribute(ArmorClass::Total);
 
                 assert_eq!(result - initial, 1.into());
             }
