@@ -1,7 +1,4 @@
-use serde::{Serialize, Deserialize};
-
-
-
+use serde::{Deserialize, Serialize};
 
 /// Dinosuar Bone Crafting from the Isle of Dread expansion
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, Hash)]
@@ -27,5 +24,5 @@ pub enum DinoBoneSlot {
     /// Horn Slot (Accessory)
     AccessoryHorn,
     /// Set Bonus
-    SetBonus
+    SetBonus,
 }
