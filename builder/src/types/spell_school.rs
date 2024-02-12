@@ -8,20 +8,28 @@ use utils::enums::StaticOptions;
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellSchool {
     /// Abjuration Spells
+    #[serde(rename = "Ab", alias = "Abjuration")]
     Abjuration,
     /// Conjuration Spells
+    #[serde(rename = "Co", alias = "Conjuration")]
     Conjuration,
     /// Divination Spells
+    #[serde(rename = "Di", alias = "Divination")]
     Divination,
     /// Enchantment Spells
+    #[serde(rename = "En", alias = "Enchantment")]
     Enchantment,
     /// Evocation Spells
+    #[serde(rename = "Ev", alias = "Evocation")]
     Evocation,
     /// Illusion Spells
+    #[serde(rename = "Il", alias = "Illusion")]
     Illusion,
     /// Necromancy Spells
+    #[serde(rename = "Ne", alias = "Necromancy")]
     Necromancy,
     /// Transmutation Spells
+    #[serde(rename = "Tr", alias = "Transmutation")]
     Transmutation,
 }
 

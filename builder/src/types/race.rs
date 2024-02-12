@@ -49,6 +49,7 @@ pub enum Race {
     /// Morninglord Race
     Morninglord,
     /// Purple Dragon Knight Race
+    #[serde(rename = "PDK", alias = "PurpleDragonKnight")]
     PurpleDragonKnight,
     /// Razorclaw Race
     Razorclaw,
