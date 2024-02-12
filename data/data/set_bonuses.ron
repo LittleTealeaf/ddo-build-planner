@@ -112,7 +112,7 @@
                     v: v("2"),
                 ),
                 (
-                    a: HealingAmplification(All),
+                    a: HealAmp(All),
                     t: Profane,
                     v: v("10"),
                 ),
@@ -139,7 +139,7 @@
                     v: v("3"),
                 ),
                 (
-                    a: HealingAmplification(All),
+                    a: HealAmp(All),
                     t: Profane,
                     v: v("30"),
                 ),

@@ -104,6 +104,7 @@ pub enum Attribute {
     /// Set Bonus
     SetBonus(String),
     /// Healing Amplification
+    #[serde(rename = "HealAmp", alias = "HealingAmplification")]
     HealingAmplification(HealingAmplification),
 }
 
