@@ -10,20 +10,28 @@ use crate::types::damage_type::DamageType;
 #[derive(Hash, PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponStat {
     /// Bonus to Attack
+    #[serde(rename = "att", alias = "Attack")]
     Attack,
     /// Bonus to Damage
+    #[serde(rename = "dam", alias = "Damage")]
     Damage,
     /// Bonus to Critical Attacks
+    #[serde(rename = "critatt", alias = "CriticalAttack")]
     CriticalAttack,
     /// Bonus to Critical Damage
+    #[serde(rename = "critdam", alias = "CriticalDamage")]
     CriticalDamage,
     /// The critical threat range of the weapon
+    #[serde(rename = "range", alias = "CriticalThreatRange")]
     CriticalThreatRange,
     /// The damage multiplier of the weapon on critical hits
+    #[serde(rename = "multi", alias = "CriticalMultiplier")]
     CriticalMultiplier,
     /// THe damage multiplier of the weapon on critical hits on a 19-20
+    #[serde(rename = "vorpalmulti", alias = "CriticalMultiplier1920")]
     CriticalMultiplier1920,
     /// Damage Types
+    #[serde(rename = "bypass", alias = "DamageType")]
     DamageType(DamageType),
 }
 
