@@ -14,13 +14,18 @@ use super::{Bonus, BonusSource, BonusType, Condition, Value};
 /// Represents a template of a bonus. In other words, a bonus without it's bonus source.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct BonusTemplate {
-    #[serde(rename = "attr")]
+    #[serde(rename = "a", alias = "attr", alias = "attribute")]
     attribute: Attribute,
-    #[serde(rename = "type")]
+    #[serde(rename = "t", alias = "type", alias = "bonus_type")]
     bonus_type: BonusType,
-    #[serde(rename = "val")]
+    #[serde(rename = "v", alias = "val", alias = "value")]
     value: Value,
-    #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "c",
+        alias = "cond",
+        alias = "condition",
+        skip_serializing_if = "Option::is_none"
+    )]
     condition: Option<Condition>,
 }
 

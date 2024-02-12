@@ -19,20 +19,28 @@ use super::{Depth, HasDice, Value};
 #[derive(Hash, Clone, Eq, Debug, Serialize, Deserialize, PartialEq)]
 pub enum Condition {
     /// Requires that a condition is not true
+    #[serde(rename = "n", alias = "Not")]
     Not(Box<Condition>),
     /// Requires that one value is greater than the next value
+    #[serde(rename = "g", alias = "GreaterThan")]
     GreaterThan(Value, Value),
     /// Requires that one value is less than the next value
+    #[serde(rename = "l", alias = "LessThan")]
     LessThan(Value, Value),
     /// Requires that one value is equal to another value
+    #[serde(rename = "e", alias = "EqualTo")]
     EqualTo(Value, Value),
     /// Insert a constant value
+    #[serde(rename = "b", alias = "Constant")]
     Constant(bool),
     /// Requires that both conditions are satisfied
+    #[serde(rename = "a", alias = "And")]
     And(Box<Self>, Box<Self>),
     /// Requires that at least one condition is satisfied
+    #[serde(rename = "o", alias = "Or")]
     Or(Box<Self>, Box<Self>),
     /// Exclusive Or gate, requires that only one is true
+    #[serde(rename = "x", alias = "Xor")]
     Xor(Box<Self>, Box<Self>),
 }
 
