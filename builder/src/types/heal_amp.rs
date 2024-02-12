@@ -16,10 +16,13 @@ use crate::{
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum HealingAmplification {
     /// Positive Healing Amplification
+    #[serde(rename = "Pos", alias = "Positive")]
     Positive,
     /// Negative Healing Amplification
+    #[serde(rename = "Neg", alias = "Negative")]
     Negative,
     /// Repair Healing Amplification
+    #[serde(rename = "Rep", alias = "Repair")]
     Repair,
     /// All Healing Amplification
     All,

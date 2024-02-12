@@ -630,7 +630,7 @@ mod armor_class {
                 #[test]
                 fn $name() {
                     let mut breakdowns = Breakdowns::new();
-                    let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                    let initial = breakdowns.get_attribute(ArmorClass::Total);
                     breakdowns.insert_bonus(Bonus::new(
                         $attribute,
                         DebugValue(0),
@@ -638,7 +638,7 @@ mod armor_class {
                         DebugValue(0),
                         None,
                     ));
-                    let result = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                    let result = breakdowns.get_attribute(ArmorClass::Total);
                     assert!(result > initial);
                 }
             };
@@ -738,11 +738,11 @@ mod armor_class {
                         None,
                     ));
 
-                    let initial = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                    let initial = breakdowns.get_attribute(ArmorClass::Total);
 
                     breakdowns.insert_bonus(Bonus::flag($flag, DebugValue(1), None));
 
-                    let with_armor = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                    let with_armor = breakdowns.get_attribute(ArmorClass::Total);
 
                     assert!(initial > with_armor);
 
@@ -754,7 +754,7 @@ mod armor_class {
                         None,
                     ));
 
-                    let with_increased_max = breakdowns.get_attribute(ArmorClass::TotalArmorClass);
+                    let with_increased_max = breakdowns.get_attribute(ArmorClass::Total);
 
                     assert_eq!(with_increased_max - with_armor, 2.into());
                 }
