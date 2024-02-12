@@ -6,7 +6,7 @@ mod widgets;
 
 use ::utils::enums::StaticOptions;
 use builder::attribute::Attribute;
-use data::{Data, DataContainer, MData, MDataContainer};
+use data::{Data, MData, MDataContainer};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use itertools::chain;
 use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};

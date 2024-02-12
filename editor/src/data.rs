@@ -35,19 +35,6 @@ pub struct DataContainer<T> {
     pub saving: bool,
 }
 
-impl<T> DataContainer<T>
-where
-    T: Debug + Clone,
-{
-    pub fn data(&mut self) -> Option<&mut T> {
-        self.data.as_mut()
-    }
-
-    pub const fn modified(&self) -> bool {
-        self.modified
-    }
-}
-
 impl<T> Default for DataContainer<T> {
     fn default() -> Self {
         Self {
