@@ -146,7 +146,7 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
         ),
         // Total Armor Class Bonus
         BonusTemplate::new(
-            ArmorClass::TotalArmorClass,
+            ArmorClass::Total,
             BonusType::Standard,
             Value::iter_sum([
                 ArmorClass::Bonus.to_value(),

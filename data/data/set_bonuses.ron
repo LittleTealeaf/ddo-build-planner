@@ -4,7 +4,7 @@
         b: {
             3: [
                 (
-                    a: ArmorClass(NaturalArmor),
+                    a: AC(NaturalArmor),
                     t: Profane,
                     v: v("3"),
                 ),
@@ -21,7 +21,7 @@
             ],
             5: [
                 (
-                    a: ArmorClass(NaturalArmor),
+                    a: AC(NaturalArmor),
                     t: Profane,
                     v: v("5"),
                 ),
@@ -48,7 +48,7 @@
                     v: v("10"),
                 ),
                 (
-                    a: ArmorClass(NaturalArmor),
+                    a: AC(NaturalArmor),
                     t: Profane,
                     v: v("5"),
                 ),
@@ -70,7 +70,7 @@
                     v: v("15"),
                 ),
                 (
-                    a: ArmorClass(NaturalArmor),
+                    a: AC(NaturalArmor),
                     t: Profane,
                     v: v("8"),
                 ),
@@ -97,7 +97,7 @@
                     v: v("20"),
                 ),
                 (
-                    a: ArmorClass(NaturalArmor),
+                    a: AC(NaturalArmor),
                     t: Profane,
                     v: v("10"),
                 ),
@@ -112,7 +112,7 @@
                     v: v("2"),
                 ),
                 (
-                    a: HealingAmplification(All),
+                    a: HealAmp(All),
                     t: Profane,
                     v: v("10"),
                 ),
@@ -124,7 +124,7 @@
                     v: v("20"),
                 ),
                 (
-                    a: ArmorClass(NaturalArmor),
+                    a: AC(NaturalArmor),
                     t: Profane,
                     v: v("10"),
                 ),
@@ -139,7 +139,7 @@
                     v: v("3"),
                 ),
                 (
-                    a: HealingAmplification(All),
+                    a: HealAmp(All),
                     t: Profane,
                     v: v("30"),
                 ),

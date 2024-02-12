@@ -27,8 +27,10 @@ pub enum SavingThrow {
     /// [`Will`]: SavingThrow::Will
     All,
     /// Fortitude Saving Throw
+    #[serde(rename = "Fort", alias = "Fortitude")]
     Fortitude,
     /// Bonus to Saving Throws against Poison
+    #[serde(rename = "Ref", alias = "Reflex")]
     Reflex,
     /// Bonus to Saving Throws agaisnt Traps
     Will,

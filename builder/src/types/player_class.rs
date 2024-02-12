@@ -14,46 +14,67 @@ use crate::attribute::{Attribute, ToAttribute};
 #[derive(Hash, Copy, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum PlayerClass {
     /// Alchemist Class
+    #[serde(rename = "Alc", alias = "Alchemist")]
     Alchemist,
     /// Artificer Class
+    #[serde(rename = "Art", alias = "Artifcer")]
     Artificer,
     /// Barbarian Class
+    #[serde(rename = "Brb", alias = "Barbarian")]
     Barbarian,
     /// Fighter Class
+    #[serde(rename = "Ftr", alias = "Fighter")]
     Fighter,
     /// Monk Class
+    #[serde(rename = "Mnk", alias = "Monk")]
     Monk,
     /// Rogue Class
+    #[serde(rename = "Rog", alias = "Rogue")]
     Rogue,
     /// Sorcerer Class
+    #[serde(rename = "Sor", alias = "Sorcerer")]
     Sorcerer,
     /// Wizard Class
+    #[serde(rename = "Wiz", alias = "Wizard")]
     Wizard,
     /// Favored Soul Class
+    #[serde(rename = "Fvs", alias = "FavoredSoul")]
     FavoredSoul,
     /// Bard Class
+    #[serde(rename = "Brd", alias = "Bard")]
     Bard,
     /// Stormsinger Class
+    #[serde(rename = "Stm", alias = "Stormsinger")]
     Stormsinger,
     /// Cleric Class
+    #[serde(rename = "Clr", alias = "Cleric")]
     Cleric,
     /// Dark Apostate Class
+    #[serde(rename = "DarApo", alias = "DarkApostate")]
     DarkApostate,
     /// Druid Class
+    #[serde(rename = "Drd", alias = "Druid")]
     Druid,
     /// Blight Caster Class
+    #[serde(rename = "Bli", alias = "BlightCaster")]
     BlightCaster,
     /// Paladin Class
+    #[serde(rename = "Pal", alias = "Paladin")]
     Paladin,
     /// Sacred Fist Class
+    #[serde(rename = "Sac", alias = "SacredFist")]
     SacredFist,
     /// Ranger Class
+    #[serde(rename = "Rgr", alias = "Ranger")]
     Ranger,
     /// Dark Hunter Class
+    #[serde(rename = "DarHtr", alias = "DarkHunter")]
     DarkHunter,
     /// Warlock Class
+    #[serde(rename = "War", alias = "Warlock")]
     Warlock,
     /// Acolyte Of The Skin Class
+    #[serde(rename = "Aco", alias = "AcolyteOfTheSkin")]
     AcolyteOfTheSkin,
 }
 
