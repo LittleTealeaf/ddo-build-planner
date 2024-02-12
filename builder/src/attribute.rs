@@ -51,12 +51,14 @@ pub enum Attribute {
     /// The ability score of the character.
     Ability(Ability),
     /// The modifier, calculated from [`Attribute::Ability`].
+    #[serde(rename = "AbilMod", alias = "AbilityModifier")]
     AbilityModifier(Ability),
     /// Indicates how many levels the character has of a given class.
     ClassLevel(PlayerClass),
     /// The different skills available in the game.
     Skill(Skill),
     /// Both simple and complex saving throws.
+    #[serde(rename = "Save", alias = "SavingThrow")]
     SavingThrow(SavingThrow),
     /// Character Spell Power.
     ///
@@ -77,6 +79,7 @@ pub enum Attribute {
     /// Bonuses to stats to either the main hand or off hand.
     Weapon(WeaponAttribute),
     /// Armor class values
+    #[serde(rename = "AC", alias = "ArmorClass")]
     ArmorClass(ArmorClass),
     /// Physical or Magical Sheltering
     Sheltering(Sheltering),
