@@ -1,7 +1,7 @@
 [
     (
-        name: "Might of the Abashai",
-        bonuses: {
+        n: "Might of the Abashai",
+        b: {
             3: [
                 (
                     a: ArmorClass(NaturalArmor),
@@ -39,8 +39,8 @@
         },
     ),
     (
-        name: "Epic Might of the Abashai",
-        bonuses: {
+        n: "Epic Might of the Abashai",
+        b: {
             3: [
                 (
                     a: Sheltering(Both),
@@ -88,8 +88,8 @@
         },
     ),
     (
-        name: "Legendary Might of the Abashai",
-        bonuses: {
+        n: "Legendary Might of the Abashai",
+        b: {
             3: [
                 (
                     a: Sheltering(Both),
