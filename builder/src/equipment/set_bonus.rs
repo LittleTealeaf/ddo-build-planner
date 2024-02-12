@@ -12,7 +12,9 @@ use crate::{
 /// Describes a set bonus with it's name and bonuses
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SetBonus {
+    #[serde(rename = "n", alias = "name")]
     name: String,
+    #[serde(rename = "b", alias = "bonuses")]
     bonuses: OrdMap<i32, Vec<BonusTemplate>>,
 }
 

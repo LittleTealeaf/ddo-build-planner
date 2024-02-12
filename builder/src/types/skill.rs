@@ -19,47 +19,67 @@ pub enum Skill {
     /// All Skills
     All,
     /// Balance Skill
+    #[serde(rename = "ba", alias = "Balance")]
     Balance,
     /// Bluff Skill
+    #[serde(rename = "bf", alias = "Bluff")]
     Bluff,
     /// Concentration Skill
+    #[serde(rename = "cn", alias = "Concentration")]
     Concentration,
     /// Diplomacy Skill
+    #[serde(rename = "dp", alias = "Diplomacy")]
     Diplomacy,
     /// Disable Device Skill
+    #[serde(rename = "dd", alias = "DisableDevice")]
     DisableDevice,
     /// Haggle Skill
+    #[serde(rename = "ha", alias = "Haggle")]
     Haggle,
     /// Heal Skill
+    #[serde(rename = "he", alias = "Heal")]
     Heal,
     /// Hide Skill
+    #[serde(rename = "hi", alias = "Hide")]
     Hide,
     /// Intimidate Skill
+    #[serde(rename = "in", alias = "Intimidate")]
     Intimidate,
     /// Jump Skill
+    #[serde(rename = "ju", alias = "Jump")]
     Jump,
     /// Listen Skill
+    #[serde(rename = "li", alias = "Listen")]
     Listen,
     /// Move Silently Skill
+    #[serde(rename = "ms", alias = "MoveSilently")]
     MoveSilently,
     /// Open Lock Skill
+    #[serde(rename = "ol", alias = "OpenLock")]
     OpenLock,
     /// Perform Skill
+    #[serde(rename = "pe", alias = "Perform")]
     Perform,
     /// Repair Skill
+    #[serde(rename = "re", alias = "Repair")]
     Repair,
     /// Search Skill
+    #[serde(rename = "se", alias = "Search")]
     Search,
     /// Spellcraft Skill
+    #[serde(rename = "sc", alias = "Spellcraft")]
     Spellcraft,
     /// Spot Skill
+    #[serde(rename = "sp", alias = "Spot")]
     Spot,
     /// Swim Skill
+    #[serde(rename = "sw", alias = "Swim")]
     Swim,
     /// Tumble Skill
+    #[serde(rename = "tu", alias = "Tumble")]
     Tumble,
     /// Use Magical Device Skill
-    #[serde(rename = "UMD")]
+    #[serde(rename = "um", alias = "UMD", alias = "UseMagicalDevice")]
     UseMagicalDevice,
 }
 

@@ -21,46 +21,65 @@ use super::{Condition, Depth, HasDice};
 #[derive(Clone, PartialEq, Debug, Hash, Eq, Serialize, Deserialize)]
 pub enum Value {
     /// Hard codes a specific [`Decimal`] value.
-    #[serde(alias = "val")]
+    #[serde(rename = "v", alias = "Const")]
     Const(Decimal),
     /// Copy the total value of some [`Attribute`].
+    #[serde(rename = "at", alias = "Attribute")]
     Attribute(Attribute),
     /// Returns the minimum value of the two
+    #[serde(rename = "mi", alias = "Min")]
     Min(Box<Value>, Box<Value>),
     /// Returns the maximum value of the two
+    #[serde(rename = "ma", alias = "Max")]
     Max(Box<Value>, Box<Value>),
     /// Floors the inner value to a whole number
+    #[serde(rename = "fl", alias = "Floor")]
     Floor(Box<Value>),
     /// Ceils the inner value to a whole number
+    #[serde(rename = "ce", alias = "Ceil")]
     Ceil(Box<Value>),
     /// Rounds the value to the closest whole number
+    #[serde(rename = "ro", alias = "Round")]
     Round(Box<Value>),
     /// Makes the value positive if it is negative
+    #[serde(rename = "ab", alias = "Abs")]
     Abs(Box<Value>),
     /// Adds the first value to the second value
+    #[serde(rename = "a", alias = "Add")]
     Add(Box<Value>, Box<Value>),
     /// Subtracts the second value from the first value
+    #[serde(rename = "s", alias = "Sub")]
     Sub(Box<Value>, Box<Value>),
     /// Multiplies the two values
+    #[serde(rename = "m", alias = "Mul")]
     Mul(Box<Value>, Box<Value>),
     /// Divides the first value by the second value
+    #[serde(rename = "d", alias = "Div")]
     Div(Box<Value>, Box<Value>),
     /// Returns the remainder from dividing the first value by the second value
+    #[serde(rename = "r", alias = "Rem")]
     Rem(Box<Value>, Box<Value>),
     /// Returns `if_true` if `condition` is true, otherwise returns `if_false`
+    #[serde(rename = "i", alias = "If")]
     If {
         /// The condition needed to be checked
+        #[serde(rename = "c")]
         condition: Box<Condition>,
         /// The value to return if the condition returns true
+        #[serde(rename = "t")]
         if_true: Box<Value>,
         /// The value to return if the condition returns false
+        #[serde(rename = "f")]
         if_false: Box<Value>,
     },
     /// Represents a die roll. Attributes will be calculated based on the mean roll of the dice
+    #[serde(rename = "di", alias = "Dice")]
     Dice {
         /// The number of dice to roll
+        #[serde(rename = "c")]
         count: Box<Value>,
         /// The dice size
+        #[serde(rename = "s")]
         size: Box<Value>,
     },
 }

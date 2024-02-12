@@ -1,7 +1,6 @@
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
 mod bonus_type;
 mod condition;
-mod deserialize;
 mod source;
 mod template;
 mod traits;
@@ -33,17 +32,21 @@ pub use value::*;
 /// A bonus contains the [`Attribute`], a [`BonusType`], a [`Value`], a [`BonusSource`], and
 /// an optional [`Condition`].
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, Eq, PartialEq)]
-#[serde(from = "deserialize::DeserializedBonus")]
 pub struct Bonus {
-    #[serde(rename = "attr")]
+    #[serde(rename = "a", alias = "attr", alias = "attribute")]
     attribute: Attribute,
-    #[serde(rename = "type")]
+    #[serde(rename = "t", alias = "type", alias = "bonus_type")]
     bonus_type: BonusType,
-    #[serde(rename = "val")]
+    #[serde(rename = "v", alias = "val", alias = "value")]
     value: Value,
-    #[serde(rename = "src")]
+    #[serde(rename = "s", alias = "src", alias = "source")]
     source: BonusSource,
-    #[serde(rename = "cond", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "c",
+        alias = "cond",
+        alias = "condition",
+        skip_serializing_if = "Option::is_none"
+    )]
     condition: Option<Condition>,
 }
 
