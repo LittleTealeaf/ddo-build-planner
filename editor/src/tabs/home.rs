@@ -6,18 +6,23 @@ use iced_aw::modal;
 use ui::{HandleMessage, HandleView};
 
 use crate::{
-    widgets::modals::attribute::{AttributeSelector, MAttributeSelector},
+    widgets::{
+        modals::attribute::{AttributeSelector, MAttributeSelector},
+        selectors::value::{MValueSelector, ValueSelector},
+    },
     Editor, Message,
 };
 
 #[derive(Debug, Clone, Default)]
 pub struct THome {
     selector: Option<AttributeSelector>,
+    value_selector: Option<ValueSelector>,
 }
 
 #[derive(Debug, Clone)]
 pub enum MHome {
     Selector(MAttributeSelector),
+    ValueSelector(MValueSelector),
     OpenSelection,
     SubmitSelection,
     CloseSelection,
@@ -32,6 +37,11 @@ impl From<MHome> for Message {
 impl HandleMessage<MHome> for Editor {
     fn handle_message(&mut self, message: MHome) -> Command<<Self as Application>::Message> {
         match message {
+            MHome::ValueSelector(m) => self
+                .home
+                .value_selector
+                .as_mut()
+                .map_or_else(Command::none, |selector| selector.message(m)),
             MHome::Selector(message) => self
                 .home
                 .selector

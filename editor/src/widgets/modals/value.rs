@@ -86,6 +86,54 @@ pub enum MValueSelector {
 }
 
 impl ValueSelector {
+    pub fn new(value: Option<&Value>) -> Self {
+        let value = value.unwrap_or(&Value::Const(Decimal::ZERO));
+        let mut selector = Self {
+            selected_type: ValueType::Const,
+            constant: None,
+            attribute: None,
+            val_a: None,
+            val_b: None,
+            condition: None,
+            selector: EditSelector::None,
+        };
+
+        match value {
+            Value::Const(val) => Self {
+                selected_type: ValueType::Const,
+                constant: Some(*val),
+                ..selector
+            },
+            Value::Attribute(attribute) => Self {
+                selected_type: ValueType::Attribute,
+                attribute: Some(attribute.clone()),
+                ..selector
+            },
+            Value::Min(a, b) => Self {
+                selected_type: ValueType::Min,
+                val_a: Some(*a.clone()),
+                val_b: Some(*b.clone()),
+                ..selector
+            },
+            Value::Max(_, _) => todo!(),
+            Value::Floor(_) => todo!(),
+            Value::Ceil(_) => todo!(),
+            Value::Round(_) => todo!(),
+            Value::Abs(_) => todo!(),
+            Value::Add(_, _) => todo!(),
+            Value::Sub(_, _) => todo!(),
+            Value::Mul(_, _) => todo!(),
+            Value::Div(_, _) => todo!(),
+            Value::Rem(_, _) => todo!(),
+            Value::If {
+                condition,
+                if_true,
+                if_false,
+            } => todo!(),
+            Value::Dice { count, size } => todo!(),
+        }
+    }
+
     pub fn message(&mut self, message: MValueSelector) -> Command<Message> {
         match message {
             MValueSelector::SelectValue(m) => {
