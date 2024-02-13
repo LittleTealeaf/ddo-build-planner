@@ -6,6 +6,7 @@ pub mod alignment;
 pub mod armor_class;
 pub mod crafting_slot;
 pub mod damage_type;
+pub mod dodge;
 pub mod flag;
 pub mod gear_slot;
 pub mod heal_amp;

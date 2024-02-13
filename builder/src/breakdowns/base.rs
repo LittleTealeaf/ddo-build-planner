@@ -11,6 +11,7 @@ use crate::{
         absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
         damage_type::DamageType,
+        dodge::Dodge,
         flag::OffHandType,
         health::Health,
         item_type::{ArmorType, ShieldType},
@@ -157,6 +158,37 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                     * (Value::ONE + ArmorClass::ArmorScalar.to_value()),
                 Value::TEN,
             ]) * (Value::ONE + ArmorClass::TotalScalar.to_value()),
+            None,
+        ),
+    ]
+}
+
+fn dodge() -> impl IntoIterator<Item = BonusTemplate> {
+    [
+        BonusTemplate::new(
+            Dodge::Cap,
+            BonusType::Standard,
+            Value::min(
+                Value::condition(
+                    [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+                        .map(Condition::has)
+                        .cond_any()
+                        .unwrap(),
+                    ArmorClass::ArmorMaxDex,
+                    25,
+                ),
+                Value::condition(
+                    Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
+                    ArmorClass::ShieldMaxDex,
+                    25,
+                ),
+            ) + Dodge::CapBonus.to_value(),
+            None,
+        ),
+        BonusTemplate::new(
+            Dodge::Total,
+            BonusType::Stacking,
+            Value::min(Dodge::Cap.to_value(), Dodge::Bonus.to_value()),
             None,
         ),
     ]

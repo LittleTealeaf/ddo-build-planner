@@ -14,8 +14,6 @@ use crate::{
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
 };
 
-use self::iconic_past_life::IconicPastLife;
-
 use super::{
     flag::{Flag, ToFlag},
     toggle_group::ToggleGroup,
