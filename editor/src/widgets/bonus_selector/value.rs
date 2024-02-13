@@ -12,7 +12,7 @@ enum ChildSelector {}
 
 #[derive(Clone, Debug)]
 pub enum MValueSelector {
-    A
+    A,
 }
 
 impl BonusSelectorTrait for ValueSelector {
