@@ -133,24 +133,18 @@ impl BonusSelectorTrait for ConditionSelector {
 
     fn message(&mut self, message: Self::Message, attributes: &[Attribute]) -> Command<Message> {
         match message {
-            MConditionSelector::SelectValue(m) => {
-                if let Some(ChildSelector::ValueA(sel) | ChildSelector::ValueB(sel)) =
-                    &mut self.child
-                {
+            MConditionSelector::SelectValue(m) => match &mut self.child {
+                Some(ChildSelector::ValueA(sel) | ChildSelector::ValueB(sel)) => {
                     sel.message(*m, attributes)
-                } else {
-                    Command::none()
                 }
-            }
-            MConditionSelector::SelectCondition(m) => {
-                if let Some(ChildSelector::ConditionA(sel) | ChildSelector::ConditionB(sel)) =
-                    &mut self.child
-                {
+                _ => Command::none(),
+            },
+            MConditionSelector::SelectCondition(m) => match &mut self.child {
+                Some(ChildSelector::ConditionA(sel) | ChildSelector::ConditionB(sel)) => {
                     sel.message(*m, attributes)
-                } else {
-                    Command::none()
                 }
-            }
+                _ => Command::none(),
+            },
             MConditionSelector::SubmitValue(value) => {
                 if value.is_some() {
                     match self.child {
