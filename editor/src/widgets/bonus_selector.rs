@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use core::fmt::Debug;
 
 use builder::attribute::Attribute;
 use iced::{Command, Element, Renderer};

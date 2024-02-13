@@ -7,6 +7,8 @@ use iced::{
 };
 use iced_aw::card;
 
+use crate::Message;
+
 use super::BonusSelectorTrait;
 
 #[derive(Clone, Debug)]
@@ -34,11 +36,7 @@ impl BonusSelectorTrait for AttributeSelector {
         }
     }
 
-    fn set_value(
-        mut self,
-        value: &Self::Output,
-        attributes: &[builder::attribute::Attribute],
-    ) -> Self {
+    fn set_value(mut self, value: &Self::Output, attributes: &[Attribute]) -> Self {
         self.selected = attributes
             .iter()
             .enumerate()
@@ -47,7 +45,7 @@ impl BonusSelectorTrait for AttributeSelector {
         self
     }
 
-    fn get_value(&self, attributes: &[builder::attribute::Attribute]) -> Option<Self::Output> {
+    fn get_value(&self, attributes: &[Attribute]) -> Option<Self::Output> {
         self.selected
             .and_then(|index| attributes.get(index))
             .cloned()
@@ -56,8 +54,8 @@ impl BonusSelectorTrait for AttributeSelector {
     fn message(
         &mut self,
         message: Self::Message,
-        attributes: &[builder::attribute::Attribute],
-    ) -> iced::Command<crate::Message> {
+        attributes: &[Attribute],
+    ) -> iced::Command<Message> {
         match message {
             MAttributeSelector::Select(index) => {
                 if index < attributes.len() {
@@ -81,10 +79,10 @@ impl BonusSelectorTrait for AttributeSelector {
         submit: FSubmit,
         convert: FConvert,
         attributes: &[Attribute],
-    ) -> iced::Element<'_, crate::Message, iced::Renderer<crate::AppTheme>>
+    ) -> iced::Element<'_, Message, iced::Renderer<crate::AppTheme>>
     where
-        FSubmit: Fn(Option<Self::Output>) -> crate::Message + 'a + Clone,
-        FConvert: Fn(Self::Message) -> crate::Message + 'a + Clone,
+        FSubmit: Fn(Option<Self::Output>) -> Message + 'a + Clone,
+        FConvert: Fn(Self::Message) -> Message + 'a + Clone,
     {
         let filter = self.filter.to_lowercase();
         let selected = self.selected.unwrap_or(attributes.len());
