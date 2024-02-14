@@ -1,5 +1,8 @@
 use builder::{attribute::Attribute, bonus::Value};
 
+mod choices;
+
+
 use super::BonusSelectorTrait;
 
 #[derive(Clone, Debug, Default)]

@@ -218,8 +218,140 @@ impl BonusSelectorTrait for ConditionSelector {
                     })
                     .into(),
                     match self.selected {
-                        ConditionChoice::Not => text("boo").into(),
-                        _ => text("Hi world").into(),
+                        ConditionChoice::Not => column!(
+                            text(
+                                self.value_a
+                                    .as_ref()
+                                    .map_or("No Value".to_owned(), |value| format!(
+                                        "Not ({value})"
+                                    ))
+                            ),
+                            button(text("Edit Value"))
+                                .on_press(convert(MConditionSelector::OpenSelectValueA))
+                        )
+                        .into(),
+                        ConditionChoice::GreaterThan => column!(
+                            text({
+                                let a = self
+                                    .value_a
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                let b = self
+                                    .value_b
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                format!("{a} > {b}")
+                            }),
+                            row!(
+                                button(text("Value A"))
+                                    .on_press(convert(MConditionSelector::OpenSelectValueA)),
+                                button(text("Value B"))
+                                    .on_press(convert(MConditionSelector::OpenSelectValueB)),
+                            )
+                        )
+                        .into(),
+                        ConditionChoice::LessThan => column!(
+                            text({
+                                let a = self
+                                    .value_a
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                let b = self
+                                    .value_b
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                format!("{a} < {b}")
+                            }),
+                            row!(
+                                button(text("Value A"))
+                                    .on_press(convert(MConditionSelector::OpenSelectValueA)),
+                                button(text("Value B"))
+                                    .on_press(convert(MConditionSelector::OpenSelectValueB)),
+                            )
+                        )
+                        .into(),
+                        ConditionChoice::EqualTo => column!(
+                            text({
+                                let a = self
+                                    .value_a
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                let b = self
+                                    .value_b
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                format!("{a} == {b}")
+                            }),
+                            row!(
+                                button(text("Value A"))
+                                    .on_press(convert(MConditionSelector::OpenSelectValueA)),
+                                button(text("Value B"))
+                                    .on_press(convert(MConditionSelector::OpenSelectValueB)),
+                            )
+                        )
+                        .into(),
+                        ConditionChoice::True => text("True").into(),
+                        ConditionChoice::False => text("False").into(),
+                        ConditionChoice::And => column!(
+                            text({
+                                let a = self
+                                    .condition_a
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                let b = self
+                                    .condition_b
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                format!("{a} && {b}")
+                            }),
+                            row!(
+                                button(text("Condition A"))
+                                    .on_press(convert(MConditionSelector::OpenSelectConditionA)),
+                                button(text("Condition B"))
+                                    .on_press(convert(MConditionSelector::OpenSelectConditionB)),
+                            )
+                        )
+                        .into(),
+                        ConditionChoice::Or => column!(
+                            text({
+                                let a = self
+                                    .condition_a
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                let b = self
+                                    .condition_b
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                format!("{a} || {b}")
+                            }),
+                            row!(
+                                button(text("Condition A"))
+                                    .on_press(convert(MConditionSelector::OpenSelectConditionA)),
+                                button(text("Condition B"))
+                                    .on_press(convert(MConditionSelector::OpenSelectConditionB)),
+                            )
+                        )
+                        .into(),
+                        ConditionChoice::Xor => column!(
+                            text({
+                                let a = self
+                                    .condition_a
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                let b = self
+                                    .condition_b
+                                    .as_ref()
+                                    .map_or("___".to_owned(), |value| format!("{value}"));
+                                format!("{a} ^ {b}")
+                            }),
+                            row!(
+                                button(text("Condition A"))
+                                    .on_press(convert(MConditionSelector::OpenSelectConditionA)),
+                                button(text("Condition B"))
+                                    .on_press(convert(MConditionSelector::OpenSelectConditionB)),
+                            )
+                        )
+                        .into(),
                     },
                 ]),
             )
