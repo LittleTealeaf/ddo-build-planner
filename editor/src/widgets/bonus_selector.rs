@@ -9,6 +9,7 @@ pub mod attribute;
 pub mod condition;
 pub mod value;
 
+#[derive(Clone, Debug)]
 pub struct BonusSelector<S>
 where
     S: BonusSelectorTrait,
@@ -21,7 +22,7 @@ impl<S> BonusSelector<S>
 where
     S: BonusSelectorTrait,
 {
-    fn new<I>(attributes: I) -> Self
+    pub fn new<I>(attributes: I) -> Self
     where
         I: IntoIterator<Item = Attribute>,
     {
@@ -32,29 +33,29 @@ where
         }
     }
 
-    fn set_value(self, value: &S::Output) -> Self {
+    pub fn set_value(self, value: &S::Output) -> Self {
         Self {
             selector: self.selector.set_value(value, &self.attributes),
             ..self
         }
     }
 
-    fn set_value_maybe(self, value: Option<&S::Output>) -> Self {
+    pub fn set_value_maybe(self, value: Option<&S::Output>) -> Self {
         Self {
             selector: self.selector.set_value_maybe(value, &self.attributes),
             ..self
         }
     }
 
-    fn get_value(&self) -> Option<S::Output> {
+    pub fn get_value(&self) -> Option<S::Output> {
         self.selector.get_value(&self.attributes)
     }
 
-    fn message(&mut self, message: S::Message) -> Command<Message> {
+    pub fn message(&mut self, message: S::Message) -> Command<Message> {
         self.selector.message(message, &self.attributes)
     }
 
-    fn view<'a, FSubmit, FConvert>(
+    pub fn view<'a, FSubmit, FConvert>(
         &'a self,
         submit: FSubmit,
         convert: FConvert,
