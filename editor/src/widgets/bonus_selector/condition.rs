@@ -239,7 +239,7 @@ impl BonusSelectorTrait for ConditionSelector {
                                         .into(),
                                         Field::ValueB => row!(
                                             button(label).on_press(convert(
-                                                MConditionSelector::OpenSelectValueA
+                                                MConditionSelector::OpenSelectValueB
                                             )),
                                             text(
                                                 self.value_b
@@ -250,7 +250,7 @@ impl BonusSelectorTrait for ConditionSelector {
                                         .into(),
                                         Field::ConditionA => row!(
                                             button(label).on_press(convert(
-                                                MConditionSelector::OpenSelectValueA
+                                                MConditionSelector::OpenSelectConditionA
                                             )),
                                             text(
                                                 self.condition_a
@@ -261,7 +261,7 @@ impl BonusSelectorTrait for ConditionSelector {
                                         .into(),
                                         Field::ConditionB => row!(
                                             button(label).on_press(convert(
-                                                MConditionSelector::OpenSelectValueA
+                                                MConditionSelector::OpenSelectConditionB
                                             )),
                                             text(
                                                 self.condition_b
