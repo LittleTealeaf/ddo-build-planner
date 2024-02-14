@@ -21,7 +21,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "rustc --version",
+	"postCreateCommand": "rustup default stable && rustup toolchain install stable && rustup component add rustfmt",
 
 	// Configure tool-specific properties.
 	"customizations": {
