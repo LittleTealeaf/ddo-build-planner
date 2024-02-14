@@ -48,38 +48,35 @@ impl ConditionChoice {
         }
     }
 
-    pub fn display(
-        self,
-        value_a: &Option<Value>,
-        value_b: &Option<Value>,
-        condition_a: &Option<Condition>,
-        condition_b: &Option<Condition>,
-    ) -> String {
-        let val_a = value_a
-            .as_ref()
-            .map_or("[Val A]".to_owned(), |val| format!("{val}"));
-
-        let val_b = value_b
-            .as_ref()
-            .map_or("[Val B]".to_owned(), |val| format!("{val}"));
-
-        let cond_a = condition_a
-            .as_ref()
-            .map_or("[Cond A]".to_owned(), |val| format!("{val}"));
-        let cond_b = condition_b
-            .as_ref()
-            .map_or("[Cond B]".to_owned(), |val| format!("{val}"));
-
+    pub fn displayables(self) -> (&'static str, Vec<(&'static str, Field)>) {
         match self {
-            Self::Not => format!("Not {cond_a}"),
-            Self::GreaterThan => format!("{val_a} > {val_b}"),
-            Self::LessThan => format!("{val_a} < {val_b}"),
-            Self::EqualTo => format!("{val_a} == {val_b}"),
-            Self::True => "True".to_owned(),
-            Self::False => "False".to_owned(),
-            Self::And => format!("{cond_a} && {cond_b}"),
-            Self::Or => format!("{cond_a} || {cond_b}"),
-            Self::Xor => format!("{cond_a} ^ {cond_b}"),
+            Self::Not => ("Not [A]", vec![("A", Field::ConditionA)]),
+            Self::GreaterThan => (
+                "[A] > [B]",
+                vec![("A", Field::ValueA), ("B", Field::ValueB)],
+            ),
+            Self::LessThan => (
+                "[A] < [B]",
+                vec![("A", Field::ValueA), ("B", Field::ValueB)],
+            ),
+            Self::EqualTo => (
+                "[A] == [B]",
+                vec![("A", Field::ValueA), ("B", Field::ValueB)],
+            ),
+            Self::True => ("True", Vec::new()),
+            Self::False => ("False", Vec::new()),
+            Self::And => (
+                "[A] && [B]",
+                vec![("A", Field::ConditionA), ("B", Field::ConditionB)],
+            ),
+            Self::Or => (
+                "[A] || [B]",
+                vec![("A", Field::ConditionA), ("B", Field::ConditionB)],
+            ),
+            Self::Xor => (
+                "[A] ^ [B]",
+                vec![("A", Field::ConditionA), ("B", Field::ConditionB)],
+            ),
         }
     }
 }
