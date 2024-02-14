@@ -58,11 +58,6 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           key: ${{matrix.os}}
-      - name: Build Editor (Debug)
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: -p editor
       - name: Build Release
         uses: actions-rs/cargo@v1
         with:
