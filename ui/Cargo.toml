@@ -15,7 +15,7 @@ workspace = true
 
 
 [dependencies]
-iced = { version = "0.10.0", features = ["tokio"] }
+iced = { version = "0.12.0", features = ["tokio"] }
 utils = { path = "../utils/" }
 builder = { path = "../builder/" }
 iced_aw = { version = "0.7.0", default-features = false, features = ["icons"] }

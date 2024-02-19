@@ -20,7 +20,7 @@ utils = { path = "../utils/" }
 ui = { path = "../ui/" }
 roc = "0.0.0"
 serde = { version = "1.0.196" }
-iced = { version = "0.10.0", features = ["tokio"] }
+iced = { version = "0.12.0", features = ["tokio"] }
 tokio = { version = "1.36.0", features = ["fs", "io-util", "macros", "rt"] }
 ron = { version = "0.8.1" }
 iced_aw = { version = "0.7.0", default-features = false, features = [
