@@ -7,7 +7,7 @@ mod widgets;
 use ::utils::enums::StaticOptions;
 use builder::attribute::Attribute;
 use data::{Data, MData, MDataContainer};
-use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
+use iced::{executor, font, Application, Command, Element, Settings, Theme};
 use itertools::chain;
 use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
@@ -88,14 +88,14 @@ impl Application for Editor {
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
         self.handle_message(message)
     }
-
-    fn view(&self) -> Element<'_, Self::Message, Renderer<Self::Theme>> {
+    fn view(&self) -> Element<'_, Self::Message, Self::Theme, iced::Renderer> {
         self.tab.handle_view(self)
     }
+
 }
 
 impl HandleMessage<Message> for Editor {
-    fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
+    fn handle_message(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::Data(m) => self.handle_message(m),
             Message::Home(message) => self.handle_message(message),

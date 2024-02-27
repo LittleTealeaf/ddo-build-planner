@@ -17,7 +17,7 @@ impl HandleView<Editor> for Tab {
     fn handle_view<'a>(
         &'a self,
         app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    ) -> Element<'_, <Editor as Application>::Message, Renderer>
     {
         column!(
             [(Self::Home, "Home"), (Self::SetBonuses, "Set Bonuses"),]

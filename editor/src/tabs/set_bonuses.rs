@@ -105,8 +105,9 @@ impl HandleView<Editor> for TSetBonuses {
     fn handle_view<'a>(
         &'a self,
         app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    ) -> Element<'_, <Editor as Application>::Message, Renderer>
     {
+
         self.editing.as_ref().map_or_else(
             || {
                 column(vec![
@@ -116,15 +117,15 @@ impl HandleView<Editor> for TSetBonuses {
                         button(text('').font(NERD_FONT)).on_press_maybe(
                             (!&self.filter.is_empty()).then_some(MSetBonuses::NewSet.into())
                         ),
-                        horizontal_space(10.0),
+                        horizontal_space().width(10.0),
                         button(text('󰑓').font(NERD_FONT))
                             .on_press(MData::SetBonus(MDataContainer::Load).into()),
-                        horizontal_space(5.0),
+                        horizontal_space().width(5.0),
                         button(text('').font(NERD_FONT)).on_press_maybe(
                             (app.data.set_bonuses.modified && !app.data.set_bonuses.saving)
                                 .then_some(MData::SetBonus(MDataContainer::Save).into())
                         ),
-                        horizontal_space(2.0),
+                        horizontal_space().width(2.0),
                     )
                     .into(),
                     app.data.set_bonuses.data.as_ref().map_or_else(

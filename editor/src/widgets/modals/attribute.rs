@@ -92,7 +92,7 @@ impl AttributeSelector {
         }
     }
 
-    pub fn view<'a, F>(&'a self, convert_message: F) -> Element<'_, AppMessage, Renderer<AppTheme>>
+    pub fn view<'a, F>(&'a self, convert_message: F) -> Element<'_, AppMessage, Renderer>
     where
         F: Fn(MAttributeSelector) -> AppMessage + 'a + Clone,
     {
@@ -132,11 +132,11 @@ impl AttributeSelector {
             ),
         )
         .foot(row!(
-            horizontal_space(Length::Fill),
+            horizontal_space().width(Length::Fill),
             button(text("Cancel"))
                 .style(theme::Button::Secondary)
                 .on_press_maybe(self.on_cancel.clone()),
-            horizontal_space(10),
+            horizontal_space().width(10),
             button(text("Submit"))
                 .style(theme::Button::Primary)
                 .on_press_maybe(self.selected.and_then(|_| self.on_submit.clone()))

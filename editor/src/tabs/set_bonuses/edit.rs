@@ -89,18 +89,18 @@ impl HandleView<Editor> for EditingSet {
     fn handle_view<'a>(
         &'a self,
         _app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    ) -> Element<'_, <Editor as Application>::Message, Renderer>
     {
         let content = column!(
             text_input("Set Name", self.set.name())
                 .size(30)
                 .on_input(|name| MEditingSet::SetName(name).into()),
-            vertical_space(Length::Fill),
+            vertical_space().height(Length::Fill),
             row!(
                 button(text("Delete").horizontal_alignment(Horizontal::Center))
                     .on_press_maybe(self.index.is_some().then_some(MEditingSet::Delete.into()))
                     .style(theme::Button::Destructive),
-                horizontal_space(Length::Fill),
+                horizontal_space().height(Length::Fill),
                 row!(
                     button(text("Cancel").horizontal_alignment(Horizontal::Center))
                         .width(Length::Fill)
@@ -119,7 +119,7 @@ impl HandleView<Editor> for EditingSet {
 
         let confirm_delete_modal = self.confirm_delete.then(|| {
             row!(
-                horizontal_space(Length::FillPortion(2)),
+                horizontal_space().height(Length::FillPortion(2)),
                 card(
                     text(format!("Delete {}?", self.set.name())),
                     text(format!(
@@ -128,17 +128,17 @@ impl HandleView<Editor> for EditingSet {
                 )),
                 )
                 .foot(row!(
-                    horizontal_space(Length::Fill),
+                    horizontal_space().width(Length::Fill),
                     button(text("Cancel"))
                         .on_press(MEditingSet::CancelDelete.into())
                         .style(theme::Button::Primary),
-                    horizontal_space(10.0),
+                    horizontal_space().width(10.0),
                     button(text("Delete"))
                         .on_press(MEditingSet::ConfirmDelete.into())
                         .style(theme::Button::Destructive),
                 ))
                 .width(Length::FillPortion(6)),
-                horizontal_space(Length::FillPortion(2)),
+                horizontal_space().width(Length::FillPortion(2)),
             )
         });
 

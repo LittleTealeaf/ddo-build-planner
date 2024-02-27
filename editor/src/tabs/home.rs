@@ -67,7 +67,7 @@ impl HandleView<Editor> for THome {
     fn handle_view<'a>(
         &'a self,
         _app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
+    ) -> Element<'_, <Editor as Application>::Message, Renderer>
     {
         modal(
             button(text("Open Selection")).on_press(MHome::OpenSelection.into()),
