@@ -91,7 +91,6 @@ impl Application for Editor {
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, iced::Renderer> {
         self.tab.handle_view(self)
     }
-
 }
 
 impl HandleMessage<Message> for Editor {

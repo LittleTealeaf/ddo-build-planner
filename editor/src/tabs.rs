@@ -17,8 +17,7 @@ impl HandleView<Editor> for Tab {
     fn handle_view<'a>(
         &'a self,
         app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, Renderer>
-    {
+    ) -> Element<'_, <Editor as Application>::Message, Renderer> {
         column!(
             [(Self::Home, "Home"), (Self::SetBonuses, "Set Bonuses"),]
                 .into_iter()
