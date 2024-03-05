@@ -16,7 +16,7 @@ workspace = true
 [dependencies]
 builder = { path = "../builder/" }
 data = { path = "../data/" }
-iced = "0.10.0"
+iced = "0.12.1"
 roc = "0.0.0"
 ron = "0.8.1"
 rust_decimal = "1.34.3"
