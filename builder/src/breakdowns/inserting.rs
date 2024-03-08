@@ -65,9 +65,10 @@ impl Breakdowns {
             let attribute = bonus.attribute();
             let source = bonus.source();
 
-            self.children
-                .get_mut_or_default(source)
-                .push(attribute.clone());
+            let set = self.children.get_mut_or_default(source);
+            if !set.contains(attribute) {
+                set.push(attribute.clone());
+            }
         }
 
         self.consume_buffer(buffer);
