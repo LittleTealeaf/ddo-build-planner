@@ -21,7 +21,7 @@ impl Breakdowns {
         I: IntoIterator<Item = B>,
         B: Into<BonusSource>,
     {
-        let mut buffer = Buffer::empty();
+        let mut buffer = Buffer::new();
 
         let sources = sources.into_iter().map(Into::into).collect::<Vec<_>>();
 
@@ -57,9 +57,9 @@ impl Breakdowns {
             bonus
         });
 
-        let mut buffer = Buffer::create(bonuses);
-
-        buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
+        let buffer = Buffer::new()
+            .with_bonuses(bonuses)
+            .with_attributes(self.remove_bonuses_by_source(&sources));
 
         for bonus in buffer.get_bonuses() {
             let attribute = bonus.attribute();
@@ -84,18 +84,14 @@ impl Breakdowns {
     where
         I: IntoIterator<Item = Attribute>,
     {
-        let mut buffer = Buffer::empty();
-        buffer.insert_attributes(attributes);
-        self.consume_buffer(buffer);
+        self.consume_buffer(Buffer::new().with_attributes(attributes));
     }
 
     /// Forces the recalculation of all attributes
     pub fn recalculate_all_attributes(&mut self) {
         self.value_cache.clear();
         self.condition_cache.clear();
-        let mut buffer = Buffer::empty();
-        buffer.insert_attributes(self.bonuses.keys().cloned());
-        self.consume_buffer(buffer);
+        self.consume_buffer(Buffer::new().with_attributes(self.bonuses.keys().cloned()));
     }
 }
 
