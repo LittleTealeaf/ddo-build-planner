@@ -1,3 +1,5 @@
+use std::iter::once;
+
 use itertools::chain;
 use utils::enums::StaticOptions;
 
@@ -44,17 +46,22 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
 }
 
 fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
-    Ability::ABILITIES.into_iter().flat_map(|ability| {
-        [
-            BonusTemplate::new(Attribute::Ability(ability), BonusType::Stacking, 8, None),
+    Ability::ABILITIES
+        .into_iter()
+        .map(|ability| {
             BonusTemplate::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
                 ((Value::Attribute(Attribute::Ability(ability)) - Value::TEN) / Value::TWO).floor(),
                 None,
-            ),
-        ]
-    })
+            )
+        })
+        .chain(once(BonusTemplate::new(
+            Attribute::Ability(Ability::All),
+            BonusType::Stacking,
+            8,
+            None,
+        )))
 }
 
 fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
