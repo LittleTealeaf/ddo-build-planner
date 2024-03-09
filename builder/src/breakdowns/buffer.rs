@@ -14,34 +14,8 @@ pub struct Buffer {
 }
 
 impl Buffer {
-    pub fn empty() -> Self {
+    pub fn new() -> Self {
         Self::default()
-    }
-
-    pub fn create<I>(bonuses: I) -> Self
-    where
-        I: IntoIterator<Item = Bonus>,
-    {
-        let mut buffer = Self::default();
-
-        buffer.bonuses = bonuses
-            .into_iter()
-            .flat_map(|bonus| {
-                bonus
-                    .attribute()
-                    .clone_bonus(&bonus)
-                    .into_iter()
-                    .flatten()
-                    .chain(once(bonus))
-            })
-            .map(|bonus| {
-                buffer.forced.insert(bonus.attribute().clone());
-                buffer.attributes.push(Reverse(bonus.attribute().clone()));
-                bonus
-            })
-            .collect();
-
-        buffer
     }
 
     pub fn insert_attributes<A, I>(&mut self, attributes: I)
@@ -75,12 +49,10 @@ impl Buffer {
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();
         self.bonuses.retain(|i| !sources.contains(i.source()));
 
-        {
-            let attributes: HashSet<Attribute> =
-                bonuses.iter().map(Bonus::attribute).cloned().collect();
+        let attributes: HashSet<Attribute> =
+            bonuses.iter().map(Bonus::attribute).cloned().collect();
 
-            self.attributes.extend(attributes.into_iter().map(Reverse));
-        }
+        self.attributes.extend(attributes.into_iter().map(Reverse));
 
         self.bonuses.extend(bonuses);
     }
@@ -115,19 +87,19 @@ impl Buffer {
 
 #[cfg(test)]
 mod tests {
-    use crate::{bonus::BonusType, debug::DebugValue};
+    use crate::debug::DebugValue;
 
     use super::*;
 
     #[test]
     fn empty_buffer_returns_none() {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::new();
         assert!(buffer.pop().is_none());
     }
 
     #[test]
     fn inserting_attribute_always_pops() {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::new();
         buffer.insert_attributes([Attribute::Debug(0)]);
 
         let (attribute, bonuses, forced) = buffer.pop().expect("Expected return from buffer.pop()");
@@ -139,7 +111,7 @@ mod tests {
 
     #[test]
     fn inserting_attribute_multiple_times_pops_once() {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::new();
         buffer.insert_attributes([Attribute::Debug(0), Attribute::Debug(0)]);
 
         let (attribute, _, _) = buffer.pop().expect("Expected return from buffer.pop()");
@@ -148,31 +120,8 @@ mod tests {
     }
 
     #[test]
-    fn creating_pops_bonuses() {
-        let mut buffer = Buffer::create([Bonus::new(
-            Attribute::Debug(0),
-            BonusType::Stacking,
-            1,
-            BonusSource::Debug(0),
-            None,
-        )]);
-        let (_, bonuses, _) = buffer.pop().expect("Expected return from buffer.pop()");
-        assert!(!bonuses.is_empty());
-        assert_eq!(
-            &bonuses[0],
-            &Bonus::new(
-                Attribute::Debug(0),
-                BonusType::Stacking,
-                1,
-                BonusSource::Debug(0),
-                None,
-            )
-        );
-    }
-
-    #[test]
     fn attributes_pop_by_ord() {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::new();
 
         buffer.insert_attributes([Attribute::Debug(1), Attribute::Debug(0)]);
 
@@ -184,7 +133,7 @@ mod tests {
 
     #[test]
     fn inserting_bonus_pops() {
-        let mut buffer = Buffer::create([]);
+        let mut buffer = Buffer::new();
 
         buffer.insert_bonuses([Bonus::new(
             DebugValue(0),
