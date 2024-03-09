@@ -1,5 +1,4 @@
-use std::iter::once;
-
+use core::iter::once;
 use itertools::chain;
 use utils::enums::StaticOptions;
 
