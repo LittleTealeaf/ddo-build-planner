@@ -18,23 +18,6 @@ impl Buffer {
         Self::default()
     }
 
-    pub fn with_attributes<A, I>(mut self, attributes: I) -> Self
-    where
-        A: Into<Attribute>,
-        I: IntoIterator<Item = A>,
-    {
-        self.insert_attributes(attributes);
-        self
-    }
-
-    pub fn with_bonuses<I>(mut self, bonuses: I) -> Self
-    where
-        I: IntoIterator<Item = Bonus>,
-    {
-        self.insert_bonuses(bonuses);
-        self
-    }
-
     pub fn insert_attributes<A, I>(&mut self, attributes: I)
     where
         A: Into<Attribute>,
@@ -66,12 +49,10 @@ impl Buffer {
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();
         self.bonuses.retain(|i| !sources.contains(i.source()));
 
-        {
-            let attributes: HashSet<Attribute> =
-                bonuses.iter().map(Bonus::attribute).cloned().collect();
+        let attributes: HashSet<Attribute> =
+            bonuses.iter().map(Bonus::attribute).cloned().collect();
 
-            self.attributes.extend(attributes.into_iter().map(Reverse));
-        }
+        self.attributes.extend(attributes.into_iter().map(Reverse));
 
         self.bonuses.extend(bonuses);
     }

@@ -57,9 +57,9 @@ impl Breakdowns {
             bonus
         });
 
-        let buffer = Buffer::new()
-            .with_bonuses(bonuses)
-            .with_attributes(self.remove_bonuses_by_source(&sources));
+        let mut buffer = Buffer::new();
+        buffer.insert_bonuses(bonuses);
+        buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
 
         for bonus in buffer.get_bonuses() {
             let attribute = bonus.attribute();
@@ -84,14 +84,19 @@ impl Breakdowns {
     where
         I: IntoIterator<Item = Attribute>,
     {
-        self.consume_buffer(Buffer::new().with_attributes(attributes));
+        let mut buffer = Buffer::new();
+        buffer.insert_attributes(attributes);
+        self.consume_buffer(buffer);
     }
 
     /// Forces the recalculation of all attributes
     pub fn recalculate_all_attributes(&mut self) {
         self.value_cache.clear();
         self.condition_cache.clear();
-        self.consume_buffer(Buffer::new().with_attributes(self.bonuses.keys().cloned()));
+
+        let mut buffer = Buffer::new();
+        buffer.insert_attributes(self.bonuses.keys().cloned());
+        self.consume_buffer(buffer);
     }
 }
 
