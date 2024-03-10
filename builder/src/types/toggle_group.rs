@@ -3,6 +3,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use super::toggle::Toggle;
 
@@ -53,5 +54,23 @@ impl Display for ToggleGroup {
             Self::PrimalPastLife => write!(f, "Primal Past Life"),
             Self::ArcanePastLife => write!(f, "Arcane Past Life"),
         }
+    }
+}
+
+impl StaticOptions for ToggleGroup {
+    fn get_static() -> impl Iterator<Item = Self> {
+        [
+            Self::DefensiveCombat,
+            Self::MonkStance,
+            Self::MajorForm,
+            Self::WarlockPact,
+            Self::IconicPastLife,
+            Self::DivinePastLife,
+            Self::MartialPastLife,
+            Self::PrimalPastLife,
+            Self::ArcanePastLife,
+        ]
+        .into_iter()
+        .chain(Toggle::get_static().map(Self::Toggle))
     }
 }

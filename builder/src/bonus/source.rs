@@ -80,6 +80,10 @@ where
 
 impl StaticOptions for BonusSource {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!([Self::Base], Attribute::get_static().map(Self::Attribute),)
+        chain!(
+            [Self::Base],
+            Attribute::get_static().map(Self::Attribute),
+            ToggleGroup::get_static().map(Self::ToggleGroup)
+        )
     }
 }
