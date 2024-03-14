@@ -1,8 +1,14 @@
 //! Editor Application
 mod data;
+mod tabs;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, widget::text, Application, Command, Settings, Theme};
+use tabs::{
+    home::TabHome,
+    set_bonuses::{TabSetBonuses, TabSetBonusesMessage},
+    Tab,
+};
 use ui::{font::NERD_FONT_BYTES, HandleMessage};
 
 fn main() -> iced::Result {
@@ -12,7 +18,10 @@ fn main() -> iced::Result {
 #[derive(Clone, Debug)]
 struct Editor {
     data: Data,
+    tab_home: TabHome,
+    tab_set_bonuses: TabSetBonuses,
     icons_loaded: bool,
+    selected_tab: Tab,
 }
 
 #[derive(Clone, Debug)]
@@ -20,6 +29,8 @@ enum Message {
     IconsLoaded,
     Data(DataMessage),
     Error(String),
+    ChangeTab(Tab),
+    TabSetBonuses(TabSetBonusesMessage),
 }
 
 impl Application for Editor {
@@ -34,7 +45,10 @@ impl Application for Editor {
     fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
         let mut editor = Self {
             data: Data::default(),
+            tab_home: TabHome::default(),
             icons_loaded: false,
+            selected_tab: Tab::Home,
+            tab_set_bonuses: TabSetBonuses::default(),
         };
 
         let command = Command::batch([
@@ -76,6 +90,11 @@ impl HandleMessage<Message> for Editor {
             }
             Message::Data(message) => self.handle_message(message),
             Message::Error(err) => panic!("{err}"),
+            Message::ChangeTab(tab) => {
+                self.selected_tab = tab;
+                Command::none()
+            }
+            Message::TabSetBonuses(message) => self.handle_message(message),
         }
     }
 }
