@@ -1,6 +1,7 @@
 //! Editor Application
 mod data;
 mod tabs;
+mod widgets;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, widget::text, Application, Command, Settings, Theme};
