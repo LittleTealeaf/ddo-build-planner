@@ -1,6 +1,8 @@
-use builder::equipment::set_bonus::SetBonus;
+use builder::{attribute::Attribute, equipment::set_bonus::SetBonus};
 use iced::{Application, Command};
+use itertools::chain;
 use ui::HandleMessage;
+use utils::enums::StaticOptions;
 
 use crate::{Editor, Message};
 
@@ -11,6 +13,16 @@ pub mod container;
 #[derive(Clone, Debug)]
 pub struct Data {
     pub set_bonuses: DataContainer<Vec<SetBonus>>,
+}
+
+impl Data {
+    pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
+        let set_bonuses = self.set_bonuses.data.iter().flat_map(|sets| {
+            sets.iter()
+                .map(|set| Attribute::SetBonus(set.name().clone()))
+        });
+        chain!(set_bonuses, Attribute::get_static())
+    }
 }
 
 impl Default for Data {
