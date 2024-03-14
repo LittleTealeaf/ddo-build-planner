@@ -1,21 +1,9 @@
 //! Editor Application
-
 mod data;
-mod tabs;
-mod widgets;
 
-use ::utils::enums::StaticOptions;
-use builder::attribute::Attribute;
-use data::{Data, MData, MDataContainer};
-use iced::{executor, font, Application, Command, Element, Settings, Theme};
-use itertools::chain;
-use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
-use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
-
-type AppExecutor = executor::Default;
-type AppMessage = Message;
-type AppTheme = Theme;
-type AppFlags = ();
+use data::{container::DataContainerMessage, Data, DataMessage};
+use iced::{executor, font, widget::text, Application, Command, Settings, Theme};
+use ui::{font::NERD_FONT_BYTES, HandleMessage};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -25,30 +13,13 @@ fn main() -> iced::Result {
 struct Editor {
     data: Data,
     icons_loaded: bool,
-    set_bonuses: TSetBonuses,
-    home: THome,
-    tab: Tab,
 }
 
 #[derive(Clone, Debug)]
 enum Message {
-    Data(MData),
     IconsLoaded,
+    Data(DataMessage),
     Error(String),
-    SetBonuses(MSetBonuses),
-    Home(MHome),
-    ChangeTab(Tab),
-}
-
-impl Editor {
-    fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.data.set_bonuses.data.iter().flat_map(|sets| {
-            sets.iter()
-                .map(|set| Attribute::SetBonus(set.name().clone()))
-        });
-
-        chain!(set_bonuses, Attribute::get_static())
-    }
 }
 
 impl Application for Editor {
@@ -61,15 +32,13 @@ impl Application for Editor {
     type Flags = ();
 
     fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
-        let mut app = Self {
+        let mut editor = Self {
             data: Data::default(),
             icons_loaded: false,
-            set_bonuses: TSetBonuses::default(),
-            home: THome::default(),
-            tab: Tab::Home,
         };
+
         let command = Command::batch([
-            app.handle_message(MData::SetBonus(MDataContainer::Load)),
+            editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
             font::load(NERD_FONT_BYTES).map(|res| {
                 res.map_or_else(
                     |e| Message::Error(format!("{e:?}")),
@@ -78,7 +47,7 @@ impl Application for Editor {
             }),
         ]);
 
-        (app, command)
+        (editor, command)
     }
 
     fn title(&self) -> String {
@@ -88,26 +57,25 @@ impl Application for Editor {
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
         self.handle_message(message)
     }
-    fn view(&self) -> Element<'_, Self::Message, Self::Theme, iced::Renderer> {
-        self.tab.handle_view(self)
+
+    fn view(&self) -> iced::Element<'_, Self::Message, Self::Theme, iced::Renderer> {
+        text(format!(
+            "Icons Loaded: {}, data loaded: {:?}",
+            self.icons_loaded, self.data.set_bonuses.data
+        ))
+        .into()
     }
 }
 
 impl HandleMessage<Message> for Editor {
-    fn handle_message(&mut self, message: Message) -> Command<Message> {
+    fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
-            Message::Data(m) => self.handle_message(m),
-            Message::Home(message) => self.handle_message(message),
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()
             }
+            Message::Data(message) => self.handle_message(message),
             Message::Error(err) => panic!("{err}"),
-            Message::SetBonuses(message) => self.handle_message(message),
-            Message::ChangeTab(tab) => {
-                self.tab = tab;
-                Command::none()
-            }
         }
     }
 }
