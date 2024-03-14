@@ -1,4 +1,4 @@
-//! Set Bonuses are stored in the `data` crate, using the following structure to load. Then, they
+//! Item Sets are stored in the `data` crate, using the following structure to load. Then, they
 //! are imported into the breakdown object
 
 use im::OrdMap;
@@ -9,22 +9,22 @@ use crate::{
     bonus::{BonusTemplate, ToValue},
 };
 
-/// Describes a set bonus with it's name and bonuses
+/// Describes an item set with it's name and bonuses
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SetBonus {
+pub struct ItemSet {
     #[serde(rename = "n", alias = "name")]
     name: String,
     #[serde(rename = "b", alias = "bonuses")]
     bonuses: OrdMap<i32, Vec<BonusTemplate>>,
 }
 
-impl SetBonus {
+impl ItemSet {
     /// Returns a dynamic bonus entry for [`Breakdowns::import_dynamic_bonuses`]
     ///
     /// [`Breakdowns::import_dynamic_bonuses`]:
     /// crate::breakdowns::Breakdowns::import_dynamic_bonuses
     pub fn to_dynamic_bonus(self) -> (Attribute, impl Iterator<Item = BonusTemplate>) {
-        let attribute = Attribute::SetBonus(self.name);
+        let attribute = Attribute::ItemSet(self.name);
 
         (
             attribute.clone(),

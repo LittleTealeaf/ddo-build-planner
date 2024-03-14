@@ -11,6 +11,6 @@ mod example;
 #[cfg(feature = "example")]
 pub use example::*;
 
-mod set_bonuses;
+mod item_sets;
 use ron::error::SpannedError;
-pub use set_bonuses::*;
+pub use item_sets::*;

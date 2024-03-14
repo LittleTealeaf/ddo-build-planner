@@ -21,7 +21,7 @@ mod serialization {
 
     #[test]
     fn set_bonuses_serialize() {
-        let attribute = Attribute::SetBonus(String::from("Test"));
+        let attribute = Attribute::ItemSet(String::from("Test"));
         let serialized = to_string(&attribute).expect("Could not serialize attribute");
         let deserialized: Attribute =
             from_str(&serialized).expect("Could not deserialize attribute");

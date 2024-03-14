@@ -1,4 +1,4 @@
-use builder::{attribute::Attribute, equipment::set_bonus::SetBonus};
+use builder::{attribute::Attribute, equipment::set_bonus::ItemSet};
 use iced::{Application, Command};
 use itertools::chain;
 use ui::HandleMessage;
@@ -12,14 +12,14 @@ pub mod container;
 
 #[derive(Clone, Debug)]
 pub struct Data {
-    pub set_bonuses: DataContainer<Vec<SetBonus>>,
+    pub set_bonuses: DataContainer<Vec<ItemSet>>,
 }
 
 impl Data {
     pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
         let set_bonuses = self.set_bonuses.data.iter().flat_map(|sets| {
             sets.iter()
-                .map(|set| Attribute::SetBonus(set.name().clone()))
+                .map(|set| Attribute::ItemSet(set.name().clone()))
         });
         chain!(set_bonuses, Attribute::get_static())
     }
@@ -35,7 +35,7 @@ impl Default for Data {
 
 #[derive(Clone, Debug)]
 pub enum DataMessage {
-    SetBonuses(DataContainerMessage<Vec<SetBonus>>),
+    SetBonuses(DataContainerMessage<Vec<ItemSet>>),
 }
 
 impl HandleMessage<DataMessage> for Editor {
@@ -55,8 +55,8 @@ impl HandleMessage<DataMessage, Editor> for Data {
     }
 }
 
-impl From<DataContainerMessage<Vec<SetBonus>>> for DataMessage {
-    fn from(value: DataContainerMessage<Vec<SetBonus>>) -> Self {
+impl From<DataContainerMessage<Vec<ItemSet>>> for DataMessage {
+    fn from(value: DataContainerMessage<Vec<ItemSet>>) -> Self {
         Self::SetBonuses(value)
     }
 }

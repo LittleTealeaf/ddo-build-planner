@@ -12,14 +12,14 @@ use crate::{Editor, Message};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Tab {
     Home,
-    SetBonuses,
+    ItemSets,
 }
 
 impl Display for Tab {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self {
             Self::Home => write!(f, "Home"),
-            Self::SetBonuses => write!(f, "Set Bonuses"),
+            Self::ItemSets => write!(f, "Item Sets"),
         }
     }
 }
@@ -32,7 +32,7 @@ impl HandleView<Editor> for Tab {
     {
         Column::new()
             .push(
-                [Self::Home, Self::SetBonuses]
+                [Self::Home, Self::ItemSets]
                     .into_iter()
                     .fold(TabBar::new(Message::ChangeTab), |bar, tab| {
                         let label = format!("{tab}");
@@ -42,7 +42,7 @@ impl HandleView<Editor> for Tab {
             )
             .push(match self {
                 Self::Home => app.tab_home.handle_view(app),
-                Self::SetBonuses => todo!(),
+                Self::ItemSets => todo!(),
             })
             .into()
     }
