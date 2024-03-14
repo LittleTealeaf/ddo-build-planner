@@ -12,5 +12,5 @@ mod example;
 pub use example::*;
 
 mod item_sets;
-use ron::error::SpannedError;
 pub use item_sets::*;
+use ron::error::SpannedError;

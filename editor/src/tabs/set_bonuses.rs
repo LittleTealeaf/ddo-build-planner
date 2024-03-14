@@ -9,9 +9,7 @@ pub struct TabSetBonuses {
 }
 
 #[derive(Debug, Clone)]
-pub enum TabSetBonusesMessage {
-
-}
+pub enum TabSetBonusesMessage {}
 
 impl HandleMessage<TabSetBonusesMessage> for Editor {
     fn handle_message(
