@@ -104,7 +104,8 @@ where
     let mut file = File::open(path).await?;
     let mut contents = String::new();
     file.read_to_string(&mut contents).await?;
-    Ok(from_str(contents.as_str())?)
+    let data = from_str(contents.as_str())?;
+    Ok(data)
 }
 
 async fn save_data<T>(path: &str, data: T) -> Result<(), DataError>
