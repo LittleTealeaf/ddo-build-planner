@@ -161,12 +161,12 @@ mod tests {
             .await
             .unwrap();
 
+        assert!(file_path.exists());
+
         let result = load_data::<Bonus>(file_path.to_str().unwrap())
             .await
             .unwrap();
 
         assert_eq!(data, result);
-
-        dir.close().unwrap();
     }
 }
