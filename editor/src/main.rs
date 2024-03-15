@@ -4,7 +4,9 @@ mod tabs;
 mod widgets;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
-use iced::{executor, font, widget::text, Application, Command, Settings, Theme};
+use iced::{
+    executor, font, widget::text, Application, Command, Element, Renderer, Settings, Theme,
+};
 use tabs::{
     home::TabHome,
     set_bonuses::{TabSetBonuses, TabSetBonusesMessage},
@@ -77,7 +79,7 @@ impl Application for Editor {
         self.handle_message(message)
     }
 
-    fn view(&self) -> iced::Element<'_, Self::Message, Self::Theme, iced::Renderer> {
+    fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
         text(format!(
             "Icons Loaded: {}, data loaded: {:?}",
             self.icons_loaded, self.data.set_bonuses.data
