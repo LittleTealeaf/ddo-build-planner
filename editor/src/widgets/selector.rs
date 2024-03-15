@@ -103,19 +103,45 @@ impl HandleView<Editor> for SelectorWidget {
     }
 }
 
-impl HandleMessage<SelectorWidgetMessage, Editor> for SelectorWidget {
+impl HandleMessage<SelectorWidgetMessage, Editor> for Editor {
     fn handle_message(
         &mut self,
         message: SelectorWidgetMessage,
     ) -> Command<<Editor as Application>::Message> {
         match message {
             SelectorWidgetMessage::Selector(depth, message) => {
-                self.selector.as_mut().map_or_else(Command::none, |i| {
-                    i.handle_message((depth, message, &self.attributes))
-                })
+                if let Some(widget) = &mut self.selector {
+                    if let Some(selector) = &mut widget.selector {
+                        selector.handle_message((depth, message, &widget.attributes))
+                    } else {
+                        Command::none()
+                    }
+                } else {
+                    Command::none()
+                }
             }
-            SelectorWidgetMessage::Submit => todo!(),
-            SelectorWidgetMessage::Cancel => todo!(),
+            SelectorWidgetMessage::Submit => {
+                if let Some(widget) = &self.selector {
+                    if let Some(on_submit) = widget.on_submit {
+                        self.handle_message(on_submit)
+                    } else {
+                        Command::none()
+                    }
+                } else {
+                    Command::none()
+                }
+            }
+            SelectorWidgetMessage::Cancel => {
+                if let Some(widget) = &self.selector {
+                    if let Some(on_cancel) = widget.on_cancel {
+                        self.handle_message(on_cancel)
+                    } else {
+                        Command::none()
+                    }
+                } else {
+                    Command::none()
+                }
+            }
         }
     }
 }
