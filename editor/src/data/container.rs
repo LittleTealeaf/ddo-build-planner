@@ -143,3 +143,30 @@ impl From<ron::Error> for DataError {
         Self::Ron(value)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use builder::{bonus::Bonus, debug::DebugValue};
+    use tempfile::tempdir;
+
+    use super::*;
+
+    #[tokio::test]
+    async fn save_and_load_file() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("serialized-file");
+        let data = Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0), None);
+
+        save_data(file_path.to_str().unwrap(), data.clone())
+            .await
+            .unwrap();
+
+        let result = load_data::<Bonus>(file_path.to_str().unwrap())
+            .await
+            .unwrap();
+
+        assert_eq!(data, result);
+
+        dir.close().unwrap();
+    }
+}

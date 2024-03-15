@@ -14,7 +14,6 @@ license-file.workspace = true
 [lints]
 workspace = true
 
-
 [dependencies]
 builder = { path = "../builder/" }
 utils = { path = "../utils/" }
@@ -34,3 +33,7 @@ iced_aw = { version = "0.8.0", default-features = false, features = [
 ] }
 fuzzy-filter = "0.1.0"
 itertools = "0.12.1"
+
+[dev-dependencies]
+tempfile = { version = "3.10.1" }
+builder = { path = "../builder/", features = ["debug"] }
