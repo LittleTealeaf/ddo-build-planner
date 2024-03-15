@@ -103,11 +103,11 @@ impl HandleView<Editor> for SelectorWidget {
     }
 }
 
-impl HandleMessage<SelectorWidgetMessage, Editor> for Editor {
+impl HandleMessage<SelectorWidgetMessage> for Editor {
     fn handle_message(
         &mut self,
         message: SelectorWidgetMessage,
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<Self as Application>::Message> {
         match message {
             SelectorWidgetMessage::Selector(depth, message) => {
                 if let Some(widget) = &mut self.selector {
@@ -122,22 +122,20 @@ impl HandleMessage<SelectorWidgetMessage, Editor> for Editor {
             }
             SelectorWidgetMessage::Submit => {
                 if let Some(widget) = &self.selector {
-                    if let Some(on_submit) = widget.on_submit {
-                        self.handle_message(on_submit)
-                    } else {
-                        Command::none()
-                    }
+                    widget
+                        .on_submit
+                        .clone()
+                        .map_or_else(Command::none, |on_submit| self.handle_message(on_submit))
                 } else {
                     Command::none()
                 }
             }
             SelectorWidgetMessage::Cancel => {
                 if let Some(widget) = &self.selector {
-                    if let Some(on_cancel) = widget.on_cancel {
-                        self.handle_message(on_cancel)
-                    } else {
-                        Command::none()
-                    }
+                    widget
+                        .on_cancel
+                        .clone()
+                        .map_or_else(Command::none, |on_cancel| self.handle_message(on_cancel))
                 } else {
                     Command::none()
                 }

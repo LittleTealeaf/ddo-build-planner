@@ -104,10 +104,7 @@ impl HandleMessage<Message> for Editor {
                 Command::none()
             }
             Message::TabSetBonuses(message) => self.handle_message(message),
-            Message::Selector(message) => self
-                .selector
-                .as_mut()
-                .map_or_else(Command::none, |selector| selector.handle_message(message)),
+            Message::Selector(message) => self.handle_message(message),
         }
     }
 }
