@@ -1,8 +1,13 @@
 use builder::attribute::Attribute;
-use iced::{Application, Command};
-use ui::HandleMessage;
+use fuzzy_filter::matches;
+use iced::{
+    theme,
+    widget::{button, column, container, scrollable, text, text_input},
+    Application, Command, Element, Renderer,
+};
+use ui::{HandleMessage, HandleView};
 
-use crate::Editor;
+use crate::{Editor, Message};
 
 use super::{SelectorMessage, SelectorWidgetMessage};
 
@@ -72,5 +77,54 @@ impl<'a> HandleMessage<(usize, SelectorMessage), Editor> for AttributeSelector<'
         } else {
             Command::none()
         }
+    }
+}
+
+impl AttributeSelectorMessage {
+    const fn into_message(self, depth: usize) -> Message {
+        Message::Selector(SelectorWidgetMessage::Selector(
+            depth,
+            SelectorMessage::Attribute(self),
+        ))
+    }
+}
+
+impl<'s> HandleView<Editor> for AttributeSelector<'s> {
+    fn handle_view<'a>(
+        &'a self,
+        _app: &'a Editor,
+    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+    {
+        let filter = self.filter.to_lowercase();
+        let selected = self.selected.unwrap_or(self.attributes.len());
+
+        column!(
+            text_input("Filter...", &self.filter).on_input(|filter| {
+                AttributeSelectorMessage::Filter(filter).into_message(self.depth)
+            }),
+            scrollable(column(
+                self.attributes
+                    .iter()
+                    .enumerate()
+                    .map(|(index, attribute)| (index, format!("{attribute}")))
+                    .filter(|(_, str)| matches(&filter, str.to_lowercase().as_ref()))
+                    .map(|(index, attr)| {
+                        container(
+                            button(text(attr))
+                                .on_press(
+                                    AttributeSelectorMessage::Select(index)
+                                        .into_message(self.depth),
+                                )
+                                .style(if selected == index {
+                                    theme::Button::Primary
+                                } else {
+                                    theme::Button::Text
+                                }),
+                        )
+                        .into()
+                    })
+            ))
+        )
+        .into()
     }
 }

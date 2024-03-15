@@ -11,6 +11,7 @@ use tabs::{
     Tab,
 };
 use ui::{font::NERD_FONT_BYTES, HandleMessage};
+use widgets::selector::{SelectorWidget, SelectorWidgetMessage};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
@@ -23,6 +24,7 @@ struct Editor {
     tab_set_bonuses: TabSetBonuses,
     icons_loaded: bool,
     selected_tab: Tab,
+    selector: Option<SelectorWidget<'static>>,
 }
 
 #[derive(Clone, Debug)]
@@ -32,6 +34,7 @@ enum Message {
     Error(String),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
+    Selector(SelectorWidgetMessage),
 }
 
 impl Application for Editor {
@@ -50,6 +53,7 @@ impl Application for Editor {
             icons_loaded: false,
             selected_tab: Tab::Home,
             tab_set_bonuses: TabSetBonuses::default(),
+            selector: None,
         };
 
         let command = Command::batch([
@@ -96,6 +100,10 @@ impl HandleMessage<Message> for Editor {
                 Command::none()
             }
             Message::TabSetBonuses(message) => self.handle_message(message),
+            Message::Selector(message) => self
+                .selector
+                .as_mut()
+                .map_or_else(Command::none, |selector| selector.handle_message(message)),
         }
     }
 }
