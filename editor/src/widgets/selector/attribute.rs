@@ -12,26 +12,23 @@ use crate::{Editor, Message};
 use super::{SelectorMessage, SelectorWidgetMessage};
 
 #[derive(Debug, Clone)]
-pub struct AttributeSelector<'a> {
+pub struct AttributeSelector {
     depth: usize,
-    attributes: &'a [Attribute],
     selected: Option<usize>,
     filter: String,
     on_submit: SelectorWidgetMessage,
     on_cancel: SelectorWidgetMessage,
 }
 
-impl<'a> AttributeSelector<'a> {
+impl AttributeSelector {
     pub const fn new(
         depth: usize,
-        attributes: &'a [Attribute],
         selected: Option<usize>,
         on_submit: SelectorWidgetMessage,
         on_cancel: SelectorWidgetMessage,
     ) -> Self {
         Self {
             depth,
-            attributes,
             selected,
             on_submit,
             on_cancel,
@@ -39,8 +36,8 @@ impl<'a> AttributeSelector<'a> {
         }
     }
 
-    pub fn get_selected(&self) -> Option<&'a Attribute> {
-        self.selected.map(|index| &self.attributes[index])
+    pub fn get_selected<'a>(&self, attributes: &'a [Attribute]) -> Option<&'a Attribute> {
+        self.selected.map(|index| &attributes[index])
     }
 }
 
@@ -51,7 +48,7 @@ pub enum AttributeSelectorMessage {
     Filter(String),
 }
 
-impl<'a> HandleMessage<(usize, SelectorMessage), Editor> for AttributeSelector<'a> {
+impl HandleMessage<(usize, SelectorMessage), Editor> for AttributeSelector {
     fn handle_message(
         &mut self,
         (depth, message): (usize, SelectorMessage),
@@ -89,21 +86,23 @@ impl AttributeSelectorMessage {
     }
 }
 
-impl<'s> HandleView<Editor> for AttributeSelector<'s> {
+impl HandleView<Editor> for AttributeSelector {
     fn handle_view<'a>(
         &'a self,
-        _app: &'a Editor,
+        app: &'a Editor,
     ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
     {
+        let attributes = &app.selector.as_ref().expect("Expected Selector").attributes;
+
         let filter = self.filter.to_lowercase();
-        let selected = self.selected.unwrap_or(self.attributes.len());
+        let selected = self.selected.unwrap_or(attributes.len());
 
         column!(
             text_input("Filter...", &self.filter).on_input(|filter| {
                 AttributeSelectorMessage::Filter(filter).into_message(self.depth)
             }),
             scrollable(column(
-                self.attributes
+                attributes
                     .iter()
                     .enumerate()
                     .map(|(index, attribute)| (index, format!("{attribute}")))

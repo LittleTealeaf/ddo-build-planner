@@ -26,7 +26,7 @@ struct Editor {
     tab_set_bonuses: TabSetBonuses,
     icons_loaded: bool,
     selected_tab: Tab,
-    selector: Option<SelectorWidget<'static>>,
+    selector: Option<SelectorWidget>,
 }
 
 #[derive(Clone, Debug)]
@@ -57,6 +57,8 @@ impl Application for Editor {
             tab_set_bonuses: TabSetBonuses::default(),
             selector: None,
         };
+
+        editor.selector = Some(SelectorWidget::new(editor.data.generate_attributes()));
 
         let command = Command::batch([
             editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
