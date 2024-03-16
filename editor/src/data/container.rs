@@ -33,7 +33,7 @@ impl<T> DataContainer<T>
 where
     T: Clone + Debug,
 {
-    pub const fn new(path: PathBuf) -> Self {
+    pub fn new(path: PathBuf) -> Self {
         Self {
             data: None,
             modified: false,
