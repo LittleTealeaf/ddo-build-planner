@@ -18,11 +18,6 @@ mod attribute;
 mod condition;
 mod value;
 
-// Three main modes:
-// - Attribute
-// - Value
-// - Condition
-
 #[derive(Debug, Clone)]
 pub struct SelectorWidget {
     selector: Option<Selector>,
