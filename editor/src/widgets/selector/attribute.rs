@@ -22,8 +22,6 @@ pub struct AttributeSelector {
 }
 
 impl AttributeSelector {
-    // TODO: Add in &[Attribute] parameter, perhaps include a check for attributes that no longer
-    // exist, and then set them to zero?
     pub const fn new(
         depth: usize,
         selected: Option<usize>,
