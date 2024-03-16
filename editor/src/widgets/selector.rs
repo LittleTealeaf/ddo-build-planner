@@ -67,16 +67,49 @@ impl SelectorWidget {
 
     pub fn set_on_submit<M>(&mut self, on_submit: M)
     where
-        M: Into<Option<Message>>,
+        M: Into<Message>,
     {
-        self.on_submit = on_submit.into();
+        self.on_submit = Some(on_submit.into());
+    }
+
+    pub fn with_on_submit<M>(mut self, on_submit: M) -> Self
+    where
+        M: Into<Message>,
+    {
+        self.set_on_submit(on_submit);
+        self
     }
 
     pub fn set_on_cancel<M>(&mut self, on_cancel: M)
     where
-        M: Into<Option<Message>>,
+        M: Into<Message>,
     {
-        self.on_cancel = on_cancel.into();
+        self.on_cancel = Some(on_cancel.into());
+    }
+
+    pub fn with_on_cancel<M>(mut self, on_cancel: M) -> Self
+    where
+        M: Into<Message>,
+    {
+        self.set_on_cancel(on_cancel);
+        self
+    }
+
+    pub fn clear_on_submit(&mut self) {
+        self.on_submit = None;
+    }
+    pub fn clear_on_cancel(&mut self) {
+        self.on_cancel = None;
+    }
+
+    pub fn without_on_submit(mut self) -> Self {
+        self.clear_on_submit();
+        self
+    }
+
+    pub fn without_on_cancel(mut self) -> Self {
+        self.clear_on_cancel();
+        self
     }
 
     pub fn select_attribute<'a, A>(&mut self, selected: A)
@@ -93,6 +126,14 @@ impl SelectorWidget {
             SelectorWidgetMessage::Submit,
             SelectorWidgetMessage::Cancel,
         )));
+    }
+
+    pub fn with_select_attribute<'a, A>(mut self, selected: A) -> Self
+    where
+        A: Into<Option<&'a Attribute>>,
+    {
+        self.select_attribute(selected);
+        self
     }
 
     pub fn get_attribute(&self) -> Option<&'_ Attribute> {
@@ -116,6 +157,14 @@ impl SelectorWidget {
         )));
     }
 
+    pub fn with_select_condition<'a, C>(mut self, selected: C) -> Self
+    where
+        C: Into<Option<&'a Condition>>,
+    {
+        self.select_condition(selected);
+        self
+    }
+
     pub fn get_condition(&self) -> Option<Condition> {
         if let Some(Selector::Condition(selector)) = &self.selector {
             selector.get_condition()
@@ -134,6 +183,14 @@ impl SelectorWidget {
             SelectorWidgetMessage::Submit,
             SelectorWidgetMessage::Cancel,
         )));
+    }
+
+    pub fn with_select_value<'a, V>(mut self, selected: V) -> Self
+    where
+        V: Into<Option<&'a Value>>,
+    {
+        self.select_value(selected);
+        self
     }
 
     pub fn get_value(&self) -> Option<Value> {

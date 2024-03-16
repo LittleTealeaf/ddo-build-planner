@@ -103,11 +103,10 @@ impl HandleMessage<Message> for Editor {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
             Message::DebugOpen => {
-                self.selector = Some({
-                    let mut widget = SelectorWidget::new(self.data.generate_attributes());
-                    widget.select_condition(None);
-                    widget
-                });
+                self.selector = Some(
+                    SelectorWidget::new(self.data.generate_attributes())
+                        .with_select_condition(None),
+                );
                 Command::none()
             }
             Message::IconsLoaded => {
