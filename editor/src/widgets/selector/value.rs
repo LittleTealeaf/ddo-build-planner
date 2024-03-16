@@ -3,10 +3,10 @@ use builder::{
     bonus::{Condition, ToValue, Value},
 };
 use core::fmt::{Display, Formatter, Result};
+use core::str::FromStr;
 use iced::{Application, Command};
 use itertools::Itertools;
 use rust_decimal::Decimal;
-use core::str::FromStr;
 use ui::HandleMessage;
 
 use crate::Editor;
