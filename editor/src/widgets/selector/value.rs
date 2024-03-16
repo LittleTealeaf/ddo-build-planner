@@ -6,7 +6,7 @@ use core::fmt::{Display, Formatter, Result};
 use iced::{Application, Command};
 use itertools::Itertools;
 use rust_decimal::Decimal;
-use std::str::FromStr;
+use core::str::FromStr;
 use ui::HandleMessage;
 
 use crate::Editor;

@@ -33,7 +33,7 @@ impl<T> DataContainer<T>
 where
     T: Clone + Debug,
 {
-    pub fn new(path: PathBuf) -> Self {
+    pub const fn new(path: PathBuf) -> Self {
         Self {
             data: None,
             modified: false,
@@ -106,7 +106,7 @@ where
 async fn load_data<T, P>(path: P) -> Result<T, DataError>
 where
     for<'de> T: Deserialize<'de>,
-    P: AsRef<Path>,
+    P: AsRef<Path> + Send,
 {
     let mut file = File::open(path).await?;
     let mut contents = String::new();
@@ -118,7 +118,7 @@ where
 async fn save_data<T, P>(path: P, data: T) -> Result<(), DataError>
 where
     T: Serialize + Send + Sync,
-    P: AsRef<Path>,
+    P: AsRef<Path> + Send,
 {
     let file = File::create(path).await?;
     let mut writer = BufWriter::new(file);
