@@ -131,7 +131,9 @@ impl HandleView<Editor> for SelectorWidget {
     {
         match &self.selector {
             Some(Selector::Attribute(selector)) => selector.handle_view(app),
-            _ => todo!(),
+            Some(Selector::Condition(selector)) => selector.handle_view(app),
+            Some(Selector::Value(selector)) => selector.handle_view(app),
+            None => todo!(),
         }
     }
 }

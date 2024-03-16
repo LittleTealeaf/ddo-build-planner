@@ -4,10 +4,10 @@ use builder::{
 };
 use core::fmt::{Display, Formatter, Result};
 use core::str::FromStr;
-use iced::{Application, Command};
+use iced::{Application, Command, Element, Renderer};
 use itertools::Itertools;
 use rust_decimal::Decimal;
-use ui::HandleMessage;
+use ui::{HandleMessage, HandleView};
 
 use crate::Editor;
 
@@ -338,6 +338,26 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for ValueSele
                         selector.handle_message((depth, message))
                     }
                 })
+        }
+    }
+}
+
+impl HandleView<Editor> for ValueSelector {
+    fn handle_view<'a>(
+        &'a self,
+        app: &'a Editor,
+    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+    {
+        if let Some(selector) = &self.selector {
+            match selector {
+                ValueSubSelector::Attribute(selector) => selector.handle_view(app),
+                ValueSubSelector::Condition(selector) => selector.handle_view(app),
+                ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
+                    selector.handle_view(app)
+                }
+            }
+        } else {
+            todo!()
         }
     }
 }

@@ -4,10 +4,14 @@ use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
 };
-use iced::{Application, Command};
-use ui::HandleMessage;
+use iced::{
+    theme,
+    widget::{button, row, text},
+    Application, Command, Element, Length, Renderer,
+};
+use ui::{HandleMessage, HandleView};
 
-use crate::Editor;
+use crate::{Editor, Message};
 
 use super::{value::ValueSelector, SelectorMessage, SelectorWidgetMessage};
 
@@ -22,9 +26,10 @@ pub struct ConditionSelector {
     condition_b: Option<Condition>,
     value_a: Option<Value>,
     value_b: Option<Value>,
+    dropdown: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ConditionType {
     Not,
     GreaterThan,
@@ -35,6 +40,20 @@ pub enum ConditionType {
     And,
     Or,
     Xor,
+}
+
+impl ConditionType {
+    const TYPES: [Self; 9] = [
+        Self::Not,
+        Self::GreaterThan,
+        Self::LessThan,
+        Self::EqualTo,
+        Self::True,
+        Self::False,
+        Self::And,
+        Self::Or,
+        Self::Xor,
+    ];
 }
 
 impl Display for ConditionType {
@@ -123,6 +142,7 @@ impl ConditionSelector {
             on_submit,
             on_cancel,
             selector: None,
+            dropdown: false,
             value_a,
             value_b,
             condition_a,
@@ -155,11 +175,16 @@ pub enum ConditionSelectorMessage {
     EditValueB,
     EditConditionA,
     EditConditionB,
+    SetDropdown(bool),
 }
 
 impl ConditionSelectorMessage {
     const fn into_widget_message(self, depth: usize) -> SelectorWidgetMessage {
         SelectorWidgetMessage::Selector(depth, SelectorMessage::Condition(self))
+    }
+
+    const fn into_message(self, depth: usize) -> Message {
+        Message::Selector(self.into_widget_message(depth))
     }
 }
 
@@ -171,8 +196,13 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for Condition
         if depth == self.depth {
             match message {
                 SelectorMessage::Condition(message) => match message {
+                    ConditionSelectorMessage::SetDropdown(dropdown) => {
+                        self.dropdown = dropdown;
+                        Command::none()
+                    }
                     ConditionSelectorMessage::SetType(cond) => {
                         self.cond = cond;
+                        self.dropdown = false;
                         Command::none()
                     }
                     ConditionSelectorMessage::SubmitSubSelector => {
@@ -239,6 +269,37 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for Condition
                     ConditionSubSelector::ValueA(_) => todo!("Value Selector Handle Message"),
                     ConditionSubSelector::ValueB(_) => todo!("Value Selector Handle Message"),
                 })
+        }
+    }
+}
+
+impl HandleView<Editor> for ConditionSelector {
+    fn handle_view<'a>(
+        &'a self,
+        app: &'a Editor,
+    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+    {
+        if let Some(selector) = &self.selector {
+            match selector {
+                ConditionSubSelector::ConditionA(selector)
+                | ConditionSubSelector::ConditionB(selector) => selector.handle_view(app),
+                ConditionSubSelector::ValueA(selector) | ConditionSubSelector::ValueB(selector) => {
+                    selector.handle_view(app)
+                }
+            }
+        } else {
+            row(ConditionType::TYPES.map(|cond| {
+                let selected = &self.cond == &cond;
+                button(text(format!("{cond}")))
+                    .on_press(ConditionSelectorMessage::SetType(cond).into_message(self.depth))
+                    .style(if selected {
+                        theme::Button::Primary
+                    } else {
+                        theme::Button::Secondary
+                    })
+                    .into()
+            }))
+            .into()
         }
     }
 }

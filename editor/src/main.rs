@@ -5,14 +5,16 @@ mod widgets;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{
-    executor, font, widget::text, Application, Command, Element, Renderer, Settings, Theme,
+    executor, font,
+    widget::{button, column, text},
+    Application, Command, Element, Renderer, Settings, Theme,
 };
 use tabs::{
     home::TabHome,
     set_bonuses::{TabSetBonuses, TabSetBonusesMessage},
     Tab,
 };
-use ui::{font::NERD_FONT_BYTES, HandleMessage};
+use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
 use widgets::selector::{SelectorWidget, SelectorWidgetMessage};
 
 fn main() -> iced::Result {
@@ -37,6 +39,7 @@ enum Message {
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
     Selector(SelectorWidgetMessage),
+    DebugOpen,
 }
 
 impl Application for Editor {
@@ -57,8 +60,6 @@ impl Application for Editor {
             tab_set_bonuses: TabSetBonuses::default(),
             selector: None,
         };
-
-        editor.selector = Some(SelectorWidget::new(editor.data.generate_attributes()));
 
         let command = Command::batch([
             editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
@@ -82,17 +83,32 @@ impl Application for Editor {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-        text(format!(
-            "Icons Loaded: {}, data loaded: {:?}",
-            self.icons_loaded, self.data.set_bonuses.data
-        ))
-        .into()
+        if let Some(selector) = &self.selector {
+            selector.handle_view(self)
+        } else {
+            column!(
+                text(format!(
+                    "Icons Loaded: {}, data loaded: {:?}",
+                    self.icons_loaded, self.data.set_bonuses.data
+                )),
+                button("hi").on_press(Message::DebugOpen)
+            )
+            .into()
+        }
     }
 }
 
 impl HandleMessage<Message> for Editor {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
+            Message::DebugOpen => {
+                self.selector = Some({
+                    let mut widget = SelectorWidget::new(self.data.generate_attributes());
+                    widget.select_condition(None);
+                    widget
+                });
+                Command::none()
+            }
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()
