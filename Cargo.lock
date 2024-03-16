@@ -736,6 +736,7 @@ dependencies = [
  "itertools",
  "roc",
  "ron",
+ "rust_decimal",
  "serde",
  "tempfile",
  "tokio",

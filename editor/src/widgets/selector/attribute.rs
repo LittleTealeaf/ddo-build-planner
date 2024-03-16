@@ -22,6 +22,8 @@ pub struct AttributeSelector {
 }
 
 impl AttributeSelector {
+    // TODO: Add in &[Attribute] parameter, perhaps include a check for attributes that no longer
+    // exist, and then set them to zero?
     pub const fn new(
         depth: usize,
         selected: Option<usize>,
@@ -37,7 +39,7 @@ impl AttributeSelector {
         }
     }
 
-    pub fn get_selected<'a>(&self, attributes: &'a [Attribute]) -> Option<&'a Attribute> {
+    pub fn get_attribute<'a>(&self, attributes: &'a [Attribute]) -> Option<&'a Attribute> {
         self.selected.map(|index| &attributes[index])
     }
 }

@@ -1,4 +1,7 @@
-use builder::{attribute::Attribute, bonus::Condition};
+use builder::{
+    attribute::Attribute,
+    bonus::{Condition, Value},
+};
 use iced::{Application, Command, Element, Renderer};
 use itertools::Itertools;
 use ui::{HandleMessage, HandleView};
@@ -81,6 +84,14 @@ impl SelectorWidget {
         )));
     }
 
+    pub fn get_attribute(&self) -> Option<&'_ Attribute> {
+        if let Some(Selector::Attribute(selector)) = &self.selector {
+            selector.get_attribute(&self.attributes)
+        } else {
+            None
+        }
+    }
+
     pub fn select_condition(&mut self, selected: Option<&Condition>) {
         self.selector = Some(Selector::Condition(ConditionSelector::new(
             0,
@@ -90,12 +101,25 @@ impl SelectorWidget {
         )));
     }
 
-    pub fn get_attribute(&self) -> Option<&'_ Attribute> {
-        if let Some(Selector::Attribute(selector)) = &self.selector {
-            selector.get_selected(&self.attributes)
+    pub fn get_condition(&self) -> Option<Condition> {
+        if let Some(Selector::Condition(selector)) = &self.selector {
+            selector.get_condition()
         } else {
             None
         }
+    }
+
+    pub fn select_value(&mut self, selected: Option<&Value>) {
+        self.selector = Some(Selector::Value(ValueSelector::new(
+            0,
+            selected,
+            SelectorWidgetMessage::Submit,
+            SelectorWidgetMessage::Cancel,
+        )));
+    }
+
+    pub fn get_value(&self) -> Option<Value> {
+        todo!()
     }
 }
 
