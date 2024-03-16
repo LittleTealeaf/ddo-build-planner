@@ -64,7 +64,7 @@ impl Application for Editor {
             editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
             font::load(NERD_FONT_BYTES).map(|res| {
                 res.map_or_else(
-                    |e| Message::Error(format!("{e:?}")),
+                    |e| Message::Error(format!("Font: {e:?}")),
                     |()| Message::IconsLoaded,
                 )
             }),

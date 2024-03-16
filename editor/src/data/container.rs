@@ -1,4 +1,5 @@
 use core::fmt::Debug;
+use std::path::{Path, PathBuf};
 
 use iced::{Application, Command};
 use ron::{
@@ -25,14 +26,14 @@ where
     pub data: Option<T>,
     pub modified: bool,
     pub saving: bool,
-    path: &'static str,
+    path: PathBuf,
 }
 
 impl<T> DataContainer<T>
 where
     T: Clone + Debug,
 {
-    pub const fn new(path: &'static str) -> Self {
+    pub const fn new(path: PathBuf) -> Self {
         Self {
             data: None,
             modified: false,
@@ -67,9 +68,10 @@ where
             DataContainerMessage::Load => {
                 self.modified = false;
                 self.data = None;
-                Command::perform(load_data(self.path), |result| match result {
-                    Ok(value) => DataMessage::from(DataContainerMessage::<T>::OnLoad(value)).into(),
-                    Err(error) => Message::Error(format!("{error:?}")),
+                let err_path = self.path.to_str().unwrap().to_owned();
+                Command::perform(load_data(self.path.clone()), move |result| match result {
+                    Ok(data) => DataMessage::from(DataContainerMessage::<T>::OnLoad(data)).into(),
+                    Err(err) => Message::Error(format!("Load: {err_path} {err:?}")),
                 })
             }
             DataContainerMessage::OnLoad(data) => {
@@ -80,9 +82,13 @@ where
             DataContainerMessage::Save => self.data.as_ref().map_or_else(Command::none, |data| {
                 self.modified = false;
                 self.saving = true;
-                Command::perform(save_data(self.path, data.clone()), |result| match result {
-                    Ok(()) => DataMessage::from(DataContainerMessage::<T>::OnSaved).into(),
-                    Err(error) => Message::Error(format!("{error:?}")),
+
+                let err_path = self.path.to_str().unwrap().to_owned();
+                Command::perform(save_data(self.path.clone(), data.clone()), move |result| {
+                    match result {
+                        Ok(()) => DataMessage::from(DataContainerMessage::<T>::OnSaved).into(),
+                        Err(err) => Message::Error(format!("Save: '{err_path}' {err:?}")),
+                    }
                 })
             }),
             DataContainerMessage::OnSaved => {
@@ -97,9 +103,10 @@ where
     }
 }
 
-async fn load_data<T>(path: &str) -> Result<T, DataError>
+async fn load_data<T, P>(path: P) -> Result<T, DataError>
 where
     for<'de> T: Deserialize<'de>,
+    P: AsRef<Path>,
 {
     let mut file = File::open(path).await?;
     let mut contents = String::new();
@@ -108,9 +115,10 @@ where
     Ok(data)
 }
 
-async fn save_data<T>(path: &str, data: T) -> Result<(), DataError>
+async fn save_data<T, P>(path: P, data: T) -> Result<(), DataError>
 where
     T: Serialize + Send + Sync,
+    P: AsRef<Path>,
 {
     let file = File::create(path).await?;
     let mut writer = BufWriter::new(file);
@@ -147,6 +155,8 @@ impl From<ron::Error> for DataError {
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use builder::{bonus::Bonus, debug::DebugValue};
     use tempfile::tempdir;
 
@@ -158,15 +168,13 @@ mod tests {
         let file_path = dir.path().join("serialized-file");
         let data = Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0), None);
 
-        save_data(file_path.to_str().unwrap(), data.clone())
-            .await
-            .unwrap();
+        assert!(!file_path.exists());
+
+        save_data(file_path.clone(), data.clone()).await.unwrap();
 
         assert!(file_path.exists());
 
-        let result = load_data::<Bonus>(file_path.to_str().unwrap())
-            .await
-            .unwrap();
+        let result = load_data::<Bonus, PathBuf>(file_path).await.unwrap();
 
         assert_eq!(data, result);
     }

@@ -1,3 +1,5 @@
+use std::path::{Path, PathBuf};
+
 use builder::{attribute::Attribute, equipment::set_bonus::ItemSet};
 use iced::{Application, Command};
 use itertools::chain;
@@ -27,8 +29,12 @@ impl Data {
 
 impl Default for Data {
     fn default() -> Self {
+        fn base() -> PathBuf {
+            Path::new(".").join("data").join("data")
+        }
+
         Self {
-            set_bonuses: DataContainer::new("./data/data/set_bonuses.ron"),
+            set_bonuses: DataContainer::new(base().join("item_sets.ron")),
         }
     }
 }
