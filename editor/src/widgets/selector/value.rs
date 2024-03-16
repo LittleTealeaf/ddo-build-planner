@@ -1,6 +1,6 @@
 use builder::{
     attribute::Attribute,
-    bonus::{Condition, Value},
+    bonus::{Condition, ToValue, Value},
 };
 use core::fmt::{Display, Formatter, Result};
 use iced::{Application, Command};
@@ -194,6 +194,30 @@ impl ValueSelector {
             selector: None,
         }
     }
+
+    pub fn get_value(&self) -> Option<Value> {
+        Some(match &self.val {
+            ValueType::Const => Value::from(self.constant?),
+            ValueType::Attribute => self.attribute.clone()?.to_value(),
+            ValueType::Min => self.value_a.clone()?.min(self.value_b.clone()?),
+            ValueType::Max => self.value_a.clone()?.max(self.value_b.clone()?),
+            ValueType::Floor => self.value_a.clone()?.floor(),
+            ValueType::Ceil => self.value_a.clone()?.ceil(),
+            ValueType::Round => self.value_a.clone()?.round(),
+            ValueType::Abs => self.value_a.clone()?.abs(),
+            ValueType::Add => self.value_a.clone()? + self.value_b.clone()?,
+            ValueType::Sub => self.value_a.clone()? - self.value_b.clone()?,
+            ValueType::Mul => self.value_a.clone()? * self.value_b.clone()?,
+            ValueType::Div => self.value_a.clone()? / self.value_b.clone()?,
+            ValueType::Rem => self.value_a.clone()? % self.value_b.clone()?,
+            ValueType::If => Value::condition(
+                self.condition.clone()?,
+                self.value_a.clone()?,
+                self.value_b.clone()?,
+            ),
+            ValueType::Dice => Value::dice(self.value_a.clone()?, self.value_b.clone()?),
+        })
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -230,21 +254,21 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for ValueSele
                         if let Some(selector) = &self.selector {
                             match selector {
                                 ValueSubSelector::ValueA(selector) => {
-                                    todo!()
+                                    self.value_a = selector.get_value();
                                 }
-                                ValueSubSelector::ValueB(selector) => todo!(),
+                                ValueSubSelector::ValueB(selector) => {
+                                    self.value_b = selector.get_value();
+                                }
                                 ValueSubSelector::Condition(selector) => {
                                     self.condition = selector.get_condition();
-                                    Command::none()
                                 }
                                 ValueSubSelector::Attribute(selector) => {
                                     self.attribute = selector.get_attribute(attributes).cloned();
-                                    Command::none()
                                 }
                             }
-                        } else {
-                            Command::none()
+                            self.selector = None;
                         }
+                        Command::none()
                     }
                     ValueSelectorMessage::CancelSubSelector => {
                         self.selector = None;

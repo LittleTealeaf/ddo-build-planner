@@ -184,11 +184,15 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for Condition
                                 ConditionSubSelector::ConditionB(selector) => {
                                     self.condition_b = selector.get_condition();
                                 }
-                                ConditionSubSelector::ValueA(_) => todo!(),
-                                ConditionSubSelector::ValueB(_) => todo!(),
+                                ConditionSubSelector::ValueA(selector) => {
+                                    self.value_a = selector.get_value();
+                                }
+                                ConditionSubSelector::ValueB(selector) => {
+                                    self.value_b = selector.get_value();
+                                }
                             }
+                            self.selector = None;
                         }
-                        self.selector = None;
                         Command::none()
                     }
                     ConditionSelectorMessage::EditValueA => todo!("Value Selector"),
