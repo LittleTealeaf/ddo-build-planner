@@ -83,18 +83,19 @@ impl Application for Editor {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-        if let Some(selector) = &self.selector {
-            selector.handle_view(self)
-        } else {
-            column!(
-                text(format!(
-                    "Icons Loaded: {}, data loaded: {:?}",
-                    self.icons_loaded, self.data.set_bonuses.data
-                )),
-                button("hi").on_press(Message::DebugOpen)
-            )
-            .into()
-        }
+        self.selector.as_ref().map_or_else(
+            || {
+                column!(
+                    text(format!(
+                        "Icons Loaded: {}, data loaded: {:?}",
+                        self.icons_loaded, self.data.set_bonuses.data
+                    )),
+                    button("hi").on_press(Message::DebugOpen)
+                )
+                .into()
+            },
+            |selector| selector.handle_view(self),
+        )
     }
 }
 

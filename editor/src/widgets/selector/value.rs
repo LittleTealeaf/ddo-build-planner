@@ -348,16 +348,15 @@ impl HandleView<Editor> for ValueSelector {
         app: &'a Editor,
     ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
     {
-        if let Some(selector) = &self.selector {
-            match selector {
+        self.selector.as_ref().map_or_else(
+            || todo!(),
+            |selector| match selector {
                 ValueSubSelector::Attribute(selector) => selector.handle_view(app),
                 ValueSubSelector::Condition(selector) => selector.handle_view(app),
                 ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
                     selector.handle_view(app)
                 }
-            }
-        } else {
-            todo!()
-        }
+            },
+        )
     }
 }

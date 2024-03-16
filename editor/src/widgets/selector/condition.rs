@@ -7,7 +7,7 @@ use builder::{
 use iced::{
     theme,
     widget::{button, row, text},
-    Application, Command, Element, Length, Renderer,
+    Application, Command, Element, Renderer,
 };
 use ui::{HandleMessage, HandleView};
 
@@ -279,27 +279,28 @@ impl HandleView<Editor> for ConditionSelector {
         app: &'a Editor,
     ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
     {
-        if let Some(selector) = &self.selector {
-            match selector {
+        self.selector.as_ref().map_or_else(
+            || {
+                row(ConditionType::TYPES.map(|cond| {
+                    let selected = self.cond == cond;
+                    button(text(format!("{cond}")))
+                        .on_press(ConditionSelectorMessage::SetType(cond).into_message(self.depth))
+                        .style(if selected {
+                            theme::Button::Primary
+                        } else {
+                            theme::Button::Secondary
+                        })
+                        .into()
+                }))
+                .into()
+            },
+            |selector| match selector {
                 ConditionSubSelector::ConditionA(selector)
                 | ConditionSubSelector::ConditionB(selector) => selector.handle_view(app),
                 ConditionSubSelector::ValueA(selector) | ConditionSubSelector::ValueB(selector) => {
                     selector.handle_view(app)
                 }
-            }
-        } else {
-            row(ConditionType::TYPES.map(|cond| {
-                let selected = &self.cond == &cond;
-                button(text(format!("{cond}")))
-                    .on_press(ConditionSelectorMessage::SetType(cond).into_message(self.depth))
-                    .style(if selected {
-                        theme::Button::Primary
-                    } else {
-                        theme::Button::Secondary
-                    })
-                    .into()
-            }))
-            .into()
-        }
+            },
+        )
     }
 }
