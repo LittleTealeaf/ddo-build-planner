@@ -4,10 +4,12 @@ use ui::HandleMessage;
 
 use crate::Editor;
 
-use super::SelectorMessage;
+use super::{Selector, SelectorMessage};
 
 #[derive(Debug, Clone)]
-pub struct ValueSelector {}
+pub struct ValueSelector {
+    selector: Option<Box<Selector>>,
+}
 
 #[derive(Debug, Clone)]
 pub enum ValueSelectorMessage {}

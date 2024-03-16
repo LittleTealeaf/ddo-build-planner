@@ -1,4 +1,4 @@
-use builder::attribute::Attribute;
+use builder::{attribute::Attribute, bonus::Condition};
 use iced::{Application, Command, Element, Renderer};
 use itertools::Itertools;
 use ui::{HandleMessage, HandleView};
@@ -76,6 +76,15 @@ impl SelectorWidget {
             selected
                 .and_then(|attribute| self.attributes.iter().find_position(|a| a.eq(&attribute)))
                 .map(|(index, _)| index),
+            SelectorWidgetMessage::Submit,
+            SelectorWidgetMessage::Cancel,
+        )));
+    }
+
+    pub fn select_condition(&mut self, selected: Option<&Condition>) {
+        self.selector = Some(Selector::Condition(ConditionSelector::new(
+            0,
+            selected,
             SelectorWidgetMessage::Submit,
             SelectorWidgetMessage::Cancel,
         )));
