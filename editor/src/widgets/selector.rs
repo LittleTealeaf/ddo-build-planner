@@ -65,15 +65,26 @@ impl SelectorWidget {
         }
     }
 
-    pub fn set_on_submit(&mut self, on_submit: Option<Message>) {
-        self.on_submit = on_submit;
+    pub fn set_on_submit<M>(&mut self, on_submit: M)
+    where
+        M: Into<Option<Message>>,
+    {
+        self.on_submit = on_submit.into();
     }
 
-    pub fn set_on_cancel(&mut self, on_cancel: Option<Message>) {
-        self.on_cancel = on_cancel;
+    pub fn set_on_cancel<M>(&mut self, on_cancel: M)
+    where
+        M: Into<Option<Message>>,
+    {
+        self.on_cancel = on_cancel.into();
     }
 
-    pub fn select_attribute(&mut self, selected: Option<&Attribute>) {
+    pub fn select_attribute<'a, A>(&mut self, selected: A)
+    where
+        A: Into<Option<&'a Attribute>>,
+    {
+        let selected: Option<&'a Attribute> = selected.into();
+
         self.selector = Some(Selector::Attribute(AttributeSelector::new(
             0,
             selected
@@ -92,7 +103,11 @@ impl SelectorWidget {
         }
     }
 
-    pub fn select_condition(&mut self, selected: Option<&Condition>) {
+    pub fn select_condition<'a, C>(&mut self, selected: C)
+    where
+        C: Into<Option<&'a Condition>>,
+    {
+        let selected: Option<&'a Condition> = selected.into();
         self.selector = Some(Selector::Condition(ConditionSelector::new(
             0,
             selected,
@@ -109,7 +124,10 @@ impl SelectorWidget {
         }
     }
 
-    pub fn select_value(&mut self, selected: Option<&Value>) {
+    pub fn select_value<'a, V>(&mut self, selected: V)
+    where
+        V: Into<Option<&'a Value>>,
+    {
         self.selector = Some(Selector::Value(ValueSelector::new(
             0,
             selected,
@@ -119,7 +137,11 @@ impl SelectorWidget {
     }
 
     pub fn get_value(&self) -> Option<Value> {
-        todo!()
+        if let Some(Selector::Value(selector)) = &self.selector {
+            selector.get_value()
+        } else {
+            None
+        }
     }
 }
 

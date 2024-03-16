@@ -81,12 +81,17 @@ pub enum ValueSubSelector {
 }
 
 impl ValueSelector {
-    pub fn new(
+    pub fn new<'v, V>(
         depth: usize,
-        value: Option<&Value>,
+        value: V,
         on_submit: SelectorWidgetMessage,
         on_cancel: SelectorWidgetMessage,
-    ) -> Self {
+    ) -> Self
+    where
+        V: Into<Option<&'v Value>>,
+    {
+        let value: Option<&'v Value> = value.into();
+
         let (val, value_a, value_b, condition, attribute, constant) =
             match value.unwrap_or(&Value::ZERO) {
                 Value::Const(decimal) => (ValueType::Const, None, None, None, None, Some(*decimal)),
