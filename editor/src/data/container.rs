@@ -58,7 +58,7 @@ where
 impl<T> HandleMessage<DataContainerMessage<T>, Editor> for DataContainer<T>
 where
     T: Debug + Clone + Sync + Send + Serialize + 'static + for<'de> Deserialize<'de>,
-    DataMessage: From<DataContainerMessage<T>>,
+    DataContainerMessage<T>: Into<DataMessage>,
 {
     fn handle_message(
         &mut self,
@@ -70,7 +70,7 @@ where
                 self.data = None;
                 let err_path = self.path.to_str().unwrap().to_owned();
                 Command::perform(load_data(self.path.clone()), move |result| match result {
-                    Ok(data) => DataMessage::from(DataContainerMessage::<T>::OnLoad(data)).into(),
+                    Ok(data) => Message::Data(DataContainerMessage::OnLoad(data).into()),
                     Err(err) => Message::Error(format!("Load: {err_path} {err:?}")),
                 })
             }
@@ -86,7 +86,7 @@ where
                 let err_path = self.path.to_str().unwrap().to_owned();
                 Command::perform(save_data(self.path.clone(), data.clone()), move |result| {
                     match result {
-                        Ok(()) => DataMessage::from(DataContainerMessage::<T>::OnSaved).into(),
+                        Ok(()) => Message::Data(DataContainerMessage::OnSaved.into()),
                         Err(err) => Message::Error(format!("Save: '{err_path}' {err:?}")),
                     }
                 })
