@@ -21,12 +21,16 @@ pub enum Sheltering {
     /// [`Physical`]: Sheltering::Physical
     /// [`Magical`]: Sheltering::Magical
     #[default]
+    #[serde(rename = "b", alias = "Both")]
     Both,
     /// Physical Sheltering
+    #[serde(rename = "p", alias = "Physical")]
     Physical,
     /// Magical Sheltering
+    #[serde(rename = "m", alias = "Magical")]
     Magical,
     /// Magical Sheltering Cap
+    #[serde(rename = "c", alias = "MagicalCap")]
     MagicalCap,
     /// Final Physical Sheltering value. DO NOT MANUALLY INCREASE. Use [`Physical`] instead.
     ///

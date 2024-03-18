@@ -43,7 +43,7 @@
         b: {
             3: [
                 (
-                    a: shel(Both),
+                    a: shel(b),
                     t: pro,
                     v: v("10"),
                 ),
@@ -65,7 +65,7 @@
             ],
             5: [
                 (
-                    a: shel(Both),
+                    a: shel(b),
                     t: pro,
                     v: v("15"),
                 ),
@@ -92,7 +92,7 @@
         b: {
             3: [
                 (
-                    a: shel(Both),
+                    a: shel(b),
                     t: pro,
                     v: v("20"),
                 ),
@@ -119,7 +119,7 @@
             ],
             5: [
                 (
-                    a: shel(Both),
+                    a: shel(b),
                     t: pro,
                     v: v("20"),
                 ),
