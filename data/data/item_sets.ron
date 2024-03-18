@@ -4,34 +4,34 @@
         b: {
             3: [
                 (
-                    a: AC(NaturalArmor),
+                    a: ac(NaturalArmor),
                     t: Profane,
                     v: v("3"),
                 ),
                 (
-                    a: Ability(All),
+                    a: ab(a),
                     t: Profane,
                     v: v("1"),
                 ),
                 (
-                    a: SpellDC(All),
+                    a: sdc(a),
                     t: Profane,
                     v: v("1"),
                 ),
             ],
             5: [
                 (
-                    a: AC(NaturalArmor),
+                    a: ac(NaturalArmor),
                     t: Profane,
                     v: v("5"),
                 ),
                 (
-                    a: Ability(All),
+                    a: ab(a),
                     t: Profane,
                     v: v("2"),
                 ),
                 (
-                    a: SpellDC(All),
+                    a: sdc(a),
                     t: Profane,
                     v: v("2"),
                 ),
@@ -43,44 +43,44 @@
         b: {
             3: [
                 (
-                    a: Sheltering(Both),
+                    a: shel(Both),
                     t: Profane,
                     v: v("10"),
                 ),
                 (
-                    a: AC(NaturalArmor),
+                    a: ac(NaturalArmor),
                     t: Profane,
                     v: v("5"),
                 ),
                 (
-                    a: Ability(All),
+                    a: ab(a),
                     t: Profane,
                     v: v("2"),
                 ),
                 (
-                    a: SpellDC(All),
+                    a: sdc(a),
                     t: Profane,
                     v: v("2"),
                 ),
             ],
             5: [
                 (
-                    a: Sheltering(Both),
+                    a: shel(Both),
                     t: Profane,
                     v: v("15"),
                 ),
                 (
-                    a: AC(NaturalArmor),
+                    a: ac(NaturalArmor),
                     t: Profane,
                     v: v("8"),
                 ),
                 (
-                    a: Ability(All),
+                    a: ab(a),
                     t: Profane,
                     v: v("2"),
                 ),
                 (
-                    a: SpellDC(All),
+                    a: sdc(a),
                     t: Profane,
                     v: v("2"),
                 ),
@@ -92,55 +92,61 @@
         b: {
             3: [
                 (
-                    a: Sheltering(Both),
+                    a: shel(Both),
                     t: Profane,
                     v: v("20"),
                 ),
                 (
-                    a: AC(NaturalArmor),
+                    a: ac(NaturalArmor),
                     t: Profane,
                     v: v("10"),
                 ),
                 (
-                    a: Ability(All),
+                    a: ab(a),
                     t: Profane,
                     v: v("2"),
                 ),
                 (
-                    a: SpellDC(All),
+                    a: sdc(a),
                     t: Profane,
                     v: v("2"),
                 ),
                 (
-                    a: HealAmp(All),
+                    a: hamp(All),
                     t: Profane,
                     v: v("10"),
                 ),
             ],
             5: [
                 (
-                    a: Sheltering(Both),
+                    a: shel(Both),
                     t: Profane,
                     v: v("20"),
                 ),
                 (
-                    a: AC(NaturalArmor),
+                    a: ac(NaturalArmor),
                     t: Profane,
                     v: v("10"),
                 ),
                 (
-                    a: Ability(All),
+                    a: ab(a),
                     t: Profane,
                     v: v("3"),
                 ),
                 (
-                    a: SpellDC(All),
+                    a: sdc(a),
                     t: Profane,
                     v: v("3"),
                 ),
                 (
-                    a: HealAmp(All),
+                    a: hamp(All),
                     t: Profane,
+                    v: v("30"),
+                ),
+            ],
+        },
+    ),
+]           t: Profane,
                     v: v("30"),
                 ),
             ],
