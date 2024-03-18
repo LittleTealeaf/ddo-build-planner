@@ -12,8 +12,8 @@ use ui::{HandleMessage, HandleView};
 use crate::App;
 
 use super::{
-    attribute::AttributeSelector, condition::ConditionSelector, SelectorMessage,
-    SelectorWidgetMessage,
+    attribute::AttributeSelector, condition::ConditionSelector, SelectorInternalMessage,
+    SelectorMessage, SelectorWidgetMessage,
 };
 
 #[derive(Debug, Clone)]
@@ -243,14 +243,14 @@ impl ValueSelectorMessage {
     }
 }
 
-impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelector {
+impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
     fn handle_message(
         &mut self,
-        (depth, message, attributes): (usize, SelectorMessage, &[Attribute]),
+        message: SelectorInternalMessage<'a>,
     ) -> Command<<App as Application>::Message> {
-        if depth == self.depth {
-            match message {
-                SelectorMessage::Value(message) => match message {
+        if message.depth == self.depth {
+            match message.content {
+                SelectorMessage::Value(m) => match m {
                     ValueSelectorMessage::SetType(val) => {
                         self.val = val;
                         Command::none()
@@ -268,7 +268,8 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelecto
                                     self.condition = selector.get_condition();
                                 }
                                 ValueSubSelector::Attribute(selector) => {
-                                    self.attribute = selector.get_attribute(attributes).cloned();
+                                    self.attribute =
+                                        selector.get_attribute(message.attributes).cloned();
                                 }
                             }
                             self.selector = None;
@@ -283,8 +284,8 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelecto
                         self.selector = Some(ValueSubSelector::ValueA(Box::new(Self::new(
                             self.depth + 1,
                             self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(depth),
-                            ValueSelectorMessage::CancelSubSelector.into_widget_message(depth),
+                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(self.depth),
+                            ValueSelectorMessage::CancelSubSelector.into_widget_message(self.depth),
                         ))));
                         Command::none()
                     }
@@ -292,18 +293,20 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelecto
                         self.selector = Some(ValueSubSelector::ValueB(Box::new(Self::new(
                             self.depth + 1,
                             self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(depth),
-                            ValueSelectorMessage::CancelSubSelector.into_widget_message(depth),
+                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(self.depth),
+                            ValueSelectorMessage::CancelSubSelector.into_widget_message(self.depth),
                         ))));
                         Command::none()
                     }
                     ValueSelectorMessage::EditCondition => {
                         self.selector = Some(ValueSubSelector::Condition(Box::new(
                             ConditionSelector::new(
-                                depth + 1,
+                                self.depth + 1,
                                 self.condition.as_ref(),
-                                ValueSelectorMessage::SubmitSubSelector.into_widget_message(depth),
-                                ValueSelectorMessage::CancelSubSelector.into_widget_message(depth),
+                                ValueSelectorMessage::SubmitSubSelector
+                                    .into_widget_message(self.depth),
+                                ValueSelectorMessage::CancelSubSelector
+                                    .into_widget_message(self.depth),
                             ),
                         )));
                         Command::none()
@@ -311,12 +314,18 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelecto
                     ValueSelectorMessage::EditAttribute => {
                         self.selector = Some(ValueSubSelector::Attribute(Box::new(
                             AttributeSelector::new(
-                                depth + 1,
+                                self.depth + 1,
                                 self.attribute.as_ref().and_then(|a| {
-                                    attributes.iter().find_position(|b| a.eq(b)).map(|(i, _)| i)
+                                    message
+                                        .attributes
+                                        .iter()
+                                        .find_position(|b| a.eq(b))
+                                        .map(|(i, _)| i)
                                 }),
-                                ValueSelectorMessage::SubmitSubSelector.into_widget_message(depth),
-                                ValueSelectorMessage::CancelSubSelector.into_widget_message(depth),
+                                ValueSelectorMessage::SubmitSubSelector
+                                    .into_widget_message(self.depth),
+                                ValueSelectorMessage::CancelSubSelector
+                                    .into_widget_message(self.depth),
                             ),
                         )));
                         Command::none()
@@ -334,14 +343,10 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelecto
                 .as_mut()
                 .map_or_else(Command::none, |selector| match selector {
                     ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
-                        selector.handle_message((depth, message, attributes))
+                        selector.handle_message(message)
                     }
-                    ValueSubSelector::Condition(selector) => {
-                        selector.handle_message((depth, message, attributes))
-                    }
-                    ValueSubSelector::Attribute(selector) => {
-                        selector.handle_message((depth, message))
-                    }
+                    ValueSubSelector::Condition(selector) => selector.handle_message(message),
+                    ValueSubSelector::Attribute(selector) => selector.handle_message(message),
                 })
         }
     }

@@ -224,10 +224,14 @@ impl HandleMessage<SelectorWidgetMessage> for App {
         message: SelectorWidgetMessage,
     ) -> Command<<Self as Application>::Message> {
         match message {
-            SelectorWidgetMessage::Selector(depth, message) => {
+            SelectorWidgetMessage::Selector(depth, content) => {
                 if let Some(widget) = &mut self.selector {
                     if let Some(selector) = &mut widget.selector {
-                        selector.handle_message((depth, message, &widget.attributes))
+                        selector.handle_message(SelectorInternalMessage {
+                            depth,
+                            content,
+                            attributes: &widget.attributes,
+                        })
                     } else {
                         Command::none()
                     }
@@ -259,15 +263,21 @@ impl HandleMessage<SelectorWidgetMessage> for App {
     }
 }
 
-impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for Selector {
+struct SelectorInternalMessage<'a> {
+    depth: usize,
+    content: SelectorMessage,
+    attributes: &'a [Attribute],
+}
+
+impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for Selector {
     fn handle_message(
         &mut self,
-        (depth, message, attributes): (usize, SelectorMessage, &[Attribute]),
+        message: SelectorInternalMessage<'a>,
     ) -> Command<<App as Application>::Message> {
         match self {
-            Self::Attribute(selector) => selector.handle_message((depth, message)),
-            Self::Value(selector) => selector.handle_message((depth, message, attributes)),
-            Self::Condition(selector) => selector.handle_message((depth, message, attributes)),
+            Self::Attribute(selector) => selector.handle_message(message),
+            Self::Value(selector) => selector.handle_message(message),
+            Self::Condition(selector) => selector.handle_message(message),
         }
     }
 }

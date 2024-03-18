@@ -1,9 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use builder::{
-    attribute::Attribute,
-    bonus::{Condition, Value},
-};
+use builder::bonus::{Condition, Value};
 use iced::{
     theme,
     widget::{button, row, text},
@@ -13,7 +10,9 @@ use ui::{HandleMessage, HandleView};
 
 use crate::{App, Message};
 
-use super::{value::ValueSelector, SelectorMessage, SelectorWidgetMessage};
+use super::{
+    value::ValueSelector, SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage,
+};
 
 #[derive(Debug, Clone)]
 pub struct ConditionSelector {
@@ -188,14 +187,14 @@ impl ConditionSelectorMessage {
     }
 }
 
-impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ConditionSelector {
+impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ConditionSelector {
     fn handle_message(
         &mut self,
-        (depth, message, attributes): (usize, SelectorMessage, &[Attribute]),
+        message: SelectorInternalMessage<'a>,
     ) -> Command<<App as Application>::Message> {
-        if depth == self.depth {
-            match message {
-                SelectorMessage::Condition(message) => match message {
+        if message.depth == self.depth {
+            match message.content {
+                SelectorMessage::Condition(m) => match m {
                     ConditionSelectorMessage::SetDropdown(dropdown) => {
                         self.dropdown = dropdown;
                         Command::none()
@@ -264,10 +263,10 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ConditionSel
                 .map_or_else(Command::none, |selector| match selector {
                     ConditionSubSelector::ConditionA(selector)
                     | ConditionSubSelector::ConditionB(selector) => {
-                        selector.handle_message((depth, message, attributes))
+                        selector.handle_message(message)
                     }
-                    ConditionSubSelector::ValueA(_) => todo!("Value Selector Handle Message"),
-                    ConditionSubSelector::ValueB(_) => todo!("Value Selector Handle Message"),
+                    ConditionSubSelector::ValueA(selector)
+                    | ConditionSubSelector::ValueB(selector) => selector.handle_message(message),
                 })
         }
     }

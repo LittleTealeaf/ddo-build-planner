@@ -10,7 +10,7 @@ use ui::{HandleMessage, HandleView};
 
 use crate::{App, Message};
 
-use super::{SelectorMessage, SelectorWidgetMessage};
+use super::{SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage};
 
 #[derive(Debug, Clone)]
 pub struct AttributeSelector {
@@ -49,13 +49,13 @@ pub enum AttributeSelectorMessage {
     Filter(String),
 }
 
-impl HandleMessage<(usize, SelectorMessage), App> for AttributeSelector {
+impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for AttributeSelector {
     fn handle_message(
         &mut self,
-        (depth, message): (usize, SelectorMessage),
+        message: SelectorInternalMessage<'a>,
     ) -> Command<<App as Application>::Message> {
-        if depth == self.depth {
-            match message {
+        if message.depth == self.depth {
+            match message.content {
                 SelectorMessage::Attribute(message) => match message {
                     AttributeSelectorMessage::Select(selected) => {
                         self.selected = Some(selected);
