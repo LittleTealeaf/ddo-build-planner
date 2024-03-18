@@ -57,7 +57,7 @@ where
 
 impl<T> HandleMessage<DataContainerMessage<T>, Editor> for DataContainer<T>
 where
-    T: Debug + Clone + Sync + Send + Serialize + 'static + for<'de> Deserialize<'de>,
+    T: Debug + Clone + Sync + Send + Serialize + for<'de> Deserialize<'de> + 'static,
     DataContainerMessage<T>: Into<DataMessage>,
 {
     fn handle_message(
