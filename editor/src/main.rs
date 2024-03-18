@@ -1,57 +1,44 @@
 //! Editor Application
-
 mod data;
 mod tabs;
 mod widgets;
 
-use ::utils::enums::StaticOptions;
-use builder::attribute::Attribute;
-use data::{Data, MData, MDataContainer};
+use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
-use itertools::chain;
-use tabs::{MHome, MSetBonuses, THome, TSetBonuses, Tab};
+use tabs::{
+    home::TabHome,
+    item_sets::{TabSetBonuses, TabSetBonusesMessage},
+    Tab,
+};
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
-
-type AppExecutor = executor::Default;
-type AppMessage = Message;
-type AppTheme = Theme;
-type AppFlags = ();
+use widgets::selector::{SelectorWidget, SelectorWidgetMessage};
 
 fn main() -> iced::Result {
-    Editor::run(Settings::default())
+    App::run(Settings::default())
 }
 
 #[derive(Clone, Debug)]
-struct Editor {
+struct App {
     data: Data,
+    tab_home: TabHome,
+    tab_item_sets: TabSetBonuses,
     icons_loaded: bool,
-    set_bonuses: TSetBonuses,
-    home: THome,
-    tab: Tab,
+    selected_tab: Tab,
+    selector: Option<SelectorWidget>,
 }
 
 #[derive(Clone, Debug)]
 enum Message {
-    Data(MData),
     IconsLoaded,
+    Data(DataMessage),
     Error(String),
-    SetBonuses(MSetBonuses),
-    Home(MHome),
     ChangeTab(Tab),
+    TabSetBonuses(TabSetBonusesMessage),
+    Selector(SelectorWidgetMessage),
+    DebugOpen,
 }
 
-impl Editor {
-    fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.data.set_bonuses.data.iter().flat_map(|sets| {
-            sets.iter()
-                .map(|set| Attribute::SetBonus(set.name().clone()))
-        });
-
-        chain!(set_bonuses, Attribute::get_static())
-    }
-}
-
-impl Application for Editor {
+impl Application for App {
     type Executor = executor::Default;
 
     type Message = Message;
@@ -61,24 +48,26 @@ impl Application for Editor {
     type Flags = ();
 
     fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
-        let mut app = Self {
+        let mut editor = Self {
             data: Data::default(),
+            tab_home: TabHome::default(),
             icons_loaded: false,
-            set_bonuses: TSetBonuses::default(),
-            home: THome::default(),
-            tab: Tab::Home,
+            selected_tab: Tab::Home,
+            tab_item_sets: TabSetBonuses::default(),
+            selector: None,
         };
+
         let command = Command::batch([
-            app.handle_message(MData::SetBonus(MDataContainer::Load)),
+            editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
             font::load(NERD_FONT_BYTES).map(|res| {
                 res.map_or_else(
-                    |e| Message::Error(format!("{e:?}")),
+                    |e| Message::Error(format!("Font: {e:?}")),
                     |()| Message::IconsLoaded,
                 )
             }),
         ]);
 
-        (app, command)
+        (editor, command)
     }
 
     fn title(&self) -> String {
@@ -89,26 +78,36 @@ impl Application for Editor {
         self.handle_message(message)
     }
 
-    fn view(&self) -> Element<'_, Self::Message, Renderer<Self::Theme>> {
-        self.tab.handle_view(self)
+    fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
+        self.selector.as_ref().map_or_else(
+            || self.selected_tab.handle_view(self),
+            |selector| selector.handle_view(self),
+        )
     }
 }
 
-impl HandleMessage<Message> for Editor {
+impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
-            Message::Data(m) => self.handle_message(m),
-            Message::Home(message) => self.handle_message(message),
+            Message::DebugOpen => {
+                self.selector = Some(
+                    SelectorWidget::new(self.data.generate_attributes())
+                        .with_select_condition(None),
+                );
+                Command::none()
+            }
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()
             }
+            Message::Data(message) => self.handle_message(message),
             Message::Error(err) => panic!("{err}"),
-            Message::SetBonuses(message) => self.handle_message(message),
             Message::ChangeTab(tab) => {
-                self.tab = tab;
+                self.selected_tab = tab;
                 Command::none()
             }
+            Message::TabSetBonuses(message) => self.handle_message(message),
+            Message::Selector(message) => self.handle_message(message),
         }
     }
 }

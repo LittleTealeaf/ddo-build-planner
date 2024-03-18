@@ -1,6 +1,6 @@
 mod utils;
 use builder::attribute::AttributeDependencies;
-use data::get_set_bonuses;
+use data::get_item_sets;
 use itertools::chain;
 pub use utils::*;
 
@@ -10,14 +10,14 @@ fn bonuses_have_valid_attributes() {
         .expect("Could not create valid attributes")
         .collect::<Vec<_>>();
 
-    get_set_bonuses()
-        .expect("Set Bonuses didn't parse")
+    get_item_sets()
+        .expect("Item Sets didn't parse")
         .into_iter()
         .for_each(|set_bonus| {
             set_bonus.bonuses().values().flatten().for_each(|bonus| {
                 assert!(
                     valid.contains(bonus.attribute()),
-                    "Set Bonus [{}] has bonus to invalid attribute [{}]",
+                    "Item Set [{}] has bonus to invalid attribute [{}]",
                     set_bonus.name(),
                     bonus.attribute(),
                 );
@@ -33,7 +33,7 @@ fn bonuses_have_valid_attributes() {
                 .for_each(|attribute| {
                     assert!(
                         valid.contains(&attribute),
-                        "Set Bonus [{}] has bonus with invalid dependency [{}]",
+                        "Item Set [{}] has bonus with invalid dependency [{}]",
                         set_bonus.name(),
                         attribute
                     );

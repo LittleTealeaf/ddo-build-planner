@@ -101,8 +101,8 @@ pub enum Attribute {
     SummonedAttribute(SummonedAttribute),
     /// Armor Check Penalty
     ArmorCheckPenalty,
-    /// Set Bonus
-    SetBonus(String),
+    /// Item Sets
+    ItemSet(String),
     /// Healing Amplification
     #[serde(rename = "HealAmp", alias = "HealingAmplification")]
     HealingAmplification(HealingAmplification),
@@ -140,7 +140,7 @@ impl Display for Attribute {
             Self::TotalCharacterLevel => write!(f, "Total Character Level"),
             Self::SummonedAttribute(attribute) => write!(f, "Summoned Creatures: {attribute}"),
             Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
-            Self::SetBonus(set) => write!(f, "Set Bonus: {set}"),
+            Self::ItemSet(set) => write!(f, "Item Set: {set}"),
             Self::HealingAmplification(heal_amp) => heal_amp.fmt(f),
         }
     }

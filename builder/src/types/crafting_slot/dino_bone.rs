@@ -23,6 +23,6 @@ pub enum DinoBoneSlot {
     AccessoryClaw,
     /// Horn Slot (Accessory)
     AccessoryHorn,
-    /// Set Bonus
-    SetBonus,
+    /// Item Sets 
+    ItemSet,
 }

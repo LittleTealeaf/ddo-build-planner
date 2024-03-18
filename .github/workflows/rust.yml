@@ -19,6 +19,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
+    env:
+      RUSTFLAGS: -A warnings
     steps:
       - uses: actions/checkout@v4
         name: Checkout Repository
@@ -43,6 +45,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
+    env:
+      RUSTFLAGS: -A warnings
     steps:
       - uses: actions/checkout@v4
         name: Checkout Repository
@@ -59,20 +63,6 @@ jobs:
         with:
           command: build
           args: --release
-  # install:
-  #   name: Install from Git
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest, windows-latest, macos-latest]
-  #   runs-on: ${{matrix.os}}
-  #   steps:
-  #     - name: Setup Rust
-  #       uses: actions-rust-lang/setup-rust-toolchain@v1
-  #       with:
-  #         toolchain: stable
-  #         cache: false
-  #     - name: Install Builder
-  #       run: cargo install --git https://www.github.com/LittleTealeaf/ddo-build-planner app --rev ${{github.sha}} --branch ${{env.BRANCH}}
   format:
     name: Format
     runs-on: ubuntu-latest

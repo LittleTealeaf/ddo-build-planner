@@ -6,7 +6,7 @@ use std::{
     path::Path,
 };
 
-use data::set_bonuses;
+use data::item_sets;
 use errors::Error;
 use serde::Serialize;
 
@@ -16,7 +16,7 @@ fn main() -> Result<(), self::errors::Error> {
         String::from("This is test data from the build script"),
     )?;
 
-    write_artifact("set_bonuses", set_bonuses()?)?;
+    write_artifact("item_sets", item_sets()?)?;
 
     Ok(())
 }
@@ -43,14 +43,14 @@ fn get_data_files(dir: &str) -> Result<ReadDir, Error> {
 mod data {
     use std::{fs::File, io::BufReader, path::Path};
 
-    use builder::equipment::set_bonus::SetBonus;
+    use builder::equipment::set_bonus::ItemSet;
     use ron::de::from_reader;
 
     use crate::errors;
 
-    pub fn set_bonuses() -> Result<Vec<SetBonus>, errors::Error> {
-        println!("cargo:rerun-if-changed=./data/set_bonuses.ron");
-        let path = Path::new("./data/set_bonuses.ron");
+    pub fn item_sets() -> Result<Vec<ItemSet>, errors::Error> {
+        println!("cargo:rerun-if-changed=./data/item_sets.ron");
+        let path = Path::new("./data/item_sets.ron");
         let file = File::open(path)?;
         let reader = BufReader::new(file);
         let items = from_reader(reader)?;

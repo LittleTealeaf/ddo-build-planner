@@ -1,100 +1,71 @@
-mod utils;
+use std::path::{Path, PathBuf};
 
-use core::fmt::Debug;
-
-use builder::equipment::set_bonus::SetBonus;
+use builder::{attribute::Attribute, equipment::set_bonus::ItemSet};
 use iced::{Application, Command};
+use itertools::chain;
 use ui::HandleMessage;
+use utils::enums::StaticOptions;
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
-use self::utils::{catch_async, load_data, save_data};
+use self::container::{DataContainer, DataContainerMessage};
 
-const PATH_SET_BONUSES: &str = "./data/data/set_bonuses.ron";
+pub mod container;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Debug)]
 pub struct Data {
-    pub set_bonuses: DataContainer<Vec<SetBonus>>,
+    pub item_sets: DataContainer<Vec<ItemSet>>,
 }
 
-#[derive(Debug, Clone)]
-pub enum MData {
-    SetBonus(MDataContainer<Vec<SetBonus>>),
-}
-
-impl From<MData> for Message {
-    fn from(value: MData) -> Self {
-        Self::Data(value)
+impl Data {
+    pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
+        let set_bonuses = self.item_sets.data.iter().flat_map(|sets| {
+            sets.iter()
+                .map(|set| Attribute::ItemSet(set.name().clone()))
+        });
+        chain!(set_bonuses, Attribute::get_static())
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct DataContainer<T> {
-    pub data: Option<T>,
-    pub modified: bool,
-    pub saving: bool,
-}
-
-impl<T> Default for DataContainer<T> {
+impl Default for Data {
     fn default() -> Self {
+        fn base() -> PathBuf {
+            Path::new(".").join("data").join("data")
+        }
+
         Self {
-            data: None,
-            modified: false,
-            saving: false,
+            item_sets: DataContainer::new(base().join("item_sets.ron")),
         }
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum MDataContainer<T>
-where
-    T: Debug + Clone,
-{
-    Load,
-    OnLoad(T),
-    Save,
-    OnSaved,
-    Modified,
+#[derive(Clone, Debug)]
+pub enum DataMessage {
+    SetBonuses(DataContainerMessage<Vec<ItemSet>>),
 }
 
-impl HandleMessage<MData> for Editor {
-    fn handle_message(&mut self, message: MData) -> iced::Command<<Self as Application>::Message> {
+impl HandleMessage<DataMessage> for App {
+    fn handle_message(&mut self, message: DataMessage) -> Command<<Self as Application>::Message> {
+        self.data.handle_message(message)
+    }
+}
+
+impl HandleMessage<DataMessage, App> for Data {
+    fn handle_message(&mut self, message: DataMessage) -> Command<<App as Application>::Message> {
         match message {
-            MData::SetBonus(m) => match m {
-                MDataContainer::Load => {
-                    self.data.set_bonuses.modified = false;
-                    self.data.set_bonuses.data = None;
-                    Command::perform(
-                        load_data(PATH_SET_BONUSES),
-                        catch_async(|data| MData::SetBonus(MDataContainer::OnLoad(data))),
-                    )
-                }
-                MDataContainer::OnLoad(data) => {
-                    self.data.set_bonuses.data = Some(data);
-                    Command::none()
-                }
-                MDataContainer::Save => {
-                    self.data
-                        .set_bonuses
-                        .data
-                        .as_ref()
-                        .map_or_else(Command::none, |sets| {
-                            self.data.set_bonuses.saving = true;
-                            Command::perform(
-                                save_data(PATH_SET_BONUSES, sets.clone()),
-                                catch_async(|()| MData::SetBonus(MDataContainer::OnSaved)),
-                            )
-                        })
-                }
-                MDataContainer::OnSaved => {
-                    self.data.set_bonuses.saving = false;
-                    Command::none()
-                }
-                MDataContainer::Modified => {
-                    self.data.set_bonuses.modified = true;
-                    Command::none()
-                }
-            },
+            DataMessage::SetBonuses(message) => self.item_sets.handle_message(message),
         }
+    }
+}
+
+impl From<DataContainerMessage<Vec<ItemSet>>> for DataMessage {
+    fn from(value: DataContainerMessage<Vec<ItemSet>>) -> Self {
+        Self::SetBonuses(value)
+    }
+}
+
+impl From<DataMessage> for Message {
+    fn from(value: DataMessage) -> Self {
+        Self::Data(value)
     }
 }

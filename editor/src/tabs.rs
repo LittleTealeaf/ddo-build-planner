@@ -1,36 +1,48 @@
-use iced::{widget::column, Application, Element, Renderer};
+pub mod home;
+pub mod item_sets;
+
+use core::fmt::{Display, Formatter, Result};
+
+use iced::{widget::Column, Application, Element, Renderer};
 use iced_aw::{TabBar, TabLabel};
 use ui::HandleView;
-use utils::public_modules;
 
-use crate::{Editor, Message};
-
-public_modules!(set_bonuses, home);
+use crate::{App, Message};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Tab {
     Home,
-    SetBonuses,
+    ItemSets,
 }
 
-impl HandleView<Editor> for Tab {
+impl Display for Tab {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::Home => write!(f, "Home"),
+            Self::ItemSets => write!(f, "Item Sets"),
+        }
+    }
+}
+
+impl HandleView<App> for Tab {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, Renderer<<Editor as Application>::Theme>>
-    {
-        column!(
-            [(Self::Home, "Home"), (Self::SetBonuses, "Set Bonuses"),]
-                .into_iter()
-                .fold(TabBar::new(Message::ChangeTab), |bar, (id, label)| {
-                    bar.push(id, TabLabel::Text(label.to_owned()))
-                })
-                .set_active_tab(self),
-            match &self {
-                Self::Home => app.home.handle_view(app),
-                Self::SetBonuses => app.set_bonuses.handle_view(app),
-            }
-        )
-        .into()
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
+        Column::new()
+            .push(
+                [Self::Home, Self::ItemSets]
+                    .into_iter()
+                    .fold(TabBar::new(Message::ChangeTab), |bar, tab| {
+                        let label = format!("{tab}");
+                        bar.push(tab, TabLabel::Text(label))
+                    })
+                    .set_active_tab(self),
+            )
+            .push(match self {
+                Self::Home => app.tab_home.handle_view(app),
+                Self::ItemSets => app.tab_item_sets.handle_view(app),
+            })
+            .into()
     }
 }
