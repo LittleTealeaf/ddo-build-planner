@@ -1,4 +1,8 @@
 use builder::equipment::set_bonus::ItemSet;
+use iced::{Application, Command};
+use ui::HandleMessage;
+
+use crate::App;
 
 #[derive(Debug, Clone)]
 pub struct ItemSetEditor {
@@ -13,3 +17,12 @@ impl ItemSetEditor {
 
 #[derive(Debug, Clone)]
 pub enum ItemSetEditorMessage {}
+
+impl HandleMessage<ItemSetEditorMessage> for App {
+    fn handle_message(
+        &mut self,
+        _message: ItemSetEditorMessage,
+    ) -> Command<<Self as Application>::Message> {
+        Command::none()
+    }
+}

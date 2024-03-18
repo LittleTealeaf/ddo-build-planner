@@ -60,7 +60,7 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                 self.tab_item_sets.editing = None;
                 Command::none()
             }
-            TabSetBonusesMessage::Editing(_) => todo!(),
+            TabSetBonusesMessage::Editing(message) => self.handle_message(message),
         }
     }
 }
@@ -69,8 +69,7 @@ impl HandleView<App> for TabSetBonuses {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
-    {
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         Column::new()
             .push(
                 Row::new()
