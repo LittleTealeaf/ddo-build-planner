@@ -224,41 +224,31 @@ impl HandleMessage<SelectorWidgetMessage> for App {
         message: SelectorWidgetMessage,
     ) -> Command<<Self as Application>::Message> {
         match message {
-            SelectorWidgetMessage::Selector(depth, content) => {
-                if let Some(widget) = &mut self.selector {
-                    if let Some(selector) = &mut widget.selector {
+            SelectorWidgetMessage::Selector(depth, content) => self
+                .selector
+                .as_mut()
+                .and_then(|widget| {
+                    widget.selector.as_mut().map(|selector| {
                         selector.handle_message(SelectorInternalMessage {
                             depth,
                             content,
                             attributes: &widget.attributes,
                         })
-                    } else {
-                        Command::none()
-                    }
-                } else {
-                    Command::none()
-                }
-            }
-            SelectorWidgetMessage::Submit => {
-                if let Some(widget) = &self.selector {
-                    widget
-                        .on_submit
-                        .clone()
-                        .map_or_else(Command::none, |on_submit| self.handle_message(on_submit))
-                } else {
-                    Command::none()
-                }
-            }
-            SelectorWidgetMessage::Cancel => {
-                if let Some(widget) = &self.selector {
-                    widget
-                        .on_cancel
-                        .clone()
-                        .map_or_else(Command::none, |on_cancel| self.handle_message(on_cancel))
-                } else {
-                    Command::none()
-                }
-            }
+                    })
+                })
+                .unwrap_or_else(Command::none),
+            SelectorWidgetMessage::Submit => self
+                .selector
+                .as_ref()
+                .and_then(|widget| widget.on_submit.as_ref())
+                .cloned()
+                .map_or_else(Command::none, |message| self.handle_message(message)),
+            SelectorWidgetMessage::Cancel => self
+                .selector
+                .as_ref()
+                .and_then(|widget| widget.on_cancel.as_ref())
+                .cloned()
+                .map_or_else(Command::none, |message| self.handle_message(message)),
         }
     }
 }
