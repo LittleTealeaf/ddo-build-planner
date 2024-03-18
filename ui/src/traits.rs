@@ -1,7 +1,10 @@
 use iced::{Application, Command, Element, Renderer};
 
 /// Provide a new `hanle_view` function
-pub trait HandleView<App: Application + Sized> {
+pub trait HandleView<App>
+where
+    App: Application + Sized,
+{
     /// Handes the view with a reference to the application
     fn handle_view<'a>(&'a self, app: &'a App) -> Element<'_, App::Message, App::Theme, Renderer>;
 }
