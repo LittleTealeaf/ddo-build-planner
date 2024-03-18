@@ -51,10 +51,7 @@ impl HandleMessage<DataMessage> for App {
 }
 
 impl HandleMessage<DataMessage, App> for Data {
-    fn handle_message(
-        &mut self,
-        message: DataMessage,
-    ) -> Command<<App as Application>::Message> {
+    fn handle_message(&mut self, message: DataMessage) -> Command<<App as Application>::Message> {
         match message {
             DataMessage::SetBonuses(message) => self.item_sets.handle_message(message),
         }

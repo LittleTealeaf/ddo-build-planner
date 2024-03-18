@@ -28,8 +28,7 @@ impl HandleView<App> for Tab {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
-    {
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         Column::new()
             .push(
                 [Self::Home, Self::ItemSets]

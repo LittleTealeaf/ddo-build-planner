@@ -204,8 +204,7 @@ impl HandleView<App> for SelectorWidget {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
-    {
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         match &self.selector {
             Some(Selector::Attribute(selector)) => selector.handle_view(app),
             Some(Selector::Condition(selector)) => selector.handle_view(app),

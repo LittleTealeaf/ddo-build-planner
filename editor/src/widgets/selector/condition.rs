@@ -277,8 +277,7 @@ impl HandleView<App> for ConditionSelector {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
-    {
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         self.selector.as_ref().map_or_else(
             || {
                 row(ConditionType::TYPES.map(|cond| {

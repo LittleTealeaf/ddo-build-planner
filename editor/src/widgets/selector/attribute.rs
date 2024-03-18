@@ -91,8 +91,7 @@ impl HandleView<App> for AttributeSelector {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
-    {
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         let attributes = &app.selector.as_ref().expect("Expected Selector").attributes;
 
         let filter = self.filter.to_lowercase();
