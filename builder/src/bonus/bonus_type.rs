@@ -14,7 +14,6 @@ use utils::enums::StaticOptions;
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum BonusType {
     /// Used in debugging bonus types
-    #[cfg(feature = "debug")]
     Debug(u8),
     /// Bonuses that come from [`Attribute::AbilityModifier`]
     ///
@@ -23,20 +22,26 @@ pub enum BonusType {
     /// "Action Boost" bonuses
     ///
     /// These are typically bonuses that come from action boosts, or action boost-like buffs.
+    #[serde(rename = "actbst", alias = "ActionBoost")]
     ActionBoost,
     /// Alchemical bonuses
+    #[serde(rename = "alc", alias = "Alchemical")]
     Alchemical,
     /// Artifact bonuses
     ///
     /// These are typically bonuses from named item sets
+    #[serde(rename = "art", alias = "Artifact")]
     Artifact,
     /// Competence bonuses
+    #[serde(rename = "cmp", alias = "Competence")]
     Competence,
     /// Deflection bonus
+    #[serde(rename = "dfl", alias = "Deflection")]
     Deflection,
     /// Dodge
     Dodge,
     /// Enhancement bonus
+    #[serde(rename = "enh", alias = "Enhancement")]
     Enhancement,
     /// Epic bonus
     ///
@@ -44,6 +49,7 @@ pub enum BonusType {
     /// a particular attribute, but only the highest will count
     Epic,
     /// Exceptional bonus
+    #[serde(rename = "exc", alias = "Exceptional")]
     Exceptional,
     /// Feat bonus
     Feat,
@@ -52,8 +58,10 @@ pub enum BonusType {
     /// Fortune bonus
     Fortune,
     /// Insightful bonus
+    #[serde(rename = "ins", alias = "Insightful")]
     Insightful,
     /// Legendary bonus
+    #[serde(rename = "leg", alias = "Legendary")]
     Legendary,
     /// Luck Bonus
     Luck,
@@ -64,12 +72,16 @@ pub enum BonusType {
     /// Primal bonus
     Primal,
     /// Profane bonus
+    #[serde(rename = "pro", alias = "Profane")]
     Profane,
     /// Quality bonus
+    #[serde(rename = "qual", alias = "Quality")]
     Quality,
     /// Racial bonus
+    #[serde(rename = "race", alias = "Racial")]
     Racial,
     /// Sacred bonus
+    #[serde(rename = "sac", alias = "Sacred")]
     Sacred,
     /// Size bonus
     Size,
@@ -86,8 +98,10 @@ pub enum BonusType {
     /// let bonus_type: BonusType = BonusType::default();
     /// assert_eq!(BonusType::Stacking, bonus_type);
     /// ```
+    #[serde(rename = "stck", alias = "Stacking")]
     Stacking,
     /// Used when things don't stack, but they don't really have a bonus type.
+    #[serde(rename = "std", alias = "Standard")]
     Standard,
     /// Spooky type
     Spooky,
