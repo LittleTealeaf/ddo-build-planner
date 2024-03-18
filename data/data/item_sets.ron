@@ -5,34 +5,34 @@
             3: [
                 (
                     a: ac(NaturalArmor),
-                    t: Profane,
+                    t: pro,
                     v: v("3"),
                 ),
                 (
                     a: ab(a),
-                    t: Profane,
+                    t: pro,
                     v: v("1"),
                 ),
                 (
                     a: sdc(a),
-                    t: Profane,
+                    t: pro,
                     v: v("1"),
                 ),
             ],
             5: [
                 (
                     a: ac(NaturalArmor),
-                    t: Profane,
+                    t: pro,
                     v: v("5"),
                 ),
                 (
                     a: ab(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
                 (
                     a: sdc(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
             ],
@@ -44,44 +44,44 @@
             3: [
                 (
                     a: shel(Both),
-                    t: Profane,
+                    t: pro,
                     v: v("10"),
                 ),
                 (
                     a: ac(NaturalArmor),
-                    t: Profane,
+                    t: pro,
                     v: v("5"),
                 ),
                 (
                     a: ab(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
                 (
                     a: sdc(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
             ],
             5: [
                 (
                     a: shel(Both),
-                    t: Profane,
+                    t: pro,
                     v: v("15"),
                 ),
                 (
                     a: ac(NaturalArmor),
-                    t: Profane,
+                    t: pro,
                     v: v("8"),
                 ),
                 (
                     a: ab(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
                 (
                     a: sdc(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
             ],
@@ -93,54 +93,54 @@
             3: [
                 (
                     a: shel(Both),
-                    t: Profane,
+                    t: pro,
                     v: v("20"),
                 ),
                 (
                     a: ac(NaturalArmor),
-                    t: Profane,
+                    t: pro,
                     v: v("10"),
                 ),
                 (
                     a: ab(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
                 (
                     a: sdc(a),
-                    t: Profane,
+                    t: pro,
                     v: v("2"),
                 ),
                 (
                     a: hamp(All),
-                    t: Profane,
+                    t: pro,
                     v: v("10"),
                 ),
             ],
             5: [
                 (
                     a: shel(Both),
-                    t: Profane,
+                    t: pro,
                     v: v("20"),
                 ),
                 (
                     a: ac(NaturalArmor),
-                    t: Profane,
+                    t: pro,
                     v: v("10"),
                 ),
                 (
                     a: ab(a),
-                    t: Profane,
+                    t: pro,
                     v: v("3"),
                 ),
                 (
                     a: sdc(a),
-                    t: Profane,
+                    t: pro,
                     v: v("3"),
                 ),
                 (
                     a: hamp(All),
-                    t: Profane,
+                    t: pro,
                     v: v("30"),
                 ),
             ],
