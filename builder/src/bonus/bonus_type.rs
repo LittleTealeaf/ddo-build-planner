@@ -110,7 +110,6 @@ pub enum BonusType {
 impl Display for BonusType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            #[cfg(feature = "debug")]
             Self::Debug(channel) => write!(f, "Debug {channel}"),
             Self::AbilityModifier => write!(f, "Ability Modifier"),
             Self::ActionBoost => write!(f, "Action Boost"),
