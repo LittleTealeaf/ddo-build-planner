@@ -14,9 +14,3 @@ where
     /// Handles the incoming message
     fn handle_message(&mut self, message: T) -> Command<A::Message>;
 }
-
-/// Indicates that this can be converted to another message
-pub trait ToMessage<M> {
-    /// Converts to another message
-    fn to_message(self) -> M;
-}
