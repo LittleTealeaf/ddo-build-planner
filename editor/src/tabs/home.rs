@@ -1,16 +1,16 @@
 use iced::{widget::text, Application, Element};
 use ui::HandleView;
 
-use crate::Editor;
+use crate::App;
 
 #[derive(Debug, Clone, Default)]
 pub struct TabHome {}
 
-impl HandleView<Editor> for TabHome {
+impl HandleView<App> for TabHome {
     fn handle_view<'a>(
         &'a self,
-        _app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, iced::Renderer>
+        _app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
     {
         text("hi world").into()
     }

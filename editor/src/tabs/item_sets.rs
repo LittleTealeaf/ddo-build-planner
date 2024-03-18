@@ -8,7 +8,7 @@ use iced::{
 };
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 use self::edit_set::{ItemSetEditor, ItemSetEditorMessage};
 
@@ -33,7 +33,7 @@ impl From<TabSetBonusesMessage> for Message {
     }
 }
 
-impl HandleMessage<TabSetBonusesMessage> for Editor {
+impl HandleMessage<TabSetBonusesMessage> for App {
     fn handle_message(
         &mut self,
         message: TabSetBonusesMessage,
@@ -65,11 +65,11 @@ impl HandleMessage<TabSetBonusesMessage> for Editor {
     }
 }
 
-impl HandleView<Editor> for TabSetBonuses {
+impl HandleView<App> for TabSetBonuses {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
     {
         Column::new()
             .push(

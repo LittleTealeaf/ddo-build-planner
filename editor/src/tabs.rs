@@ -7,7 +7,7 @@ use iced::{widget::Column, Application, Element, Renderer};
 use iced_aw::{TabBar, TabLabel};
 use ui::HandleView;
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Tab {
@@ -24,11 +24,11 @@ impl Display for Tab {
     }
 }
 
-impl HandleView<Editor> for Tab {
+impl HandleView<App> for Tab {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
     {
         Column::new()
             .push(

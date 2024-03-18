@@ -14,7 +14,7 @@ use tokio::{
 };
 use ui::HandleMessage;
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 use super::DataMessage;
 
@@ -55,7 +55,7 @@ where
     Modified,
 }
 
-impl<T> HandleMessage<DataContainerMessage<T>, Editor> for DataContainer<T>
+impl<T> HandleMessage<DataContainerMessage<T>, App> for DataContainer<T>
 where
     T: Debug + Clone + Sync + Send + Serialize + for<'de> Deserialize<'de> + 'static,
     DataContainerMessage<T>: Into<DataMessage>,
@@ -63,7 +63,7 @@ where
     fn handle_message(
         &mut self,
         message: DataContainerMessage<T>,
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<App as Application>::Message> {
         match message {
             DataContainerMessage::Load => {
                 self.modified = false;

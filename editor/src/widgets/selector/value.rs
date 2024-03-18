@@ -9,7 +9,7 @@ use itertools::Itertools;
 use rust_decimal::Decimal;
 use ui::{HandleMessage, HandleView};
 
-use crate::Editor;
+use crate::App;
 
 use super::{
     attribute::AttributeSelector, condition::ConditionSelector, SelectorMessage,
@@ -243,11 +243,11 @@ impl ValueSelectorMessage {
     }
 }
 
-impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for ValueSelector {
+impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ValueSelector {
     fn handle_message(
         &mut self,
         (depth, message, attributes): (usize, SelectorMessage, &[Attribute]),
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<App as Application>::Message> {
         if depth == self.depth {
             match message {
                 SelectorMessage::Value(message) => match message {
@@ -347,11 +347,11 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for ValueSele
     }
 }
 
-impl HandleView<Editor> for ValueSelector {
+impl HandleView<App> for ValueSelector {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
     {
         self.selector.as_ref().map_or_else(
             || todo!(),

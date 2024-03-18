@@ -6,7 +6,7 @@ use itertools::chain;
 use ui::HandleMessage;
 use utils::enums::StaticOptions;
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 use self::container::{DataContainer, DataContainerMessage};
 
@@ -44,17 +44,17 @@ pub enum DataMessage {
     SetBonuses(DataContainerMessage<Vec<ItemSet>>),
 }
 
-impl HandleMessage<DataMessage> for Editor {
+impl HandleMessage<DataMessage> for App {
     fn handle_message(&mut self, message: DataMessage) -> Command<<Self as Application>::Message> {
         self.data.handle_message(message)
     }
 }
 
-impl HandleMessage<DataMessage, Editor> for Data {
+impl HandleMessage<DataMessage, App> for Data {
     fn handle_message(
         &mut self,
         message: DataMessage,
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<App as Application>::Message> {
         match message {
             DataMessage::SetBonuses(message) => self.item_sets.handle_message(message),
         }

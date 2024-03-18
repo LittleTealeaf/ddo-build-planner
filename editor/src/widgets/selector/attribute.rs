@@ -8,7 +8,7 @@ use iced::{
 use iced_aw::card;
 use ui::{HandleMessage, HandleView};
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 use super::{SelectorMessage, SelectorWidgetMessage};
 
@@ -49,11 +49,11 @@ pub enum AttributeSelectorMessage {
     Filter(String),
 }
 
-impl HandleMessage<(usize, SelectorMessage), Editor> for AttributeSelector {
+impl HandleMessage<(usize, SelectorMessage), App> for AttributeSelector {
     fn handle_message(
         &mut self,
         (depth, message): (usize, SelectorMessage),
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<App as Application>::Message> {
         if depth == self.depth {
             match message {
                 SelectorMessage::Attribute(message) => match message {
@@ -87,11 +87,11 @@ impl AttributeSelectorMessage {
     }
 }
 
-impl HandleView<Editor> for AttributeSelector {
+impl HandleView<App> for AttributeSelector {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
     {
         let attributes = &app.selector.as_ref().expect("Expected Selector").attributes;
 

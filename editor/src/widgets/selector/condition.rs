@@ -11,7 +11,7 @@ use iced::{
 };
 use ui::{HandleMessage, HandleView};
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 use super::{value::ValueSelector, SelectorMessage, SelectorWidgetMessage};
 
@@ -188,11 +188,11 @@ impl ConditionSelectorMessage {
     }
 }
 
-impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for ConditionSelector {
+impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for ConditionSelector {
     fn handle_message(
         &mut self,
         (depth, message, attributes): (usize, SelectorMessage, &[Attribute]),
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<App as Application>::Message> {
         if depth == self.depth {
             match message {
                 SelectorMessage::Condition(message) => match message {
@@ -273,11 +273,11 @@ impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for Condition
     }
 }
 
-impl HandleView<Editor> for ConditionSelector {
+impl HandleView<App> for ConditionSelector {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
     {
         self.selector.as_ref().map_or_else(
             || {

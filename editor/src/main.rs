@@ -14,11 +14,11 @@ use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
 use widgets::selector::{SelectorWidget, SelectorWidgetMessage};
 
 fn main() -> iced::Result {
-    Editor::run(Settings::default())
+    App::run(Settings::default())
 }
 
 #[derive(Clone, Debug)]
-struct Editor {
+struct App {
     data: Data,
     tab_home: TabHome,
     tab_item_sets: TabSetBonuses,
@@ -38,7 +38,7 @@ enum Message {
     DebugOpen,
 }
 
-impl Application for Editor {
+impl Application for App {
     type Executor = executor::Default;
 
     type Message = Message;
@@ -86,7 +86,7 @@ impl Application for Editor {
     }
 }
 
-impl HandleMessage<Message> for Editor {
+impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
             Message::DebugOpen => {

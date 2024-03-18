@@ -9,7 +9,7 @@ use iced::{
 use itertools::Itertools;
 use ui::{HandleMessage, HandleView};
 
-use crate::{Editor, Message};
+use crate::{App, Message};
 
 use self::{
     attribute::{AttributeSelector, AttributeSelectorMessage},
@@ -200,11 +200,11 @@ impl SelectorWidget {
     }
 }
 
-impl HandleView<Editor> for SelectorWidget {
+impl HandleView<App> for SelectorWidget {
     fn handle_view<'a>(
         &'a self,
-        app: &'a Editor,
-    ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, Renderer>
+        app: &'a App,
+    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer>
     {
         match &self.selector {
             Some(Selector::Attribute(selector)) => selector.handle_view(app),
@@ -219,7 +219,7 @@ impl HandleView<Editor> for SelectorWidget {
     }
 }
 
-impl HandleMessage<SelectorWidgetMessage> for Editor {
+impl HandleMessage<SelectorWidgetMessage> for App {
     fn handle_message(
         &mut self,
         message: SelectorWidgetMessage,
@@ -260,11 +260,11 @@ impl HandleMessage<SelectorWidgetMessage> for Editor {
     }
 }
 
-impl HandleMessage<(usize, SelectorMessage, &[Attribute]), Editor> for Selector {
+impl HandleMessage<(usize, SelectorMessage, &[Attribute]), App> for Selector {
     fn handle_message(
         &mut self,
         (depth, message, attributes): (usize, SelectorMessage, &[Attribute]),
-    ) -> Command<<Editor as Application>::Message> {
+    ) -> Command<<App as Application>::Message> {
         match self {
             Self::Attribute(selector) => selector.handle_message((depth, message)),
             Self::Value(selector) => selector.handle_message((depth, message, attributes)),
