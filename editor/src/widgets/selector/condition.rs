@@ -7,7 +7,7 @@ use builder::{
 use iced::{
     theme,
     widget::{button, row, text},
-    Application, Command, Element, Renderer,
+    Application, Command, Element, Length, Pixels, Renderer,
 };
 use ui::{HandleMessage, HandleView};
 
@@ -292,6 +292,8 @@ impl HandleView<Editor> for ConditionSelector {
                         })
                         .into()
                 }))
+                .width(Length::Fill)
+                .spacing(10.0)
                 .into()
             },
             |selector| match selector {

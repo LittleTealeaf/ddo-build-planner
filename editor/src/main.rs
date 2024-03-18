@@ -9,9 +9,10 @@ use iced::{
     widget::{button, column, text},
     Application, Command, Element, Renderer, Settings, Theme,
 };
+use iced_aw::modal;
 use tabs::{
     home::TabHome,
-    set_bonuses::{TabSetBonuses, TabSetBonusesMessage},
+    item_sets::{TabSetBonuses, TabSetBonusesMessage},
     Tab,
 };
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
@@ -25,7 +26,7 @@ fn main() -> iced::Result {
 struct Editor {
     data: Data,
     tab_home: TabHome,
-    tab_set_bonuses: TabSetBonuses,
+    tab_item_sets: TabSetBonuses,
     icons_loaded: bool,
     selected_tab: Tab,
     selector: Option<SelectorWidget>,
@@ -57,7 +58,7 @@ impl Application for Editor {
             tab_home: TabHome::default(),
             icons_loaded: false,
             selected_tab: Tab::Home,
-            tab_set_bonuses: TabSetBonuses::default(),
+            tab_item_sets: TabSetBonuses::default(),
             selector: None,
         };
 
@@ -83,16 +84,12 @@ impl Application for Editor {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
+
+
+
         self.selector.as_ref().map_or_else(
             || {
-                column!(
-                    text(format!(
-                        "Icons Loaded: {}, data loaded: {:?}",
-                        self.icons_loaded, self.data.set_bonuses.data
-                    )),
-                    button("hi").on_press(Message::DebugOpen)
-                )
-                .into()
+                self.selected_tab.handle_view(self)
             },
             |selector| selector.handle_view(self),
         )

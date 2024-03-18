@@ -1,4 +1,4 @@
-use iced::{Application, Element};
+use iced::{widget::text, Application, Element};
 use ui::HandleView;
 
 use crate::Editor;
@@ -12,6 +12,6 @@ impl HandleView<Editor> for TabHome {
         _app: &'a Editor,
     ) -> Element<'_, <Editor as Application>::Message, <Editor as Application>::Theme, iced::Renderer>
     {
-        todo!()
+        text("hi world").into()
     }
 }

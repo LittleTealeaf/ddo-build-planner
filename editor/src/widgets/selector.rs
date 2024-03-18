@@ -2,7 +2,10 @@ use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
 };
-use iced::{Application, Command, Element, Renderer};
+use iced::{
+    widget::{button, column, text},
+    Application, Command, Element, Renderer,
+};
 use itertools::Itertools;
 use ui::{HandleMessage, HandleView};
 
@@ -207,7 +210,11 @@ impl HandleView<Editor> for SelectorWidget {
             Some(Selector::Attribute(selector)) => selector.handle_view(app),
             Some(Selector::Condition(selector)) => selector.handle_view(app),
             Some(Selector::Value(selector)) => selector.handle_view(app),
-            None => todo!(),
+            None => column!(
+                text("Selector Not Specified"),
+                button(text("Close")).on_press_maybe(self.on_cancel.clone())
+            )
+            .into(),
         }
     }
 }

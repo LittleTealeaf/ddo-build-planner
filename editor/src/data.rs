@@ -14,12 +14,12 @@ pub mod container;
 
 #[derive(Clone, Debug)]
 pub struct Data {
-    pub set_bonuses: DataContainer<Vec<ItemSet>>,
+    pub item_sets: DataContainer<Vec<ItemSet>>,
 }
 
 impl Data {
     pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.set_bonuses.data.iter().flat_map(|sets| {
+        let set_bonuses = self.item_sets.data.iter().flat_map(|sets| {
             sets.iter()
                 .map(|set| Attribute::ItemSet(set.name().clone()))
         });
@@ -34,7 +34,7 @@ impl Default for Data {
         }
 
         Self {
-            set_bonuses: DataContainer::new(base().join("item_sets.ron")),
+            item_sets: DataContainer::new(base().join("item_sets.ron")),
         }
     }
 }
@@ -56,7 +56,7 @@ impl HandleMessage<DataMessage, Editor> for Data {
         message: DataMessage,
     ) -> Command<<Editor as Application>::Message> {
         match message {
-            DataMessage::SetBonuses(message) => self.set_bonuses.handle_message(message),
+            DataMessage::SetBonuses(message) => self.item_sets.handle_message(message),
         }
     }
 }

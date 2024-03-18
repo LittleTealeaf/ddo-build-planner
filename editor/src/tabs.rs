@@ -1,9 +1,12 @@
 pub mod home;
-pub mod set_bonuses;
+pub mod item_sets;
 
 use core::fmt::{Display, Formatter, Result};
 
-use iced::{widget::Column, Application, Element, Renderer};
+use iced::{
+    widget::{text, Column},
+    Application, Element, Renderer,
+};
 use iced_aw::{TabBar, TabLabel};
 use ui::HandleView;
 
@@ -42,7 +45,7 @@ impl HandleView<Editor> for Tab {
             )
             .push(match self {
                 Self::Home => app.tab_home.handle_view(app),
-                Self::ItemSets => todo!(),
+                Self::ItemSets => app.tab_item_sets.handle_view(app),
             })
             .into()
     }
