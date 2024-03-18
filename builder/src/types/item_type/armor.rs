@@ -14,12 +14,16 @@ use crate::{
 #[derive(Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ArmorType {
     /// Cloth Armor
+    #[serde(rename = "c", alias = "Cloth")]
     Cloth,
     /// Light Armor
+    #[serde(rename = "l", alias = "Light")]
     Light,
     /// Medium Armor
+    #[serde(rename = "m", alias = "Medium")]
     Medium,
     /// Heavy Armor
+    #[serde(rename = "h", alias = "Heavy")]
     Heavy,
 }
 
