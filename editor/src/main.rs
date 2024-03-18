@@ -4,10 +4,7 @@ mod tabs;
 mod widgets;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
-use iced::{
-    executor, font,
-    Application, Command, Element, Renderer, Settings, Theme,
-};
+use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use tabs::{
     home::TabHome,
     item_sets::{TabSetBonuses, TabSetBonusesMessage},
