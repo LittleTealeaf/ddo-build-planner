@@ -1,149 +1,115 @@
-[
-    (
-        n: "Might of the Abashai",
-        b: {
-            3: [
-                (
-                    a: ac(n),
-                    t: pro,
-                    v: v("3"),
-                ),
-                (
-                    a: ab(a),
-                    t: pro,
-                    v: v("1"),
-                ),
-                (
-                    a: sdc(a),
-                    t: pro,
-                    v: v("1"),
-                ),
-            ],
-            5: [
-                (
-                    a: ac(n),
-                    t: pro,
-                    v: v("5"),
-                ),
-                (
-                    a: ab(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-                (
-                    a: sdc(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-            ],
-        },
-    ),
-    (
-        n: "Epic Might of the Abashai",
-        b: {
-            3: [
-                (
-                    a: shel(b),
-                    t: pro,
-                    v: v("10"),
-                ),
-                (
-                    a: ac(n),
-                    t: pro,
-                    v: v("5"),
-                ),
-                (
-                    a: ab(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-                (
-                    a: sdc(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-            ],
-            5: [
-                (
-                    a: shel(b),
-                    t: pro,
-                    v: v("15"),
-                ),
-                (
-                    a: ac(n),
-                    t: pro,
-                    v: v("8"),
-                ),
-                (
-                    a: ab(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-                (
-                    a: sdc(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-            ],
-        },
-    ),
-    (
-        n: "Legendary Might of the Abashai",
-        b: {
-            3: [
-                (
-                    a: shel(b),
-                    t: pro,
-                    v: v("20"),
-                ),
-                (
-                    a: ac(n),
-                    t: pro,
-                    v: v("10"),
-                ),
-                (
-                    a: ab(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-                (
-                    a: sdc(a),
-                    t: pro,
-                    v: v("2"),
-                ),
-                (
-                    a: hamp(a),
-                    t: pro,
-                    v: v("10"),
-                ),
-            ],
-            5: [
-                (
-                    a: shel(b),
-                    t: pro,
-                    v: v("20"),
-                ),
-                (
-                    a: ac(n),
-                    t: pro,
-                    v: v("10"),
-                ),
-                (
-                    a: ab(a),
-                    t: pro,
-                    v: v("3"),
-                ),
-                (
-                    a: sdc(a),
-                    t: pro,
-                    v: v("3"),
-                ),
-                (
-                    a: hamp(a),
-                    t: pro,
-                    v: v("30"),
-                ),
-            ],
-        },
-    ),
-]
+[(
+n: "Might of the Abashai",
+b: {
+3: [(
+a: ac(n),
+t: pro,
+v: v("3"),
+), (
+a: ab(a),
+t: pro,
+v: v("1"),
+), (
+a: sdc(a),
+t: pro,
+v: v("1"),
+)],
+5: [(
+a: ac(n),
+t: pro,
+v: v("5"),
+), (
+a: ab(a),
+t: pro,
+v: v("2"),
+), (
+a: sdc(a),
+t: pro,
+v: v("2"),
+)],
+},
+), (
+n: "Epic Might of the Abashai",
+b: {
+3: [(
+a: shel(b),
+t: pro,
+v: v("10"),
+), (
+a: ac(n),
+t: pro,
+v: v("5"),
+), (
+a: ab(a),
+t: pro,
+v: v("2"),
+), (
+a: sdc(a),
+t: pro,
+v: v("2"),
+)],
+5: [(
+a: shel(b),
+t: pro,
+v: v("15"),
+), (
+a: ac(n),
+t: pro,
+v: v("8"),
+), (
+a: ab(a),
+t: pro,
+v: v("2"),
+), (
+a: sdc(a),
+t: pro,
+v: v("2"),
+)],
+},
+), (
+n: "Legendary Might of the Abashai",
+b: {
+3: [(
+a: shel(b),
+t: pro,
+v: v("20"),
+), (
+a: ac(n),
+t: pro,
+v: v("10"),
+), (
+a: ab(a),
+t: pro,
+v: v("2"),
+), (
+a: sdc(a),
+t: pro,
+v: v("2"),
+), (
+a: hamp(a),
+t: pro,
+v: v("10"),
+)],
+5: [(
+a: shel(b),
+t: pro,
+v: v("20"),
+), (
+a: ac(n),
+t: pro,
+v: v("10"),
+), (
+a: ab(a),
+t: pro,
+v: v("3"),
+), (
+a: sdc(a),
+t: pro,
+v: v("3"),
+), (
+a: hamp(a),
+t: pro,
+v: v("30"),
+)],
+},
+)]

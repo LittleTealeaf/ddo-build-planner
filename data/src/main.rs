@@ -16,6 +16,12 @@ fn main() {
     update_item_sets();
 }
 
+fn pretty_config() -> PrettyConfig {
+    PrettyConfig::new()
+        .indentor(String::new())
+        .compact_arrays(true)
+}
+
 fn update_item_sets() {
     let path = Path::new(".")
         .join("data")
@@ -29,10 +35,6 @@ fn update_item_sets() {
     remove_file(path.clone()).unwrap();
 
     let mut file = File::create(path).unwrap();
-    file.write_all(
-        to_string_pretty(&data, PrettyConfig::new())
-            .unwrap()
-            .as_bytes(),
-    )
-    .unwrap();
+    file.write_all(to_string_pretty(&data, pretty_config()).unwrap().as_bytes())
+        .unwrap();
 }
