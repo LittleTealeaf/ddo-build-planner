@@ -6,10 +6,8 @@ mod widgets;
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{
     executor, font,
-    widget::{button, column, text},
     Application, Command, Element, Renderer, Settings, Theme,
 };
-use iced_aw::modal;
 use tabs::{
     home::TabHome,
     item_sets::{TabSetBonuses, TabSetBonusesMessage},

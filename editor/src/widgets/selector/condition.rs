@@ -7,7 +7,7 @@ use builder::{
 use iced::{
     theme,
     widget::{button, row, text},
-    Application, Command, Element, Length, Pixels, Renderer,
+    Application, Command, Element, Length, Renderer,
 };
 use ui::{HandleMessage, HandleView};
 

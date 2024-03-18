@@ -4,7 +4,7 @@ use fuzzy_filter::matches;
 use iced::{
     theme,
     widget::{button, column, scrollable, text, text_input, Column, Row},
-    Alignment, Application, Command, Element, Renderer,
+    Application, Command, Element, Renderer,
 };
 use ui::{font::NERD_FONT, HandleMessage, HandleView};
 

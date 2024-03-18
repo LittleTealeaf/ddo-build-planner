@@ -3,10 +3,7 @@ pub mod item_sets;
 
 use core::fmt::{Display, Formatter, Result};
 
-use iced::{
-    widget::{text, Column},
-    Application, Element, Renderer,
-};
+use iced::{widget::Column, Application, Element, Renderer};
 use iced_aw::{TabBar, TabLabel};
 use ui::HandleView;
 
