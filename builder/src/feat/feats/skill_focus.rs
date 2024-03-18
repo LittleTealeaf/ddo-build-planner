@@ -18,28 +18,40 @@ use crate::{
 /// Feats that show up under the "Skill Focus" Tab
 pub enum SkillFocus {
     /// Proides a +3 bonus to a specifc skill
+    #[serde(rename = "s", alias = "Focus")]
     Focus(Skill),
     /// Provides a +2 bonus to Jump and Tumble
+    #[serde(rename = "ac", alias = "Acrobatic")]
     Acrobatic,
     /// Provides a +2 bonus to Listen and Spot
+    #[serde(rename = "al", alias = "Alertness")]
     Alertness,
     /// Provides a +2 bonus to Balance and Swim
+    #[serde(rename = "at", alias = "Athletic")]
     Athletic,
     /// Provides a +1 bonus to Will and a +2 bonus to Intimidate
+    #[serde(rename = "bu", alias = "Bullheaded")]
     Bullheaded,
     /// Provides a +1 bonus to Will and a +2 bonus to Concentration
+    #[serde(rename = "di", alias = "Discipline")]
     Discipline,
     /// Provides a +1 bonus to all saves
+    #[serde(rename = "lu", alias = "LuckOfHeroes")]
     LuckOfHeroes,
     /// Provides a +2 bonus to diplomacy and haggle
+    #[serde(rename = "ne", alias = "Negotiator")]
     Negotiator,
     /// Provides a +4 bonus to saves against poison
+    #[serde(rename = "re", alias = "ResistPoison")]
     ResistPoison,
     /// Provides a +2 bonus to Heal and Repair
+    #[serde(rename = "se", alias = "SelfSufficient")]
     SelfSufficient,
     /// Provides a +1 bonus to Reflex and +2 bonus to saves against poison
+    #[serde(rename = "sn", alias = "SnakeBlood")]
     SnakeBlood,
     /// Provides a +2 bonus to Hide and Move Silently
+    #[serde(rename = "st", alias = "Stelthy")]
     Stealthy,
 }
 

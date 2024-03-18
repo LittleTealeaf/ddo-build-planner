@@ -17,6 +17,7 @@ use super::ability::Ability;
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Skill {
     /// All Skills
+    #[serde(rename = "a", alias = "All")]
     All,
     /// Balance Skill
     #[serde(rename = "ba", alias = "Balance")]

@@ -19,12 +19,16 @@ use crate::{
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Feat {
     /// Feats pertaining to a certain race.
+    #[serde(rename = "race", alias = "RacialFeat")]
     RacialFeat(RacialFeat),
     /// Proficiencies for Weapons or Armor
+    #[serde(rename = "prof", alias = "Proficiency")]
     Proficiency(Proficiency),
     /// Skill Focus
+    #[serde(rename = "skill", alias = "SkillFocus")]
     SkillFocus(SkillFocus),
     /// Spell Focus Feats
+    #[serde(rename = "spell", alias = "Spellcasting")]
     Spellcasting(SpellcastingFeat),
 }
 

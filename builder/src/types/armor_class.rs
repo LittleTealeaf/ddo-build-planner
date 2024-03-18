@@ -18,30 +18,39 @@ pub enum ArmorClass {
     /// attributes
     Total,
     /// Generic bonuses to Armor Class
+    #[serde(rename = "b", alias = "Bonus")]
     Bonus,
     /// Bonuses from the Armor
     ///
     /// The standard type to prevent stacking is [`BonusType::Standard`]
     ///
     /// [`BonusType::Standard`]: crate::bonus::BonusType::Standard
+    #[serde(rename = "ab", alias = "ArmorBonus")]
     ArmorBonus,
     /// Bonuses from the Shield
     ///
     /// The standard type to prevent stacking is [`BonusType::Standard`]
     ///
     /// [`BonusType::Standard`]: crate::bonus::BonusType::Standard
+    #[serde(rename = "sb", alias = "ShieldBonus")]
     ShieldBonus,
     /// Scalar value for Armor AC Bonus
+    #[serde(rename = "as", alias = "ArmorScalar")]
     ArmorScalar,
     /// Scalar value for Shield AC Bonus
+    #[serde(rename = "ss", alias = "ShieldScalar")]
     ShieldScalar,
     /// Armor Max Dex Bonus
+    #[serde(rename = "amd", alias = "ArmorMaxDex")]
     ArmorMaxDex,
     /// Shield Max Dex Bonus
+    #[serde(rename = "smd", alias = "ShieldMaxDex")]
     ShieldMaxDex,
     /// Natural Armor
+    #[serde(rename = "n", alias = "NaturalArmor")]
     NaturalArmor,
     /// Total Scalar
+    #[serde(rename = "ts", alias = "TotalScalar")]
     TotalScalar,
 }
 

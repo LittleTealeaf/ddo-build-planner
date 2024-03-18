@@ -25,32 +25,43 @@ pub enum SavingThrow {
     /// [`Fortitude`]: SavingThrow::Fortitude
     /// [`Reflex`]: SavingThrow::Reflex
     /// [`Will`]: SavingThrow::Will
+    #[serde(rename = "a", alias = "All")]
     All,
     /// Fortitude Saving Throw
-    #[serde(rename = "Fort", alias = "Fortitude")]
+    #[serde(rename = "for", alias = "Fort", alias = "Fortitude")]
     Fortitude,
     /// Bonus to Saving Throws against Poison
-    #[serde(rename = "Ref", alias = "Reflex")]
+    #[serde(rename = "ref", alias = "Ref", alias = "Reflex")]
     Reflex,
     /// Bonus to Saving Throws agaisnt Traps
+    #[serde(rename = "wil", alias = "Will")]
     Will,
     /// Bonus to Saving Throws against Enchantments
+    #[serde(rename = "poi", alias = "Poison")]
     Poison,
     /// Bonus to Saving Throws against Diseases
+    #[serde(rename = "dis", alias = "Disease")]
     Disease,
     /// Reflex Saving Throws
+    #[serde(rename = "tra", alias = "Traps")]
     Traps,
     /// Bonus to Saving Throws against Spells
+    #[serde(rename = "spl", alias = "Spell")]
     Spell,
     /// Bonus to Saving Throws against Magic
+    #[serde(rename = "mag", alias = "Magic")]
     Magic,
     /// Will Saving Throw
+    #[serde(rename = "enc", alias = "Enchantment")]
     Enchantment,
     /// Bonus to Saving Throws against Illusion
+    #[serde(rename = "ill", alias = "Illusion")]
     Illusion,
     /// Bonus to Saving Throws against Fear
+    #[serde(rename = "fea", alias = "Fear")]
     Fear,
     /// Bonus to Saving Throws against Curses
+    #[serde(rename = "cur", alias = "Curse")]
     Curse,
 }
 

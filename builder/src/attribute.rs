@@ -29,7 +29,6 @@ use fmt::Display;
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
-    #[cfg(feature = "debug")]
     Debug(u8),
     /// Behaves as a dummy variable
     ///
@@ -40,78 +39,100 @@ pub enum Attribute {
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
     /// Indicates that the user has some flag
+    #[serde(rename = "flg", alias = "Flag")]
     Flag(Flag),
     /// Results from the user interacting with toggles / sliders.
     ///
     /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
     /// associated bonuses can react.
+    #[serde(rename = "tgl", alias = "Toggle")]
     Toggle(Toggle),
     /// Does the user have the feat.
     Feat(Feat),
     /// The ability score of the character.
+    #[serde(rename = "ab", alias = "Ability")]
     Ability(Ability),
     /// The modifier, calculated from [`Attribute::Ability`].
-    #[serde(rename = "AbilMod", alias = "AbilityModifier")]
+    #[serde(rename = "abm", alias = "AbilMod", alias = "AbilityModifier")]
     AbilityModifier(Ability),
     /// Indicates how many levels the character has of a given class.
+    #[serde(rename = "lvl", alias = "ClassLevel")]
     ClassLevel(PlayerClass),
     /// The different skills available in the game.
+    #[serde(rename = "skl", alias = "Skill")]
     Skill(Skill),
     /// Both simple and complex saving throws.
-    #[serde(rename = "Save", alias = "SavingThrow")]
+    #[serde(rename = "sav", alias = "Save", alias = "SavingThrow")]
     SavingThrow(SavingThrow),
     /// Character Spell Power.
     ///
     /// For every spell power unit, the character gains `1%` more damage with spells of that given
     /// [`SpellPower`]. For example, having `102` spell power gives a `+102%` spell damage boost,
     /// which results in an overall damage scale of `202%`.
+    #[serde(rename = "spow", alias = "SpellPower")]
     SpellPower(SpellPower),
     /// The chance that the user has to critically hit with spells.
+    #[serde(rename = "scc", alias = "SpellCriticalChance")]
     SpellCriticalChance(SpellPower),
     /// The bonus to damage that the user has with critical hits on spells.
+    #[serde(rename = "scd", alias = "SpellCriticalDamage")]
     SpellCriticalDamage(SpellPower),
     /// Bonuses to caster levels of certain spells.
+    #[serde(rename = "cl", alias = "CasterLevel")]
     CasterLevel(SpellSelector),
     /// Bonsues to maximum caster level of certain spells.
+    #[serde(rename = "mcl", alias = "MaxCasterLevel")]
     MaxCasterLevel(SpellSelector),
     /// Bonuses to the DCs of certain spells.
+    #[serde(rename = "sdc", alias = "SpellDC")]
     SpellDC(SpellSelector),
     /// Bonuses to stats to either the main hand or off hand.
+    #[serde(rename = "wep", alias = "Weapon")]
     Weapon(WeaponAttribute),
     /// Armor class values
-    #[serde(rename = "AC", alias = "ArmorClass")]
+    #[serde(rename = "ac", alias = "AC", alias = "ArmorClass")]
     ArmorClass(ArmorClass),
     /// Physical or Magical Sheltering
+    #[serde(rename = "shel", alias = "Sheltering")]
     Sheltering(Sheltering),
     /// Damage reduced from energy sources
+    #[serde(rename = "res", alias = "Resistance")]
     Resistance(DamageType),
     /// % Damage reduced from energy sources
+    #[serde(rename = "abs", alias = "Absorption")]
     Absorption(Absorption),
     /// Spell Resistance
+    #[serde(rename = "sr", alias = "SpellResistance")]
     SpellResistance,
     /// Spell Penetration
+    #[serde(rename = "spen", alias = "SpellPenetration")]
     SpellPenetration,
     /// Health
+    #[serde(rename = "hp", alias = "Health")]
     Health(Health),
     /// Spell Points
+    #[serde(rename = "sp", alias = "SpellPoints")]
     SpellPoints(SpellPoints),
     /// Total Character Level
+    #[serde(rename = "tlvl", alias = "TotalCharacterLevel")]
     TotalCharacterLevel,
     /// Summoned Creature Bonuses
+    #[serde(rename = "summon", alias = "SummonedAttribute")]
     SummonedAttribute(SummonedAttribute),
     /// Armor Check Penalty
+    #[serde(rename = "acp", alias = "ArmorCheckPenalty")]
     ArmorCheckPenalty,
     /// Item Sets
+    #[serde(rename = "set", alias = "ItemSet")]
     ItemSet(String),
     /// Healing Amplification
-    #[serde(rename = "HealAmp", alias = "HealingAmplification")]
+    #[serde(rename = "hamp", alias = "HealAmp", alias = "HealingAmplification")]
     HealingAmplification(HealingAmplification),
 }
 
 impl Display for Attribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            #[cfg(feature = "debug")]
             Self::Debug(val) => write!(f, "Debug {val}"),
             Self::Dummy => write!(f, "Dummy"),
             Self::Ability(ability) => write!(f, "{ability} Score"),
