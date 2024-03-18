@@ -15,12 +15,16 @@ use super::{player_class::PlayerClass, spell_power::SpellPower};
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellSelector {
     /// Spells that fall under a specific spell power
+    #[serde(rename = "p", alias = "SpellPower")]
     SpellPower(SpellPower),
     /// Spells of a certain school
+    #[serde(rename = "s", alias = "School")]
     School(SpellSchool),
     /// Spells for a certain class
+    #[serde(rename = "c", alias = "Class")]
     Class(PlayerClass),
     /// All spells
+    #[serde(rename = "a", alias = "All")]
     All,
 }
 

@@ -39,11 +39,13 @@ pub enum Attribute {
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
     /// Indicates that the user has some flag
+    #[serde(rename = "flg", alias = "Flag")]
     Flag(Flag),
     /// Results from the user interacting with toggles / sliders.
     ///
     /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
     /// associated bonuses can react.
+    #[serde(rename = "tgl", alias = "Toggle")]
     Toggle(Toggle),
     /// Does the user have the feat.
     Feat(Feat),

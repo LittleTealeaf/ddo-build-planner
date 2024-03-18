@@ -16,6 +16,7 @@ use crate::{
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Ability {
     /// All values
+    #[serde(rename = "a", alias = "All")]
     All,
     /// Represents how strong the character is
     #[serde(rename = "str", alias = "Strength")]

@@ -15,10 +15,13 @@ use super::damage_type::DamageType;
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SpellPower {
     /// Provides a Universal typed bonus to all spell powers
+    #[serde(rename = "uni", alias = "Universal")]
     Universal,
     /// Provides an individual bonus of the same type to all spell powers
+    #[serde(rename = "ptc", alias = "Potency")]
     Potency,
     /// Spell Power for specific damage types
+    #[serde(rename = "d", alias = "Damage")]
     Damage(DamageType),
 }
 
