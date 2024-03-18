@@ -4,7 +4,7 @@
         b: {
             3: [
                 (
-                    a: ac(NaturalArmor),
+                    a: ac(n),
                     t: pro,
                     v: v("3"),
                 ),
@@ -21,7 +21,7 @@
             ],
             5: [
                 (
-                    a: ac(NaturalArmor),
+                    a: ac(n),
                     t: pro,
                     v: v("5"),
                 ),
@@ -48,7 +48,7 @@
                     v: v("10"),
                 ),
                 (
-                    a: ac(NaturalArmor),
+                    a: ac(n),
                     t: pro,
                     v: v("5"),
                 ),
@@ -70,7 +70,7 @@
                     v: v("15"),
                 ),
                 (
-                    a: ac(NaturalArmor),
+                    a: ac(n),
                     t: pro,
                     v: v("8"),
                 ),
@@ -97,7 +97,7 @@
                     v: v("20"),
                 ),
                 (
-                    a: ac(NaturalArmor),
+                    a: ac(n),
                     t: pro,
                     v: v("10"),
                 ),
@@ -124,7 +124,7 @@
                     v: v("20"),
                 ),
                 (
-                    a: ac(NaturalArmor),
+                    a: ac(n),
                     t: pro,
                     v: v("10"),
                 ),
