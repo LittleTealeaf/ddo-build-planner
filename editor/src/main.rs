@@ -84,13 +84,8 @@ impl Application for Editor {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-
-
-
         self.selector.as_ref().map_or_else(
-            || {
-                self.selected_tab.handle_view(self)
-            },
+            || self.selected_tab.handle_view(self),
             |selector| selector.handle_view(self),
         )
     }

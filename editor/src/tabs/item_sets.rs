@@ -59,7 +59,7 @@ impl HandleMessage<TabSetBonusesMessage> for Editor {
             TabSetBonusesMessage::CancelEdit => {
                 self.tab_item_sets.editing = None;
                 Command::none()
-            },
+            }
             TabSetBonusesMessage::Editing(_) => todo!(),
         }
     }
