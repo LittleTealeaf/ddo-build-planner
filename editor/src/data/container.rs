@@ -13,6 +13,7 @@ use tokio::{
     io::{self, AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 use ui::HandleMessage;
+use utils::ron::pretty_config::compact_pretty_config;
 
 use crate::{App, Message};
 
@@ -122,7 +123,7 @@ where
 {
     let file = File::create(path).await?;
     let mut writer = BufWriter::new(file);
-    let serialized = to_string_pretty(&data, PrettyConfig::new())?;
+    let serialized = to_string_pretty(&data, compact_pretty_config())?;
     writer.write_all(serialized.as_bytes()).await?;
     writer.flush().await?;
     Ok(())
