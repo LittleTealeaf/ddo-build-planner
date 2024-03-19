@@ -2,11 +2,7 @@ use core::fmt::Debug;
 use std::path::{Path, PathBuf};
 
 use iced::{Application, Command};
-use ron::{
-    de::SpannedError,
-    from_str,
-    ser::{to_string_pretty, PrettyConfig},
-};
+use ron::{de::SpannedError, from_str, ser::to_string_pretty};
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs::File,
