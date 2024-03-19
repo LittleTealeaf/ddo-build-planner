@@ -2,17 +2,14 @@ use core::fmt::Debug;
 use std::path::{Path, PathBuf};
 
 use iced::{Application, Command};
-use ron::{
-    de::SpannedError,
-    from_str,
-    ser::{to_string_pretty, PrettyConfig},
-};
+use ron::{de::SpannedError, from_str, ser::to_string_pretty};
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs::File,
     io::{self, AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 use ui::HandleMessage;
+use utils::ron::pretty_config::compact_pretty_config;
 
 use crate::{App, Message};
 
@@ -122,7 +119,7 @@ where
 {
     let file = File::create(path).await?;
     let mut writer = BufWriter::new(file);
-    let serialized = to_string_pretty(&data, PrettyConfig::new())?;
+    let serialized = to_string_pretty(&data, compact_pretty_config())?;
     writer.write_all(serialized.as_bytes()).await?;
     writer.flush().await?;
     Ok(())

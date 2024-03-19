@@ -7,5 +7,5 @@ pub mod from_into;
 pub mod hashmap;
 pub mod modules;
 pub mod ord;
-pub mod vecs;
 pub mod ron;
+pub mod vecs;

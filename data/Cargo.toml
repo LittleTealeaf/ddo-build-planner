@@ -19,6 +19,7 @@ example = []
 [dependencies]
 builder = { path = "../builder/"}
 serde = { version = "1.0.197", features = ["derive"] }
+utils = { path = "../utils/" }
 ron = "0.8.1"
 
 [build-dependencies]
