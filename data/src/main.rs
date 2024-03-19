@@ -7,19 +7,11 @@ use std::{
 };
 
 use builder::equipment::set_bonus::ItemSet;
-use ron::{
-    de::from_reader,
-    ser::{to_string_pretty, PrettyConfig},
-};
+use ron::{de::from_reader, ser::to_string_pretty};
+use utils::ron::pretty_config::compact_pretty_config;
 
 fn main() {
     update_item_sets();
-}
-
-fn pretty_config() -> PrettyConfig {
-    PrettyConfig::new()
-        .indentor(String::new())
-        .compact_arrays(true)
 }
 
 fn update_item_sets() {
@@ -35,6 +27,10 @@ fn update_item_sets() {
     remove_file(path.clone()).unwrap();
 
     let mut file = File::create(path).unwrap();
-    file.write_all(to_string_pretty(&data, pretty_config()).unwrap().as_bytes())
-        .unwrap();
+    file.write_all(
+        to_string_pretty(&data, compact_pretty_config())
+            .unwrap()
+            .as_bytes(),
+    )
+    .unwrap();
 }
