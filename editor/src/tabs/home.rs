@@ -1,7 +1,10 @@
-use iced::{widget::text, Application, Element};
+use iced::{
+    widget::{button, column, text},
+    Application, Element,
+};
 use ui::HandleView;
 
-use crate::App;
+use crate::{App, Message};
 
 #[derive(Debug, Clone, Default)]
 pub struct TabHome {}
@@ -12,6 +15,11 @@ impl HandleView<App> for TabHome {
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
     {
-        text("hi world").into()
+        column!(
+            button(text("Attribute")).on_press(Message::DebugOpenAttribute),
+            button(text("Value")).on_press(Message::DebugOpenValue),
+            button(text("Condition")).on_press(Message::DebugOpenCondition),
+        )
+        .into()
     }
 }

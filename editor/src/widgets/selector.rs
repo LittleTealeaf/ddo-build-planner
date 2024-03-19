@@ -100,16 +100,6 @@ impl SelectorWidget {
         self.on_cancel = None;
     }
 
-    pub fn without_on_submit(mut self) -> Self {
-        self.clear_on_submit();
-        self
-    }
-
-    pub fn without_on_cancel(mut self) -> Self {
-        self.clear_on_cancel();
-        self
-    }
-
     pub fn select_attribute<'a, A>(&mut self, selected: A)
     where
         A: Into<Option<&'a Attribute>>,

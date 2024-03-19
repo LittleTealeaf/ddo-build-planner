@@ -35,7 +35,10 @@ enum Message {
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
     Selector(SelectorWidgetMessage),
-    DebugOpen,
+    DebugOpenCondition,
+    DebugOpenValue,
+    DebugOpenAttribute,
+    DebugClose,
 }
 
 impl Application for App {
@@ -89,10 +92,35 @@ impl Application for App {
 impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
-            Message::DebugOpen => {
+            Message::DebugClose => {
+                self.selector = None;
+                Command::none()
+            }
+            Message::DebugOpenCondition => {
                 self.selector = Some(
                     SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_condition(None),
+                        .with_select_condition(None)
+                        .with_on_submit(Message::DebugClose)
+                        .with_on_cancel(Message::DebugClose),
+                );
+                Command::none()
+            }
+
+            Message::DebugOpenValue => {
+                self.selector = Some(
+                    SelectorWidget::new(self.data.generate_attributes())
+                        .with_select_value(None)
+                        .with_on_submit(Message::DebugClose)
+                        .with_on_cancel(Message::DebugClose),
+                );
+                Command::none()
+            }
+            Message::DebugOpenAttribute => {
+                self.selector = Some(
+                    SelectorWidget::new(self.data.generate_attributes())
+                        .with_select_attribute(None)
+                        .with_on_submit(Message::DebugClose)
+                        .with_on_cancel(Message::DebugClose),
                 );
                 Command::none()
             }
