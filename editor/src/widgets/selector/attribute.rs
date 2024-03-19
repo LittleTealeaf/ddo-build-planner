@@ -2,9 +2,7 @@ use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
     theme,
-    widget::{
-        button, column, container, horizontal_space, scrollable, text, text_input, Column, Row,
-    },
+    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
 use ui::{HandleMessage, HandleView};
@@ -98,13 +96,11 @@ impl HandleView<App> for AttributeSelector {
         let filter = self.filter.to_lowercase();
         let selected = self.selected.unwrap_or(attributes.len());
 
-        Column::with_children([
-            text("Attribute Selector").into(),
-            text_input("Filter...", &self.filter)
-                .on_input(|filter| {
-                    AttributeSelectorMessage::Filter(filter).into_message(self.depth)
-                })
-                .into(),
+        column!(
+            text("Attribute Selector"),
+            text_input("Filter...", &self.filter).on_input(|filter| {
+                AttributeSelectorMessage::Filter(filter).into_message(self.depth)
+            }),
             scrollable(column(
                 attributes
                     .iter()
@@ -125,24 +121,20 @@ impl HandleView<App> for AttributeSelector {
                                 }),
                         )
                         .into()
-                    }),
+                    })
             ))
-            .height(Length::Fill)
-            .into(),
-            Row::with_children([
-                horizontal_space().width(Length::Fill).into(),
+            .height(Length::Fill),
+            row!(
+                horizontal_space().width(Length::Fill),
                 button(text("Cancel"))
                     .style(theme::Button::Secondary)
-                    .on_press(Message::Selector(self.on_cancel.clone()))
-                    .into(),
-                horizontal_space().width(10).into(),
+                    .on_press(Message::Selector(self.on_cancel.clone())),
+                horizontal_space().width(10),
                 button(text("Submit"))
                     .style(theme::Button::Primary)
                     .on_press(Message::Selector(self.on_submit.clone()))
-                    .into(),
-            ])
-            .into(),
-        ])
+            )
+        )
         .into()
     }
 }
