@@ -3,7 +3,7 @@ use fuzzy_filter::matches;
 use iced::{
     theme,
     widget::{
-        button, column, container, horizontal_space, row, scrollable, text, text_input, Column,
+        button, column, container, horizontal_space, scrollable, text, text_input, Column, Row,
     },
     Application, Command, Element, Length, Renderer,
 };
@@ -98,46 +98,51 @@ impl HandleView<App> for AttributeSelector {
         let filter = self.filter.to_lowercase();
         let selected = self.selected.unwrap_or(attributes.len());
 
-        Column::new()
-            .push(text("Attribute Selector"))
-            .push(text_input("Filter...", &self.filter).on_input(|filter| {
-                AttributeSelectorMessage::Filter(filter).into_message(self.depth)
-            }))
-            .push(
-                scrollable(column(
-                    attributes
-                        .iter()
-                        .enumerate()
-                        .map(|(index, attribute)| (index, format!("{attribute}")))
-                        .filter(|(_, str)| matches(&filter, str.to_lowercase().as_ref()))
-                        .map(|(index, attr)| {
-                            container(
-                                button(text(attr))
-                                    .on_press(
-                                        AttributeSelectorMessage::Select(index)
-                                            .into_message(self.depth),
-                                    )
-                                    .style(if selected == index {
-                                        theme::Button::Primary
-                                    } else {
-                                        theme::Button::Text
-                                    }),
-                            )
-                            .into()
-                        }),
-                ))
-                .height(Length::Fill),
-            )
-            .push(row!(
-                horizontal_space().width(Length::Fill),
+        Column::with_children([
+            text("Attribute Selector").into(),
+            text_input("Filter...", &self.filter)
+                .on_input(|filter| {
+                    AttributeSelectorMessage::Filter(filter).into_message(self.depth)
+                })
+                .into(),
+            scrollable(column(
+                attributes
+                    .iter()
+                    .enumerate()
+                    .map(|(index, attribute)| (index, format!("{attribute}")))
+                    .filter(|(_, str)| matches(&filter, str.to_lowercase().as_ref()))
+                    .map(|(index, attr)| {
+                        container(
+                            button(text(attr))
+                                .on_press(
+                                    AttributeSelectorMessage::Select(index)
+                                        .into_message(self.depth),
+                                )
+                                .style(if selected == index {
+                                    theme::Button::Primary
+                                } else {
+                                    theme::Button::Text
+                                }),
+                        )
+                        .into()
+                    }),
+            ))
+            .height(Length::Fill)
+            .into(),
+            Row::with_children([
+                horizontal_space().width(Length::Fill).into(),
                 button(text("Cancel"))
                     .style(theme::Button::Secondary)
-                    .on_press(Message::Selector(self.on_cancel.clone())),
-                horizontal_space().width(10),
+                    .on_press(Message::Selector(self.on_cancel.clone()))
+                    .into(),
+                horizontal_space().width(10).into(),
                 button(text("Submit"))
                     .style(theme::Button::Primary)
                     .on_press(Message::Selector(self.on_submit.clone()))
-            ))
-            .into()
+                    .into(),
+            ])
+            .into(),
+        ])
+        .into()
     }
 }
