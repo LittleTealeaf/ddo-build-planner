@@ -118,11 +118,14 @@ impl HandleView<App> for AttributeSelector {
                                     theme::Button::Primary
                                 } else {
                                     theme::Button::Text
-                                }),
+                                })
+                                .width(Length::Fill),
                         )
+                        .width(Length::Fill)
                         .into()
                     })
             ))
+            .width(Length::Fill)
             .height(Length::Fill),
             row!(
                 horizontal_space().width(Length::Fill),
