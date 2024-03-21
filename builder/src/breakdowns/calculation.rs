@@ -1,5 +1,5 @@
+use im::HashMap;
 use rust_decimal::Decimal;
-use utils::hashmap::IntoGroupedHashMap;
 
 use crate::{
     attribute::Attribute,
@@ -91,27 +91,23 @@ impl Breakdowns {
     }
 
     pub(crate) fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
-        let mut bonuses = self
-            .bonuses
-            .get(attribute)?
-            .clone()
-            .into_iter()
-            .filter_map(|bonus| {
-                self.evaluate_some_condition(bonus.condition())
-                    .then(|| (*bonus.bonus_type(), self.evaluate_value(bonus.value())))
-            })
-            .into_grouped_hash_map();
+        let mut map = HashMap::new();
+        let mut stacking = Decimal::ZERO;
 
-        let stacking = bonuses
-            .remove(&BonusType::Stacking)
-            .map_or(Decimal::ZERO, |i| i.into_iter().sum());
+        for bonus in self.bonuses.get(attribute)?.clone() {
+            if self.evaluate_some_condition(bonus.condition()) {
+                let value = self.evaluate_value(bonus.value());
+                if matches!(bonus.bonus_type(), BonusType::Stacking) {
+                    stacking += value;
+                } else {
+                    map.insert(
+                        *bonus.bonus_type(),
+                        value.max(*map.get(bonus.bonus_type()).unwrap_or(&Decimal::MIN)),
+                    );
+                }
+            }
+        }
 
-        Some(
-            stacking
-                + bonuses
-                    .into_values()
-                    .filter_map(|values| values.into_iter().max())
-                    .sum::<Decimal>(),
-        )
+        Some(stacking + map.values().sum::<Decimal>())
     }
 }
