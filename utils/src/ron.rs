@@ -13,5 +13,6 @@ pub mod pretty_config {
         PrettyConfig::new()
             .indentor(String::new())
             .compact_arrays(true)
+            .separator(String::new())
     }
 }
