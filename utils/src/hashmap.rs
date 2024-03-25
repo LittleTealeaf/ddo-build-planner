@@ -12,11 +12,13 @@ pub trait MapGetMutOr<K, V> {
     /// Otherwise returns the key's value.
     fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
     where
-        F: Fn() -> V;
+        F: FnOnce() -> V;
 
     /// Inserts a default value if the key is not found within the map
     /// Otherwise returns the key's value.
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V;
+    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
+        self.get_mut_or_else(key, || default)
+    }
 }
 
 impl<K, V, S> MapGetMutOr<K, V> for HashMap<K, V, S>
@@ -26,18 +28,10 @@ where
 {
     fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
     where
-        F: Fn() -> V,
+        F: FnOnce() -> V,
     {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
-        }
-
-        self.get_mut(key).expect("Expected Returned Value")
-    }
-
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), default);
         }
 
         self.get_mut(key).expect("Expected Returned Value")
@@ -52,17 +46,10 @@ where
 {
     fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
     where
-        F: Fn() -> V,
+        F: FnOnce() -> V,
     {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
-        }
-        self.get_mut(key).expect("Expected Returned Value")
-    }
-
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), default);
         }
         self.get_mut(key).expect("Expected Returned Value")
     }
@@ -75,17 +62,10 @@ where
 {
     fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
     where
-        F: Fn() -> V,
+        F: FnOnce() -> V,
     {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
-        }
-        self.get_mut(key).expect("Expected Returned Value")
-    }
-
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), default);
         }
         self.get_mut(key).expect("Expected Returned Value")
     }
