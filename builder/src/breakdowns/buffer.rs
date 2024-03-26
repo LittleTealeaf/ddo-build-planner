@@ -1,6 +1,8 @@
 use core::{cmp::Reverse, iter::once};
 use std::collections::{BinaryHeap, HashSet};
 
+use utils::from_into::FromInto;
+
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, CloneBonus},
@@ -24,7 +26,7 @@ impl Buffer {
         I: IntoIterator<Item = A>,
     {
         for attribute in attributes {
-            let attribute: Attribute = attribute.into();
+            let attribute = Attribute::from_into(attribute);
             self.attributes.push(Reverse(attribute.clone()));
             self.forced.insert(attribute);
         }

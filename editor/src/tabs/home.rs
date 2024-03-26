@@ -3,6 +3,7 @@ use ui::HandleView;
 
 use crate::App;
 
+#[allow(clippy::empty_structs_with_brackets)]
 #[derive(Debug, Clone, Default)]
 pub struct TabHome {}
 
