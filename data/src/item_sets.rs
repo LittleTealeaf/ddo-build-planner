@@ -20,9 +20,8 @@ pub trait ImportItemSets {
 
 impl ImportItemSets for Breakdowns {
     fn import_item_sets(&mut self) -> Result<(), SpannedError> {
-        get_item_sets().map(|bonuses| {
-            self.import_dynamic_bonuses(bonuses.into_iter().map(ItemSet::to_dynamic_bonus));
-        })
+        self.import_dynamic_bonuses(get_item_sets()?.into_iter().map(ItemSet::to_dynamic_bonus));
+        Ok(())
     }
 }
 
