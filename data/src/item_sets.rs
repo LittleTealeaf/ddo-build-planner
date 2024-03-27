@@ -10,16 +10,25 @@ pub fn get_item_sets() -> Result<Vec<ItemSet>, SpannedError> {
 }
 
 /// A trait to implement the `.import_item_sets()` to [`Breakdowns`]
-pub trait ImportItemSets {
+pub trait IncludeItemSets: Sized {
     /// Inserts all item sets as dynamic bonuses
     ///
     /// # Errors
     /// Returns a Parsing error if parsing fails
-    fn import_item_sets(&mut self) -> Result<(), SpannedError>;
+    fn include_item_sets(&mut self) -> Result<(), SpannedError>;
+
+    /// Includes all item sets as dynamic bonuses and returns the object
+    ///
+    /// # Errors
+    /// Returns a Parsing error if parsing fails
+    fn with_item_sets(mut self) -> Result<Self, SpannedError> {
+        self.include_item_sets()?;
+        Ok(self)
+    }
 }
 
-impl ImportItemSets for Breakdowns {
-    fn import_item_sets(&mut self) -> Result<(), SpannedError> {
+impl IncludeItemSets for Breakdowns {
+    fn include_item_sets(&mut self) -> Result<(), SpannedError> {
         self.import_dynamic_bonuses(get_item_sets()?.into_iter().map(ItemSet::to_dynamic_bonus));
         Ok(())
     }
@@ -38,7 +47,14 @@ mod tests {
     fn breakdowns_inserts_bonuses() {
         let mut breakdowns = Breakdowns::new();
         breakdowns
-            .import_item_sets()
+            .include_item_sets()
+            .expect("Expected Item Sets to be imported");
+    }
+
+    #[test]
+    fn with_item_sets_inserts_bonuses() {
+        Breakdowns::new()
+            .with_item_sets()
             .expect("Expected Item Sets to be imported");
     }
 }
