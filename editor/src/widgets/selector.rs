@@ -100,16 +100,6 @@ impl SelectorWidget {
         self.on_cancel = None;
     }
 
-    pub fn without_on_submit(mut self) -> Self {
-        self.clear_on_submit();
-        self
-    }
-
-    pub fn without_on_cancel(mut self) -> Self {
-        self.clear_on_cancel();
-        self
-    }
-
     pub fn select_attribute<'a, A>(&mut self, selected: A)
     where
         A: Into<Option<&'a Attribute>>,
@@ -205,16 +195,20 @@ impl HandleView<App> for SelectorWidget {
         &'a self,
         app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        match &self.selector {
-            Some(Selector::Attribute(selector)) => selector.handle_view(app),
-            Some(Selector::Condition(selector)) => selector.handle_view(app),
-            Some(Selector::Value(selector)) => selector.handle_view(app),
-            None => column!(
-                text("Selector Not Specified"),
-                button(text("Close")).on_press_maybe(self.on_cancel.clone())
-            )
-            .into(),
-        }
+        self.selector.as_ref().map_or_else(
+            || {
+                column!(
+                    text("Error: Selector Not Speciied"),
+                    button(text("Close")).on_press_maybe(self.on_cancel.clone())
+                )
+                .into()
+            },
+            |selector| match selector {
+                Selector::Attribute(sel) => sel.handle_view(app),
+                Selector::Value(sel) => sel.handle_view(app),
+                Selector::Condition(sel) => sel.handle_view(app),
+            },
+        )
     }
 }
 
