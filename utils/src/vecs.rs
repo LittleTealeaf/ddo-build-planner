@@ -5,11 +5,16 @@ pub trait FilterRemove<T> {
     /// Removes all elements that make the current filter true
     ///
     /// Does not maintain order
-    fn remove_filter(&mut self, filter: impl Fn(&T) -> bool) -> Vec<T>;
+    fn remove_filter<F>(&mut self, filter: F) -> Vec<T>
+    where
+        F: Fn(&T) -> bool;
 }
 
 impl<T> FilterRemove<T> for Vec<T> {
-    fn remove_filter(&mut self, filter: impl Fn(&T) -> bool) -> Self {
+    fn remove_filter<F>(&mut self, filter: F) -> Self
+    where
+        F: Fn(&T) -> bool,
+    {
         let mut items = Self::new();
 
         for i in (0..self.len()).rev() {

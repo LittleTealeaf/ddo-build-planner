@@ -10,11 +10,15 @@ use im::OrdMap;
 pub trait MapGetMutOr<K, V> {
     /// Executes and inserts the result of a function if the key is not found within the map.
     /// Otherwise returns the key's value.
-    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V;
+    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
+    where
+        F: FnOnce() -> V;
 
     /// Inserts a default value if the key is not found within the map
     /// Otherwise returns the key's value.
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V;
+    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
+        self.get_mut_or_else(key, || default)
+    }
 }
 
 impl<K, V, S> MapGetMutOr<K, V> for HashMap<K, V, S>
@@ -22,17 +26,12 @@ where
     K: Hash + Eq + PartialEq + Clone,
     S: BuildHasher,
 {
-    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V {
+    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
+    where
+        F: FnOnce() -> V,
+    {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
-        }
-
-        self.get_mut(key).expect("Expected Returned Value")
-    }
-
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), default);
         }
 
         self.get_mut(key).expect("Expected Returned Value")
@@ -45,16 +44,12 @@ where
     V: Clone,
     S: BuildHasher,
 {
-    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V {
+    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
+    where
+        F: FnOnce() -> V,
+    {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
-        }
-        self.get_mut(key).expect("Expected Returned Value")
-    }
-
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), default);
         }
         self.get_mut(key).expect("Expected Returned Value")
     }
@@ -65,16 +60,12 @@ where
     K: Ord + PartialOrd + Clone,
     V: Clone,
 {
-    fn get_mut_or_else(&mut self, key: &K, if_empty: impl Fn() -> V) -> &mut V {
+    fn get_mut_or_else<F>(&mut self, key: &K, if_empty: F) -> &mut V
+    where
+        F: FnOnce() -> V,
+    {
         if !self.contains_key(key) {
             self.insert(key.clone(), if_empty());
-        }
-        self.get_mut(key).expect("Expected Returned Value")
-    }
-
-    fn get_mut_or(&mut self, key: &K, default: V) -> &mut V {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), default);
         }
         self.get_mut(key).expect("Expected Returned Value")
     }
