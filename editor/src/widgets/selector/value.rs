@@ -4,7 +4,11 @@ use builder::{
 };
 use core::fmt::{Display, Formatter, Result};
 use core::str::FromStr;
-use iced::{Application, Command, Element, Renderer};
+use iced::{
+    theme,
+    widget::{button, column, row, text},
+    Application, Command, Element, Length, Renderer,
+};
 use itertools::Itertools;
 use rust_decimal::Decimal;
 use ui::{HandleMessage, HandleView};
@@ -12,8 +16,8 @@ use ui::{HandleMessage, HandleView};
 use crate::App;
 
 use super::{
-    attribute::AttributeSelector, condition::ConditionSelector, SelectorInternalMessage,
-    SelectorMessage, SelectorWidgetMessage,
+    attribute::AttributeSelector, condition::ConditionSelector, IntoSelectorMessage,
+    SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage,
 };
 
 #[derive(Debug, Clone)]
@@ -31,7 +35,7 @@ pub struct ValueSelector {
     attribute: Option<Attribute>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Copy)]
 pub enum ValueType {
     Const,
     Attribute,
@@ -48,6 +52,26 @@ pub enum ValueType {
     Rem,
     If,
     Dice,
+}
+
+impl ValueType {
+    pub const TYPES: [Self; 15] = [
+        Self::Const,
+        Self::Attribute,
+        Self::Min,
+        Self::Max,
+        Self::Floor,
+        Self::Ceil,
+        Self::Round,
+        Self::Abs,
+        Self::Add,
+        Self::Sub,
+        Self::Mul,
+        Self::Div,
+        Self::Rem,
+        Self::If,
+        Self::Dice,
+    ];
 }
 
 impl Display for ValueType {
@@ -237,8 +261,8 @@ pub enum ValueSelectorMessage {
     UpdateDecimalString(String),
 }
 
-impl ValueSelectorMessage {
-    const fn into_widget_message(self, depth: usize) -> SelectorWidgetMessage {
+impl IntoSelectorMessage for ValueSelectorMessage {
+    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage {
         SelectorWidgetMessage::Selector(depth, SelectorMessage::Value(self))
     }
 }
@@ -284,8 +308,10 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
                         self.selector = Some(ValueSubSelector::ValueA(Box::new(Self::new(
                             self.depth + 1,
                             self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(self.depth),
-                            ValueSelectorMessage::CancelSubSelector.into_widget_message(self.depth),
+                            ValueSelectorMessage::SubmitSubSelector
+                                .into_selector_message(self.depth),
+                            ValueSelectorMessage::CancelSubSelector
+                                .into_selector_message(self.depth),
                         ))));
                         Command::none()
                     }
@@ -293,8 +319,10 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
                         self.selector = Some(ValueSubSelector::ValueB(Box::new(Self::new(
                             self.depth + 1,
                             self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(self.depth),
-                            ValueSelectorMessage::CancelSubSelector.into_widget_message(self.depth),
+                            ValueSelectorMessage::SubmitSubSelector
+                                .into_selector_message(self.depth),
+                            ValueSelectorMessage::CancelSubSelector
+                                .into_selector_message(self.depth),
                         ))));
                         Command::none()
                     }
@@ -304,9 +332,9 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
                                 self.depth + 1,
                                 self.condition.as_ref(),
                                 ValueSelectorMessage::SubmitSubSelector
-                                    .into_widget_message(self.depth),
+                                    .into_selector_message(self.depth),
                                 ValueSelectorMessage::CancelSubSelector
-                                    .into_widget_message(self.depth),
+                                    .into_selector_message(self.depth),
                             ),
                         )));
                         Command::none()
@@ -323,9 +351,9 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
                                         .map(|(i, _)| i)
                                 }),
                                 ValueSelectorMessage::SubmitSubSelector
-                                    .into_widget_message(self.depth),
+                                    .into_selector_message(self.depth),
                                 ValueSelectorMessage::CancelSubSelector
-                                    .into_widget_message(self.depth),
+                                    .into_selector_message(self.depth),
                             ),
                         )));
                         Command::none()
@@ -358,7 +386,20 @@ impl HandleView<App> for ValueSelector {
         app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         self.selector.as_ref().map_or_else(
-            || todo!(),
+            || {
+                row!(column(ValueType::TYPES.map(|value| {
+                    button(text(format!("{value}")))
+                        .on_press(ValueSelectorMessage::SetType(value).into_message(self.depth))
+                        .style(if value == self.val {
+                            theme::Button::Primary
+                        } else {
+                            theme::Button::Text
+                        })
+                        .width(Length::Fill)
+                        .into()
+                })))
+                .into()
+            },
             |selector| match selector {
                 ValueSubSelector::Attribute(selector) => selector.handle_view(app),
                 ValueSubSelector::Condition(selector) => selector.handle_view(app),

@@ -265,3 +265,11 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for Selector {
         }
     }
 }
+
+pub trait IntoSelectorMessage: Sized {
+    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage;
+
+    fn into_message(self, depth: usize) -> Message {
+        Message::Selector(self.into_selector_message(depth))
+    }
+}

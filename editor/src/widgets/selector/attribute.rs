@@ -9,7 +9,7 @@ use ui::{HandleMessage, HandleView};
 
 use crate::{App, Message};
 
-use super::{SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage};
+use super::{IntoSelectorMessage, SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage};
 
 #[derive(Debug, Clone)]
 pub struct AttributeSelector {
@@ -77,12 +77,9 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for AttributeSelector {
     }
 }
 
-impl AttributeSelectorMessage {
-    const fn into_message(self, depth: usize) -> Message {
-        Message::Selector(SelectorWidgetMessage::Selector(
-            depth,
-            SelectorMessage::Attribute(self),
-        ))
+impl IntoSelectorMessage for AttributeSelectorMessage {
+    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage {
+        SelectorWidgetMessage::Selector(depth, SelectorMessage::Attribute(self))
     }
 }
 
