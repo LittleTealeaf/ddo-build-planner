@@ -5,15 +5,16 @@ use builder::{
 use core::fmt::{Display, Formatter, Result};
 use core::str::FromStr;
 use iced::{
+    alignment::Vertical,
     theme,
-    widget::{button, column, row, text},
+    widget::{button, column, horizontal_space, row, text, text_input, vertical_space, Column},
     Application, Command, Element, Length, Renderer,
 };
 use itertools::Itertools;
 use rust_decimal::Decimal;
 use ui::{HandleMessage, HandleView};
 
-use crate::App;
+use crate::{App, Message};
 
 use super::{
     attribute::AttributeSelector, condition::ConditionSelector, IntoSelectorMessage,
@@ -72,6 +73,39 @@ impl ValueType {
         Self::If,
         Self::Dice,
     ];
+}
+
+impl ValueType {
+    const fn show_value_a(self) -> bool {
+        !matches!(self, Self::Const | Self::Attribute)
+    }
+
+    const fn show_value_b(self) -> bool {
+        matches!(
+            self,
+            Self::Min
+                | Self::Max
+                | Self::Add
+                | Self::Sub
+                | Self::Mul
+                | Self::Div
+                | Self::Rem
+                | Self::If
+                | Self::Dice
+        )
+    }
+
+    const fn show_attribute(self) -> bool {
+        matches!(self, Self::Attribute)
+    }
+
+    const fn show_condition(self) -> bool {
+        matches!(self, Self::If)
+    }
+
+    const fn show_const(self) -> bool {
+        matches!(self, Self::Const)
+    }
 }
 
 impl Display for ValueType {
@@ -387,17 +421,82 @@ impl HandleView<App> for ValueSelector {
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         self.selector.as_ref().map_or_else(
             || {
-                row!(column(ValueType::TYPES.map(|value| {
-                    button(text(format!("{value}")))
-                        .on_press(ValueSelectorMessage::SetType(value).into_message(self.depth))
-                        .style(if value == self.val {
-                            theme::Button::Primary
-                        } else {
-                            theme::Button::Text
-                        })
-                        .width(Length::Fill)
-                        .into()
-                })))
+                column!(
+                    row!(
+                        column(ValueType::TYPES.map(|value| {
+                            button(text(format!("{value}")).vertical_alignment(Vertical::Center))
+                                .on_press(
+                                    ValueSelectorMessage::SetType(value).into_message(self.depth),
+                                )
+                                .style(if value == self.val {
+                                    theme::Button::Primary
+                                } else {
+                                    theme::Button::Text
+                                })
+                                .into()
+                        })),
+                        Column::new()
+                            .push_maybe(self.val.show_const().then(|| {
+                                text_input("Constant", &self.constant_string).on_input(|s| {
+                                    ValueSelectorMessage::UpdateDecimalString(s)
+                                        .into_message(self.depth)
+                                })
+                            }))
+                            .push_maybe(self.val.show_condition().then(|| {
+                                row!(
+                                    button(text("Condition")).on_press(
+                                        ValueSelectorMessage::EditCondition
+                                            .into_message(self.depth)
+                                    ),
+                                    self.condition
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .push_maybe(self.val.show_value_a().then(|| {
+                                row!(
+                                    button(text("Value A")).on_press(
+                                        ValueSelectorMessage::EditValueA.into_message(self.depth)
+                                    ),
+                                    self.value_a
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .push_maybe(self.val.show_value_b().then(|| {
+                                row!(
+                                    button(text("Value B")).on_press(
+                                        ValueSelectorMessage::EditValueB.into_message(self.depth)
+                                    ),
+                                    self.value_b
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .push_maybe(self.val.show_attribute().then(|| {
+                                row!(
+                                    button(text("Attribute")).on_press(
+                                        ValueSelectorMessage::EditAttribute
+                                            .into_message(self.depth)
+                                    ),
+                                    self.attribute
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .width(Length::Fill)
+                    ),
+                    vertical_space(),
+                    row!(
+                        horizontal_space(),
+                        button(text("Cancel"))
+                            .style(theme::Button::Secondary)
+                            .on_press(Message::Selector(self.on_cancel.clone())),
+                        button(text("Submit"))
+                            .style(theme::Button::Primary)
+                            .on_press(Message::Selector(self.on_submit.clone())),
+                    )
+                )
                 .into()
             },
             |selector| match selector {
