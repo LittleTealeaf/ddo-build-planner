@@ -76,10 +76,10 @@ pub enum Value {
     #[serde(rename = "di", alias = "Dice")]
     Dice {
         /// The number of dice to roll
-        #[serde(rename = "c")]
+        #[serde(rename = "c", alias = "count")]
         count: Box<Value>,
         /// The dice size
-        #[serde(rename = "s")]
+        #[serde(rename = "s", alias = "size")]
         size: Box<Value>,
     },
 }
