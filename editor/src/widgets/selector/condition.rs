@@ -2,9 +2,10 @@ use core::fmt::{Display, Formatter, Result};
 
 use builder::bonus::{Condition, Value};
 use iced::{
+    alignment::{Horizontal, Vertical},
     theme,
-    widget::{button, row, text},
-    Application, Command, Element, Length, Renderer,
+    widget::{button, column, horizontal_space, row, text, vertical_space, Column},
+    Application, Command, Element, Renderer,
 };
 use ui::{HandleMessage, HandleView};
 
@@ -25,10 +26,11 @@ pub struct ConditionSelector {
     condition_b: Option<Condition>,
     value_a: Option<Value>,
     value_b: Option<Value>,
+    /// Do we need this or can we remove this?
     dropdown: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Copy)]
 pub enum ConditionType {
     Not,
     GreaterThan,
@@ -53,6 +55,24 @@ impl ConditionType {
         Self::Or,
         Self::Xor,
     ];
+}
+
+impl ConditionType {
+    const fn show_condition_a(self) -> bool {
+        matches!(self, Self::Not | Self::And | Self::Or | Self::Xor)
+    }
+
+    const fn show_condition_b(self) -> bool {
+        matches!(self, Self::And | Self::Or | Self::Xor)
+    }
+
+    const fn show_value_a(self) -> bool {
+        matches!(self, Self::GreaterThan | Self::LessThan | Self::EqualTo)
+    }
+
+    const fn show_value_b(self) -> bool {
+        matches!(self, Self::GreaterThan | Self::LessThan | Self::EqualTo)
+    }
 }
 
 impl Display for ConditionType {
@@ -224,8 +244,30 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ConditionSelector {
                         }
                         Command::none()
                     }
-                    ConditionSelectorMessage::EditValueA => todo!("Value Selector"),
-                    ConditionSelectorMessage::EditValueB => todo!("Value Selector"),
+                    ConditionSelectorMessage::EditValueA => {
+                        self.selector =
+                            Some(ConditionSubSelector::ValueA(Box::new(ValueSelector::new(
+                                self.depth + 1,
+                                self.value_a.as_ref(),
+                                ConditionSelectorMessage::SubmitSubSelector
+                                    .into_widget_message(self.depth),
+                                ConditionSelectorMessage::CancelSubSelector
+                                    .into_widget_message(self.depth),
+                            ))));
+                        Command::none()
+                    }
+                    ConditionSelectorMessage::EditValueB => {
+                        self.selector =
+                            Some(ConditionSubSelector::ValueB(Box::new(ValueSelector::new(
+                                self.depth + 1,
+                                self.value_b.as_ref(),
+                                ConditionSelectorMessage::SubmitSubSelector
+                                    .into_widget_message(self.depth),
+                                ConditionSelectorMessage::CancelSubSelector
+                                    .into_widget_message(self.depth),
+                            ))));
+                        Command::none()
+                    }
                     ConditionSelectorMessage::EditConditionA => {
                         self.selector =
                             Some(ConditionSubSelector::ConditionA(Box::new(Self::new(
@@ -279,19 +321,82 @@ impl HandleView<App> for ConditionSelector {
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         self.selector.as_ref().map_or_else(
             || {
-                row(ConditionType::TYPES.map(|cond| {
-                    let selected = self.cond == cond;
-                    button(text(format!("{cond}")))
-                        .on_press(ConditionSelectorMessage::SetType(cond).into_message(self.depth))
-                        .style(if selected {
-                            theme::Button::Primary
-                        } else {
-                            theme::Button::Secondary
-                        })
-                        .into()
-                }))
-                .width(Length::Fill)
-                .spacing(10.0)
+                column!(
+                    row!(
+                        column(ConditionType::TYPES.map(|condition| {
+                            button(
+                                text(format!("{condition}"))
+                                    .vertical_alignment(Vertical::Center)
+                                    .horizontal_alignment(Horizontal::Center),
+                            )
+                            .on_press(
+                                ConditionSelectorMessage::SetType(condition)
+                                    .into_message(self.depth),
+                            )
+                            .style(if condition == self.cond {
+                                theme::Button::Primary
+                            } else {
+                                theme::Button::Text
+                            })
+                            .into()
+                        })),
+                        Column::new()
+                            .push_maybe(self.cond.show_value_a().then(|| {
+                                row!(
+                                    button(text("Value A")).on_press(
+                                        ConditionSelectorMessage::EditValueA
+                                            .into_message(self.depth)
+                                    ),
+                                    self.value_a
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .push_maybe(self.cond.show_value_b().then(|| {
+                                row!(
+                                    button(text("Value B")).on_press(
+                                        ConditionSelectorMessage::EditValueB
+                                            .into_message(self.depth)
+                                    ),
+                                    self.value_b
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .push_maybe(self.cond.show_condition_a().then(|| {
+                                row!(
+                                    button(text("Condition A")).on_press(
+                                        ConditionSelectorMessage::EditConditionA
+                                            .into_message(self.depth)
+                                    ),
+                                    self.condition_a
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                            .push_maybe(self.cond.show_condition_b().then(|| {
+                                row!(
+                                    button(text("Condition B")).on_press(
+                                        ConditionSelectorMessage::EditConditionB
+                                            .into_message(self.depth)
+                                    ),
+                                    self.condition_b
+                                        .as_ref()
+                                        .map_or_else(|| text("None Selected"), text)
+                                )
+                            }))
+                    ),
+                    vertical_space(),
+                    row!(
+                        horizontal_space(),
+                        button(text("Cancel"))
+                            .style(theme::Button::Secondary)
+                            .on_press(Message::Selector(self.on_cancel.clone())),
+                        button(text("Submit"))
+                            .style(theme::Button::Primary)
+                            .on_press(Message::Selector(self.on_submit.clone())),
+                    )
+                )
                 .into()
             },
             |selector| match selector {

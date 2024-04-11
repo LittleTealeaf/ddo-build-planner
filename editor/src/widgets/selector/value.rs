@@ -352,7 +352,7 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
                     ValueSelectorMessage::EditValueB => {
                         self.selector = Some(ValueSubSelector::ValueB(Box::new(Self::new(
                             self.depth + 1,
-                            self.value_a.as_ref(),
+                            self.value_b.as_ref(),
                             ValueSelectorMessage::SubmitSubSelector
                                 .into_selector_message(self.depth),
                             ValueSelectorMessage::CancelSubSelector
