@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use core::str::FromStr;
 
 use iced::{Application, Command};
 use itertools::Itertools;
