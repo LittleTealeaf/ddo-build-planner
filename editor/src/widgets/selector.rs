@@ -1,3 +1,5 @@
+use core::fmt::{self, Display};
+
 use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
@@ -34,6 +36,16 @@ pub enum Selector {
     Attribute(AttributeSelector),
     Value(ValueSelector),
     Condition(ConditionSelector),
+}
+
+impl Display for Selector {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Attribute(_) => write!(f, "Attribute"),
+            Self::Value(selector) => write!(f, "Value {selector}"),
+            Self::Condition(selector) => write!(f, "Condition {selector}"),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -203,10 +215,16 @@ impl HandleView<App> for SelectorWidget {
                 )
                 .into()
             },
-            |selector| match selector {
-                Selector::Attribute(sel) => sel.handle_view(app),
-                Selector::Value(sel) => sel.handle_view(app),
-                Selector::Condition(sel) => sel.handle_view(app),
+            |selector| {
+                column!(
+                    text(selector),
+                    match selector {
+                        Selector::Attribute(sel) => sel.handle_view(app),
+                        Selector::Value(sel) => sel.handle_view(app),
+                        Selector::Condition(sel) => sel.handle_view(app),
+                    },
+                )
+                .into()
             },
         )
     }

@@ -91,12 +91,33 @@ impl Display for ConditionType {
     }
 }
 
+impl Display for ConditionSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        if let Some(selector) = &self.selector {
+            write!(f, "{selector}")
+        } else {
+            write!(f, "")
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum ConditionSubSelector {
     ConditionA(Box<ConditionSelector>),
     ConditionB(Box<ConditionSelector>),
     ValueA(Box<ValueSelector>),
     ValueB(Box<ValueSelector>),
+}
+
+impl Display for ConditionSubSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::ConditionA(selector) => write!(f, "> Condition A {selector}"),
+            Self::ConditionB(selector) => write!(f, "> Condition B {selector}"),
+            Self::ValueA(selector) => write!(f, "> Value A {selector}"),
+            Self::ValueB(selector) => write!(f, "> Value B {selector}"),
+        }
+    }
 }
 
 impl ConditionSelector {

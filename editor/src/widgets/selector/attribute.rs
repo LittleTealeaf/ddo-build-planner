@@ -94,7 +94,6 @@ impl HandleView<App> for AttributeSelector {
         let selected = self.selected.unwrap_or(attributes.len());
 
         column!(
-            text("Attribute Selector"),
             text_input("Filter...", &self.filter).on_input(|filter| {
                 AttributeSelectorMessage::Filter(filter).into_message(self.depth)
             }),

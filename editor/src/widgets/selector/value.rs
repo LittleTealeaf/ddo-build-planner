@@ -130,14 +130,6 @@ impl Display for ValueType {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum ValueSubSelector {
-    ValueA(Box<ValueSelector>),
-    ValueB(Box<ValueSelector>),
-    Condition(Box<ConditionSelector>),
-    Attribute(Box<AttributeSelector>),
-}
-
 impl ValueSelector {
     pub fn new<'v, V>(
         depth: usize,
@@ -280,6 +272,35 @@ impl ValueSelector {
             ),
             ValueType::Dice => Value::dice(self.value_a.clone()?, self.value_b.clone()?),
         })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum ValueSubSelector {
+    ValueA(Box<ValueSelector>),
+    ValueB(Box<ValueSelector>),
+    Condition(Box<ConditionSelector>),
+    Attribute(Box<AttributeSelector>),
+}
+
+impl Display for ValueSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        if let Some(selector) = &self.selector {
+            write!(f, "{selector}")
+        } else {
+            write!(f, "")
+        }
+    }
+}
+
+impl Display for ValueSubSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match &self {
+            Self::ValueA(selector) => write!(f, "> Value A {selector}"),
+            Self::ValueB(selector) => write!(f, "> Value B {selector}"),
+            Self::Condition(selector) => write!(f, "> Condition {selector}"),
+            Self::Attribute(_) => write!(f, "> Attribute"),
+        }
     }
 }
 
