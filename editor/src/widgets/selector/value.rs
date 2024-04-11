@@ -21,6 +21,9 @@ use super::{
     SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage,
 };
 
+
+// TODO: Refactor each sub-component into their own module
+
 #[derive(Debug, Clone)]
 pub struct ValueSelector {
     depth: usize,
