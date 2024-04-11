@@ -3,25 +3,15 @@ use builder::{
     bonus::{Condition, ToValue, Value},
 };
 use core::fmt::{Display, Formatter, Result};
-use core::str::FromStr;
-use iced::{
-    alignment::Vertical,
-    theme,
-    widget::{button, column, horizontal_space, row, text, text_input, vertical_space, Column},
-    Application, Command, Element, Length, Renderer,
-};
-use itertools::Itertools;
 use rust_decimal::Decimal;
-use ui::{HandleMessage, HandleView};
 
-use crate::{App, Message};
+use self::types::ValueType;
 
-use super::{
-    attribute::AttributeSelector, condition::ConditionSelector, IntoSelectorMessage,
-    SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage,
-};
+use super::{attribute::AttributeSelector, condition::ConditionSelector, SelectorWidgetMessage};
 
-// TODO: Refactor each sub-component into their own module
+pub mod message;
+pub mod types;
+pub mod ui;
 
 #[derive(Debug, Clone)]
 pub struct ValueSelector {
@@ -36,100 +26,6 @@ pub struct ValueSelector {
     value_b: Option<Value>,
     condition: Option<Condition>,
     attribute: Option<Attribute>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Copy)]
-pub enum ValueType {
-    Const,
-    Attribute,
-    Min,
-    Max,
-    Floor,
-    Ceil,
-    Round,
-    Abs,
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Rem,
-    If,
-    Dice,
-}
-
-impl ValueType {
-    pub const TYPES: [Self; 15] = [
-        Self::Const,
-        Self::Attribute,
-        Self::Min,
-        Self::Max,
-        Self::Floor,
-        Self::Ceil,
-        Self::Round,
-        Self::Abs,
-        Self::Add,
-        Self::Sub,
-        Self::Mul,
-        Self::Div,
-        Self::Rem,
-        Self::If,
-        Self::Dice,
-    ];
-}
-
-impl ValueType {
-    const fn show_value_a(self) -> bool {
-        !matches!(self, Self::Const | Self::Attribute)
-    }
-
-    const fn show_value_b(self) -> bool {
-        matches!(
-            self,
-            Self::Min
-                | Self::Max
-                | Self::Add
-                | Self::Sub
-                | Self::Mul
-                | Self::Div
-                | Self::Rem
-                | Self::If
-                | Self::Dice
-        )
-    }
-
-    const fn show_attribute(self) -> bool {
-        matches!(self, Self::Attribute)
-    }
-
-    const fn show_condition(self) -> bool {
-        matches!(self, Self::If)
-    }
-
-    const fn show_const(self) -> bool {
-        matches!(self, Self::Const)
-    }
-}
-
-impl Display for ValueType {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self {
-            Self::Const => write!(f, "Constant"),
-            Self::Attribute => write!(f, "Attribute"),
-            Self::Min => write!(f, "Min"),
-            Self::Max => write!(f, "Max"),
-            Self::Floor => write!(f, "Floor"),
-            Self::Ceil => write!(f, "Ceil"),
-            Self::Round => write!(f, "Round"),
-            Self::Abs => write!(f, "Absolute"),
-            Self::Add => write!(f, "Add"),
-            Self::Sub => write!(f, "Subtract"),
-            Self::Mul => write!(f, "Multiply"),
-            Self::Rem => write!(f, "Remainter"),
-            Self::If => write!(f, "If"),
-            Self::Dice => write!(f, "Dice"),
-            Self::Div => write!(f, "Divide"),
-        }
-    }
 }
 
 impl ValueSelector {
@@ -277,14 +173,6 @@ impl ValueSelector {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum ValueSubSelector {
-    ValueA(Box<ValueSelector>),
-    ValueB(Box<ValueSelector>),
-    Condition(Box<ConditionSelector>),
-    Attribute(Box<AttributeSelector>),
-}
-
 impl Display for ValueSelector {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if let Some(selector) = &self.selector {
@@ -295,6 +183,14 @@ impl Display for ValueSelector {
     }
 }
 
+#[derive(Debug, Clone)]
+pub enum ValueSubSelector {
+    ValueA(Box<ValueSelector>),
+    ValueB(Box<ValueSelector>),
+    Condition(Box<ConditionSelector>),
+    Attribute(Box<AttributeSelector>),
+}
+
 impl Display for ValueSubSelector {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match &self {
@@ -303,232 +199,5 @@ impl Display for ValueSubSelector {
             Self::Condition(selector) => write!(f, "> Condition {selector}"),
             Self::Attribute(_) => write!(f, "> Attribute"),
         }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum ValueSelectorMessage {
-    SetType(ValueType),
-    SubmitSubSelector,
-    CancelSubSelector,
-    EditValueA,
-    EditValueB,
-    EditCondition,
-    EditAttribute,
-    UpdateDecimalString(String),
-}
-
-impl IntoSelectorMessage for ValueSelectorMessage {
-    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage {
-        SelectorWidgetMessage::Selector(depth, SelectorMessage::Value(self))
-    }
-}
-
-impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
-    fn handle_message(
-        &mut self,
-        message: SelectorInternalMessage<'a>,
-    ) -> Command<<App as Application>::Message> {
-        if message.depth == self.depth {
-            match message.content {
-                SelectorMessage::Value(m) => match m {
-                    ValueSelectorMessage::SetType(val) => {
-                        self.val = val;
-                        Command::none()
-                    }
-                    ValueSelectorMessage::SubmitSubSelector => {
-                        if let Some(selector) = &self.selector {
-                            match selector {
-                                ValueSubSelector::ValueA(selector) => {
-                                    self.value_a = selector.get_value();
-                                }
-                                ValueSubSelector::ValueB(selector) => {
-                                    self.value_b = selector.get_value();
-                                }
-                                ValueSubSelector::Condition(selector) => {
-                                    self.condition = selector.get_condition();
-                                }
-                                ValueSubSelector::Attribute(selector) => {
-                                    self.attribute =
-                                        selector.get_attribute(message.attributes).cloned();
-                                }
-                            }
-                            self.selector = None;
-                        }
-                        Command::none()
-                    }
-                    ValueSelectorMessage::CancelSubSelector => {
-                        self.selector = None;
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditValueA => {
-                        self.selector = Some(ValueSubSelector::ValueA(Box::new(Self::new(
-                            self.depth + 1,
-                            self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector
-                                .into_selector_message(self.depth),
-                            ValueSelectorMessage::CancelSubSelector
-                                .into_selector_message(self.depth),
-                        ))));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditValueB => {
-                        self.selector = Some(ValueSubSelector::ValueB(Box::new(Self::new(
-                            self.depth + 1,
-                            self.value_b.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector
-                                .into_selector_message(self.depth),
-                            ValueSelectorMessage::CancelSubSelector
-                                .into_selector_message(self.depth),
-                        ))));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditCondition => {
-                        self.selector = Some(ValueSubSelector::Condition(Box::new(
-                            ConditionSelector::new(
-                                self.depth + 1,
-                                self.condition.as_ref(),
-                                ValueSelectorMessage::SubmitSubSelector
-                                    .into_selector_message(self.depth),
-                                ValueSelectorMessage::CancelSubSelector
-                                    .into_selector_message(self.depth),
-                            ),
-                        )));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditAttribute => {
-                        self.selector = Some(ValueSubSelector::Attribute(Box::new(
-                            AttributeSelector::new(
-                                self.depth + 1,
-                                self.attribute.as_ref().and_then(|a| {
-                                    message
-                                        .attributes
-                                        .iter()
-                                        .find_position(|b| a.eq(b))
-                                        .map(|(i, _)| i)
-                                }),
-                                ValueSelectorMessage::SubmitSubSelector
-                                    .into_selector_message(self.depth),
-                                ValueSelectorMessage::CancelSubSelector
-                                    .into_selector_message(self.depth),
-                            ),
-                        )));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::UpdateDecimalString(string) => {
-                        self.constant_string = string;
-                        self.constant = Decimal::from_str(&self.constant_string).ok();
-                        Command::none()
-                    }
-                },
-                _ => panic!("Invalid Value Type"),
-            }
-        } else {
-            self.selector
-                .as_mut()
-                .map_or_else(Command::none, |selector| match selector {
-                    ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
-                        selector.handle_message(message)
-                    }
-                    ValueSubSelector::Condition(selector) => selector.handle_message(message),
-                    ValueSubSelector::Attribute(selector) => selector.handle_message(message),
-                })
-        }
-    }
-}
-
-impl HandleView<App> for ValueSelector {
-    fn handle_view<'a>(
-        &'a self,
-        app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        self.selector.as_ref().map_or_else(
-            || {
-                column!(
-                    row!(
-                        column(ValueType::TYPES.map(|value| {
-                            button(text(format!("{value}")).vertical_alignment(Vertical::Center))
-                                .on_press(
-                                    ValueSelectorMessage::SetType(value).into_message(self.depth),
-                                )
-                                .style(if value == self.val {
-                                    theme::Button::Primary
-                                } else {
-                                    theme::Button::Text
-                                })
-                                .into()
-                        })),
-                        Column::new()
-                            .push_maybe(self.val.show_const().then(|| {
-                                text_input("Constant", &self.constant_string).on_input(|s| {
-                                    ValueSelectorMessage::UpdateDecimalString(s)
-                                        .into_message(self.depth)
-                                })
-                            }))
-                            .push_maybe(self.val.show_condition().then(|| {
-                                row!(
-                                    button(text("Condition")).on_press(
-                                        ValueSelectorMessage::EditCondition
-                                            .into_message(self.depth)
-                                    ),
-                                    self.condition
-                                        .as_ref()
-                                        .map_or_else(|| text("None Selected"), text)
-                                )
-                            }))
-                            .push_maybe(self.val.show_value_a().then(|| {
-                                row!(
-                                    button(text("Value A")).on_press(
-                                        ValueSelectorMessage::EditValueA.into_message(self.depth)
-                                    ),
-                                    self.value_a
-                                        .as_ref()
-                                        .map_or_else(|| text("None Selected"), text)
-                                )
-                            }))
-                            .push_maybe(self.val.show_value_b().then(|| {
-                                row!(
-                                    button(text("Value B")).on_press(
-                                        ValueSelectorMessage::EditValueB.into_message(self.depth)
-                                    ),
-                                    self.value_b
-                                        .as_ref()
-                                        .map_or_else(|| text("None Selected"), text)
-                                )
-                            }))
-                            .push_maybe(self.val.show_attribute().then(|| {
-                                row!(
-                                    button(text("Attribute")).on_press(
-                                        ValueSelectorMessage::EditAttribute
-                                            .into_message(self.depth)
-                                    ),
-                                    self.attribute
-                                        .as_ref()
-                                        .map_or_else(|| text("None Selected"), text)
-                                )
-                            }))
-                            .width(Length::Fill)
-                    ),
-                    vertical_space(),
-                    row!(
-                        horizontal_space(),
-                        button(text("Cancel"))
-                            .style(theme::Button::Secondary)
-                            .on_press(Message::Selector(self.on_cancel.clone())),
-                        button(text("Submit"))
-                            .style(theme::Button::Primary)
-                            .on_press(Message::Selector(self.on_submit.clone())),
-                    )
-                )
-                .into()
-            },
-            |selector| match selector {
-                ValueSubSelector::Attribute(selector) => selector.handle_view(app),
-                ValueSubSelector::Condition(selector) => selector.handle_view(app),
-                ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
-                    selector.handle_view(app)
-                }
-            },
-        )
     }
 }

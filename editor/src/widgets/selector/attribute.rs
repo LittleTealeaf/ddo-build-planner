@@ -11,8 +11,6 @@ use crate::{App, Message};
 
 use super::{IntoSelectorMessage, SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage};
 
-// TODO: Refactor each sub-component into their own module
-
 #[derive(Debug, Clone)]
 pub struct AttributeSelector {
     depth: usize,
@@ -50,6 +48,12 @@ pub enum AttributeSelectorMessage {
     Filter(String),
 }
 
+impl IntoSelectorMessage for AttributeSelectorMessage {
+    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage {
+        SelectorWidgetMessage::Selector(depth, SelectorMessage::Attribute(self))
+    }
+}
+
 impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for AttributeSelector {
     fn handle_message(
         &mut self,
@@ -76,12 +80,6 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for AttributeSelector {
         } else {
             Command::none()
         }
-    }
-}
-
-impl IntoSelectorMessage for AttributeSelectorMessage {
-    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage {
-        SelectorWidgetMessage::Selector(depth, SelectorMessage::Attribute(self))
     }
 }
 
