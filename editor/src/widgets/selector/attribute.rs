@@ -11,7 +11,6 @@ use crate::{App, Message};
 
 use super::{IntoSelectorMessage, SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage};
 
-
 // TODO: Refactor each sub-component into their own module
 
 #[derive(Debug, Clone)]
