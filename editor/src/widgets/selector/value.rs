@@ -175,10 +175,11 @@ impl ValueSelector {
 
 impl Display for ValueSelector {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "{} ", self.val)?;
         if let Some(selector) = &self.selector {
             write!(f, "{selector}")
         } else {
-            write!(f, "")
+            Ok(())
         }
     }
 }
