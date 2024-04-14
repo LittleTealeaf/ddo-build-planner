@@ -26,7 +26,7 @@ impl Data {
         chain!(set_bonuses, Attribute::get_static())
     }
 
-    pub fn item_sets(&self) -> Option<&Vec<ItemSet>> {
+    pub const fn item_sets(&self) -> Option<&Vec<ItemSet>> {
         self.item_sets.data.as_ref()
     }
 

@@ -96,11 +96,9 @@ impl Display for ConditionType {
 impl Display for ConditionSelector {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(f, "{}", self.cond)?;
-        if let Some(selector) = &self.selector {
-            write!(f, "{selector}")
-        } else {
-            Ok(())
-        }
+        self.selector
+            .as_ref()
+            .map_or(Ok(()), |selector| write!(f, "{selector}"))
     }
 }
 
