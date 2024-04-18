@@ -204,26 +204,23 @@ impl HandleView<App> for SelectorWidget {
         &'a self,
         app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        self.selector.as_ref().map_or_else(
-            || {
-                column!(
-                    text("Error: Selector Not Speciied"),
-                    button(text("Close")).on_press_maybe(self.on_cancel.clone())
-                )
-                .into()
-            },
-            |selector| {
-                column!(
-                    text(selector),
-                    match selector {
-                        Selector::Attribute(sel) => sel.handle_view(app),
-                        Selector::Value(sel) => sel.handle_view(app),
-                        Selector::Condition(sel) => sel.handle_view(app),
-                    },
-                )
-                .into()
+        let Some(selector) = &self.selector else {
+            return column!(
+                text("Error: Selector not Specified"),
+                button(text("Close")).on_press_maybe(self.on_cancel.clone())
+            )
+            .into();
+        };
+
+        column!(
+            text(selector),
+            match selector {
+                Selector::Attribute(sel) => sel.handle_view(app),
+                Selector::Value(sel) => sel.handle_view(app),
+                Selector::Condition(sel) => sel.handle_view(app),
             },
         )
+        .into()
     }
 }
 
@@ -249,14 +246,12 @@ impl HandleMessage<SelectorWidgetMessage> for App {
             SelectorWidgetMessage::Submit => self
                 .selector
                 .as_ref()
-                .and_then(|widget| widget.on_submit.as_ref())
-                .cloned()
+                .and_then(|widget| widget.on_submit.clone())
                 .map_or_else(Command::none, |message| self.handle_message(message)),
             SelectorWidgetMessage::Cancel => self
                 .selector
                 .as_ref()
-                .and_then(|widget| widget.on_cancel.as_ref())
-                .cloned()
+                .and_then(|widget| widget.on_cancel.clone())
                 .map_or_else(Command::none, |message| self.handle_message(message)),
         }
     }
