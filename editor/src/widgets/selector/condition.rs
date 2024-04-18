@@ -28,8 +28,6 @@ pub struct ConditionSelector {
     condition_b: Option<Condition>,
     value_a: Option<Value>,
     value_b: Option<Value>,
-    /// Do we need this or can we remove this?
-    dropdown: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy)]
@@ -183,7 +181,6 @@ impl ConditionSelector {
             on_submit,
             on_cancel,
             selector: None,
-            dropdown: false,
             value_a,
             value_b,
             condition_a,
@@ -216,7 +213,6 @@ pub enum ConditionSelectorMessage {
     EditValueB,
     EditConditionA,
     EditConditionB,
-    SetDropdown(bool),
 }
 
 impl ConditionSelectorMessage {
@@ -237,13 +233,8 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ConditionSelector {
         if message.depth == self.depth {
             match message.content {
                 SelectorMessage::Condition(m) => match m {
-                    ConditionSelectorMessage::SetDropdown(dropdown) => {
-                        self.dropdown = dropdown;
-                        Command::none()
-                    }
                     ConditionSelectorMessage::SetType(cond) => {
                         self.cond = cond;
-                        self.dropdown = false;
                         Command::none()
                     }
                     ConditionSelectorMessage::SubmitSubSelector => {
