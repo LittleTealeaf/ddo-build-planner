@@ -193,3 +193,39 @@ impl Display for ValueSubSelector {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_value_type() {
+        let tests = [
+            (ValueType::Const, Value::ZERO),
+            (ValueType::Attribute, Attribute::Debug(0).to_value()),
+            (ValueType::Min, Value::ZERO.min(Value::ONE)),
+            (ValueType::Max, Value::ZERO.max(Value::TWO)),
+            (ValueType::Floor, Value::ZERO.floor()),
+            (ValueType::Ceil, Value::ZERO.ceil()),
+            (ValueType::Round, Value::ZERO.round()),
+            (ValueType::Abs, Value::ZERO.abs()),
+            (ValueType::Sub, Value::ONE - Value::TWO),
+            (ValueType::Add, Value::ONE + Value::ONE),
+            (ValueType::Mul, Value::ONE * Value::TWO),
+            (ValueType::Div, Value::ONE / Value::TWO),
+            (ValueType::Rem, Value::ONE % Value::TWO),
+            (ValueType::If, Value::condition(true, 1, 2)),
+            (ValueType::Dice, Value::dice(1, 2)),
+        ];
+
+        for (value_type, value) in tests {
+            let selector = ValueSelector::new(
+                0,
+                &value,
+                SelectorWidgetMessage::Submit,
+                SelectorWidgetMessage::Submit,
+            );
+            assert_eq!(selector.val, value_type);
+        }
+    }
+}

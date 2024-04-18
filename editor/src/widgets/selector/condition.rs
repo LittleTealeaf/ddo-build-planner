@@ -33,72 +33,78 @@ impl Display for ConditionSelector {
 }
 
 impl ConditionSelector {
-    pub fn new(
+    pub fn new<'a, V>(
         depth: usize,
-        value: Option<&Condition>,
+        value: V,
         on_submit: SelectorWidgetMessage,
         on_cancel: SelectorWidgetMessage,
-    ) -> Self {
-        let (cond, value_a, value_b, condition_a, condition_b) = match value {
-            Some(Condition::Not(value)) => {
-                (ConditionType::Not, None, None, Some(*value.clone()), None)
+    ) -> Self
+    where
+        V: Into<Option<&'a Condition>>,
+    {
+        let value = value.into();
+
+        let mut value_a = None;
+        let mut value_b = None;
+        let mut condition_a = None;
+        let mut condition_b = None;
+
+        let cond = match value.unwrap_or(&Condition::TRUE) {
+            Condition::Not(cond) => {
+                condition_a = Some(*cond.clone());
+                ConditionType::Not
             }
-            Some(Condition::GreaterThan(a, b)) => (
-                ConditionType::GreaterThan,
-                Some(a.clone()),
-                Some(b.clone()),
-                None,
-                None,
-            ),
-            Some(Condition::LessThan(a, b)) => (
-                ConditionType::LessThan,
-                Some(a.clone()),
-                Some(b.clone()),
-                None,
-                None,
-            ),
-            Some(Condition::EqualTo(a, b)) => (
-                ConditionType::EqualTo,
-                Some(a.clone()),
-                Some(b.clone()),
-                None,
-                None,
-            ),
-            Some(&Condition::FALSE) => (ConditionType::False, None, None, None, None),
-            Some(Condition::And(a, b)) => (
-                ConditionType::And,
-                None,
-                None,
-                Some(*a.clone()),
-                Some(*b.clone()),
-            ),
-            Some(Condition::Or(a, b)) => (
-                ConditionType::Or,
-                None,
-                None,
-                Some(*a.clone()),
-                Some(*b.clone()),
-            ),
-            Some(Condition::Xor(a, b)) => (
-                ConditionType::Xor,
-                None,
-                None,
-                Some(*a.clone()),
-                Some(*b.clone()),
-            ),
-            _ => (ConditionType::True, None, None, None, None),
+            Condition::GreaterThan(a, b) => {
+                value_a = Some(a.clone());
+                value_b = Some(b.clone());
+                ConditionType::GreaterThan
+            }
+            Condition::LessThan(a, b) => {
+                value_a = Some(a.clone());
+                value_b = Some(b.clone());
+                ConditionType::LessThan
+            }
+            Condition::EqualTo(a, b) => {
+                value_a = Some(a.clone());
+                value_b = Some(b.clone());
+                ConditionType::EqualTo
+            }
+            Condition::Constant(value) => {
+                if *value {
+                    ConditionType::True
+                } else {
+                    ConditionType::False
+                }
+            }
+            Condition::And(a, b) => {
+                condition_a = Some(*a.clone());
+                condition_b = Some(*b.clone());
+                ConditionType::And
+            }
+            Condition::Or(a, b) => {
+                condition_a = Some(*a.clone());
+                condition_b = Some(*b.clone());
+                ConditionType::Or
+            }
+            Condition::Xor(a, b) => {
+                condition_a = Some(*a.clone());
+                condition_b = Some(*b.clone());
+                ConditionType::Xor
+            }
         };
+
+        let selector = None;
 
         Self {
             depth,
+            selector,
             on_submit,
             on_cancel,
-            selector: None,
-            value_a,
-            value_b,
+            cond,
             condition_a,
             condition_b,
-            cond,
+            value_a,
+            value_b,
         }
     }
 
@@ -132,6 +138,40 @@ impl Display for ConditionSubSelector {
             Self::ConditionB(selector) => write!(f, "> Condition B {selector}"),
             Self::ValueA(selector) => write!(f, "> Value A {selector}"),
             Self::ValueB(selector) => write!(f, "> Value B {selector}"),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_condition_type() {
+        let tests = [
+            (ConditionType::Not, !Condition::TRUE),
+            (
+                ConditionType::GreaterThan,
+                Value::ONE.greater_than(Value::TWO),
+            ),
+            (ConditionType::LessThan, Value::ONE.less_than(Value::TWO)),
+            (ConditionType::EqualTo, Value::ONE.equal_to(Value::TWO)),
+            (ConditionType::True, Condition::TRUE),
+            (ConditionType::False, Condition::FALSE),
+            (ConditionType::And, Condition::TRUE & Condition::FALSE),
+            (ConditionType::Or, Condition::TRUE | Condition::FALSE),
+            (ConditionType::Xor, Condition::TRUE ^ Condition::FALSE),
+        ];
+
+        for (cond_type, condition) in tests {
+            let selector = ConditionSelector::new(
+                0,
+                &condition,
+                SelectorWidgetMessage::Submit,
+                SelectorWidgetMessage::Submit,
+            );
+
+            assert_eq!(selector.cond, cond_type);
         }
     }
 }
