@@ -15,7 +15,7 @@ use crate::{App, Message};
 
 use self::{
     attribute::{AttributeSelector, AttributeSelectorMessage},
-    condition::{ConditionSelector, ConditionSelectorMessage},
+    condition::{ConditionSelector, message::ConditionSelectorMessage},
     value::{message::ValueSelectorMessage, ValueSelector},
 };
 
