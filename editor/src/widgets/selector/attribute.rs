@@ -59,26 +59,27 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for AttributeSelector {
         &mut self,
         message: SelectorInternalMessage<'a>,
     ) -> Command<<App as Application>::Message> {
-        if message.depth == self.depth {
-            match message.content {
-                SelectorMessage::Attribute(message) => match message {
-                    AttributeSelectorMessage::Select(selected) => {
-                        self.selected = Some(selected);
-                        Command::none()
-                    }
-                    AttributeSelectorMessage::Clear => {
-                        self.selected = None;
-                        Command::none()
-                    }
-                    AttributeSelectorMessage::Filter(filter) => {
-                        self.filter = filter;
-                        Command::none()
-                    }
-                },
-                _ => Command::none(),
+        if message.depth != self.depth {
+            return Command::none();
+        }
+
+        let SelectorMessage::Attribute(attribute_message) = message.content else {
+            return Command::none();
+        };
+
+        match attribute_message {
+            AttributeSelectorMessage::Select(selected) => {
+                self.selected = Some(selected);
+                Command::none()
             }
-        } else {
-            Command::none()
+            AttributeSelectorMessage::Clear => {
+                self.selected = None;
+                Command::none()
+            }
+            AttributeSelectorMessage::Filter(filter) => {
+                self.filter = filter;
+                Command::none()
+            }
         }
     }
 }
