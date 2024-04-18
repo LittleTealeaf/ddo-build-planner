@@ -137,11 +137,10 @@ impl SelectorWidget {
     }
 
     pub fn get_attribute(&self) -> Option<&'_ Attribute> {
-        if let Some(Selector::Attribute(selector)) = &self.selector {
-            selector.get_attribute(&self.attributes)
-        } else {
-            None
-        }
+        let Some(Selector::Attribute(selector)) = &self.selector else {
+            return None;
+        };
+        selector.get_attribute(&self.attributes)
     }
 
     pub fn select_condition<'a, C>(&mut self, selected: C)
@@ -166,11 +165,10 @@ impl SelectorWidget {
     }
 
     pub fn get_condition(&self) -> Option<Condition> {
-        if let Some(Selector::Condition(selector)) = &self.selector {
-            selector.get_condition()
-        } else {
-            None
-        }
+        let Some(Selector::Condition(selector)) = &self.selector else {
+            return None;
+        };
+        selector.get_condition()
     }
 
     pub fn select_value<'a, V>(&mut self, selected: V)
@@ -194,11 +192,10 @@ impl SelectorWidget {
     }
 
     pub fn get_value(&self) -> Option<Value> {
-        if let Some(Selector::Value(selector)) = &self.selector {
-            selector.get_value()
-        } else {
-            None
-        }
+        let Some(Selector::Value(selector)) = &self.selector else {
+            return None;
+        };
+        selector.get_value()
     }
 }
 

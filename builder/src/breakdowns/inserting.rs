@@ -145,22 +145,24 @@ impl Breakdowns {
                     .flatten()
                     .collect::<Vec<_>>();
 
-                if !bonuses.is_empty() {
-                    self.children.insert(
-                        source.clone(),
-                        bonuses
-                            .iter()
-                            .map(|bonus| bonus.attribute())
-                            .cloned()
-                            .collect(),
-                    );
-                    buffer.insert_bonuses(
-                        bonuses
-                            .into_iter()
-                            .cloned()
-                            .map(|bonus| bonus.to_bonus(source.clone())),
-                    );
+                if bonuses.is_empty() {
+                    continue;
                 }
+
+                self.children.insert(
+                    source.clone(),
+                    bonuses
+                        .iter()
+                        .map(|bonus| bonus.attribute())
+                        .cloned()
+                        .collect(),
+                );
+                buffer.insert_bonuses(
+                    bonuses
+                        .into_iter()
+                        .cloned()
+                        .map(|bonus| bonus.to_bonus(source.clone())),
+                );
             }
         }
     }
@@ -182,9 +184,11 @@ impl Breakdowns {
                 let mut bonuses = Vec::new();
 
                 for child in &children {
-                    if let Some(set) = self.bonuses.get_mut(child) {
-                        bonuses.extend(set.remove_filter(|item| item.source().eq(source)));
-                    }
+                    let Some(set) = self.bonuses.get_mut(child) else {
+                        continue;
+                    };
+
+                    bonuses.extend(set.remove_filter(|item| item.source().eq(source)));
                 }
                 Some(bonuses)
             })
