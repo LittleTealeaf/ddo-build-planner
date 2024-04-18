@@ -11,7 +11,7 @@ use super::{attribute::AttributeSelector, condition::ConditionSelector, Selector
 
 pub mod message;
 pub mod types;
-pub mod ui;
+pub mod view;
 
 #[derive(Debug, Clone)]
 pub struct ValueSelector {

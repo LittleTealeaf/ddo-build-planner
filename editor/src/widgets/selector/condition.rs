@@ -8,7 +8,7 @@ use super::{value::ValueSelector, SelectorWidgetMessage};
 
 pub mod message;
 pub mod types;
-pub mod ui;
+pub mod view;
 
 #[derive(Debug, Clone)]
 pub struct ConditionSelector {
@@ -116,7 +116,6 @@ impl ConditionSelector {
         })
     }
 }
-
 
 #[derive(Debug, Clone)]
 pub enum ConditionSubSelector {

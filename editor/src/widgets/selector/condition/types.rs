@@ -1,5 +1,4 @@
-use core::fmt::{Display, self};
-
+use core::fmt::{self, Display};
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy)]
 pub enum ConditionType {
