@@ -40,98 +40,88 @@ impl ValueSelector {
     {
         let value: Option<&'v Value> = value.into();
 
-        let (val, value_a, value_b, condition, attribute, constant) =
-            match value.unwrap_or(&Value::ZERO) {
-                Value::Const(decimal) => (ValueType::Const, None, None, None, None, Some(*decimal)),
-                Value::Attribute(attribute) => (
-                    ValueType::Attribute,
-                    None,
-                    None,
-                    None,
-                    Some(attribute.clone()),
-                    None,
-                ),
-                Value::Min(a, b) => (
-                    ValueType::Min,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Max(a, b) => (
-                    ValueType::Max,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Floor(val) => (ValueType::Floor, Some(*val.clone()), None, None, None, None),
-                Value::Ceil(val) => (ValueType::Ceil, Some(*val.clone()), None, None, None, None),
-                Value::Round(val) => (ValueType::Round, Some(*val.clone()), None, None, None, None),
-                Value::Abs(val) => (ValueType::Abs, Some(*val.clone()), None, None, None, None),
-                Value::Add(a, b) => (
-                    ValueType::Add,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Sub(a, b) => (
-                    ValueType::Sub,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Mul(a, b) => (
-                    ValueType::Mul,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Div(a, b) => (
-                    ValueType::Div,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Rem(a, b) => (
-                    ValueType::Rem,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::If {
-                    condition,
-                    if_true,
-                    if_false,
-                } => (
-                    ValueType::If,
-                    Some(*if_true.clone()),
-                    Some(*if_false.clone()),
-                    Some(*condition.clone()),
-                    None,
-                    None,
-                ),
-                Value::Dice { count, size } => (
-                    ValueType::Dice,
-                    Some(*count.clone()),
-                    Some(*size.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-            };
+        let mut value_a = None;
+        let mut value_b = None;
+        let mut condition = None;
+        let mut constant = None;
+        let mut attribute = None;
+
+        let val = match value.unwrap_or(&Value::ZERO) {
+            Value::Const(val) => {
+                constant = Some(*val);
+                ValueType::Const
+            }
+            Value::Attribute(attr) => {
+                attribute = Some(attr.clone());
+                ValueType::Attribute
+            }
+            Value::Min(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Min
+            }
+            Value::Max(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Max
+            }
+            Value::Floor(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Floor
+            }
+            Value::Ceil(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Ceil
+            }
+            Value::Round(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Round
+            }
+            Value::Abs(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Abs
+            }
+            Value::Add(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Add
+            }
+            Value::Sub(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Sub
+            }
+            Value::Mul(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Mul
+            }
+            Value::Div(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Div
+            }
+            Value::Rem(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Rem
+            }
+            Value::If {
+                condition: cond,
+                if_true,
+                if_false,
+            } => {
+                condition = Some(*cond.clone());
+                value_a = Some(*if_true.clone());
+                value_b = Some(*if_false.clone());
+                ValueType::If
+            }
+            Value::Dice { count, size } => {
+                value_a = Some(*count.clone());
+                value_b = Some(*size.clone());
+                ValueType::Dice
+            }
+        };
 
         Self {
             val,
