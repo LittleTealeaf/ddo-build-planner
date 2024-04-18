@@ -123,18 +123,21 @@ impl ValueSelector {
             }
         };
 
+        let constant_string = constant.map_or_else(String::new, |d| d.to_string());
+        let selector = None;
+
         Self {
+            depth,
+            selector,
+            on_submit,
+            on_cancel,
             val,
+            constant,
+            constant_string,
             value_a,
             value_b,
             condition,
-            on_submit,
-            on_cancel,
-            constant,
-            constant_string: constant.map_or_else(String::new, |d| d.to_string()),
             attribute,
-            depth,
-            selector: None,
         }
     }
 
