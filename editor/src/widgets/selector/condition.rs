@@ -1,18 +1,14 @@
 use core::fmt::{Display, Formatter, Result};
 
 use builder::bonus::{Condition, Value};
-use iced::{
-    theme,
-    widget::{button, row, text},
-    Application, Command, Element, Length, Renderer,
-};
-use ui::{HandleMessage, HandleView};
 
-use crate::{App, Message};
+use self::types::ConditionType;
 
-use super::{
-    value::ValueSelector, SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage,
-};
+use super::{value::ValueSelector, SelectorWidgetMessage};
+
+pub mod message;
+pub mod types;
+pub mod view;
 
 #[derive(Debug, Clone)]
 pub struct ConditionSelector {
@@ -25,128 +21,90 @@ pub struct ConditionSelector {
     condition_b: Option<Condition>,
     value_a: Option<Value>,
     value_b: Option<Value>,
-    dropdown: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ConditionType {
-    Not,
-    GreaterThan,
-    LessThan,
-    EqualTo,
-    True,
-    False,
-    And,
-    Or,
-    Xor,
-}
-
-impl ConditionType {
-    const TYPES: [Self; 9] = [
-        Self::Not,
-        Self::GreaterThan,
-        Self::LessThan,
-        Self::EqualTo,
-        Self::True,
-        Self::False,
-        Self::And,
-        Self::Or,
-        Self::Xor,
-    ];
-}
-
-impl Display for ConditionType {
+impl Display for ConditionSelector {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self {
-            Self::Not => write!(f, "Not"),
-            Self::GreaterThan => write!(f, "Greater Than"),
-            Self::LessThan => write!(f, "Less Than"),
-            Self::EqualTo => write!(f, "Equal To"),
-            Self::True => write!(f, "True"),
-            Self::False => write!(f, "False"),
-            Self::And => write!(f, "And"),
-            Self::Or => write!(f, "Or"),
-            Self::Xor => write!(f, "Xor"),
-        }
+        write!(f, "{}", self.cond)?;
+        self.selector
+            .as_ref()
+            .map_or(Ok(()), |selector| write!(f, "{selector}"))
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum ConditionSubSelector {
-    ConditionA(Box<ConditionSelector>),
-    ConditionB(Box<ConditionSelector>),
-    ValueA(Box<ValueSelector>),
-    ValueB(Box<ValueSelector>),
-}
-
 impl ConditionSelector {
-    pub fn new(
+    pub fn new<'a, V>(
         depth: usize,
-        value: Option<&Condition>,
+        value: V,
         on_submit: SelectorWidgetMessage,
         on_cancel: SelectorWidgetMessage,
-    ) -> Self {
-        let (cond, value_a, value_b, condition_a, condition_b) = match value {
-            Some(Condition::Not(value)) => {
-                (ConditionType::Not, None, None, Some(*value.clone()), None)
+    ) -> Self
+    where
+        V: Into<Option<&'a Condition>>,
+    {
+        let value = value.into();
+
+        let mut value_a = None;
+        let mut value_b = None;
+        let mut condition_a = None;
+        let mut condition_b = None;
+
+        let cond = match value.unwrap_or(&Condition::TRUE) {
+            Condition::Not(cond) => {
+                condition_a = Some(*cond.clone());
+                ConditionType::Not
             }
-            Some(Condition::GreaterThan(a, b)) => (
-                ConditionType::GreaterThan,
-                Some(a.clone()),
-                Some(b.clone()),
-                None,
-                None,
-            ),
-            Some(Condition::LessThan(a, b)) => (
-                ConditionType::LessThan,
-                Some(a.clone()),
-                Some(b.clone()),
-                None,
-                None,
-            ),
-            Some(Condition::EqualTo(a, b)) => (
-                ConditionType::EqualTo,
-                Some(a.clone()),
-                Some(b.clone()),
-                None,
-                None,
-            ),
-            Some(&Condition::FALSE) => (ConditionType::False, None, None, None, None),
-            Some(Condition::And(a, b)) => (
-                ConditionType::And,
-                None,
-                None,
-                Some(*a.clone()),
-                Some(*b.clone()),
-            ),
-            Some(Condition::Or(a, b)) => (
-                ConditionType::Or,
-                None,
-                None,
-                Some(*a.clone()),
-                Some(*b.clone()),
-            ),
-            Some(Condition::Xor(a, b)) => (
-                ConditionType::Xor,
-                None,
-                None,
-                Some(*a.clone()),
-                Some(*b.clone()),
-            ),
-            _ => (ConditionType::True, None, None, None, None),
+            Condition::GreaterThan(a, b) => {
+                value_a = Some(a.clone());
+                value_b = Some(b.clone());
+                ConditionType::GreaterThan
+            }
+            Condition::LessThan(a, b) => {
+                value_a = Some(a.clone());
+                value_b = Some(b.clone());
+                ConditionType::LessThan
+            }
+            Condition::EqualTo(a, b) => {
+                value_a = Some(a.clone());
+                value_b = Some(b.clone());
+                ConditionType::EqualTo
+            }
+            Condition::Constant(value) => {
+                if *value {
+                    ConditionType::True
+                } else {
+                    ConditionType::False
+                }
+            }
+            Condition::And(a, b) => {
+                condition_a = Some(*a.clone());
+                condition_b = Some(*b.clone());
+                ConditionType::And
+            }
+            Condition::Or(a, b) => {
+                condition_a = Some(*a.clone());
+                condition_b = Some(*b.clone());
+                ConditionType::Or
+            }
+            Condition::Xor(a, b) => {
+                condition_a = Some(*a.clone());
+                condition_b = Some(*b.clone());
+                ConditionType::Xor
+            }
         };
+
+        let selector = None;
 
         Self {
             depth,
+            selector,
             on_submit,
             on_cancel,
-            selector: None,
-            dropdown: false,
-            value_a,
-            value_b,
+            cond,
             condition_a,
             condition_b,
-            cond,
+            value_a,
+            value_b,
         }
     }
 
@@ -166,141 +124,54 @@ impl ConditionSelector {
 }
 
 #[derive(Debug, Clone)]
-pub enum ConditionSelectorMessage {
-    SetType(ConditionType),
-    SubmitSubSelector,
-    CancelSubSelector,
-    EditValueA,
-    EditValueB,
-    EditConditionA,
-    EditConditionB,
-    SetDropdown(bool),
+pub enum ConditionSubSelector {
+    ConditionA(Box<ConditionSelector>),
+    ConditionB(Box<ConditionSelector>),
+    ValueA(Box<ValueSelector>),
+    ValueB(Box<ValueSelector>),
 }
 
-impl ConditionSelectorMessage {
-    const fn into_widget_message(self, depth: usize) -> SelectorWidgetMessage {
-        SelectorWidgetMessage::Selector(depth, SelectorMessage::Condition(self))
-    }
-
-    const fn into_message(self, depth: usize) -> Message {
-        Message::Selector(self.into_widget_message(depth))
-    }
-}
-
-impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ConditionSelector {
-    fn handle_message(
-        &mut self,
-        message: SelectorInternalMessage<'a>,
-    ) -> Command<<App as Application>::Message> {
-        if message.depth == self.depth {
-            match message.content {
-                SelectorMessage::Condition(m) => match m {
-                    ConditionSelectorMessage::SetDropdown(dropdown) => {
-                        self.dropdown = dropdown;
-                        Command::none()
-                    }
-                    ConditionSelectorMessage::SetType(cond) => {
-                        self.cond = cond;
-                        self.dropdown = false;
-                        Command::none()
-                    }
-                    ConditionSelectorMessage::SubmitSubSelector => {
-                        if let Some(selector) = &self.selector {
-                            match selector {
-                                ConditionSubSelector::ConditionA(selector) => {
-                                    self.condition_a = selector.get_condition();
-                                }
-                                ConditionSubSelector::ConditionB(selector) => {
-                                    self.condition_b = selector.get_condition();
-                                }
-                                ConditionSubSelector::ValueA(selector) => {
-                                    self.value_a = selector.get_value();
-                                }
-                                ConditionSubSelector::ValueB(selector) => {
-                                    self.value_b = selector.get_value();
-                                }
-                            }
-                            self.selector = None;
-                        }
-                        Command::none()
-                    }
-                    ConditionSelectorMessage::EditValueA => todo!("Value Selector"),
-                    ConditionSelectorMessage::EditValueB => todo!("Value Selector"),
-                    ConditionSelectorMessage::EditConditionA => {
-                        self.selector =
-                            Some(ConditionSubSelector::ConditionA(Box::new(Self::new(
-                                self.depth + 1,
-                                self.condition_a.as_ref(),
-                                ConditionSelectorMessage::SubmitSubSelector
-                                    .into_widget_message(self.depth),
-                                ConditionSelectorMessage::CancelSubSelector
-                                    .into_widget_message(self.depth),
-                            ))));
-                        Command::none()
-                    }
-                    ConditionSelectorMessage::EditConditionB => {
-                        self.selector =
-                            Some(ConditionSubSelector::ConditionB(Box::new(Self::new(
-                                self.depth + 1,
-                                self.condition_b.as_ref(),
-                                ConditionSelectorMessage::SubmitSubSelector
-                                    .into_widget_message(self.depth),
-                                ConditionSelectorMessage::CancelSubSelector
-                                    .into_widget_message(self.depth),
-                            ))));
-                        Command::none()
-                    }
-                    ConditionSelectorMessage::CancelSubSelector => {
-                        self.selector = None;
-                        Command::none()
-                    }
-                },
-                _ => Command::none(),
-            }
-        } else {
-            self.selector
-                .as_mut()
-                .map_or_else(Command::none, |selector| match selector {
-                    ConditionSubSelector::ConditionA(selector)
-                    | ConditionSubSelector::ConditionB(selector) => {
-                        selector.handle_message(message)
-                    }
-                    ConditionSubSelector::ValueA(selector)
-                    | ConditionSubSelector::ValueB(selector) => selector.handle_message(message),
-                })
+impl Display for ConditionSubSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::ConditionA(selector) => write!(f, "> Condition A {selector}"),
+            Self::ConditionB(selector) => write!(f, "> Condition B {selector}"),
+            Self::ValueA(selector) => write!(f, "> Value A {selector}"),
+            Self::ValueB(selector) => write!(f, "> Value B {selector}"),
         }
     }
 }
 
-impl HandleView<App> for ConditionSelector {
-    fn handle_view<'a>(
-        &'a self,
-        app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        self.selector.as_ref().map_or_else(
-            || {
-                row(ConditionType::TYPES.map(|cond| {
-                    let selected = self.cond == cond;
-                    button(text(format!("{cond}")))
-                        .on_press(ConditionSelectorMessage::SetType(cond).into_message(self.depth))
-                        .style(if selected {
-                            theme::Button::Primary
-                        } else {
-                            theme::Button::Secondary
-                        })
-                        .into()
-                }))
-                .width(Length::Fill)
-                .spacing(10.0)
-                .into()
-            },
-            |selector| match selector {
-                ConditionSubSelector::ConditionA(selector)
-                | ConditionSubSelector::ConditionB(selector) => selector.handle_view(app),
-                ConditionSubSelector::ValueA(selector) | ConditionSubSelector::ValueB(selector) => {
-                    selector.handle_view(app)
-                }
-            },
-        )
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_condition_type() {
+        let tests = [
+            (ConditionType::Not, !Condition::TRUE),
+            (
+                ConditionType::GreaterThan,
+                Value::ONE.greater_than(Value::TWO),
+            ),
+            (ConditionType::LessThan, Value::ONE.less_than(Value::TWO)),
+            (ConditionType::EqualTo, Value::ONE.equal_to(Value::TWO)),
+            (ConditionType::True, Condition::TRUE),
+            (ConditionType::False, Condition::FALSE),
+            (ConditionType::And, Condition::TRUE & Condition::FALSE),
+            (ConditionType::Or, Condition::TRUE | Condition::FALSE),
+            (ConditionType::Xor, Condition::TRUE ^ Condition::FALSE),
+        ];
+
+        for (cond_type, condition) in tests {
+            let selector = ConditionSelector::new(
+                0,
+                &condition,
+                SelectorWidgetMessage::Submit,
+                SelectorWidgetMessage::Submit,
+            );
+
+            assert_eq!(selector.cond, cond_type);
+        }
     }
 }

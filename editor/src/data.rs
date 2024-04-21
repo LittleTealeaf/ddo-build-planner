@@ -14,7 +14,7 @@ pub mod container;
 
 #[derive(Clone, Debug)]
 pub struct Data {
-    pub item_sets: DataContainer<Vec<ItemSet>>,
+    item_sets: DataContainer<Vec<ItemSet>>,
 }
 
 impl Data {
@@ -24,6 +24,14 @@ impl Data {
                 .map(|set| Attribute::ItemSet(set.name().clone()))
         });
         chain!(set_bonuses, Attribute::get_static())
+    }
+
+    pub const fn item_sets(&self) -> Option<&Vec<ItemSet>> {
+        self.item_sets.data.as_ref()
+    }
+
+    pub fn item_sets_mut(&mut self) -> Option<&mut Vec<ItemSet>> {
+        self.item_sets.data.as_mut()
     }
 }
 

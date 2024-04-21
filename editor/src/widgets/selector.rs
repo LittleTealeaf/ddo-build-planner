@@ -1,3 +1,5 @@
+use core::fmt::{self, Display};
+
 use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
@@ -13,8 +15,8 @@ use crate::{App, Message};
 
 use self::{
     attribute::{AttributeSelector, AttributeSelectorMessage},
-    condition::{ConditionSelector, ConditionSelectorMessage},
-    value::{ValueSelector, ValueSelectorMessage},
+    condition::{message::ConditionSelectorMessage, ConditionSelector},
+    value::{message::ValueSelectorMessage, ValueSelector},
 };
 
 mod attribute;
@@ -34,6 +36,16 @@ pub enum Selector {
     Attribute(AttributeSelector),
     Value(ValueSelector),
     Condition(ConditionSelector),
+}
+
+impl Display for Selector {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Attribute(_) => write!(f, "Attribute"),
+            Self::Value(selector) => write!(f, "Value {selector}"),
+            Self::Condition(selector) => write!(f, "Condition {selector}"),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -100,16 +112,6 @@ impl SelectorWidget {
         self.on_cancel = None;
     }
 
-    pub fn without_on_submit(mut self) -> Self {
-        self.clear_on_submit();
-        self
-    }
-
-    pub fn without_on_cancel(mut self) -> Self {
-        self.clear_on_cancel();
-        self
-    }
-
     pub fn select_attribute<'a, A>(&mut self, selected: A)
     where
         A: Into<Option<&'a Attribute>>,
@@ -135,11 +137,10 @@ impl SelectorWidget {
     }
 
     pub fn get_attribute(&self) -> Option<&'_ Attribute> {
-        if let Some(Selector::Attribute(selector)) = &self.selector {
-            selector.get_attribute(&self.attributes)
-        } else {
-            None
-        }
+        let Some(Selector::Attribute(selector)) = &self.selector else {
+            return None;
+        };
+        selector.get_attribute(&self.attributes)
     }
 
     pub fn select_condition<'a, C>(&mut self, selected: C)
@@ -164,11 +165,10 @@ impl SelectorWidget {
     }
 
     pub fn get_condition(&self) -> Option<Condition> {
-        if let Some(Selector::Condition(selector)) = &self.selector {
-            selector.get_condition()
-        } else {
-            None
-        }
+        let Some(Selector::Condition(selector)) = &self.selector else {
+            return None;
+        };
+        selector.get_condition()
     }
 
     pub fn select_value<'a, V>(&mut self, selected: V)
@@ -192,11 +192,10 @@ impl SelectorWidget {
     }
 
     pub fn get_value(&self) -> Option<Value> {
-        if let Some(Selector::Value(selector)) = &self.selector {
-            selector.get_value()
-        } else {
-            None
-        }
+        let Some(Selector::Value(selector)) = &self.selector else {
+            return None;
+        };
+        selector.get_value()
     }
 }
 
@@ -205,16 +204,23 @@ impl HandleView<App> for SelectorWidget {
         &'a self,
         app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        match &self.selector {
-            Some(Selector::Attribute(selector)) => selector.handle_view(app),
-            Some(Selector::Condition(selector)) => selector.handle_view(app),
-            Some(Selector::Value(selector)) => selector.handle_view(app),
-            None => column!(
-                text("Selector Not Specified"),
+        let Some(selector) = &self.selector else {
+            return column!(
+                text("Error: Selector not Specified"),
                 button(text("Close")).on_press_maybe(self.on_cancel.clone())
             )
-            .into(),
-        }
+            .into();
+        };
+
+        column!(
+            text(selector),
+            match selector {
+                Selector::Attribute(sel) => sel.handle_view(app),
+                Selector::Value(sel) => sel.handle_view(app),
+                Selector::Condition(sel) => sel.handle_view(app),
+            },
+        )
+        .into()
     }
 }
 
@@ -240,14 +246,12 @@ impl HandleMessage<SelectorWidgetMessage> for App {
             SelectorWidgetMessage::Submit => self
                 .selector
                 .as_ref()
-                .and_then(|widget| widget.on_submit.as_ref())
-                .cloned()
+                .and_then(|widget| widget.on_submit.clone())
                 .map_or_else(Command::none, |message| self.handle_message(message)),
             SelectorWidgetMessage::Cancel => self
                 .selector
                 .as_ref()
-                .and_then(|widget| widget.on_cancel.as_ref())
-                .cloned()
+                .and_then(|widget| widget.on_cancel.clone())
                 .map_or_else(Command::none, |message| self.handle_message(message)),
         }
     }
@@ -269,5 +273,13 @@ impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for Selector {
             Self::Value(selector) => selector.handle_message(message),
             Self::Condition(selector) => selector.handle_message(message),
         }
+    }
+}
+
+pub trait IntoSelectorMessage: Sized {
+    fn into_selector_message(self, depth: usize) -> SelectorWidgetMessage;
+
+    fn into_message(self, depth: usize) -> Message {
+        Message::Selector(self.into_selector_message(depth))
     }
 }

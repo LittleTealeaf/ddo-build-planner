@@ -63,23 +63,23 @@ pub enum Value {
     #[serde(rename = "i", alias = "If")]
     If {
         /// The condition needed to be checked
-        #[serde(rename = "c")]
+        #[serde(rename = "c", alias = "condition")]
         condition: Box<Condition>,
         /// The value to return if the condition returns true
-        #[serde(rename = "t")]
+        #[serde(rename = "t", alias = "if_true")]
         if_true: Box<Value>,
         /// The value to return if the condition returns false
-        #[serde(rename = "f")]
+        #[serde(rename = "f", alias = "if_false")]
         if_false: Box<Value>,
     },
     /// Represents a die roll. Attributes will be calculated based on the mean roll of the dice
     #[serde(rename = "di", alias = "Dice")]
     Dice {
         /// The number of dice to roll
-        #[serde(rename = "c")]
+        #[serde(rename = "c", alias = "count")]
         count: Box<Value>,
         /// The dice size
-        #[serde(rename = "s")]
+        #[serde(rename = "s", alias = "size")]
         size: Box<Value>,
     },
 }

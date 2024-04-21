@@ -3,18 +3,15 @@ use builder::{
     bonus::{Condition, ToValue, Value},
 };
 use core::fmt::{Display, Formatter, Result};
-use core::str::FromStr;
-use iced::{Application, Command, Element, Renderer};
-use itertools::Itertools;
 use rust_decimal::Decimal;
-use ui::{HandleMessage, HandleView};
 
-use crate::App;
+use self::types::ValueType;
 
-use super::{
-    attribute::AttributeSelector, condition::ConditionSelector, SelectorInternalMessage,
-    SelectorMessage, SelectorWidgetMessage,
-};
+use super::{attribute::AttributeSelector, condition::ConditionSelector, SelectorWidgetMessage};
+
+pub mod message;
+pub mod types;
+pub mod view;
 
 #[derive(Debug, Clone)]
 pub struct ValueSelector {
@@ -31,55 +28,6 @@ pub struct ValueSelector {
     attribute: Option<Attribute>,
 }
 
-#[derive(Debug, Clone)]
-pub enum ValueType {
-    Const,
-    Attribute,
-    Min,
-    Max,
-    Floor,
-    Ceil,
-    Round,
-    Abs,
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Rem,
-    If,
-    Dice,
-}
-
-impl Display for ValueType {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self {
-            Self::Const => write!(f, "Constant"),
-            Self::Attribute => write!(f, "Attribute"),
-            Self::Min => write!(f, "Min"),
-            Self::Max => write!(f, "Max"),
-            Self::Floor => write!(f, "Floor"),
-            Self::Ceil => write!(f, "Ceil"),
-            Self::Round => write!(f, "Round"),
-            Self::Abs => write!(f, "Absolute"),
-            Self::Add => write!(f, "Add"),
-            Self::Sub => write!(f, "Subtract"),
-            Self::Mul => write!(f, "Multiply"),
-            Self::Rem => write!(f, "Remainter"),
-            Self::If => write!(f, "If"),
-            Self::Dice => write!(f, "Dice"),
-            Self::Div => write!(f, "Divide"),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum ValueSubSelector {
-    ValueA(Box<ValueSelector>),
-    ValueB(Box<ValueSelector>),
-    Condition(Box<ConditionSelector>),
-    Attribute(Box<AttributeSelector>),
-}
-
 impl ValueSelector {
     pub fn new<'v, V>(
         depth: usize,
@@ -92,111 +40,104 @@ impl ValueSelector {
     {
         let value: Option<&'v Value> = value.into();
 
-        let (val, value_a, value_b, condition, attribute, constant) =
-            match value.unwrap_or(&Value::ZERO) {
-                Value::Const(decimal) => (ValueType::Const, None, None, None, None, Some(*decimal)),
-                Value::Attribute(attribute) => (
-                    ValueType::Attribute,
-                    None,
-                    None,
-                    None,
-                    Some(attribute.clone()),
-                    None,
-                ),
-                Value::Min(a, b) => (
-                    ValueType::Min,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Max(a, b) => (
-                    ValueType::Max,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Floor(val) => (ValueType::Floor, Some(*val.clone()), None, None, None, None),
-                Value::Ceil(val) => (ValueType::Ceil, Some(*val.clone()), None, None, None, None),
-                Value::Round(val) => (ValueType::Round, Some(*val.clone()), None, None, None, None),
-                Value::Abs(val) => (ValueType::Abs, Some(*val.clone()), None, None, None, None),
-                Value::Add(a, b) => (
-                    ValueType::Add,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Sub(a, b) => (
-                    ValueType::Sub,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Mul(a, b) => (
-                    ValueType::Mul,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Div(a, b) => (
-                    ValueType::Div,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::Rem(a, b) => (
-                    ValueType::Rem,
-                    Some(*a.clone()),
-                    Some(*b.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-                Value::If {
-                    condition,
-                    if_true,
-                    if_false,
-                } => (
-                    ValueType::If,
-                    Some(*if_true.clone()),
-                    Some(*if_false.clone()),
-                    Some(*condition.clone()),
-                    None,
-                    None,
-                ),
-                Value::Dice { count, size } => (
-                    ValueType::Dice,
-                    Some(*count.clone()),
-                    Some(*size.clone()),
-                    None,
-                    None,
-                    None,
-                ),
-            };
+        let mut value_a = None;
+        let mut value_b = None;
+        let mut condition = None;
+        let mut constant = None;
+        let mut attribute = None;
+
+        let val = match value.unwrap_or(&Value::ZERO) {
+            Value::Const(val) => {
+                constant = Some(*val);
+                ValueType::Const
+            }
+            Value::Attribute(attr) => {
+                attribute = Some(attr.clone());
+                ValueType::Attribute
+            }
+            Value::Min(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Min
+            }
+            Value::Max(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Max
+            }
+            Value::Floor(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Floor
+            }
+            Value::Ceil(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Ceil
+            }
+            Value::Round(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Round
+            }
+            Value::Abs(val) => {
+                value_a = Some(*val.clone());
+                ValueType::Abs
+            }
+            Value::Add(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Add
+            }
+            Value::Sub(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Sub
+            }
+            Value::Mul(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Mul
+            }
+            Value::Div(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Div
+            }
+            Value::Rem(a, b) => {
+                value_a = Some(*a.clone());
+                value_b = Some(*b.clone());
+                ValueType::Rem
+            }
+            Value::If {
+                condition: cond,
+                if_true,
+                if_false,
+            } => {
+                condition = Some(*cond.clone());
+                value_a = Some(*if_true.clone());
+                value_b = Some(*if_false.clone());
+                ValueType::If
+            }
+            Value::Dice { count, size } => {
+                value_a = Some(*count.clone());
+                value_b = Some(*size.clone());
+                ValueType::Dice
+            }
+        };
+
+        let constant_string = constant.map_or_else(String::new, |d| d.to_string());
+        let selector = None;
 
         Self {
+            depth,
+            selector,
+            on_submit,
+            on_cancel,
             val,
+            constant,
+            constant_string,
             value_a,
             value_b,
             condition,
-            on_submit,
-            on_cancel,
-            constant,
-            constant_string: constant.map_or_else(String::new, |d| d.to_string()),
             attribute,
-            depth,
-            selector: None,
         }
     }
 
@@ -225,147 +166,66 @@ impl ValueSelector {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum ValueSelectorMessage {
-    SetType(ValueType),
-    SubmitSubSelector,
-    CancelSubSelector,
-    EditValueA,
-    EditValueB,
-    EditCondition,
-    EditAttribute,
-    UpdateDecimalString(String),
-}
-
-impl ValueSelectorMessage {
-    const fn into_widget_message(self, depth: usize) -> SelectorWidgetMessage {
-        SelectorWidgetMessage::Selector(depth, SelectorMessage::Value(self))
+impl Display for ValueSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "{} ", self.val)?;
+        self.selector
+            .as_ref()
+            .map_or(Ok(()), |selector| write!(f, "{selector}"))
     }
 }
 
-impl<'a> HandleMessage<SelectorInternalMessage<'a>, App> for ValueSelector {
-    fn handle_message(
-        &mut self,
-        message: SelectorInternalMessage<'a>,
-    ) -> Command<<App as Application>::Message> {
-        if message.depth == self.depth {
-            match message.content {
-                SelectorMessage::Value(m) => match m {
-                    ValueSelectorMessage::SetType(val) => {
-                        self.val = val;
-                        Command::none()
-                    }
-                    ValueSelectorMessage::SubmitSubSelector => {
-                        if let Some(selector) = &self.selector {
-                            match selector {
-                                ValueSubSelector::ValueA(selector) => {
-                                    self.value_a = selector.get_value();
-                                }
-                                ValueSubSelector::ValueB(selector) => {
-                                    self.value_b = selector.get_value();
-                                }
-                                ValueSubSelector::Condition(selector) => {
-                                    self.condition = selector.get_condition();
-                                }
-                                ValueSubSelector::Attribute(selector) => {
-                                    self.attribute =
-                                        selector.get_attribute(message.attributes).cloned();
-                                }
-                            }
-                            self.selector = None;
-                        }
-                        Command::none()
-                    }
-                    ValueSelectorMessage::CancelSubSelector => {
-                        self.selector = None;
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditValueA => {
-                        self.selector = Some(ValueSubSelector::ValueA(Box::new(Self::new(
-                            self.depth + 1,
-                            self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(self.depth),
-                            ValueSelectorMessage::CancelSubSelector.into_widget_message(self.depth),
-                        ))));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditValueB => {
-                        self.selector = Some(ValueSubSelector::ValueB(Box::new(Self::new(
-                            self.depth + 1,
-                            self.value_a.as_ref(),
-                            ValueSelectorMessage::SubmitSubSelector.into_widget_message(self.depth),
-                            ValueSelectorMessage::CancelSubSelector.into_widget_message(self.depth),
-                        ))));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditCondition => {
-                        self.selector = Some(ValueSubSelector::Condition(Box::new(
-                            ConditionSelector::new(
-                                self.depth + 1,
-                                self.condition.as_ref(),
-                                ValueSelectorMessage::SubmitSubSelector
-                                    .into_widget_message(self.depth),
-                                ValueSelectorMessage::CancelSubSelector
-                                    .into_widget_message(self.depth),
-                            ),
-                        )));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::EditAttribute => {
-                        self.selector = Some(ValueSubSelector::Attribute(Box::new(
-                            AttributeSelector::new(
-                                self.depth + 1,
-                                self.attribute.as_ref().and_then(|a| {
-                                    message
-                                        .attributes
-                                        .iter()
-                                        .find_position(|b| a.eq(b))
-                                        .map(|(i, _)| i)
-                                }),
-                                ValueSelectorMessage::SubmitSubSelector
-                                    .into_widget_message(self.depth),
-                                ValueSelectorMessage::CancelSubSelector
-                                    .into_widget_message(self.depth),
-                            ),
-                        )));
-                        Command::none()
-                    }
-                    ValueSelectorMessage::UpdateDecimalString(string) => {
-                        self.constant_string = string;
-                        self.constant = Decimal::from_str(&self.constant_string).ok();
-                        Command::none()
-                    }
-                },
-                _ => panic!("Invalid Value Type"),
-            }
-        } else {
-            self.selector
-                .as_mut()
-                .map_or_else(Command::none, |selector| match selector {
-                    ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
-                        selector.handle_message(message)
-                    }
-                    ValueSubSelector::Condition(selector) => selector.handle_message(message),
-                    ValueSubSelector::Attribute(selector) => selector.handle_message(message),
-                })
+#[derive(Debug, Clone)]
+pub enum ValueSubSelector {
+    ValueA(Box<ValueSelector>),
+    ValueB(Box<ValueSelector>),
+    Condition(Box<ConditionSelector>),
+    Attribute(Box<AttributeSelector>),
+}
+
+impl Display for ValueSubSelector {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match &self {
+            Self::ValueA(selector) => write!(f, "> Value A {selector}"),
+            Self::ValueB(selector) => write!(f, "> Value B {selector}"),
+            Self::Condition(selector) => write!(f, "> Condition {selector}"),
+            Self::Attribute(_) => write!(f, "> Attribute"),
         }
     }
 }
 
-impl HandleView<App> for ValueSelector {
-    fn handle_view<'a>(
-        &'a self,
-        app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        self.selector.as_ref().map_or_else(
-            || todo!(),
-            |selector| match selector {
-                ValueSubSelector::Attribute(selector) => selector.handle_view(app),
-                ValueSubSelector::Condition(selector) => selector.handle_view(app),
-                ValueSubSelector::ValueA(selector) | ValueSubSelector::ValueB(selector) => {
-                    selector.handle_view(app)
-                }
-            },
-        )
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn correct_value_type() {
+        let tests = [
+            (ValueType::Const, Value::ZERO),
+            (ValueType::Attribute, Attribute::Debug(0).to_value()),
+            (ValueType::Min, Value::ZERO.min(Value::ONE)),
+            (ValueType::Max, Value::ZERO.max(Value::TWO)),
+            (ValueType::Floor, Value::ZERO.floor()),
+            (ValueType::Ceil, Value::ZERO.ceil()),
+            (ValueType::Round, Value::ZERO.round()),
+            (ValueType::Abs, Value::ZERO.abs()),
+            (ValueType::Sub, Value::ONE - Value::TWO),
+            (ValueType::Add, Value::ONE + Value::ONE),
+            (ValueType::Mul, Value::ONE * Value::TWO),
+            (ValueType::Div, Value::ONE / Value::TWO),
+            (ValueType::Rem, Value::ONE % Value::TWO),
+            (ValueType::If, Value::condition(true, 1, 2)),
+            (ValueType::Dice, Value::dice(1, 2)),
+        ];
+
+        for (value_type, value) in tests {
+            let selector = ValueSelector::new(
+                0,
+                &value,
+                SelectorWidgetMessage::Submit,
+                SelectorWidgetMessage::Submit,
+            );
+            assert_eq!(selector.val, value_type);
+        }
     }
 }
