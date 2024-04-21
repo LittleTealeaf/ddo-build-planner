@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, iter::once};
 
 use crate::{attribute::Attribute, bonus::BonusTemplate};
 
@@ -18,7 +18,7 @@ impl Breakdowns {
     where
         I: IntoIterator<Item = BonusTemplate>,
     {
-        self.import_dynamic_bonuses([(attribute, bonuses)]);
+        self.import_dynamic_bonuses(once((attribute, bonuses)));
     }
 
     /// Adds dynamic bonuses to the breakdowns. This is useful for attributes that need to be
