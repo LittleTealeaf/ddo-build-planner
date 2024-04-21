@@ -5,7 +5,7 @@ use ron::error::SpannedError;
 ///
 /// # Errors
 /// Parse Errors (This inicates that there is a parsing error in the data.)
-pub fn get_item_sets() -> Result<Vec<ItemSet>, SpannedError> {
+pub fn load_item_sets() -> Result<Vec<ItemSet>, SpannedError> {
     include_data!("item_sets")
 }
 
@@ -29,7 +29,7 @@ pub trait IncludeItemSets: Sized {
 
 impl IncludeItemSets for Breakdowns {
     fn include_item_sets(&mut self) -> Result<(), SpannedError> {
-        self.import_dynamic_bonuses(get_item_sets()?.into_iter().map(ItemSet::to_dynamic_bonus));
+        self.import_dynamic_bonuses(load_item_sets()?.into_iter().map(ItemSet::to_dynamic_bonus));
         Ok(())
     }
 }
@@ -40,7 +40,7 @@ mod tests {
 
     #[test]
     fn item_sets_parses() {
-        get_item_sets().expect("Expected Item Sets to Parse");
+        load_item_sets().expect("Expected Item Sets to Parse");
     }
 
     #[test]
