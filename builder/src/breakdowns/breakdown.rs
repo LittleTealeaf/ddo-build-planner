@@ -78,11 +78,13 @@ impl Breakdowns {
         &'a mut self,
         attribute: &Attribute,
     ) -> Option<AttributeBreakdown<'a>> {
+        let value = self.calculate_attribute(attribute)?;
+
         let mut breakdown = AttributeBreakdown {
             applied: Vec::new(),
             overwritten: Vec::new(),
             disabled: Vec::new(),
-            value: self.calculate_attribute(attribute)?,
+            value,
         };
 
         let mut applied: HashMap<BonusType, BonusEntry<'_>> = HashMap::new();
@@ -93,36 +95,38 @@ impl Breakdowns {
                 other => self
                     .value_cache
                     .get(other)
-                    .unwrap_or_else(|| panic!("Expected Value to be Cached: {other}")),
+                    .unwrap_or_else(|| panic!("Expected Value to be Cached: {value}")),
             };
 
-            if bonus.condition().map_or(true, |condition| match condition {
+            let condition = bonus.condition().map_or(true, |condition| match condition {
                 Condition::Constant(value) => *value,
                 condition => *self
                     .condition_cache
                     .get(condition)
-                    .unwrap_or_else(|| panic!("Expected Condition to be Cached: {condition}")),
-            }) {
+                    .unwrap_or_else(|| panic!("Expected Condiion to be Cached: {condition}")),
+            });
+
+            let entry = BonusEntry { bonus, value };
+
+            if condition {
                 match bonus.bonus_type() {
                     BonusType::Stacking => breakdown.applied.push(BonusEntry { bonus, value }),
                     bonus_type => {
                         if let Some(existing) = applied.remove(bonus_type) {
-                            let bonus = BonusEntry { bonus, value };
-
-                            let (larger, smaller) = if existing.value > value {
-                                (existing, bonus)
+                            if existing.value >= value {
+                                applied.insert(*bonus_type, existing);
+                                breakdown.overwritten.push(entry);
                             } else {
-                                (bonus, existing)
-                            };
-                            applied.insert(*bonus_type, larger);
-                            breakdown.overwritten.push(smaller);
+                                applied.insert(*bonus_type, entry);
+                                breakdown.overwritten.push(existing);
+                            }
                         } else {
-                            applied.insert(*bonus_type, BonusEntry { bonus, value });
+                            applied.insert(*bonus_type, entry);
                         }
                     }
                 }
             } else {
-                breakdown.disabled.push(BonusEntry { bonus, value });
+                breakdown.disabled.push(entry);
             }
         }
 
