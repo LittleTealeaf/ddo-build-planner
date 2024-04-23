@@ -18,7 +18,14 @@ impl<T> FilterRemove<T> for Vec<T> {
         let mut items = Self::new();
 
         for i in (0..self.len()).rev() {
-            if filter(&self[i]) {
+            let filtered = {
+                let Some(item) = self.get(i) else {
+                    continue;
+                };
+                filter(item)
+            };
+
+            if filtered {
                 items.push(self.swap_remove(i));
             }
         }
