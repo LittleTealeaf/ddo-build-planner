@@ -104,7 +104,7 @@ impl GetBonuses for RacialFeat {
             Self::GnomishProficiencies => {
                 vec![
                     BonusTemplate::new(Skill::Haggle, BonusType::Stacking, 2, None),
-                    BonusTemplate::new(Skill::UseMagicalDevice, BonusType::Stacking, 22, None),
+                    BonusTemplate::new(Skill::UseMagicalDevice, BonusType::Stacking, 2, None),
                 ]
             }
             Self::ImmunityToSleep => {
