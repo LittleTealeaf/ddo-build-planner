@@ -17,7 +17,7 @@ pub enum Immunity {
     Sleep,
     /// Immunity to Fear
     Fear,
-    /// Immuntiy to most forms of knockdown
+    /// Immunity to most forms of knockdown
     Knockdown,
 }
 

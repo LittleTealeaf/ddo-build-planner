@@ -1,4 +1,4 @@
-//! Playable Alignbments
+//! Playable Alignments
 use core::fmt;
 
 use fmt::Display;

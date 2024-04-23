@@ -88,7 +88,7 @@ impl SavingThrow {
 
     /// Gets the parent saving throw.
     ///
-    /// For example, The [`Illusion`] saving throw is a subsidary of [`Will`], thus [`Will`] is the
+    /// For example, The [`Illusion`] saving throw is a subsidiary of [`Will`], thus [`Will`] is the
     /// parent saving throw.
     ///
     /// Saving Throws that do not have parents, such as primary saving throws ([`Fortitude`],

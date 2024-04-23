@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// Dinosuar Bone Crafting from the Isle of Dread expansion
+/// Dinosaur Bone Crafting from the Isle of Dread expansion
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, Hash)]
 pub enum DinoBoneSlot {
     /// Scale Slot (Armor)
@@ -23,6 +23,6 @@ pub enum DinoBoneSlot {
     AccessoryClaw,
     /// Horn Slot (Accessory)
     AccessoryHorn,
-    /// Item Sets 
+    /// Item Sets
     ItemSet,
 }

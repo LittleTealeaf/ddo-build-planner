@@ -13,7 +13,7 @@ use super::{ToToggle, Toggle};
 pub enum AttackingTarget {
     /// The enemy is tripped
     Tripped,
-    /// The enemy is a certain monster tyype
+    /// The enemy is a certain monster type
     MonsterType(MonsterType),
     /// The enemy is a certain alignment
     Alignment(Alignment),

@@ -1,6 +1,6 @@
 //! Utilities for working with Vectors
 
-/// Provides a function to remove elements based on a perdicate
+/// Provides a function to remove elements based on a predicate
 pub trait FilterRemove<T> {
     /// Removes all elements that make the current filter true
     ///

@@ -1,6 +1,5 @@
 use crate::types::item_type::WeaponType;
 
-
 /// Proficiency Class for weapons
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum WeaponProficiencyClass {
@@ -8,7 +7,7 @@ pub enum WeaponProficiencyClass {
     Simple,
     /// Martial Weapons
     Martial,
-    /// Exotic WEapons
+    /// Exotic Weapons
     Exotic,
 }
 

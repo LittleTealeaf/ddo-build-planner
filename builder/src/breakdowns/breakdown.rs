@@ -100,7 +100,7 @@ impl Breakdowns {
                 condition => *self
                     .condition_cache
                     .get(condition)
-                    .unwrap_or_else(|| panic!("Expected Condiion to be Cached: {condition}")),
+                    .unwrap_or_else(|| panic!("Expected Condition to be Cached: {condition}")),
             });
 
             let entry = BonusEntry { bonus, value };

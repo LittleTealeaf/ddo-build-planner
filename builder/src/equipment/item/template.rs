@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::{crafting_slot::CraftingSlot, gear_slot::GearSlot};
 
 /// A template for creating [`Item`] instances. This is stored in the data crate to include in the
-/// bianry
+/// binary
 ///
 /// [`Item`]: super::Item
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]

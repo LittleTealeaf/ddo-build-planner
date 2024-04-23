@@ -9,7 +9,7 @@ use crate::{
 use super::{Breakdowns, DiceStrategy};
 
 impl Breakdowns {
-    /// Calculates and retuns the final value for a given [`Attribute`].
+    /// Calculates and retuurns the final value for a given [`Attribute`].
     pub fn get_attribute<A>(&mut self, attribute: A) -> Decimal
     where
         A: Into<Attribute>,

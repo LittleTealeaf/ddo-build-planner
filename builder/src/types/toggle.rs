@@ -21,7 +21,7 @@ use super::{
     toggle_group::ToggleGroup,
 };
 
-/// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
+/// Toggles are interactive elements that the user is able to interact with to modify the "current state" of the character.
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
     /// Is the character blocking

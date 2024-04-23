@@ -245,9 +245,9 @@ impl Value {
         Self::Abs(Box::new(self))
     }
 
-    /// Returns the reciprocol
+    /// Returns the reciprocal
     ///
-    /// The reciprocol of value `x` is equivilant to `1 / x`
+    /// The reciprocal of value `x` is equivalent to `1 / x`
     #[must_use]
     pub fn recip(self) -> Self {
         Self::ONE / self

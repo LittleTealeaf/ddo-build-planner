@@ -5,7 +5,7 @@ use utils::public_modules;
 
 public_modules!(augment, dino_bone);
 
-/// Describes the slot avaliable for the item
+/// Describes the slot available for the item
 #[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone)]
 pub enum CraftingSlot {
     /// Augment Slots

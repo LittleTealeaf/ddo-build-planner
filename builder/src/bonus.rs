@@ -235,7 +235,7 @@ impl Bonus {
         self.condition.as_ref()
     }
 
-    /// Clones all of the bonuse's values, replacing the attribute.
+    /// Clones all the bonuses values, replacing the attribute.
     ///
     /// Returns a new [`Bonus`] instance.
     ///

@@ -1,4 +1,4 @@
-//! Additinoal generic implementations for ``HashMaps`` to simplify code
+//! Additional generic implementations for ``HashMaps`` to simplify code
 
 use core::hash::{BuildHasher, Hash};
 use std::collections::HashMap;

@@ -40,7 +40,7 @@ pub enum DamageType {
     Negative,
     /// Poison Damage
     Poison,
-    /// Repair Damage/Heaing
+    /// Repair Damage/Healing
     Repair,
     /// Rust Damage
     Rust,
