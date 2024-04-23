@@ -9,7 +9,11 @@ use rust_decimal::Decimal;
 
 /// Pushes a list of bonuses into a breakdown object and expects [`Attribute::Debug(0)`] to have
 /// the specified value
-fn expect_value(bonuses: impl IntoIterator<Item = Bonus>, expected: impl Into<Decimal>) {
+fn expect_value<B, E>(bonuses: B, expected: E)
+where
+    B: IntoIterator<Item = Bonus>,
+    E: Into<Decimal>,
+{
     let mut breakdowns = Breakdowns::new();
     breakdowns.insert_bonuses(bonuses);
     let value = breakdowns.get_attribute(Attribute::Debug(0));
