@@ -40,7 +40,7 @@ impl Data {
 impl Default for Data {
     fn default() -> Self {
         fn base() -> PathBuf {
-            Path::new(".").join("data").join("data")
+            [".", "data", "data"].iter().collect()
         }
 
         Self {
