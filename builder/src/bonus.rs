@@ -39,8 +39,6 @@ pub struct Bonus {
     bonus_type: BonusType,
     #[serde(rename = "v", alias = "val", alias = "value")]
     value: Value,
-    #[serde(rename = "s", alias = "src", alias = "source")]
-    source: BonusSource,
     #[serde(
         rename = "c",
         alias = "cond",
@@ -48,6 +46,8 @@ pub struct Bonus {
         skip_serializing_if = "Option::is_none"
     )]
     condition: Option<Condition>,
+    #[serde(rename = "s", alias = "src", alias = "source")]
+    source: BonusSource,
 }
 
 /// Constructors
@@ -82,8 +82,8 @@ impl Bonus {
             attribute: attribute.into(),
             bonus_type: bonus_type.into(),
             value: value.into(),
-            source: source.into(),
             condition: condition.into(),
+            source: source.into(),
         }
     }
 
