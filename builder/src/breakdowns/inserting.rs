@@ -100,15 +100,15 @@ impl Breakdowns {
     }
 }
 
-fn filter_attr_deps<K, V>(attribute: &Attribute) -> impl Fn(&K, &mut V) -> bool + '_
-where
-    K: AttributeDependencies,
-{
-    |key, _| key.has_attr_dependency(attribute)
-}
-
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
+        fn filter_cache<K, V>(attribute: &Attribute) -> impl Fn(&K, &mut V) -> bool + '_
+        where
+            K: AttributeDependencies,
+        {
+            |key, _| key.has_attr_dependency(attribute)
+        }
+
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .value_cache
@@ -123,8 +123,8 @@ impl Breakdowns {
                 continue;
             }
 
-            self.value_cache.retain(filter_attr_deps(&attribute));
-            self.condition_cache.retain(filter_attr_deps(&attribute));
+            self.value_cache.retain(filter_cache(&attribute));
+            self.condition_cache.retain(filter_cache(&attribute));
 
             let source = BonusSource::Attribute(attribute.clone());
 
@@ -160,6 +160,7 @@ impl Breakdowns {
                     .cloned()
                     .collect(),
             );
+
             buffer.insert_bonuses(
                 bonuses
                     .into_iter()
@@ -170,8 +171,8 @@ impl Breakdowns {
     }
 
     fn get_dependants<'a>(&'a self, attribute: &'a Attribute) -> impl Iterator<Item = &Bonus> + '_ {
-        self.get_bonuses()
-            .filter(|bonus| bonus.has_attr_dependency(attribute))
+        let filter = |bonus: &&Bonus| bonus.has_attr_dependency(attribute);
+        self.get_bonuses().filter(filter)
     }
 
     fn remove_bonuses_by_source<'a, I>(&'a mut self, sources: I) -> impl Iterator<Item = Bonus> + 'a
@@ -190,7 +191,9 @@ impl Breakdowns {
                         continue;
                     };
 
-                    bonuses.extend(set.filter_remove(|item| item.source().eq(source)));
+                    let filter = |item: &Bonus| item.source().eq(source);
+                    let items = set.filter_remove(filter);
+                    bonuses.extend(items);
                 }
                 Some(bonuses)
             })
