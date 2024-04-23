@@ -30,7 +30,10 @@ impl Race {
         )
     }
 
-    fn bonus_feat(self, feat: impl Into<Feat>) -> Bonus {
+    fn bonus_feat<F>(self, feat: F) -> Bonus
+    where
+        F: Into<Feat>,
+    {
         Bonus::new(feat.into(), BonusType::Stacking, 1, self, None)
     }
 }

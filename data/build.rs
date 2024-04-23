@@ -21,7 +21,10 @@ fn main() -> Result<(), self::errors::Error> {
     Ok(())
 }
 
-fn write_artifact(name: &str, item: impl Serialize) -> Result<(), Error> {
+fn write_artifact<S>(name: &str, item: S) -> Result<(), Error>
+where
+    S: Serialize,
+{
     let path = Path::new(&env::var("OUT_DIR")?).join(name);
 
     let mut file = File::create(path)?;

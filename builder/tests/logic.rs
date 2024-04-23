@@ -470,9 +470,11 @@ mod sheltering {
     mod reduction {
         use super::*;
 
-        fn resistance_scale(
-            inputs: impl IntoIterator<Item = impl Into<Decimal> + Copy>,
-        ) -> impl Iterator<Item = (Decimal, Decimal)> {
+        fn resistance_scale<I, D>(inputs: I) -> impl Iterator<Item = (Decimal, Decimal)>
+        where
+            I: IntoIterator<Item = D>,
+            D: Into<Decimal> + Copy,
+        {
             inputs.into_iter().map(|input| {
                 (
                     input.into(),
