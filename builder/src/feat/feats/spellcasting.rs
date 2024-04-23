@@ -5,7 +5,7 @@ use fmt::Display;
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{public_modules, enums::StaticOptions};
+use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
