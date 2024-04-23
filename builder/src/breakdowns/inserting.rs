@@ -190,7 +190,7 @@ impl Breakdowns {
                         continue;
                     };
 
-                    bonuses.extend(set.remove_filter(|item| item.source().eq(source)));
+                    bonuses.extend(set.filter_remove(|item| item.source().eq(source)));
                 }
                 Some(bonuses)
             })

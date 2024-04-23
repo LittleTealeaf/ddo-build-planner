@@ -1,7 +1,7 @@
 use core::{cmp::Reverse, iter::once};
 use std::collections::{BinaryHeap, HashSet};
 
-use utils::from_into::FromInto;
+use utils::{from_into::FromInto, vecs::FilterRemove};
 
 use crate::{
     attribute::Attribute,
@@ -65,17 +65,9 @@ impl Buffer {
 
     pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {
         while let Some(Reverse(attribute)) = self.attributes.pop() {
-            let mut bonuses = Vec::new();
-
-            let mut i = 0;
-
-            while i < self.bonuses.len() {
-                if self.bonuses[i].attribute().eq(&attribute) {
-                    bonuses.push(self.bonuses.swap_remove(i));
-                } else {
-                    i += 1;
-                }
-            }
+            let bonuses = self
+                .bonuses
+                .filter_remove(|bonus| bonus.attribute().eq(&attribute));
 
             let forced = self.forced.remove(&attribute);
 

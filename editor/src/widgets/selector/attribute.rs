@@ -37,7 +37,7 @@ impl AttributeSelector {
     }
 
     pub fn get_attribute<'a>(&self, attributes: &'a [Attribute]) -> Option<&'a Attribute> {
-        self.selected.map(|index| &attributes[index])
+        self.selected.and_then(|index| attributes.get(index))
     }
 }
 

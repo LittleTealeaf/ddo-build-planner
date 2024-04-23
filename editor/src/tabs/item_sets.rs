@@ -6,7 +6,7 @@ use iced::{
     widget::{button, column, scrollable, text, text_input, Column, Row},
     Application, Command, Element, Renderer,
 };
-use ui::{font::NERD_FONT, HandleMessage, HandleView};
+use ui::{font::nf_icon, HandleMessage, HandleView};
 
 use crate::{App, Message};
 
@@ -71,7 +71,7 @@ impl HandleView<App> for TabSetBonuses {
                         text_input("Search...", &self.filter)
                             .on_input(|filter| TabSetBonusesMessage::Filter(filter).into()),
                     )
-                    .push(button(text("󰝒").font(NERD_FONT)).on_press_maybe(
+                    .push(button(nf_icon("󰝒")).on_press_maybe(
                         (!&self.filter.is_empty()).then_some(TabSetBonusesMessage::NewSet.into()),
                     )),
             )

@@ -5,13 +5,13 @@ pub trait FilterRemove<T> {
     /// Removes all elements that make the current filter true
     ///
     /// Does not maintain order
-    fn remove_filter<F>(&mut self, filter: F) -> Vec<T>
+    fn filter_remove<F>(&mut self, filter: F) -> Vec<T>
     where
         F: Fn(&T) -> bool;
 }
 
 impl<T> FilterRemove<T> for Vec<T> {
-    fn remove_filter<F>(&mut self, filter: F) -> Self
+    fn filter_remove<F>(&mut self, filter: F) -> Self
     where
         F: Fn(&T) -> bool,
     {
@@ -40,7 +40,7 @@ mod tests {
     #[test]
     fn remove_odd_items() {
         let mut items = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
-        let evens = items.remove_filter(|n| n % 2 == 0);
+        let evens = items.filter_remove(|n| n % 2 == 0);
 
         assert!(items.into_iter().all(|n| n % 2 == 1));
         assert!(evens.into_iter().all(|n| n % 2 == 0));
