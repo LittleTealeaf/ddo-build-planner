@@ -12,9 +12,11 @@ use self::container::{DataContainer, DataContainerMessage};
 
 pub mod container;
 
+type ItemSetsType = Vec<ItemSet>;
+
 #[derive(Clone, Debug)]
 pub struct Data {
-    item_sets: DataContainer<Vec<ItemSet>>,
+    item_sets: DataContainer<ItemSetsType>,
 }
 
 impl Data {
@@ -26,11 +28,11 @@ impl Data {
         chain!(set_bonuses, Attribute::get_static())
     }
 
-    pub const fn item_sets(&self) -> Option<&Vec<ItemSet>> {
+    pub const fn item_sets(&self) -> Option<&ItemSetsType> {
         self.item_sets.data.as_ref()
     }
 
-    pub fn item_sets_mut(&mut self) -> Option<&mut Vec<ItemSet>> {
+    pub fn item_sets_mut(&mut self) -> Option<&mut ItemSetsType> {
         self.item_sets.data.as_mut()
     }
 }
@@ -49,7 +51,7 @@ impl Default for Data {
 
 #[derive(Clone, Debug)]
 pub enum DataMessage {
-    SetBonuses(DataContainerMessage<Vec<ItemSet>>),
+    SetBonuses(DataContainerMessage<ItemSetsType>),
 }
 
 impl HandleMessage<DataMessage> for App {
@@ -66,8 +68,8 @@ impl HandleMessage<DataMessage, App> for Data {
     }
 }
 
-impl From<DataContainerMessage<Vec<ItemSet>>> for DataMessage {
-    fn from(value: DataContainerMessage<Vec<ItemSet>>) -> Self {
+impl From<DataContainerMessage<ItemSetsType>> for DataMessage {
+    fn from(value: DataContainerMessage<ItemSetsType>) -> Self {
         Self::SetBonuses(value)
     }
 }
