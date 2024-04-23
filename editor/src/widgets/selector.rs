@@ -1,12 +1,14 @@
 use core::fmt::{self, Display};
 
-use iced::{widget::column, Application, Command, Element, Renderer};
-use itertools::Itertools;
-
 use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
 };
+use iced::{
+    widget::{button, column, text},
+    Application, Command, Element, Renderer,
+};
+use itertools::Itertools;
 use ui::{HandleMessage, HandleView};
 
 use crate::{App, Message};

@@ -10,7 +10,6 @@ use utils::enums::StaticOptions;
 use crate::{
     attribute::{Attribute, ToAttribute},
     bonus::{Bonus, CloneBonus},
-    implement_clone_bonus_array,
 };
 
 /// The different abilities that a character has
@@ -75,7 +74,15 @@ impl ToAttribute for Ability {
     }
 }
 
-implement_clone_bonus_array!(Ability, All, ABILITIES);
+impl CloneBonus for Ability {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::ABILITIES
+                .map(|ability| bonus.clone_into_attribute(ability))
+                .to_vec()
+        })
+    }
+}
 
 impl StaticOptions for Ability {
     fn get_static() -> impl Iterator<Item = Self> {

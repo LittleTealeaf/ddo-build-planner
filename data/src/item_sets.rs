@@ -4,7 +4,7 @@ use ron::error::SpannedError;
 /// Returns a list of item sets pulled from the data source
 ///
 /// # Errors
-/// Parse Errors (This indicates that there is a parsing error in the data.)
+/// Parse Errors (This inicates that there is a parsing error in the data.)
 pub fn load_item_sets() -> Result<Vec<ItemSet>, SpannedError> {
     include_data!("item_sets")
 }

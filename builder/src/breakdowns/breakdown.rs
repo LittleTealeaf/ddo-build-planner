@@ -74,7 +74,10 @@ impl Breakdowns {
     /// # Panics
     /// Panics will not happen unless the values in the caches are removed during execution of this
     /// function
-    pub fn get_breakdowns(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+    pub fn get_breakdowns<'a>(
+        &'a mut self,
+        attribute: &Attribute,
+    ) -> Option<AttributeBreakdown<'a>> {
         let value = self.calculate_attribute(attribute)?;
 
         let mut breakdown = AttributeBreakdown {

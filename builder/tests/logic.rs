@@ -1,5 +1,3 @@
-use rust_decimal::Decimal;
-
 // Tests that revolve around testing properly implemented logic
 // This does not test the actual content of the game, but rather the universal logic things.
 // Basically, testing logic that should apply to basically all characters
@@ -12,15 +10,19 @@ use builder::{
     types::{
         ability::Ability,
         armor_class::ArmorClass,
+        damage_type::DamageType,
         flag::Flag,
         flag::OffHandType,
         item_type::{ArmorType, ShieldType, WeaponType},
         race::Race,
+        saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        spell_power::SpellPower,
         toggle::Toggle,
     },
 };
+use rust_decimal::Decimal;
 
 mod ability {
     use super::*;
@@ -88,6 +90,8 @@ mod ability {
 }
 
 mod saving_throw {
+    use super::*;
+
     mod ability {
         use super::*;
 
@@ -235,6 +239,8 @@ mod skills {
 }
 
 mod spells {
+    use super::*;
+
     macro_rules! universal_to {
         ($attribute: ident, $name: ident, $damage: ident) => {
             #[test]
@@ -309,6 +315,8 @@ mod spells {
     }
 
     mod spell_power {
+        use super::*;
+
         mod skill {
             use super::*;
 
@@ -385,6 +393,8 @@ mod spells {
     }
 
     mod critical_chance {
+        use super::*;
+
         mod universal {
             use super::*;
 
@@ -418,6 +428,8 @@ mod spells {
         }
     }
     mod critical_damage {
+        use super::*;
+
         mod universal {
             use super::*;
 
@@ -913,6 +925,7 @@ mod armor_check_penalty {
 }
 
 mod toggles {
+
     use super::*;
 
     #[test]

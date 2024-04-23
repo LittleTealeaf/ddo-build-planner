@@ -110,7 +110,7 @@ impl ConditionSelector {
 
     pub fn get_condition(&self) -> Option<Condition> {
         Some(match self.cond {
-            ConditionType::Not => !self.condition_a.clone()?,
+            ConditionType::Not => !(self.condition_a.clone()?),
             ConditionType::GreaterThan => self.value_a.clone()?.greater_than(self.value_b.clone()?),
             ConditionType::LessThan => self.value_a.clone()?.less_than(self.value_b.clone()?),
             ConditionType::EqualTo => self.value_a.clone()?.equal_to(self.value_b.clone()?),

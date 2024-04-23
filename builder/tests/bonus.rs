@@ -729,7 +729,7 @@ mod depth {
     use super::*;
 
     fn value_depth(depth: usize) -> Value {
-        assert_ne!(depth, 0, "Depth cannot be 0");
+        assert!(depth != 0, "Depth cannot be 0");
         let mut value = 0.to_value();
 
         for _ in 1..depth {
@@ -746,7 +746,7 @@ mod depth {
     }
 
     fn condition_depth(depth: usize) -> Condition {
-        assert_ne!(depth, 0, "Depth cannot be 0");
+        assert!(depth != 0, "Depth cannot be 0");
         let mut condition = Condition::from(true);
 
         for _ in 1..depth {

@@ -390,9 +390,9 @@ mod sources {
             ),
         ]);
         breakdowns.remove_source(BonusSource::Debug(0));
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(0)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(1)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(2)), 1.into());
+        assert!(breakdowns.get_attribute(Attribute::Debug(0)) == 0.into());
+        assert!(breakdowns.get_attribute(Attribute::Debug(1)) == 0.into());
+        assert!(breakdowns.get_attribute(Attribute::Debug(2)) == 1.into());
     }
 
     #[test]
@@ -422,9 +422,9 @@ mod sources {
             ),
         ]);
         breakdowns.remove_sources([BonusSource::Debug(0), BonusSource::Debug(1)]);
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(0)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(1)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(2)), 1.into());
+        assert!(breakdowns.get_attribute(Attribute::Debug(0)) == 0.into());
+        assert!(breakdowns.get_attribute(Attribute::Debug(1)) == 0.into());
+        assert!(breakdowns.get_attribute(Attribute::Debug(2)) == 1.into());
     }
 }
 

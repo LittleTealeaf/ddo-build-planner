@@ -1,10 +1,17 @@
-use iced::{widget::column, Application, Element, Renderer};
-
+use iced::{
+    alignment::{Horizontal, Vertical},
+    theme,
+    widget::{button, column, horizontal_space, row, text, vertical_space, Column},
+    Application, Element, Renderer,
+};
 use ui::HandleView;
 
-use crate::App;
+use crate::{widgets::selector::IntoSelectorMessage, App, Message};
 
-use super::{ConditionSelector, ConditionSubSelector};
+use super::{
+    message::ConditionSelectorMessage, types::ConditionType, ConditionSelector,
+    ConditionSubSelector,
+};
 
 impl HandleView<App> for ConditionSelector {
     fn handle_view<'a>(

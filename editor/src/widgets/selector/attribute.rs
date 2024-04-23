@@ -1,9 +1,13 @@
-use iced::{widget::column, Application, Command, Element, Renderer};
-
 use builder::attribute::Attribute;
+use fuzzy_filter::matches;
+use iced::{
+    theme,
+    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
+    Application, Command, Element, Length, Renderer,
+};
 use ui::{HandleMessage, HandleView};
 
-use crate::App;
+use crate::{App, Message};
 
 use super::{IntoSelectorMessage, SelectorInternalMessage, SelectorMessage, SelectorWidgetMessage};
 

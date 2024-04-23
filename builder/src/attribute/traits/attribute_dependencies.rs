@@ -2,9 +2,9 @@ use std::collections::HashSet;
 
 use crate::attribute::Attribute;
 
-/// Indicates that this type can have some attribute dependencies
+/// Indicates that this type can have some attribute dependnecies
 pub trait AttributeDependencies {
-    /// Checks if a given attribute is a dependencies of this object
+    /// Checks if a given attribute is a dependdency of this object
     fn has_attr_dependency(&self, attribute: &Attribute) -> bool;
 
     /// Collects dependencies into an `OrdSet`

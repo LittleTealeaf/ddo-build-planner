@@ -10,7 +10,6 @@ use utils::enums::StaticOptions;
 use crate::{
     attribute::{Attribute, ToAttribute},
     bonus::{Bonus, CloneBonus},
-    implement_clone_bonus_array,
 };
 
 /// Types of Healing Amplification
@@ -52,7 +51,15 @@ impl ToAttribute for HealingAmplification {
     }
 }
 
-implement_clone_bonus_array!(HealingAmplification, All, ALL);
+impl CloneBonus for HealingAmplification {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        matches!(self, Self::All).then(|| {
+            Self::ALL
+                .map(|amp| bonus.clone_into_attribute(amp))
+                .to_vec()
+        })
+    }
+}
 
 impl StaticOptions for HealingAmplification {
     fn get_static() -> impl Iterator<Item = Self> {
