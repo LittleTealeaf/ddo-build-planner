@@ -436,7 +436,7 @@ mod stacking {
         expect_value(
             [
                 Bonus::new(DebugValue(0), DebugValue(0), 1, None, DebugValue(0)),
-                Bonus::new(DebugValue(0), DebugValue(0), 2,None, DebugValue(0)),
+                Bonus::new(DebugValue(0), DebugValue(0), 2, None, DebugValue(0)),
             ],
             2,
         );
