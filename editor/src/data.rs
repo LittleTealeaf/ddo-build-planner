@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use builder::{attribute::Attribute, equipment::set_bonus::ItemSet};
 use iced::{Application, Command};
@@ -16,24 +16,22 @@ type ItemSetsType = Vec<ItemSet>;
 
 #[derive(Clone, Debug)]
 pub struct Data {
-    item_sets: DataContainer<ItemSetsType>,
+    pub item_sets: DataContainer<ItemSetsType>,
 }
 
 impl Data {
     pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.item_sets.data.iter().flat_map(|sets| {
-            sets.iter()
-                .map(|set| Attribute::ItemSet(set.name().clone()))
-        });
+        let item_sets = self.item_sets.get();
+
+        let set_bonuses = item_sets
+            .map(|sets| {
+                sets.iter()
+                    .map(|set| Attribute::ItemSet(set.name().clone()))
+            })
+            .into_iter()
+            .flatten();
+
         chain!(set_bonuses, Attribute::get_static())
-    }
-
-    pub const fn item_sets(&self) -> Option<&ItemSetsType> {
-        self.item_sets.data.as_ref()
-    }
-
-    pub fn item_sets_mut(&mut self) -> Option<&mut ItemSetsType> {
-        self.item_sets.data.as_mut()
     }
 }
 

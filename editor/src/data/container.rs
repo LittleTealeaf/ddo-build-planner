@@ -13,18 +13,18 @@ use utils::ron::pretty_config::compact_pretty_config;
 
 use crate::{App, Message};
 
-use super::DataMessage;
-
 #[derive(Debug, Clone)]
 pub struct DataContainer<T>
 where
     T: Debug + Clone,
 {
-    pub data: Option<T>,
-    pub modified: bool,
-    pub saving: bool,
+    data: Option<T>,
+    modified: bool,
+    saving: bool,
     path: PathBuf,
 }
+
+use super::DataMessage;
 
 impl<T> DataContainer<T>
 where
@@ -37,6 +37,24 @@ where
             saving: false,
             path,
         }
+    }
+
+    pub const fn get(&self) -> Option<&T> {
+        self.data.as_ref()
+    }
+
+    pub fn get_mut(&mut self) -> Option<&mut T> {
+        self.modified = true;
+        self.data.as_mut()
+    }
+
+    #[must_use]
+    pub const fn modified(&self) -> bool {
+        self.modified
+    }
+
+    pub const fn saving(&self) -> bool {
+        self.saving
     }
 }
 
