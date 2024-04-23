@@ -1,10 +1,8 @@
-use iced::{
-    widget::{button, column, text},
-    Application, Element,
-};
+use iced::{widget::column, Application, Element};
+
 use ui::HandleView;
 
-use crate::{App, Message};
+use crate::App;
 
 #[allow(clippy::empty_structs_with_brackets)]
 #[derive(Debug, Clone, Default)]

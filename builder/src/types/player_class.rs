@@ -156,29 +156,6 @@ impl ToAttribute for PlayerClass {
 
 impl StaticOptions for PlayerClass {
     fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Alchemist,
-            Self::Artificer,
-            Self::Barbarian,
-            Self::Fighter,
-            Self::Monk,
-            Self::Rogue,
-            Self::Sorcerer,
-            Self::Wizard,
-            Self::FavoredSoul,
-            Self::Bard,
-            Self::Stormsinger,
-            Self::Cleric,
-            Self::DarkApostate,
-            Self::Druid,
-            Self::BlightCaster,
-            Self::Paladin,
-            Self::SacredFist,
-            Self::Ranger,
-            Self::DarkHunter,
-            Self::Warlock,
-            Self::AcolyteOfTheSkin,
-        ]
-        .into_iter()
+        Self::CLASSES.into_iter()
     }
 }
