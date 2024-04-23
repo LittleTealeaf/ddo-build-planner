@@ -60,7 +60,7 @@ impl Bonus {
     /// use builder::{bonus::{BonusType, Bonus, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(1),
-    /// Attribute::Dummy, None);
+    /// None, Attribute::Dummy);
     /// ```
     /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
     #[must_use]
@@ -68,15 +68,15 @@ impl Bonus {
         attribute: A,
         bonus_type: T,
         value: V,
-        source: S,
         condition: C,
+        source: S,
     ) -> Self
     where
         A: Into<Attribute>,
         T: Into<BonusType>,
         V: Into<Value>,
-        S: Into<BonusSource>,
         C: Into<Option<Condition>>,
+        S: Into<BonusSource>,
     {
         Self {
             attribute: attribute.into(),
@@ -108,45 +108,45 @@ impl Bonus {
     where
         S: Into<BonusSource>,
     {
-        Self::new(Attribute::Dummy, BonusType::Stacking, 0, source, None)
+        Self::new(Attribute::Dummy, BonusType::Stacking, 0, None, source)
     }
 
     /// Returns a bonus that gives the character some [`Flag`].
     #[must_use]
-    pub fn flag<F, S, C>(flag: F, source: S, condition: C) -> Self
+    pub fn flag<F, S, C>(flag: F, condition: C, source: S) -> Self
     where
         F: Into<Flag>,
-        S: Into<BonusSource>,
         C: Into<Option<Condition>>,
+        S: Into<BonusSource>,
     {
-        Self::new(flag.into(), BonusType::Stacking, 1, source, condition)
+        Self::new(flag.into(), BonusType::Stacking, 1, condition, source)
     }
 
     /// Returns a bonus that gives the character some [`Feat`]
     #[must_use]
-    pub fn feat<F, S, C>(feat: F, source: S, condition: C) -> Self
+    pub fn feat<F, S, C>(feat: F, condition: C, source: S) -> Self
     where
         F: Into<Feat>,
-        S: Into<BonusSource>,
         C: Into<Option<Condition>>,
+        S: Into<BonusSource>,
     {
-        Self::new(feat.into(), BonusType::Stacking, 1, source, condition)
+        Self::new(feat.into(), BonusType::Stacking, 1, condition, source)
     }
 
     /// Provides the use of a toggle
     #[must_use]
-    pub fn toggle<T, S, C>(toggle: T, source: S, condition: C) -> Self
+    pub fn toggle<T, S, C>(toggle: T, condition: C, source: S) -> Self
     where
         T: Into<Toggle>,
-        S: Into<BonusSource>,
         C: Into<Option<Condition>>,
+        S: Into<BonusSource>,
     {
         Self::new(
             Toggle::from_into(toggle).to_flag(),
             BonusType::Stacking,
             1,
-            source,
             condition,
+            source,
         )
     }
 }
@@ -160,7 +160,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
-    /// BonusSource::Base, None);
+    /// None, BonusSource::Base);
     /// assert_eq!(bonus.attribute(), &Attribute::Dummy);
     /// ```
     #[must_use]
@@ -175,7 +175,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
-    /// BonusSource::Base, None);
+    /// None, BonusSource::Base);
     /// assert_eq!(bonus.bonus_type(), &BonusType::Enhancement);
     /// ```
     #[must_use]
@@ -190,7 +190,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
-    /// BonusSource::Base, None);
+    /// None, BonusSource::Base);
     /// assert_eq!(bonus.value(), &Value::from(10));
     /// ```
     #[must_use]
@@ -205,7 +205,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
-    /// BonusSource::Base, None);
+    /// None, BonusSource::Base);
     /// assert_eq!(bonus.source(), &BonusSource::Base);
     /// ```
     #[must_use]
@@ -224,8 +224,8 @@ impl Bonus {
     ///     Attribute::Dummy,
     ///     BonusType::Quality,
     ///     Value::from(10),
+    ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::from(0))),
     ///     BonusSource::Base,
-    ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::from(0)))
     /// );
     /// assert!(matches!(bonus.condition(), Some(_)));
     ///
@@ -245,7 +245,7 @@ impl Bonus {
     /// attribute::{Attribute}, types::ability::Ability};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, Value::from(10),
-    /// BonusSource::Base, None);
+    /// None, BonusSource::Base);
     ///
     /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
     /// assert_eq!(new_bonus.attribute(), &Attribute::Ability(Ability::All));
@@ -263,8 +263,8 @@ impl Bonus {
             attribute,
             self.bonus_type,
             self.value.clone(),
-            self.source.clone(),
             self.condition.clone(),
+            self.source.clone(),
         )
     }
 }
@@ -334,8 +334,8 @@ mod tests {
             Attribute::Ability(Ability::Strength),
             BonusType::Profane,
             Value::Const(10.into()),
-            BonusSource::Debug(3),
             None,
+            BonusSource::Debug(3),
         );
 
         let serialized = ron::to_string(&bonus).unwrap();

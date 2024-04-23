@@ -88,8 +88,8 @@ impl BonusTemplate {
             self.attribute,
             self.bonus_type,
             self.value,
-            source,
             self.condition,
+            source,
         )
     }
 

@@ -183,7 +183,7 @@ mod tests {
     async fn save_and_load_file() {
         let dir = tempdir().unwrap();
         let file_path = dir.path().join("serialized-file");
-        let data = Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0), None);
+        let data = Bonus::new(DebugValue(0), DebugValue(0), 1, None, DebugValue(0));
 
         assert!(!file_path.exists());
 

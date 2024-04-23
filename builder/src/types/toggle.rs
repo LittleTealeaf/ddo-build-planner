@@ -48,9 +48,9 @@ impl Toggle {
         Bonus::new(
             self.to_attribute(),
             BonusType::Stacking,
-            i32::from(enable),
-            self.get_toggle_source(),
+            u8::from(enable),
             None,
+            self.get_toggle_source(),
         )
     }
 }

@@ -80,8 +80,8 @@ impl CloneBonus for WeaponAttribute {
                     stat,
                     *bonus.bonus_type(),
                     bonus.value().clone(),
-                    bonus.source().clone(),
                     bonus.condition().cloned(),
+                    bonus.source().clone(),
                 )
             })
             .to_vec()
