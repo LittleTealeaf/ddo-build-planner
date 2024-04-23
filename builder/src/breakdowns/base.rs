@@ -44,6 +44,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
 
+/// Provides +8 bonus to all ability scores, and sets the ability modifier based on the ability score
 fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
     Ability::ABILITIES
         .into_iter()
@@ -63,6 +64,11 @@ fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
         )))
 }
 
+/// Provides ability score bonuses to [`Reflex`], [`Fortitude`], and [`Will`]
+///
+/// [`Reflex`]: SavingThrow::Reflex
+/// [`Fortitude`]: SavingThrow::Fortitude
+/// [`Will`]: SavingThrow::Will
 fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Ability::Dexterity, SavingThrow::Reflex),
@@ -80,6 +86,11 @@ fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
     })
 }
 
+/// Forwards the total from a [`PRIMARY`] Saving Throw to [`SECONDARY`] Saving Throws based on [`get_parent()`]
+///
+/// [`PRIMARY`]: SavingThrow::PRIMARY
+/// [`SECONDARY`]: SavingThrow::SECONDARY
+/// [`get_parent()`]: SavingThrow::get_parent
 fn secondary_saves() -> impl Iterator<Item = BonusTemplate> {
     SavingThrow::SECONDARY.into_iter().filter_map(|skill| {
         Some(BonusTemplate::new(
@@ -91,6 +102,11 @@ fn secondary_saves() -> impl Iterator<Item = BonusTemplate> {
     })
 }
 
+/// Applies skill bonuses to spell powers, such as from [`Heal`], [`Perform`], and [`Spellcraft`]
+///
+/// [`Heal`]: Skill::Heal
+/// [`Perform`]: Skill::Perform
+/// [`Spellcraft`]: Skill::Spellcraft
 fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Skill::Heal, DamageType::Positive),
@@ -115,6 +131,9 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
     })
 }
 
+/// Provides bonuses from ability modifiers to skills using [`get_ability()`]
+///
+/// [`get_ability()`]: Skill::get_ability
 fn skill() -> impl IntoIterator<Item = BonusTemplate> {
     Skill::SKILLS.into_iter().filter_map(|skill| {
         Some(BonusTemplate::new(
@@ -126,6 +145,7 @@ fn skill() -> impl IntoIterator<Item = BonusTemplate> {
     })
 }
 
+/// Bonuses associated with Armor Classes
 fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
     [
         // Dexterity Bonus to Armor Class
@@ -168,6 +188,7 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
     ]
 }
 
+/// Bonuses related to health and health scaling
 fn health() -> impl IntoIterator<Item = BonusTemplate> {
     [
         BonusTemplate::new(
@@ -185,6 +206,7 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
     ]
 }
 
+/// Bonuses related to spell points and spell point scaling
 fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
     [
         BonusTemplate::new(
@@ -206,6 +228,11 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
     ]
 }
 
+/// Provides universal spell power bonuses to all other [`SpellPower`], [`SpellCriticalChance`], and [`SpellCriticalDamage`]
+///
+/// [`SpellPower`]: Attribute::SpellPower
+/// [`SpellCriticalChance`]: Attribute::SpellCriticalChance
+/// [`SpellCriticalDamage`]: Attribute::SpellCriticalDamage
 fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
     [
         Attribute::SpellPower,
@@ -225,6 +252,7 @@ fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
     })
 }
 
+/// Bonuses for calculations for Sheltering
 fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
     [
         BonusTemplate::new(
@@ -254,6 +282,7 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
     ]
 }
 
+/// Calculations for the sheltering reduction value
 fn sheltering_reduction() -> impl IntoIterator<Item = BonusTemplate> {
     [
         (Sheltering::PhysicalTotal, Sheltering::PhysicalReduction),
@@ -271,6 +300,7 @@ fn sheltering_reduction() -> impl IntoIterator<Item = BonusTemplate> {
     })
 }
 
+/// Bonuses related to penalties from Armor Check Penalties
 fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
     [
         (Skill::Balance, 1),
@@ -291,6 +321,7 @@ fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
     })
 }
 
+/// Bonuses for Absorption stats
 fn absorption() -> impl Iterator<Item = BonusTemplate> {
     DamageType::get_static().map(|damage_type| {
         BonusTemplate::new(
