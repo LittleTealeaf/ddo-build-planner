@@ -66,6 +66,7 @@ where
                 self.modified = false;
                 self.data = None;
                 let err_path = self.path.to_str().unwrap().to_owned();
+
                 Command::perform(load_data(self.path.clone()), move |result| match result {
                     Ok(data) => Message::Data(DataContainerMessage::OnLoad(data).into()),
                     Err(err) => Message::Error(format!("Load: {err_path} {err:?}")),
@@ -74,13 +75,14 @@ where
             DataContainerMessage::OnLoad(data) => {
                 self.modified = false;
                 self.data = Some(data);
+
                 Command::none()
             }
             DataContainerMessage::Save => self.data.as_ref().map_or_else(Command::none, |data| {
                 self.modified = false;
                 self.saving = true;
-
                 let err_path = self.path.to_str().unwrap().to_owned();
+
                 Command::perform(save_data(self.path.clone(), data.clone()), move |result| {
                     match result {
                         Ok(()) => Message::Data(DataContainerMessage::OnSaved.into()),
