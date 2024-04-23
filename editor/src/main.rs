@@ -52,7 +52,7 @@ impl Application for App {
 
     fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
         let mut editor = Self {
-            data: Data::default(),
+            data: Data::new(),
             tab_home: TabHome::default(),
             icons_loaded: false,
             selected_tab: Tab::Home,

@@ -20,6 +20,16 @@ pub struct Data {
 }
 
 impl Data {
+    pub fn new() -> Self {
+        fn base() -> PathBuf {
+            [".", "data", "data"].iter().collect()
+        }
+
+        Self {
+            item_sets: DataContainer::new(base().join("item_sets.ron")),
+        }
+    }
+
     pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
         let item_sets = self.item_sets.get();
 
@@ -37,13 +47,7 @@ impl Data {
 
 impl Default for Data {
     fn default() -> Self {
-        fn base() -> PathBuf {
-            [".", "data", "data"].iter().collect()
-        }
-
-        Self {
-            item_sets: DataContainer::new(base().join("item_sets.ron")),
-        }
+        Self::new()
     }
 }
 
