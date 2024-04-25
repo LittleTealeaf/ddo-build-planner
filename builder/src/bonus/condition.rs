@@ -187,7 +187,6 @@ impl AttributeDependencies for Condition {
     fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {
         match self {
             Self::Not(cond) => cond.include_attr_dependency(set),
-
             Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => {
                 a.include_attr_dependency(set);
                 b.include_attr_dependency(set);
