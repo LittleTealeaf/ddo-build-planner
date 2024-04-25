@@ -1,4 +1,4 @@
-//! Each of the possile skills
+//! Each of the possible skills
 
 use core::fmt::{self, Display};
 

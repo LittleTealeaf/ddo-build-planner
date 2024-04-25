@@ -1,12 +1,10 @@
 use serde::{Deserialize, Serialize};
+use utils::from_into::FromInto;
 
 use crate::{
     attribute::Attribute,
     feat::Feat,
-    types::{
-        flag::{Flag, ToFlag},
-        toggle::Toggle,
-    },
+    types::{flag::Flag, toggle::Toggle},
 };
 
 use super::{Bonus, BonusSource, BonusType, Condition, Value};
@@ -54,8 +52,7 @@ impl BonusTemplate {
         T: Into<Toggle>,
         C: Into<Option<Condition>>,
     {
-        let toggle: Toggle = toggle.into();
-        Self::new(toggle.to_flag(), BonusType::Stacking, 1, condition)
+        Self::flag(Toggle::from_into(toggle), condition)
     }
 
     /// Provides the specified flag
@@ -88,8 +85,8 @@ impl BonusTemplate {
             self.attribute,
             self.bonus_type,
             self.value,
-            source,
             self.condition,
+            source,
         )
     }
 
@@ -158,5 +155,11 @@ impl From<Bonus> for BonusTemplate {
             value.value,
             value.condition,
         )
+    }
+}
+
+impl From<(BonusTemplate, BonusSource)> for Bonus {
+    fn from((template, source): (BonusTemplate, BonusSource)) -> Self {
+        template.to_bonus(source)
     }
 }

@@ -12,7 +12,7 @@ use crate::attribute::{Attribute, ToAttribute};
 
 use super::damage_type::DamageType;
 
-/// Describes both the total absorption and indivdual bonuses to absorption
+/// Describes both the total absorption and individual bonuses to absorption
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Absorption {
     /// Final Absorption
@@ -48,7 +48,7 @@ impl ToAttribute for Absorption {
     }
 }
 
-/// The absorption soruce / stacking source for bonuses
+/// The absorption source / stacking source for bonuses
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum AbsorptionSource {
     /// Bonuses from an item

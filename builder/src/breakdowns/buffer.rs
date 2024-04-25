@@ -1,7 +1,7 @@
 use core::{cmp::Reverse, iter::once};
 use std::collections::{BinaryHeap, HashSet};
 
-use utils::from_into::FromInto;
+use utils::{from_into::FromInto, vecs::FilterRemove};
 
 use crate::{
     attribute::Attribute,
@@ -36,20 +36,24 @@ impl Buffer {
     where
         I: IntoIterator<Item = Bonus>,
     {
+        fn expand_bonus(bonus: Bonus) -> impl Iterator<Item = Bonus> {
+            bonus
+                .attribute()
+                .clone_bonus(&bonus)
+                .into_iter()
+                .flatten()
+                .chain(once(bonus))
+        }
+
         let bonuses = bonuses
             .into_iter()
-            .flat_map(|bonus| {
-                bonus
-                    .attribute()
-                    .clone_bonus(&bonus)
-                    .into_iter()
-                    .flatten()
-                    .chain(once(bonus))
-            })
+            .flat_map(expand_bonus)
             .collect::<Vec<_>>();
 
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();
-        self.bonuses.retain(|i| !sources.contains(i.source()));
+
+        let filter = |bonus: &Bonus| !sources.contains(bonus.source());
+        self.bonuses.retain(filter);
 
         let attributes: HashSet<Attribute> =
             bonuses.iter().map(Bonus::attribute).cloned().collect();
@@ -65,17 +69,8 @@ impl Buffer {
 
     pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {
         while let Some(Reverse(attribute)) = self.attributes.pop() {
-            let mut bonuses = Vec::new();
-
-            let mut i = 0;
-
-            while i < self.bonuses.len() {
-                if self.bonuses[i].attribute().eq(&attribute) {
-                    bonuses.push(self.bonuses.swap_remove(i));
-                } else {
-                    i += 1;
-                }
-            }
+            let filter = |bonus: &Bonus| bonus.attribute().eq(&attribute);
+            let bonuses = self.bonuses.filter_remove(filter);
 
             let forced = self.forced.remove(&attribute);
 
@@ -102,7 +97,7 @@ mod tests {
     #[test]
     fn inserting_attribute_always_pops() {
         let mut buffer = Buffer::new();
-        buffer.insert_attributes([Attribute::Debug(0)]);
+        buffer.insert_attributes(once(Attribute::Debug(0)));
 
         let (attribute, bonuses, forced) = buffer.pop().expect("Expected return from buffer.pop()");
 
@@ -141,8 +136,8 @@ mod tests {
             DebugValue(0),
             DebugValue(0),
             1,
-            DebugValue(0),
             None,
+            DebugValue(0),
         )]);
     }
 }

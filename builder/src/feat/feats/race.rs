@@ -12,7 +12,7 @@ use crate::{
     feat::{Feat, ToFeat},
     types::{
         armor_class::ArmorClass,
-        flag::{MainHandType, OffHandType},
+        flag::MainHandType,
         immunity::Immunity,
         item_type::WeaponType,
         monster_type::MonsterType,
@@ -104,7 +104,7 @@ impl GetBonuses for RacialFeat {
             Self::GnomishProficiencies => {
                 vec![
                     BonusTemplate::new(Skill::Haggle, BonusType::Stacking, 2, None),
-                    BonusTemplate::new(Skill::UseMagicalDevice, BonusType::Stacking, 22, None),
+                    BonusTemplate::new(Skill::UseMagicalDevice, BonusType::Stacking, 2, None),
                 ]
             }
             Self::ImmunityToSleep => {
@@ -217,24 +217,14 @@ impl GetBonuses for RacialFeat {
                 None,
             )],
             Self::HalflingThrownWeaponFocus => {
-                vec![
-                    BonusTemplate::new(
-                        (WeaponHand::Main, WeaponStat::Attack),
-                        BonusType::Stacking,
-                        1,
-                        WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(MainHandType::Weapon(wt)))
-                            .cond_any(),
-                    ),
-                    BonusTemplate::new(
-                        (WeaponHand::Off, WeaponStat::Attack),
-                        BonusType::Stacking,
-                        1,
-                        WeaponType::THROWING_WEAPONS
-                            .map(|wt| Condition::has(OffHandType::Weapon(wt)))
-                            .cond_any(),
-                    ),
-                ]
+                vec![BonusTemplate::new(
+                    (WeaponHand::Main, WeaponStat::Attack),
+                    BonusType::Stacking,
+                    1,
+                    WeaponType::THROWING_WEAPONS
+                        .map(|wt| Condition::has(MainHandType::Weapon(wt)))
+                        .cond_any(),
+                )]
             }
         })
     }
@@ -266,6 +256,7 @@ impl StaticOptions for RacialFeat {
             Self::HalflingKeenEars,
             Self::HalflingLuck,
             Self::HalflingThrownWeaponFocus,
-        ].into_iter()
+        ]
+        .into_iter()
     }
 }

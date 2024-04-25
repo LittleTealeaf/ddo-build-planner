@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use builder::{attribute::Attribute, equipment::set_bonus::ItemSet};
 use iced::{Application, Command};
@@ -12,44 +12,48 @@ use self::container::{DataContainer, DataContainerMessage};
 
 pub mod container;
 
+type ItemSetsType = Vec<ItemSet>;
+
 #[derive(Clone, Debug)]
 pub struct Data {
-    item_sets: DataContainer<Vec<ItemSet>>,
+    pub item_sets: DataContainer<ItemSetsType>,
 }
 
 impl Data {
-    pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let set_bonuses = self.item_sets.data.iter().flat_map(|sets| {
-            sets.iter()
-                .map(|set| Attribute::ItemSet(set.name().clone()))
-        });
-        chain!(set_bonuses, Attribute::get_static())
-    }
-
-    pub const fn item_sets(&self) -> Option<&Vec<ItemSet>> {
-        self.item_sets.data.as_ref()
-    }
-
-    pub fn item_sets_mut(&mut self) -> Option<&mut Vec<ItemSet>> {
-        self.item_sets.data.as_mut()
-    }
-}
-
-impl Default for Data {
-    fn default() -> Self {
+    pub fn new() -> Self {
         fn base() -> PathBuf {
-            Path::new(".").join("data").join("data")
+            [".", "data", "data"].iter().collect()
         }
 
         Self {
             item_sets: DataContainer::new(base().join("item_sets.ron")),
         }
     }
+
+    pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
+        let item_sets = self.item_sets.get();
+
+        let set_bonuses = item_sets
+            .map(|sets| {
+                sets.iter()
+                    .map(|set| Attribute::ItemSet(set.name().clone()))
+            })
+            .into_iter()
+            .flatten();
+
+        chain!(set_bonuses, Attribute::get_static())
+    }
+}
+
+impl Default for Data {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[derive(Clone, Debug)]
 pub enum DataMessage {
-    SetBonuses(DataContainerMessage<Vec<ItemSet>>),
+    SetBonuses(DataContainerMessage<ItemSetsType>),
 }
 
 impl HandleMessage<DataMessage> for App {
@@ -66,8 +70,8 @@ impl HandleMessage<DataMessage, App> for Data {
     }
 }
 
-impl From<DataContainerMessage<Vec<ItemSet>>> for DataMessage {
-    fn from(value: DataContainerMessage<Vec<ItemSet>>) -> Self {
+impl From<DataContainerMessage<ItemSetsType>> for DataMessage {
+    fn from(value: DataContainerMessage<ItemSetsType>) -> Self {
         Self::SetBonuses(value)
     }
 }

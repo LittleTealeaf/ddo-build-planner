@@ -5,7 +5,7 @@ use crate::bonus::BonusTemplate;
 /// Implements the ability to get bonuses from different [`Attribute`] sub-types.
 ///
 /// The generic type `T` is used as a means of differentiating different bonuses for an
-/// [`Attribute`] sub-type that has multiple instances. `T` is indeded to be a 0-size struct. An
+/// [`Attribute`] sub-type that has multiple instances. `T` is intended to be a 0-size struct. An
 /// example of this is with [`Ability`], which has the two helper structs [`_AbilityScore`] and
 /// [`_AbilityModifier`].
 ///

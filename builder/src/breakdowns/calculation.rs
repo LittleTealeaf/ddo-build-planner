@@ -3,13 +3,13 @@ use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
-    bonus::{BonusType, Condition, Value},
+    bonus::{Condition, Value},
 };
 
 use super::{Breakdowns, DiceStrategy};
 
 impl Breakdowns {
-    /// Calculates and retuns the final value for a given [`Attribute`].
+    /// Calculates and retuurns the final value for a given [`Attribute`].
     pub fn get_attribute<A>(&mut self, attribute: A) -> Decimal
     where
         A: Into<Attribute>,
@@ -97,7 +97,7 @@ impl Breakdowns {
         for bonus in self.bonuses.get(attribute)?.clone() {
             if self.evaluate_some_condition(bonus.condition()) {
                 let value = self.evaluate_value(bonus.value());
-                if matches!(bonus.bonus_type(), BonusType::Stacking) {
+                if bonus.bonus_type().is_stacking() {
                     stacking += value;
                 } else {
                     map.insert(

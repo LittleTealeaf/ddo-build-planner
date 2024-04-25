@@ -25,13 +25,16 @@ impl Race {
             Attribute::Ability(ability),
             BonusType::Stacking,
             value,
-            self,
             None,
+            self,
         )
     }
 
-    fn bonus_feat(self, feat: impl Into<Feat>) -> Bonus {
-        Bonus::new(feat.into(), BonusType::Stacking, 1, self, None)
+    fn bonus_feat<F>(self, feat: F) -> Bonus
+    where
+        F: Into<Feat>,
+    {
+        Bonus::new(feat.into(), BonusType::Stacking, 1, None, self)
     }
 }
 

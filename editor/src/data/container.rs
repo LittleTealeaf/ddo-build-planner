@@ -13,18 +13,18 @@ use utils::ron::pretty_config::compact_pretty_config;
 
 use crate::{App, Message};
 
-use super::DataMessage;
-
 #[derive(Debug, Clone)]
 pub struct DataContainer<T>
 where
     T: Debug + Clone,
 {
-    pub data: Option<T>,
-    pub modified: bool,
-    pub saving: bool,
+    data: Option<T>,
+    modified: bool,
+    saving: bool,
     path: PathBuf,
 }
+
+use super::DataMessage;
 
 impl<T> DataContainer<T>
 where
@@ -37,6 +37,24 @@ where
             saving: false,
             path,
         }
+    }
+
+    pub const fn get(&self) -> Option<&T> {
+        self.data.as_ref()
+    }
+
+    pub fn get_mut(&mut self) -> Option<&mut T> {
+        self.modified = true;
+        self.data.as_mut()
+    }
+
+    #[must_use]
+    pub const fn modified(&self) -> bool {
+        self.modified
+    }
+
+    pub const fn saving(&self) -> bool {
+        self.saving
     }
 }
 
@@ -66,6 +84,7 @@ where
                 self.modified = false;
                 self.data = None;
                 let err_path = self.path.to_str().unwrap().to_owned();
+
                 Command::perform(load_data(self.path.clone()), move |result| match result {
                     Ok(data) => Message::Data(DataContainerMessage::OnLoad(data).into()),
                     Err(err) => Message::Error(format!("Load: {err_path} {err:?}")),
@@ -74,13 +93,14 @@ where
             DataContainerMessage::OnLoad(data) => {
                 self.modified = false;
                 self.data = Some(data);
+
                 Command::none()
             }
             DataContainerMessage::Save => self.data.as_ref().map_or_else(Command::none, |data| {
                 self.modified = false;
                 self.saving = true;
-
                 let err_path = self.path.to_str().unwrap().to_owned();
+
                 Command::perform(save_data(self.path.clone(), data.clone()), move |result| {
                     match result {
                         Ok(()) => Message::Data(DataContainerMessage::OnSaved.into()),
@@ -163,7 +183,7 @@ mod tests {
     async fn save_and_load_file() {
         let dir = tempdir().unwrap();
         let file_path = dir.path().join("serialized-file");
-        let data = Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0), None);
+        let data = Bonus::new(DebugValue(0), DebugValue(0), 1, None, DebugValue(0));
 
         assert!(!file_path.exists());
 

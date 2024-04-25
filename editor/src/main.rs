@@ -52,7 +52,7 @@ impl Application for App {
 
     fn new((): Self::Flags) -> (Self, Command<Self::Message>) {
         let mut editor = Self {
-            data: Data::default(),
+            data: Data::new(),
             tab_home: TabHome::default(),
             icons_loaded: false,
             selected_tab: Tab::Home,
@@ -62,12 +62,7 @@ impl Application for App {
 
         let command = Command::batch([
             editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
-            font::load(NERD_FONT_BYTES).map(|res| {
-                res.map_or_else(
-                    |e| Message::Error(format!("Font: {e:?}")),
-                    |()| Message::IconsLoaded,
-                )
-            }),
+            load_font(),
         ]);
 
         (editor, command)
@@ -138,4 +133,13 @@ impl HandleMessage<Message> for App {
             Message::Selector(message) => self.handle_message(message),
         }
     }
+}
+
+fn load_font() -> Command<Message> {
+    font::load(NERD_FONT_BYTES).map(|res| {
+        res.map_or_else(
+            |e| Message::Error(format!("Font: {e:?}")),
+            |()| Message::IconsLoaded,
+        )
+    })
 }

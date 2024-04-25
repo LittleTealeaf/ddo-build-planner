@@ -1,4 +1,4 @@
-//! Healing Amplifcation Types
+//! Healing Amplification Types
 
 use core::fmt;
 

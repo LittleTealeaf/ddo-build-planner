@@ -5,7 +5,7 @@ use fmt::Display;
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{public_modules, enums::StaticOptions};
+use utils::{enums::StaticOptions, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -20,7 +20,7 @@ use crate::{
 public_modules!(spell_focus);
 
 #[derive(Hash, PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Serialize, Deserialize)]
-/// Feats thga fall under the "Spellcasting" category
+/// Feats that fall under the "Spellcasting" category
 pub enum SpellcastingFeat {
     /// Feats that provide bonuses to spell DCs
     SpellFocus(SpellFocusFeat),

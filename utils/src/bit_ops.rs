@@ -21,7 +21,7 @@ where
     }
 }
 
-/// Adds the ability for an `any` opperator to be applied on a collection of items that implement
+/// Adds the ability for an `any` operator to be applied on a collection of items that implement
 /// the | operator (as a ||)
 pub trait BitAny<T> {
     /// Returns the bit-wise any operator for elements in this structure

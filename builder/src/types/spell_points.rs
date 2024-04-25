@@ -9,7 +9,7 @@ use crate::attribute::{Attribute, ToAttribute};
 #[derive(
     Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
 )]
-/// Different types of bonsues to spell points
+/// Different types of bonuses to spell points
 pub enum SpellPoints {
     /// Bonuses that can be scaled based on the number of Favored Soul or Sorcerer levels you have
     Scaled,

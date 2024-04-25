@@ -40,7 +40,7 @@ pub struct Breakdowns {
 pub enum DiceStrategy {
     /// Dice will always roll 1s, or the lowest value
     Minimum,
-    /// Dice will evaulate to the average roll
+    /// Dice will evaluate to the average roll
     Average,
     /// Dice will always roll the highest value possible
     Maximum,

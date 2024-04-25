@@ -1,4 +1,4 @@
-//! Additinoal generic implementations for ``HashMaps`` to simplify code
+//! Additional generic implementations for ``HashMaps`` to simplify code
 
 use core::hash::{BuildHasher, Hash};
 use std::collections::HashMap;
@@ -21,6 +21,15 @@ pub trait MapGetMutOr<K, V> {
     }
 }
 
+macro_rules! impl_get_mut_or_else {
+    ($self: ident, $key: ident, $if_empty: ident) => {{
+        if !$self.contains_key($key) {
+            $self.insert($key.clone(), $if_empty());
+        }
+        $self.get_mut($key).expect("Expected Return Value")
+    }};
+}
+
 impl<K, V, S> MapGetMutOr<K, V> for HashMap<K, V, S>
 where
     K: Hash + Eq + PartialEq + Clone,
@@ -30,11 +39,7 @@ where
     where
         F: FnOnce() -> V,
     {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), if_empty());
-        }
-
-        self.get_mut(key).expect("Expected Returned Value")
+        impl_get_mut_or_else!(self, key, if_empty)
     }
 }
 
@@ -48,10 +53,7 @@ where
     where
         F: FnOnce() -> V,
     {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), if_empty());
-        }
-        self.get_mut(key).expect("Expected Returned Value")
+        impl_get_mut_or_else!(self, key, if_empty)
     }
 }
 
@@ -64,10 +66,7 @@ where
     where
         F: FnOnce() -> V,
     {
-        if !self.contains_key(key) {
-            self.insert(key.clone(), if_empty());
-        }
-        self.get_mut(key).expect("Expected Returned Value")
+        impl_get_mut_or_else!(self, key, if_empty)
     }
 }
 

@@ -84,7 +84,7 @@ impl fmt::Display for ValueType {
             Self::Add => write!(f, "Add"),
             Self::Sub => write!(f, "Subtract"),
             Self::Mul => write!(f, "Multiply"),
-            Self::Rem => write!(f, "Remainter"),
+            Self::Rem => write!(f, "Remainder"),
             Self::If => write!(f, "If"),
             Self::Dice => write!(f, "Dice"),
             Self::Div => write!(f, "Divide"),

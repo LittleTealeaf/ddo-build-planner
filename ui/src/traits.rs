@@ -1,6 +1,6 @@
 use iced::{Application, Command, Element, Renderer};
 
-/// Provide a new `hanle_view` function
+/// Provide a new `handle_view` function
 pub trait HandleView<App>
 where
     App: Application + Sized,

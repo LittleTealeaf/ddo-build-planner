@@ -17,7 +17,7 @@ use crate::{
 #[derive(Hash, PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Serialize, Deserialize, Debug)]
 /// Feats that show up under the "Skill Focus" Tab
 pub enum SkillFocus {
-    /// Proides a +3 bonus to a specifc skill
+    /// Provides a +3 bonus to a specific skill
     #[serde(rename = "s", alias = "Focus")]
     Focus(Skill),
     /// Provides a +2 bonus to Jump and Tumble

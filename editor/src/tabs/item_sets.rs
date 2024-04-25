@@ -6,7 +6,7 @@ use iced::{
     widget::{button, column, scrollable, text, text_input, Column, Row},
     Application, Command, Element, Renderer,
 };
-use ui::{font::NERD_FONT, HandleMessage, HandleView};
+use ui::{font::nf_icon, HandleMessage, HandleView};
 
 use crate::{App, Message};
 
@@ -45,7 +45,7 @@ impl HandleMessage<TabSetBonusesMessage> for App {
             }
             TabSetBonusesMessage::NewSet => todo!(),
             TabSetBonusesMessage::Edit(index) => {
-                if let Some(set) = self.data.item_sets().and_then(|sets| sets.get(index)) {
+                if let Some(set) = self.data.item_sets.get().and_then(|sets| sets.get(index)) {
                     self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone()));
                 }
                 Command::none()
@@ -71,11 +71,11 @@ impl HandleView<App> for TabSetBonuses {
                         text_input("Search...", &self.filter)
                             .on_input(|filter| TabSetBonusesMessage::Filter(filter).into()),
                     )
-                    .push(button(text("󰝒").font(NERD_FONT)).on_press_maybe(
+                    .push(button(nf_icon("󰝒")).on_press_maybe(
                         (!&self.filter.is_empty()).then_some(TabSetBonusesMessage::NewSet.into()),
                     )),
             )
-            .push_maybe(app.data.item_sets().map(|sets| {
+            .push_maybe(app.data.item_sets.get().map(|sets| {
                 scrollable(column(
                     sets.iter()
                         .enumerate()

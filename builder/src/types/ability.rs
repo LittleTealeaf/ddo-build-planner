@@ -107,8 +107,8 @@ mod tests {
                 Attribute::Ability(Ability::Wisdom),
                 BonusType::Stacking,
                 1,
-                BonusSource::Debug(0),
                 None,
+                BonusSource::Debug(0),
             ));
             assert!(bonus.is_none());
         }
@@ -120,8 +120,8 @@ mod tests {
             Ability::All,
             BonusType::Stacking,
             1,
-            BonusSource::Debug(0),
             None,
+            BonusSource::Debug(0),
         );
 
         let bonuses = Ability::All

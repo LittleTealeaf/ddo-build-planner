@@ -21,7 +21,7 @@ use super::{
     toggle_group::ToggleGroup,
 };
 
-/// Toggles are interactable elements that the user is able to interact with to modify the "current state" of the character.
+/// Toggles are interactive elements that the user is able to interact with to modify the "current state" of the character.
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
     /// Is the character blocking
@@ -48,9 +48,9 @@ impl Toggle {
         Bonus::new(
             self.to_attribute(),
             BonusType::Stacking,
-            i32::from(enable),
-            self.get_toggle_source(),
+            u8::from(enable),
             None,
+            self.get_toggle_source(),
         )
     }
 }
