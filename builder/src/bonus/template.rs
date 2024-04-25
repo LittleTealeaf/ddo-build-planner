@@ -160,3 +160,9 @@ impl From<Bonus> for BonusTemplate {
         )
     }
 }
+
+impl From<(BonusTemplate, BonusSource)> for Bonus {
+    fn from((template, source): (BonusTemplate, BonusSource)) -> Self {
+        template.to_bonus(source)
+    }
+}
