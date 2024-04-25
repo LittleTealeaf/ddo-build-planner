@@ -1,8 +1,7 @@
 //! Feats that a character can have.
 public_modules!(feats, requirements, to_feat);
 
-use core::fmt;
-use std::fmt::Debug;
+use core::fmt::{self, Debug};
 
 use itertools::chain;
 use rust_decimal::Decimal;
