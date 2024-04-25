@@ -4,10 +4,7 @@ use utils::from_into::FromInto;
 use crate::{
     attribute::Attribute,
     feat::Feat,
-    types::{
-        flag::{Flag, ToFlag},
-        toggle::Toggle,
-    },
+    types::{flag::Flag, toggle::Toggle},
 };
 
 use super::{Bonus, BonusSource, BonusType, Condition, Value};

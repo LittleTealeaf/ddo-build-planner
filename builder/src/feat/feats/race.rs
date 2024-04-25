@@ -12,7 +12,7 @@ use crate::{
     feat::{Feat, ToFeat},
     types::{
         armor_class::ArmorClass,
-        flag::{MainHandType, OffHandType},
+        flag::MainHandType,
         immunity::Immunity,
         item_type::WeaponType,
         monster_type::MonsterType,
