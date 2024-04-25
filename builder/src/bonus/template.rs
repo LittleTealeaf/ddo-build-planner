@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use utils::from_into::FromInto;
 
 use crate::{
     attribute::Attribute,
@@ -54,8 +55,7 @@ impl BonusTemplate {
         T: Into<Toggle>,
         C: Into<Option<Condition>>,
     {
-        let toggle: Toggle = toggle.into();
-        Self::new(toggle.to_flag(), BonusType::Stacking, 1, condition)
+        Self::flag(Toggle::from_into(toggle), condition)
     }
 
     /// Provides the specified flag
