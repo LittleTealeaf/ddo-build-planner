@@ -2,11 +2,11 @@
 // This does not test the actual content of the game, but rather the universal logic things.
 // Basically, testing logic that should apply to basically all characters
 use builder::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
+    attribute::{Attribute, GetBonuses},
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
     breakdowns::Breakdowns,
     debug::DebugValue,
-    feat::Proficiency,
+    feat::{IconicPastLife, Proficiency},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
@@ -871,6 +871,25 @@ mod feats {
             ));
 
             assert!(compiler.get_attribute(Proficiency::from(WeaponType::Falchion)) > 0.into());
+        }
+    }
+
+    mod iconic_past_lives {
+
+        use super::*;
+
+        #[test]
+        fn past_life_gives_toggle() {
+            for race in IconicPastLife::RACES {
+                let Some(bonuses) = race.get_bonuses(Decimal::ONE) else {
+                    panic!("Expected Bonuses for {race}");
+                };
+
+                assert!(
+                    bonuses.contains(&BonusTemplate::toggle(race, None)),
+                    "{race} does not provide toggle"
+                );
+            }
         }
     }
 }

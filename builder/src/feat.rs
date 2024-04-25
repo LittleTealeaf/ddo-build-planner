@@ -2,6 +2,7 @@
 public_modules!(feats, requirements, to_feat);
 
 use core::fmt;
+use std::fmt::Debug;
 
 use itertools::chain;
 use rust_decimal::Decimal;
@@ -30,15 +31,19 @@ pub enum Feat {
     /// Spell Focus Feats
     #[serde(rename = "spell", alias = "Spellcasting")]
     Spellcasting(SpellcastingFeat),
+    /// Past Life Feats
+    #[serde(rename = "pl", alias = "PastLife")]
+    PastLife(PastLifeFeat),
 }
 
 impl Display for Feat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::RacialFeat(feat) => feat.fmt(f),
-            Self::Proficiency(prof) => prof.fmt(f),
-            Self::SkillFocus(feat) => feat.fmt(f),
-            Self::Spellcasting(feat) => feat.fmt(f),
+            Self::RacialFeat(feat) => write!(f, "{feat}"),
+            Self::Proficiency(prof) => write!(f, "{prof}"),
+            Self::SkillFocus(feat) => write!(f, "{feat}"),
+            Self::Spellcasting(feat) => write!(f, "{feat}"),
+            Self::PastLife(feat) => write!(f, "{feat}"),
         }
     }
 }
@@ -59,6 +64,7 @@ impl GetBonuses for Feat {
             Self::Proficiency(_) => None,
             Self::SkillFocus(feat) => feat.get_bonuses(value),
             Self::Spellcasting(feat) => feat.get_bonuses(value),
+            Self::PastLife(feat) => feat.get_bonuses(value),
         }
     }
 }
@@ -103,7 +109,8 @@ impl StaticOptions for Feat {
             RacialFeat::get_static().map(Self::RacialFeat),
             Proficiency::get_static().map(Self::Proficiency),
             SkillFocus::get_static().map(Self::SkillFocus),
-            SpellcastingFeat::get_static().map(Self::Spellcasting)
+            SpellcastingFeat::get_static().map(Self::Spellcasting),
+            PastLifeFeat::get_static().map(Self::PastLife),
         )
     }
 }

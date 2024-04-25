@@ -1,6 +1,6 @@
 //! Any attribute that requires the user to interact / configure
 
-public_modules!(attacking_target, iconic_past_life);
+public_modules!(attacking_target);
 
 use core::fmt::{self, Display};
 
@@ -12,9 +12,8 @@ use utils::{enums::StaticOptions, public_modules};
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    feat::IconicPastLife,
 };
-
-use self::iconic_past_life::IconicPastLife;
 
 use super::{
     flag::{Flag, ToFlag},

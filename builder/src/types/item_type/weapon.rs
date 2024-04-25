@@ -110,6 +110,39 @@ impl WeaponType {
         Self::ShortBow,
         Self::GreatCrossbow,
     ];
+
+    /// All Melee Weapons
+    pub const MELEE_WEAPONS: [Self; 29] = [
+        Self::Club,
+        Self::Quarterstaff,
+        Self::Dagger,
+        Self::Sickle,
+        Self::LightMace,
+        Self::HeavyMace,
+        Self::Morningstar,
+        Self::HeavyCrossbow,
+        Self::LightCrossbow,
+        Self::Handaxe,
+        Self::GreatAxe,
+        Self::Kukri,
+        Self::LongSword,
+        Self::GreatSword,
+        Self::Scimitar,
+        Self::Falchion,
+        Self::ShortSword,
+        Self::Rapier,
+        Self::HeavyPick,
+        Self::LightPick,
+        Self::LightHammer,
+        Self::WarHammer,
+        Self::Maul,
+        Self::GreatClub,
+        Self::BastardSword,
+        Self::DwarvenWarAxe,
+        Self::Kama,
+        Self::Khopesh,
+        Self::Handwraps,
+    ];
 }
 
 impl Display for WeaponType {
