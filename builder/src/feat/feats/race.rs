@@ -217,14 +217,24 @@ impl GetBonuses for RacialFeat {
                 None,
             )],
             Self::HalflingThrownWeaponFocus => {
-                vec![BonusTemplate::new(
-                    (WeaponHand::Main, WeaponStat::Attack),
-                    BonusType::Stacking,
-                    1,
-                    WeaponType::THROWING_WEAPONS
-                        .map(|wt| Condition::has(MainHandType::Weapon(wt)))
-                        .cond_any(),
-                )]
+                vec![
+                    BonusTemplate::new(
+                        (WeaponHand::Main, WeaponStat::Attack),
+                        BonusType::Stacking,
+                        1,
+                        WeaponType::THROWING_WEAPONS
+                            .map(|wt| Condition::has(MainHandType::Weapon(wt)))
+                            .cond_any(),
+                    ),
+                    BonusTemplate::new(
+                        (WeaponHand::Off, WeaponStat::Attack),
+                        BonusType::Stacking,
+                        1,
+                        WeaponType::THROWING_WEAPONS
+                            .map(|wt| Condition::has(OffHandType::Weapon(wt)))
+                            .cond_any(),
+                    ),
+                ]
             }
         })
     }
@@ -256,7 +266,6 @@ impl StaticOptions for RacialFeat {
             Self::HalflingKeenEars,
             Self::HalflingLuck,
             Self::HalflingThrownWeaponFocus,
-        ]
-        .into_iter()
+        ].into_iter()
     }
 }
