@@ -104,7 +104,6 @@ impl PlayerClass {
         Self::AcolyteOfTheSkin,
     ];
 
-
     /// Returns the parent player class, if any. That is, if the class is an archetype of another
     /// class, this will return the parent class. Otherwise, this will return [`None`]
     #[must_use]
