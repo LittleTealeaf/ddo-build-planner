@@ -309,11 +309,7 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
 
 fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
     let condition = PlayerClass::get_static()
-        .map(|class| {
-            class
-                .get_parent_class()
-                .map_or((class, class), |parent| (parent, class))
-        })
+        .map(|class| (class.get_parent_class().unwrap_or(class), class))
         .into_grouped_hash_map()
         .into_values()
         .map(|set| {
