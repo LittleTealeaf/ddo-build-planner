@@ -324,10 +324,8 @@ fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
         })
         .cond_all();
 
-    once(BonusTemplate::new(
+    once(BonusTemplate::feat(
         PastLifeFeat::HeroicCompletionist,
-        BonusType::Stacking,
-        1,
         condition,
     ))
 }
