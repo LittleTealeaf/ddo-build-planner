@@ -59,7 +59,7 @@ impl GetBonuses for IconicPastLife {
             return None;
         }
 
-        let value = value.max(Decimal::from(3));
+        let value = value.min(Decimal::from(3));
 
         let Self(race) = self;
 

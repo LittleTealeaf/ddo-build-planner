@@ -5,7 +5,12 @@ use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::{enums::StaticOptions, public_modules};
 
-use crate::{attribute::GetBonuses, bonus::BonusTemplate};
+use crate::{
+    attribute::GetBonuses,
+    bonus::{BonusTemplate, BonusType},
+    feat::{Feat, ToFeat},
+    types::{ability::Ability, skill::Skill},
+};
 
 public_modules!(heroic, epic, racial, iconic);
 
@@ -14,12 +19,18 @@ public_modules!(heroic, epic, racial, iconic);
 pub enum PastLifeFeat {
     /// Iconic Past Lifes
     Iconic(IconicPastLife),
+    /// Heroic Completionist
+    HeroicCompletionist,
+    /// Heroic Past Life
+    Heroic(HeroicPastLife),
 }
 
 impl Display for PastLifeFeat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Iconic(iconic) => write!(f, "{iconic}"),
+            Self::HeroicCompletionist => write!(f, "Heroic Completionist"),
+            Self::Heroic(class) => write!(f, "{class}"),
         }
     }
 }
@@ -28,12 +39,29 @@ impl GetBonuses for PastLifeFeat {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
             Self::Iconic(iconic) => iconic.get_bonuses(value),
+            Self::HeroicCompletionist => (value > Decimal::ZERO).then(|| {
+                vec![
+                    BonusTemplate::new(Ability::All, BonusType::Stacking, 2, None),
+                    BonusTemplate::new(Skill::All, BonusType::Stacking, 2, None),
+                ]
+            }),
+            Self::Heroic(heroic) => heroic.get_bonuses(value),
         }
     }
 }
 
 impl StaticOptions for PastLifeFeat {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!(IconicPastLife::get_static().map(Self::Iconic))
+        chain!(
+            [Self::HeroicCompletionist],
+            IconicPastLife::get_static().map(Self::Iconic),
+            HeroicPastLife::get_static().map(Self::Heroic)
+        )
+    }
+}
+
+impl ToFeat for PastLifeFeat {
+    fn to_feat(self) -> Feat {
+        Feat::PastLife(self)
     }
 }

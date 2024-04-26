@@ -892,6 +892,58 @@ mod feats {
             }
         }
     }
+
+    mod heroic_past_lives {
+        use builder::{
+            feat::{HeroicPastLife, PastLifeFeat},
+            types::player_class::PlayerClass,
+        };
+        use itertools::Itertools;
+        use utils::hashmap::IntoGroupedHashMap;
+
+        use super::*;
+
+        #[test]
+        fn all_combinations_give_past_lives() {
+            let mut sets = PlayerClass::CLASSES
+                .map(|class| (class.get_parent_class().unwrap_or(class), class))
+                .into_grouped_hash_map()
+                .into_values()
+                .collect_vec();
+
+            let mut breakdowns = Breakdowns::new();
+
+            for (i, set) in sets.iter_mut().enumerate() {
+                assert_eq!(
+                    breakdowns.get_attribute(PastLifeFeat::HeroicCompletionist),
+                    Decimal::ZERO
+                );
+                breakdowns.insert_bonuses(
+                    set.pop().into_iter().map(|class| {
+                        Bonus::feat(HeroicPastLife(class), None, BonusSource::Custom(i))
+                    }),
+                );
+            }
+
+            assert!(breakdowns.get_attribute(PastLifeFeat::HeroicCompletionist) > Decimal::ZERO);
+
+            for (i, set) in sets.into_iter().enumerate() {
+                if !set.is_empty() {
+                    for item in set {
+                        breakdowns.insert_bonus(Bonus::feat(
+                            HeroicPastLife(item),
+                            None,
+                            BonusSource::Custom(i),
+                        ));
+                        assert!(
+                            breakdowns.get_attribute(PastLifeFeat::HeroicCompletionist)
+                                > Decimal::ZERO
+                        );
+                    }
+                }
+            }
+        }
+    }
 }
 
 mod armor_check_penalty {

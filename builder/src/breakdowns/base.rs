@@ -1,12 +1,13 @@
 use core::iter::once;
 use itertools::chain;
-use utils::enums::StaticOptions;
+use utils::{enums::StaticOptions, hashmap::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,
     bonus::{
         Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
     },
+    feat::{HeroicPastLife, PastLifeFeat},
     types::{
         ability::Ability,
         absorption::{Absorption, AbsorptionSource},
@@ -39,7 +40,8 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         sheltering(),
         sheltering_reduction(),
         armor_check_penalties(),
-        absorption()
+        absorption(),
+        heoric_completionist(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
@@ -303,4 +305,29 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
             None,
         )
     })
+}
+
+fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
+    let condition = PlayerClass::get_static()
+        .map(|class| {
+            class
+                .get_parent_class()
+                .map_or((class, class), |parent| (parent, class))
+        })
+        .into_grouped_hash_map()
+        .into_values()
+        .map(|set| {
+            set.into_iter()
+                .map(|class| HeroicPastLife(class).to_value())
+                .sum::<Value>()
+                .greater_than(Value::from(0))
+        })
+        .cond_all();
+
+    once(BonusTemplate::new(
+        PastLifeFeat::HeroicCompletionist,
+        BonusType::Stacking,
+        1,
+        condition,
+    ))
 }
