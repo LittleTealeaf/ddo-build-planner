@@ -6,7 +6,7 @@ impl Condition {
     /// Asserts that the stance is a two handed fighting stance
     #[must_use]
     pub fn stance_two_handed_fighting() -> Self {
-        WeaponType::TWO_HANDED_FIGHTING
+        WeaponType::TWO_HANDED_MELEE_WEAPONS
             .map(|weapon| Self::has(MainHandType::Weapon(weapon)))
             .cond_any()
             .unwrap_or(Self::FALSE)

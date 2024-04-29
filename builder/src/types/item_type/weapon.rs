@@ -91,6 +91,50 @@ pub enum WeaponType {
 }
 
 impl WeaponType {
+    /// List of every weapon type
+    pub const ALL: [Self; 40] = [
+        Self::Club,
+        Self::Quarterstaff,
+        Self::Dagger,
+        Self::Sickle,
+        Self::LightMace,
+        Self::HeavyMace,
+        Self::Morningstar,
+        Self::HeavyCrossbow,
+        Self::LightCrossbow,
+        Self::Handaxe,
+        Self::BattleAxe,
+        Self::GreatAxe,
+        Self::Kukri,
+        Self::LongSword,
+        Self::GreatSword,
+        Self::Scimitar,
+        Self::Falchion,
+        Self::LongBow,
+        Self::ShortSword,
+        Self::Rapier,
+        Self::HeavyPick,
+        Self::LightPick,
+        Self::LightHammer,
+        Self::WarHammer,
+        Self::Maul,
+        Self::GreatClub,
+        Self::ShortBow,
+        Self::BastardSword,
+        Self::DwarvenWarAxe,
+        Self::Kama,
+        Self::Khopesh,
+        Self::Handwraps,
+        Self::GreatCrossbow,
+        Self::RepeatingHeavyCrossbow,
+        Self::RepeatingLightCrossbow,
+        Self::ThrowingAxe,
+        Self::ThrowingDagger,
+        Self::ThrowingHammer,
+        Self::Dart,
+        Self::Shuriken,
+    ];
+
     /// Sub-set of thrown weapons.
     pub const THROWING_WEAPONS: [Self; 5] = [
         Self::Dart,
@@ -145,7 +189,7 @@ impl WeaponType {
     ];
 
     /// Weapons that count as melee two-handed-fighting weapons
-    pub const TWO_HANDED_FIGHTING: [Self; 5] = [
+    pub const TWO_HANDED_MELEE_WEAPONS: [Self; 5] = [
         Self::Falchion,
         Self::GreatAxe,
         Self::GreatClub,
@@ -154,7 +198,7 @@ impl WeaponType {
     ];
 
     /// Weapons that are single-handed melee weapons
-    pub const SINGLE_HANDED_WEAPON: [Self; 20] = [
+    pub const ONE_HANDED_MELEE_WEAPONS: [Self; 20] = [
         Self::Club,
         Self::Dagger,
         Self::Sickle,
@@ -227,49 +271,7 @@ impl Display for WeaponType {
 
 impl StaticOptions for WeaponType {
     fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Club,
-            Self::Quarterstaff,
-            Self::Dagger,
-            Self::Sickle,
-            Self::LightMace,
-            Self::HeavyMace,
-            Self::Morningstar,
-            Self::HeavyCrossbow,
-            Self::LightCrossbow,
-            Self::Handaxe,
-            Self::BattleAxe,
-            Self::GreatAxe,
-            Self::Kukri,
-            Self::LongSword,
-            Self::GreatSword,
-            Self::Scimitar,
-            Self::Falchion,
-            Self::LongBow,
-            Self::ShortSword,
-            Self::Rapier,
-            Self::HeavyPick,
-            Self::LightPick,
-            Self::LightHammer,
-            Self::WarHammer,
-            Self::Maul,
-            Self::GreatClub,
-            Self::ShortBow,
-            Self::BastardSword,
-            Self::DwarvenWarAxe,
-            Self::Kama,
-            Self::Khopesh,
-            Self::Handwraps,
-            Self::GreatCrossbow,
-            Self::RepeatingHeavyCrossbow,
-            Self::RepeatingLightCrossbow,
-            Self::ThrowingAxe,
-            Self::ThrowingDagger,
-            Self::ThrowingHammer,
-            Self::Dart,
-            Self::Shuriken,
-        ]
-        .into_iter()
+        Self::ALL.into_iter()
     }
 }
 
