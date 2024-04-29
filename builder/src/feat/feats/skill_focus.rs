@@ -92,7 +92,7 @@ impl GetBonuses for SkillFocus {
             Self::ResistPoison => vec![BonusTemplate::new(
                 SavingThrow::Poison,
                 BonusType::Stacking,
-                Value::from(4),
+                4,
                 None,
             )],
             Self::SelfSufficient => vec![

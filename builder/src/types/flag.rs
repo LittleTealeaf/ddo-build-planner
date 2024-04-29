@@ -36,13 +36,14 @@ pub enum Flag {
     Immunity(Immunity),
     /// The alignment that the character is
     Alignment(Alignment),
-
+    /// Whether or not something is in the main hand
+    HasMainHand,
     /// Wielding an item in the main hand
     MainHandType(MainHandType),
-
+    /// Whether or not something is in the off hand
+    HasOffHand,
     /// Item type in the off hand
     OffHandType(OffHandType),
-
     /// Wearing Armor Type
     ArmorType(ArmorType),
 }
@@ -57,6 +58,8 @@ impl Display for Flag {
             Self::OffHandType(off_hand) => write!(f, "{off_hand} in the off hand"),
             Self::MainHandType(main_hand) => write!(f, "{main_hand} in the main hand"),
             Self::ArmorType(armor) => write!(f, "Wearing {armor} Armor"),
+            Self::HasMainHand => write!(f, "Item in Main Hand"),
+            Self::HasOffHand => write!(f, "Item in Off Hand"),
         }
     }
 }
@@ -65,6 +68,12 @@ impl GetBonuses for Flag {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
             Self::Race(race) => race.get_bonuses(value),
+            Self::MainHandType(_) => {
+                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasMainHand, None)])
+            }
+            Self::OffHandType(_) => {
+                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasOffHand, None)])
+            }
             _ => None,
         }
     }

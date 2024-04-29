@@ -12,6 +12,7 @@ use utils::enums::StaticOptions;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType, Condition, ToValue},
+    feat::{Feat, ToFeat},
     types::{
         absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
@@ -28,6 +29,8 @@ use crate::{
     },
     val,
 };
+
+use super::PastLifeFeat;
 
 /// Epic Past Life
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -306,7 +309,7 @@ impl GetBonuses for EpicPastLife {
                     (WeaponHand::Main, WeaponStat::Damage),
                     BonusType::Stacking,
                     dec!(2) * value,
-                    Condition::toggled(*self) & Condition::is_two_handed_fighting_stance(),
+                    Condition::toggled(*self) & Condition::stance_two_handed_fighting(),
                 ),
             ],
         };
@@ -318,6 +321,12 @@ impl GetBonuses for EpicPastLife {
 impl ToToggle for EpicPastLife {
     fn to_toggle(self) -> Toggle {
         Toggle::EpicPastLife(self)
+    }
+}
+
+impl ToFeat for EpicPastLife {
+    fn to_feat(self) -> Feat {
+        PastLifeFeat::Epic(self).to_feat()
     }
 }
 

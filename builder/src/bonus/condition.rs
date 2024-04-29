@@ -1,4 +1,4 @@
-mod helper;
+mod conditions;
 
 use core::fmt;
 use core::{
@@ -74,7 +74,7 @@ impl Condition {
     where
         A: Into<Attribute>,
     {
-        Self::GreaterThan(Value::Attribute(attribute.into()), Value::ZERO)
+        Value::Attribute(attribute.into()).greater_than(Value::ZERO)
     }
 
     /// Condition that returns true if the provided flag is on
@@ -83,7 +83,7 @@ impl Condition {
     where
         F: Into<Flag>,
     {
-        Value::Attribute(Attribute::Flag(flag.into())).greater_than(Value::ZERO)
+        Self::has(Attribute::Flag(flag.into()))
     }
 
     /// Condition that returns true if the provided toggle is on
@@ -92,7 +92,7 @@ impl Condition {
     where
         T: Into<Toggle>,
     {
-        Value::Attribute(Attribute::Toggle(toggle.into())).greater_than(Value::ZERO)
+        Self::has(Attribute::Toggle(toggle.into()))
     }
 }
 

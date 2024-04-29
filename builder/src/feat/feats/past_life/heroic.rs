@@ -206,7 +206,7 @@ impl GetBonuses for HeroicPastLife {
                 PlayerClass::Paladin => vec![BonusTemplate::new(
                     HealingAmplification::Positive,
                     BonusType::Stacking,
-                    Decimal::TEN * value,
+                    dec!(10) * value,
                     None,
                 )],
                 PlayerClass::SacredFist => vec![
