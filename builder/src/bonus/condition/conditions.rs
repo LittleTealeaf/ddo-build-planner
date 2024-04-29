@@ -9,6 +9,6 @@ impl Condition {
         WeaponType::TWO_HANDED_FIGHTING
             .map(|weapon| Self::has(MainHandType::Weapon(weapon)))
             .cond_any()
-            .unwrap_or(Condition::FALSE)
+            .unwrap_or(Self::FALSE)
     }
 }
