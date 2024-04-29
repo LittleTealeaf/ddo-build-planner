@@ -145,11 +145,36 @@ impl WeaponType {
     ];
 
     /// Weapons that count as melee two-handed-fighting weapons
-    pub const TWO_HANDED_FIGHTING: [Self; 4] = [
+    pub const TWO_HANDED_FIGHTING: [Self; 5] = [
         Self::Falchion,
         Self::GreatAxe,
         Self::GreatClub,
         Self::Quarterstaff,
+        Self::Maul,
+    ];
+
+    /// Weapons that are single-handed melee weapons
+    pub const SINGLE_HANDED_WEAPON: [Self; 20] = [
+        Self::Club,
+        Self::Dagger,
+        Self::Sickle,
+        Self::LightMace,
+        Self::HeavyMace,
+        Self::Morningstar,
+        Self::Handaxe,
+        Self::Kukri,
+        Self::LongSword,
+        Self::Scimitar,
+        Self::ShortSword,
+        Self::Rapier,
+        Self::HeavyPick,
+        Self::LightPick,
+        Self::LightHammer,
+        Self::WarHammer,
+        Self::BastardSword,
+        Self::DwarvenWarAxe,
+        Self::Kama,
+        Self::Khopesh,
     ];
 }
 

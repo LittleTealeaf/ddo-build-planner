@@ -306,7 +306,7 @@ impl GetBonuses for EpicPastLife {
                     (WeaponHand::Main, WeaponStat::Damage),
                     BonusType::Stacking,
                     dec!(2) * value,
-                    Condition::toggled(*self) & Condition::is_two_handed_fighting(),
+                    Condition::toggled(*self) & Condition::is_two_handed_fighting_stance(),
                 ),
             ],
         };

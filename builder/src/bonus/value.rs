@@ -552,6 +552,24 @@ macro_rules! val {
 mod tests {
     use super::*;
 
+    mod val_macro {
+        use rust_decimal_macros::dec;
+
+        use super::*;
+
+        #[test]
+        fn returns_constant() {
+            let value = val!(5);
+            assert_eq!(value, Value::Const(dec!(5)));
+        }
+
+        #[test]
+        fn negative_values() {
+            let value = val!(-5);
+            assert_eq!(value, Value::Const(dec!(-5)));
+        }
+    }
+
     mod consts {
         use super::*;
 
