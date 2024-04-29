@@ -15,6 +15,7 @@ use crate::{
         ability::Ability, player_class::PlayerClass, skill::Skill, spell_points::SpellPoints,
         spell_power::SpellPower, summoned_attribute::SummonedAttribute,
     },
+    val,
 };
 
 public_modules!(spell_focus);
@@ -48,7 +49,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::AugmentSummoning => Some(vec![BonusTemplate::new(
                 SummonedAttribute::AbilityScore(Ability::All),
                 BonusType::Stacking,
-                4,
+                val!(4),
                 None,
             )]),
             Self::MobileSpellcasting => None,
@@ -56,14 +57,14 @@ impl GetBonuses for SpellcastingFeat {
             Self::CombatCasting => Some(vec![BonusTemplate::new(
                 Skill::Concentration,
                 BonusType::Stacking,
-                4,
+                val!(4),
                 None,
             )]),
             Self::MagicalTraining => Some(vec![
                 BonusTemplate::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
-                    5,
+                    val!(5),
                     None,
                 ),
                 BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, 80, None),
@@ -72,13 +73,13 @@ impl GetBonuses for SpellcastingFeat {
                 BonusTemplate::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
-                    1,
+                    val!(1),
                     None,
                 ),
                 BonusTemplate::new(
                     SpellPoints::Base,
                     BonusType::Stacking,
-                    Value::from(5) + (Value::from(Attribute::TotalCharacterLevel) * Value::from(5)),
+                    val!(5) + (Value::from(Attribute::TotalCharacterLevel) * val!(5)),
                     None,
                 ),
             ]),
@@ -86,7 +87,7 @@ impl GetBonuses for SpellcastingFeat {
                 Some(vec![BonusTemplate::new(
                     Attribute::SpellPenetration,
                     BonusType::Stacking,
-                    2,
+                    val!(2),
                     None,
                 )])
             }

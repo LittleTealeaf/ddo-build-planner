@@ -23,6 +23,7 @@ use crate::{
         spell_points::SpellPoints,
         spell_power::SpellPower,
     },
+    val,
 };
 
 /// Returns all base bonuses that are to be included by default.
@@ -53,14 +54,14 @@ fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
             BonusTemplate::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
-                ((Value::Attribute(Attribute::Ability(ability)) - Value::TEN) / Value::TWO).floor(),
+                ((Value::Attribute(Attribute::Ability(ability)) - val!(10)) / val!(2)).floor(),
                 None,
             )
         })
         .chain(once(BonusTemplate::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,
-            8,
+            val!(8),
             None,
         )))
 }
@@ -195,8 +196,8 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
             SpellPoints::Scaled.to_value()
                 * (PlayerClass::FavoredSoul.to_value()
                     + PlayerClass::Sorcerer.to_value()
-                    + 20.to_value())
-                / 20.to_value(),
+                    + val!(20))
+                / val!(20),
             None,
         ),
         BonusTemplate::new(
@@ -235,7 +236,7 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
             Value::condition(
                 Condition::has(ArmorType::Medium) | Condition::has(ArmorType::Heavy),
                 Sheltering::Magical,
-                Value::condition(Condition::has(ArmorType::Light), 100, 50),
+                Value::condition(Condition::has(ArmorType::Light), val!(100), val!(50)),
             ),
             None,
         ),
@@ -298,9 +299,9 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Absorption::Total(damage_type),
             BonusType::Stacking,
-            1.to_value()
+            Value::ONE
                 - Value::iter_product(AbsorptionSource::get_static().map(|bonus_type| {
-                    1.to_value() - Absorption::Bonus(damage_type, bonus_type).to_value()
+                    Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
                 })),
             None,
         )
