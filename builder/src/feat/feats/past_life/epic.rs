@@ -300,7 +300,12 @@ impl GetBonuses for EpicPastLife {
                     dec!(2) * value,
                     Condition::toggled(*self),
                 ),
-                // TODO: +2 damage if two-handed-fighting
+                BonusTemplate::new(
+                    (WeaponHand::Main, WeaponStat::Damage),
+                    BonusType::Stacking,
+                    dec!(2) * value,
+                    Condition::toggled(*self) & Condition::is_two_handed_fighting(),
+                ),
             ],
         };
 

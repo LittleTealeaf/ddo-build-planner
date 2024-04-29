@@ -1,3 +1,5 @@
+mod weapons;
+
 use core::fmt;
 use core::{
     fmt::Display,
@@ -42,6 +44,12 @@ pub enum Condition {
     /// Exclusive Or gate, requires that only one is true
     #[serde(rename = "x", alias = "Xor")]
     Xor(Box<Self>, Box<Self>),
+}
+
+impl Default for Condition {
+    fn default() -> Self {
+        Self::TRUE
+    }
 }
 
 impl From<bool> for Condition {
