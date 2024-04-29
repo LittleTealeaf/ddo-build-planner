@@ -143,6 +143,14 @@ impl WeaponType {
         Self::Khopesh,
         Self::Handwraps,
     ];
+
+    /// Weapons that count as melee two-handed-fighting weapons
+    pub const TWO_HANDED_FIGHTING: [Self; 4] = [
+        Self::Falchion,
+        Self::GreatAxe,
+        Self::GreatClub,
+        Self::Quarterstaff,
+    ];
 }
 
 impl Display for WeaponType {

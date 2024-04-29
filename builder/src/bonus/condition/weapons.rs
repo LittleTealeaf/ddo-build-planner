@@ -6,14 +6,9 @@ impl Condition {
     /// Asserts that the user is using a two-handed fighting weapon
     #[must_use]
     pub fn is_two_handed_fighting() -> Self {
-        [
-            WeaponType::GreatAxe,
-            WeaponType::GreatClub,
-            WeaponType::Quarterstaff,
-            WeaponType::Falchion,
-        ]
-        .map(|weapon| Self::has(MainHandType::Weapon(weapon)))
-        .cond_any()
-        .unwrap_or_default()
+        WeaponType::TWO_HANDED_FIGHTING
+            .map(|weapon| Self::has(MainHandType::Weapon(weapon)))
+            .cond_any()
+            .unwrap_or_default()
     }
 }
