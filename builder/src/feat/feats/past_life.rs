@@ -1,4 +1,5 @@
 use core::fmt::{self, Display};
+use std::iter::once;
 
 use itertools::chain;
 use rust_decimal::prelude::Decimal;
@@ -25,6 +26,8 @@ pub enum PastLifeFeat {
     Heroic(HeroicPastLife),
     /// Racial Past Life
     Racial(RacialPastLife),
+    /// Epic Past Life
+    Epic(EpicPastLife),
 }
 
 impl Display for PastLifeFeat {
@@ -34,6 +37,7 @@ impl Display for PastLifeFeat {
             Self::HeroicCompletionist => write!(f, "Heroic Completionist"),
             Self::Heroic(class) => write!(f, "{class}"),
             Self::Racial(race) => write!(f, "{race}"),
+            Self::Epic(epic) => write!(f, "{epic}"),
         }
     }
 }
@@ -50,6 +54,7 @@ impl GetBonuses for PastLifeFeat {
             }),
             Self::Heroic(heroic) => heroic.get_bonuses(value),
             Self::Racial(race) => race.get_bonuses(value),
+            Self::Epic(epic) => epic.get_bonuses(value),
         }
     }
 }
@@ -57,10 +62,11 @@ impl GetBonuses for PastLifeFeat {
 impl StaticOptions for PastLifeFeat {
     fn get_static() -> impl Iterator<Item = Self> {
         chain!(
-            [Self::HeroicCompletionist],
+            once(Self::HeroicCompletionist),
             IconicPastLife::get_static().map(Self::Iconic),
             HeroicPastLife::get_static().map(Self::Heroic),
             RacialPastLife::get_static().map(Self::Racial),
+            EpicPastLife::get_static().map(Self::Epic),
         )
     }
 }

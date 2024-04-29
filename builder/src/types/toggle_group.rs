@@ -4,7 +4,7 @@ use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 
-use super::toggle::Toggle;
+use super::{epic_sphere::EpicSphere, toggle::Toggle};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone, Copy)]
 /// Describes different toggle groups within the game. Each toggle group can only have one toggle
@@ -27,16 +27,10 @@ pub enum ToggleGroup {
     MajorForm,
     /// Warlock Pact
     WarlockPact,
+    /// Epic Past Life
+    EpicPastLife(EpicSphere),
     /// Iconic Past Life
     IconicPastLife,
-    /// Divine Past Life
-    DivinePastLife,
-    /// Martial Past Life
-    MartialPastLife,
-    /// Primal Past Life
-    PrimalPastLife,
-    /// Arcane Past Life
-    ArcanePastLife,
 }
 
 impl Display for ToggleGroup {
@@ -48,10 +42,7 @@ impl Display for ToggleGroup {
             Self::MajorForm => write!(f, "Major Form"),
             Self::WarlockPact => write!(f, "Warlock Pact"),
             Self::IconicPastLife => write!(f, "Iconic Past Life"),
-            Self::DivinePastLife => write!(f, "Divine Past Life"),
-            Self::MartialPastLife => write!(f, "Martial Past Life"),
-            Self::PrimalPastLife => write!(f, "Primal Past Life"),
-            Self::ArcanePastLife => write!(f, "Arcane Past Life"),
+            Self::EpicPastLife(sphere) => write!(f, "{sphere}"),
         }
     }
 }

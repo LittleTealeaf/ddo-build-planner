@@ -12,7 +12,8 @@ use utils::{enums::StaticOptions, public_modules};
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
-    feat::IconicPastLife,
+    feat::{EpicPastLife, IconicPastLife},
+    types::epic_sphere::EpicSphere,
 };
 
 use super::{
@@ -31,6 +32,8 @@ pub enum Toggle {
     Attacking(AttackingTarget),
     /// Iconic Past Life
     IconicPastLife(IconicPastLife),
+    /// Epic Past Life
+    EpicPastLife(EpicPastLife),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
 
@@ -61,6 +64,7 @@ impl Display for Toggle {
             Self::InReaper => write!(f, "In Reaper"),
             Self::Attacking(target) => write!(f, "Attacking {target} Target"),
             Self::IconicPastLife(past_life) => write!(f, "{past_life}"),
+            Self::EpicPastLife(past_life) => write!(f, "{past_life}"),
         }
     }
 }
@@ -113,6 +117,7 @@ impl StaticOptions for Toggle {
             [Self::Blocking, Self::InReaper],
             AttackingTarget::get_static().map(Self::Attacking),
             IconicPastLife::get_static().map(Self::IconicPastLife),
+            EpicPastLife::get_static().map(Self::EpicPastLife),
         )
     }
 }
@@ -127,6 +132,7 @@ impl GetToggleGroup for Toggle {
     fn toggle_group(&self) -> Option<ToggleGroup> {
         match self {
             Self::IconicPastLife(life) => life.toggle_group(),
+            Self::EpicPastLife(life) => life.toggle_group(),
             _ => None,
         }
     }
