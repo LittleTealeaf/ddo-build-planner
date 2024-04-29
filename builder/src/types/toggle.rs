@@ -13,7 +13,6 @@ use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
     feat::{EpicPastLife, IconicPastLife},
-    types::epic_sphere::EpicSphere,
 };
 
 use super::{

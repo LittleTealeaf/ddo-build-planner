@@ -1,4 +1,5 @@
-use std::fmt::Display;
+//! Epic Spheres
+use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
@@ -17,21 +18,17 @@ pub enum EpicSphere {
 }
 
 impl EpicSphere {
-    pub const ALL: [Self; 4] = [
-        Self::Arcane,
-        Self::Primal,
-        Self::Divine,
-        Self::Martial
-    ];
+    /// All of the epic spheres
+    pub const ALL: [Self; 4] = [Self::Arcane, Self::Primal, Self::Divine, Self::Martial];
 }
 
 impl Display for EpicSphere {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            EpicSphere::Arcane => write!(f, "Arcane Sphere"),
-            EpicSphere::Primal => write!(f, "Primal Sphere"),
-            EpicSphere::Divine => write!(f, "Divine Sphere"),
-            EpicSphere::Martial => write!(f, "Martial Sphere"),
+            Self::Arcane => write!(f, "Arcane Sphere"),
+            Self::Primal => write!(f, "Primal Sphere"),
+            Self::Divine => write!(f, "Divine Sphere"),
+            Self::Martial => write!(f, "Martial Sphere"),
         }
     }
 }

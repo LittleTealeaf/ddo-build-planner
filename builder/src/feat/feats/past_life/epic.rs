@@ -1,5 +1,7 @@
-use core::fmt::{self, Display};
-use std::iter::once;
+use core::{
+    fmt::{self, Display},
+    iter::once,
+};
 
 use itertools::chain;
 use rust_decimal::prelude::Decimal;
