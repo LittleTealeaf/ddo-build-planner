@@ -1,6 +1,7 @@
 use core::fmt::{self, Display};
 
 use rust_decimal::prelude::Decimal;
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
@@ -59,7 +60,7 @@ impl GetBonuses for IconicPastLife {
             return None;
         }
 
-        let value = value.min(Decimal::from(3));
+        let value = value.min(dec!(3));
 
         let Self(race) = self;
 
@@ -75,7 +76,7 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Repair.into()),
                     BonusType::Stacking,
-                    value * Decimal::TEN,
+                    value * dec!(10),
                     Condition::toggled(Self(Race::Bladeforged)),
                 ),
             ]),
@@ -84,7 +85,7 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::new(
                     Sheltering::Magical,
                     BonusType::Stacking,
-                    value * Decimal::from(3),
+                    value * dec!(3),
                     None,
                 ),
                 BonusTemplate::new(
@@ -96,7 +97,7 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Acid.into()),
                     BonusType::Stacking,
-                    value * Decimal::from(5),
+                    value * dec!(5),
                     Condition::toggled(Self(Race::DeepGnome)),
                 ),
             ]),
@@ -105,13 +106,13 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::new(
                     Sheltering::Physical,
                     BonusType::Stacking,
-                    value * Decimal::from(3),
+                    value * dec!(3),
                     None,
                 ),
                 BonusTemplate::new(
                     SavingThrow::All,
                     BonusType::ActionBoost,
-                    value * Decimal::from(3),
+                    value * dec!(3),
                     Condition::toggled(Self(Race::PurpleDragonKnight)),
                 ),
                 // TODO: Movement speed
@@ -170,7 +171,7 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Positive.into()),
                     BonusType::Stacking,
-                    value * Decimal::from(3),
+                    value * dec!(3),
                     None,
                 ),
                 BonusTemplate::new(

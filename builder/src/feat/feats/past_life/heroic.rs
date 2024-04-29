@@ -1,6 +1,7 @@
 use core::fmt::{self, Display};
 
 use rust_decimal::prelude::Decimal;
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
@@ -47,7 +48,7 @@ impl GetBonuses for HeroicPastLife {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         (value > Decimal::ZERO).then(|| {
             let Self(class) = self;
-            let value = value.min(Decimal::from(3));
+            let value = value.min(dec!(3));
             match class {
                 PlayerClass::Alchemist => vec![
                     BonusTemplate::new(
@@ -59,7 +60,7 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         SpellPoints::Base,
                         BonusType::Stacking,
-                        Decimal::from(20) * value,
+                        dec!(20) * value,
                         None,
                     ),
                 ],
@@ -75,7 +76,7 @@ impl GetBonuses for HeroicPastLife {
                 PlayerClass::Barbarian => vec![BonusTemplate::new(
                     Health::Bonus,
                     BonusType::Stacking,
-                    Decimal::from(20) * value,
+                    dec!(20) * value,
                     None,
                 )],
                 PlayerClass::Fighter => vec![
@@ -111,7 +112,7 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         SpellPoints::Base,
                         BonusType::Stacking,
-                        Decimal::from(20) * value,
+                        dec!(20) * value,
                         None,
                     ),
                 ],
@@ -134,7 +135,7 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         SpellPoints::Base,
                         BonusType::Stacking,
-                        Decimal::from(20) * value,
+                        dec!(20) * value,
                         None,
                     ),
                 ],
@@ -156,13 +157,13 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Electric.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Sonic.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                 ],
@@ -180,7 +181,7 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Negative.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                 ],
@@ -192,13 +193,13 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Acid.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Poison.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                 ],
@@ -218,7 +219,7 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Positive.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                 ],
@@ -237,7 +238,7 @@ impl GetBonuses for HeroicPastLife {
                 PlayerClass::Warlock => vec![BonusTemplate::new(
                     Sheltering::Magical,
                     BonusType::Stacking,
-                    Decimal::from(3) * value,
+                    dec!(3) * value,
                     None,
                 )],
                 PlayerClass::AcolyteOfTheSkin => vec![
@@ -245,7 +246,7 @@ impl GetBonuses for HeroicPastLife {
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Fire.into()),
                         BonusType::Stacking,
-                        Decimal::from(5) * value,
+                        dec!(5) * value,
                         None,
                     ),
                 ],
