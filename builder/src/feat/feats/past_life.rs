@@ -23,6 +23,8 @@ pub enum PastLifeFeat {
     HeroicCompletionist,
     /// Heroic Past Life
     Heroic(HeroicPastLife),
+    /// Racial Past Life
+    Racial(RacialPastLife),
 }
 
 impl Display for PastLifeFeat {
@@ -31,6 +33,7 @@ impl Display for PastLifeFeat {
             Self::Iconic(iconic) => write!(f, "{iconic}"),
             Self::HeroicCompletionist => write!(f, "Heroic Completionist"),
             Self::Heroic(class) => write!(f, "{class}"),
+            Self::Racial(race) => write!(f, "{race}"),
         }
     }
 }
@@ -46,6 +49,7 @@ impl GetBonuses for PastLifeFeat {
                 ]
             }),
             Self::Heroic(heroic) => heroic.get_bonuses(value),
+            Self::Racial(race) => race.get_bonuses(value),
         }
     }
 }
@@ -55,7 +59,8 @@ impl StaticOptions for PastLifeFeat {
         chain!(
             [Self::HeroicCompletionist],
             IconicPastLife::get_static().map(Self::Iconic),
-            HeroicPastLife::get_static().map(Self::Heroic)
+            HeroicPastLife::get_static().map(Self::Heroic),
+            RacialPastLife::get_static().map(Self::Racial),
         )
     }
 }
