@@ -46,6 +46,8 @@ pub enum Flag {
     OffHandType(OffHandType),
     /// Wearing Armor Type
     ArmorType(ArmorType),
+    /// Whether the user is using a two handed fighting weapon
+    IsTwoHandedFighting,
 }
 
 impl Display for Flag {
@@ -60,6 +62,7 @@ impl Display for Flag {
             Self::ArmorType(armor) => write!(f, "Wearing {armor} Armor"),
             Self::HasMainHand => write!(f, "Item in Main Hand"),
             Self::HasOffHand => write!(f, "Item in Off Hand"),
+            Self::IsTwoHandedFighting => write!(f, "Is Two Handed Fighting"),
         }
     }
 }
@@ -110,6 +113,11 @@ impl StaticOptions for Flag {
             OffHandType::get_static().map(Self::OffHandType),
             MainHandType::get_static().map(Self::MainHandType),
             ArmorType::get_static().map(Self::ArmorType),
+            [
+                Self::IsTwoHandedFighting,
+                Self::HasOffHand,
+                Self::HasMainHand
+            ]
         )
     }
 }

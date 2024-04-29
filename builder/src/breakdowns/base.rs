@@ -13,9 +13,9 @@ use crate::{
         absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
         damage_type::DamageType,
-        flag::OffHandType,
+        flag::{Flag, MainHandType, OffHandType},
         health::Health,
-        item_type::{ArmorType, ShieldType},
+        item_type::{ArmorType, ShieldType, WeaponType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,
         sheltering::Sheltering,
@@ -43,6 +43,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         armor_check_penalties(),
         absorption(),
         heoric_completionist(),
+        two_handed_fighting(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
@@ -324,5 +325,14 @@ fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
     once(BonusTemplate::feat(
         PastLifeFeat::HeroicCompletionist,
         condition,
+    ))
+}
+
+fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
+    once(BonusTemplate::flag(
+        Flag::IsTwoHandedFighting,
+        WeaponType::TWO_HANDED_MELEE_WEAPONS
+            .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+            .cond_any(),
     ))
 }
