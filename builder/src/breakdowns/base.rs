@@ -316,7 +316,7 @@ fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
             set.into_iter()
                 .map(|class| HeroicPastLife(class).to_value())
                 .sum::<Value>()
-                .greater_than(Value::from(0))
+                .greater_than(Value::ZERO)
         })
         .cond_all();
 
