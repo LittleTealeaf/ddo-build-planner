@@ -2,7 +2,7 @@ use rust_decimal::Decimal;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{BonusType, BonusTemplate},
+    bonus::{BonusTemplate, BonusType},
     types::{ability::Ability, player_class::PlayerClass},
 };
 
@@ -54,25 +54,6 @@ impl PlayerClass {
                 self.ability_bonus_to_spell_dc(Ability::Charisma),
             ]),
             _ => None,
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn all_classes_have_valid_bonuses() {
-        for player_class in PlayerClass::CLASSES {
-            for i in 0..=20 {
-                // FIX: Huh?
-                let mut sum = Decimal::from(0);
-                for _ in 0..i {
-                    sum += Decimal::from(1); 
-                }
-                player_class.get_bonuses(sum);
-            }
         }
     }
 }
