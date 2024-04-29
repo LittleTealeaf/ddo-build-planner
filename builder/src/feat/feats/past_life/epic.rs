@@ -18,6 +18,7 @@ use crate::{
         armor_class::ArmorClass,
         damage_type::DamageType,
         epic_sphere::EpicSphere,
+        flag::Flag,
         heal_amp::HealingAmplification,
         health::Health,
         saving_throw::SavingThrow,
@@ -309,7 +310,7 @@ impl GetBonuses for EpicPastLife {
                     (WeaponHand::Main, WeaponStat::Damage),
                     BonusType::Stacking,
                     dec!(2) * value,
-                    Condition::toggled(*self) & Condition::stance_two_handed_fighting(),
+                    Condition::toggled(*self) & Condition::flag(Flag::IsTwoHandedFighting),
                 ),
             ],
         };

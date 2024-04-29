@@ -1,5 +1,3 @@
-mod conditions;
-
 use core::fmt;
 use core::{
     fmt::Display,
