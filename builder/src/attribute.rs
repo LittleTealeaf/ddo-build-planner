@@ -128,6 +128,8 @@ pub enum Attribute {
     /// Healing Amplification
     #[serde(rename = "hamp", alias = "HealAmp", alias = "HealingAmplification")]
     HealingAmplification(HealingAmplification),
+    /// Movement Speed
+    MovementSpeed,
 }
 
 impl Display for Attribute {
@@ -163,6 +165,7 @@ impl Display for Attribute {
             Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
             Self::ItemSet(set) => write!(f, "Item Set: {set}"),
             Self::HealingAmplification(heal_amp) => heal_amp.fmt(f),
+            Self::MovementSpeed => write!(f, "Movement Speed"),
         }
     }
 }
@@ -215,7 +218,8 @@ impl StaticOptions for Attribute {
                 Self::SpellResistance,
                 Self::SpellPenetration,
                 Self::TotalCharacterLevel,
-                Self::ArmorCheckPenalty
+                Self::ArmorCheckPenalty,
+                Self::MovementSpeed,
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),

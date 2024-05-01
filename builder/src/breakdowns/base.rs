@@ -328,6 +328,7 @@ fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
     ))
 }
 
+// TODO: convert this to the other method (flag to flag)
 fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
     once(BonusTemplate::flag(
         Flag::IsTwoHandedFighting,

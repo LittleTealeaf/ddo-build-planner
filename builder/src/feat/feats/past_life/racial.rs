@@ -123,7 +123,6 @@ impl GetBonuses for RacialPastLife {
                 (value >= dec!(1)).then(|| BonusTemplate::new(skill, BonusType::Stacking, 1, None)),
                 (value >= dec!(2))
                     .then(|| BonusTemplate::new(ability, BonusType::Stacking, 1, None)),
-                // TODO: Racial Action Point
             ]
             .into_iter()
             .flatten()

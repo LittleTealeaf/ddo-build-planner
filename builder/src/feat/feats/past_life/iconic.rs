@@ -115,7 +115,12 @@ impl GetBonuses for IconicPastLife {
                     value * dec!(3),
                     Condition::toggled(Self(Race::PurpleDragonKnight)),
                 ),
-                // TODO: Movement speed
+                BonusTemplate::new(
+                    Attribute::MovementSpeed,
+                    BonusType::ActionBoost,
+                    value * dec!(10),
+                    Condition::toggled(Self(Race::PurpleDragonKnight)),
+                ),
             ]),
             Race::Razorclaw => {
                 fn build_condition<F, A>(fun: F) -> Condition
@@ -195,6 +200,12 @@ impl GetBonuses for IconicPastLife {
             Race::Scoundrel => Some(vec![
                 BonusTemplate::toggle(Self(Race::Scoundrel), None),
                 BonusTemplate::new(SavingThrow::Reflex, BonusType::Stacking, value, None),
+                BonusTemplate::new(
+                    Attribute::MovementSpeed,
+                    BonusType::Standard,
+                    value * dec!(10),
+                    Condition::toggled(Self(Race::Morninglord)),
+                ),
             ]),
             _ => None,
         }

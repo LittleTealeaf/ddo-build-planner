@@ -9,7 +9,7 @@ use utils::enums::StaticOptions;
 
 use crate::{
     attribute::GetBonuses,
-    bonus::{BonusTemplate, BonusType, Value},
+    bonus::{BonusTemplate, BonusType},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{saving_throw::SavingThrow, skill::Skill},
 };
