@@ -26,7 +26,7 @@ pub enum Race {
     Halfling,
     /// Half-Elf Race
     HalfElf,
-    /// HalfOrc Race
+    /// Half-Orc Race
     HalfOrc,
     /// Human Race
     Human,
@@ -34,7 +34,7 @@ pub enum Race {
     Tiefling,
     /// Warforged Race
     Warforged,
-    /// WoodElf Race
+    /// Wood-Elf Race
     WoodElf,
     /// Aasimar Race
     Aasimar,
@@ -44,7 +44,7 @@ pub enum Race {
     Tabaxi,
     /// Bladeforged Race
     Bladeforged,
-    /// DeepGnome Race
+    /// Deep-Gnome Race
     DeepGnome,
     /// Morninglord Race
     Morninglord,
