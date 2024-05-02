@@ -27,7 +27,7 @@ pub enum WeaponStat {
     /// The damage multiplier of the weapon on critical hits
     #[serde(rename = "multi", alias = "CriticalMultiplier")]
     CriticalMultiplier,
-    /// THe damage multiplier of the weapon on critical hits on a 19-20
+    /// The damage multiplier of the weapon on critical hits on a 19-20
     #[serde(rename = "vorpalmulti", alias = "CriticalMultiplier1920")]
     CriticalMultiplier1920,
     /// Damage Types

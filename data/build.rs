@@ -1,4 +1,6 @@
 //! Compiles the sourced data into the build file
+
+#![allow(clippy::std_instead_of_core)]
 use std::{
     env,
     fs::{read_dir, File, ReadDir},
