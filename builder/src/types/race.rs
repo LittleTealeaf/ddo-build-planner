@@ -24,7 +24,7 @@ pub enum Race {
     Gnome,
     /// Halfling Race
     Halfling,
-    /// HalfElf Race
+    /// Half-Elf Race
     HalfElf,
     /// HalfOrc Race
     HalfOrc,
