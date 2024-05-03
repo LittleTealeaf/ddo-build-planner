@@ -133,7 +133,7 @@ where
         I: IntoIterator<Item = S>,
     {
         BreakdownBatch {
-            sources: chain!(self.sources, sources.into_iter().map(Into::into)),
+            sources: self.sources.chain(sources.into_iter().map(Into::into)),
             bonuses: self.bonuses,
             attributes: self.attributes,
             breakdowns: self.breakdowns,
@@ -162,7 +162,7 @@ where
     {
         BreakdownBatch {
             sources: self.sources,
-            bonuses: chain!(self.bonuses, bonuses.into_iter().map(Into::into)),
+            bonuses: self.bonuses.chain(bonuses.into_iter().map(Into::into)),
             attributes: self.attributes,
             breakdowns: self.breakdowns,
         }
@@ -191,7 +191,9 @@ where
         BreakdownBatch {
             sources: self.sources,
             bonuses: self.bonuses,
-            attributes: chain!(self.attributes, attributes.into_iter().map(Into::into)),
+            attributes: self
+                .attributes
+                .chain(attributes.into_iter().map(Into::into)),
             breakdowns: self.breakdowns,
         }
     }
