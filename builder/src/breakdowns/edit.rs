@@ -1,5 +1,7 @@
-use core::iter::once;
-use std::collections::HashSet;
+#![allow(missing_docs)]
+
+use core::iter::{empty, once};
+use std::{collections::HashSet, iter::Empty};
 
 use itertools::{chain, Itertools};
 use rust_decimal::Decimal;
@@ -12,20 +14,15 @@ use crate::{
 
 use super::{buffer::Buffer, Breakdowns};
 
-pub struct BreakdownBatch<'a> {
-    breakdowns: &'a mut Breakdowns,
-    sources: HashSet<BonusSource>,
-    bonuses: Vec<Bonus>,
-    attributes: Vec<Attribute>,
-}
-
 impl Breakdowns {
-    pub fn edit(&mut self) -> BreakdownBatch<'_> {
+    pub fn edit(
+        &mut self,
+    ) -> BreakdownBatch<'_, Empty<BonusSource>, Empty<Bonus>, Empty<Attribute>> {
         BreakdownBatch {
             breakdowns: self,
-            sources: HashSet::new(),
-            bonuses: Vec::new(),
-            attributes: Vec::new(),
+            sources: empty(),
+            bonuses: empty(),
+            attributes: empty(),
         }
     }
 
@@ -79,17 +76,39 @@ impl Breakdowns {
     }
 }
 
-impl<'a> BreakdownBatch<'a> {
+pub struct BreakdownBatch<'a, S, B, A>
+where
+    S: Iterator<Item = BonusSource>,
+    B: Iterator<Item = Bonus>,
+    A: Iterator<Item = Attribute>,
+{
+    breakdowns: &'a mut Breakdowns,
+    sources: S,
+    bonuses: B,
+    attributes: A,
+}
+
+impl<'a, S1, B1, A1> BreakdownBatch<'a, S1, B1, A1>
+where
+    S1: Iterator<Item = BonusSource>,
+    B1: Iterator<Item = Bonus>,
+    A1: Iterator<Item = Attribute>,
+{
     pub fn apply(self) {
         let mut buffer = Buffer::new();
 
-        let sources = chain!(self.sources.iter(), self.bonuses.iter().map(Bonus::source));
+        let mut sources = self.sources.collect::<HashSet<_>>();
 
-        let removed_bonuses = self.breakdowns.remove_by_source(sources);
+        let bonuses = self.bonuses.map(|bonus| {
+            sources.insert(bonus.source().clone());
+            bonus
+        });
 
-        buffer.insert_attributes(removed_bonuses);
-        buffer.insert_attributes(self.attributes);
-        buffer.insert_bonuses(self.bonuses);
+        buffer.insert_bonuses(bonuses);
+
+        let removed_bonuses = self.breakdowns.remove_by_source(&sources);
+
+        buffer.insert_attributes(chain!(removed_bonuses.map(Into::into), self.attributes));
 
         for bonus in buffer.get_bonuses() {
             let attribute = bonus.attribute();
@@ -104,60 +123,98 @@ impl<'a> BreakdownBatch<'a> {
         self.breakdowns.consume_buffer(buffer);
     }
 
-    pub fn remove_sources<I, B>(mut self, sources: I) -> Self
+    #[must_use]
+    pub fn remove_sources<I, S>(
+        self,
+        sources: I,
+    ) -> BreakdownBatch<'a, impl Iterator<Item = BonusSource>, B1, A1>
     where
-        I: IntoIterator<Item = B>,
-        B: Into<BonusSource>,
+        S: Into<BonusSource>,
+        I: IntoIterator<Item = S>,
     {
-        self.sources.extend(sources.into_iter().map(Into::into));
-        self
+        BreakdownBatch {
+            sources: chain!(self.sources, sources.into_iter().map(Into::into)),
+            bonuses: self.bonuses,
+            attributes: self.attributes,
+            breakdowns: self.breakdowns,
+        }
     }
 
-    pub fn remove_source<S>(self, source: S) -> Self
+    #[must_use]
+    pub fn remove_source<S>(
+        self,
+        source: S,
+    ) -> BreakdownBatch<'a, impl Iterator<Item = BonusSource>, B1, A1>
     where
         S: Into<BonusSource>,
     {
         self.remove_sources(once(source))
     }
 
-    pub fn insert_bonuses<I, B>(mut self, bonuses: I) -> Self
+    #[must_use]
+    pub fn insert_bonuses<I, B>(
+        self,
+        bonuses: I,
+    ) -> BreakdownBatch<'a, S1, impl Iterator<Item = Bonus>, A1>
     where
         I: IntoIterator<Item = B>,
         B: Into<Bonus>,
     {
-        self.bonuses.extend(bonuses.into_iter().map(Into::into));
-        self
+        BreakdownBatch {
+            sources: self.sources,
+            bonuses: chain!(self.bonuses, bonuses.into_iter().map(Into::into)),
+            attributes: self.attributes,
+            breakdowns: self.breakdowns,
+        }
     }
 
-    pub fn insert_bonus<B>(self, bonus: B) -> Self
+    #[must_use]
+    pub fn insert_bonus<B>(
+        self,
+        bonus: B,
+    ) -> BreakdownBatch<'a, S1, impl Iterator<Item = Bonus>, A1>
     where
         B: Into<Bonus>,
     {
         self.insert_bonuses(once(bonus))
     }
 
-    pub fn recalculate_attributes<I, A>(mut self, attributes: I) -> Self
+    #[must_use]
+    pub fn recalculate_attributes<I, A>(
+        self,
+        attributes: I,
+    ) -> BreakdownBatch<'a, S1, B1, impl Iterator<Item = Attribute>>
     where
         I: IntoIterator<Item = A>,
         A: Into<Attribute>,
     {
-        self.attributes
-            .extend(attributes.into_iter().map(Into::into));
-        self
+        BreakdownBatch {
+            sources: self.sources,
+            bonuses: self.bonuses,
+            attributes: chain!(self.attributes, attributes.into_iter().map(Into::into)),
+            breakdowns: self.breakdowns,
+        }
     }
 
-    pub fn recalculate_attribute<A>(self, attribute: A) -> Self
+    #[must_use]
+    pub fn recalculate_attribute<A>(
+        self,
+        attribute: A,
+    ) -> BreakdownBatch<'a, S1, B1, impl Iterator<Item = Attribute>>
     where
         A: Into<Attribute>,
     {
         self.recalculate_attributes(once(attribute))
     }
 
-    pub fn recalculate_all_attributes(self) -> Self {
+    #[must_use]
+    pub fn recalculate_all_attributes(
+        self,
+    ) -> BreakdownBatch<'a, S1, B1, impl Iterator<Item = Attribute>> {
         self.breakdowns.value_cache.clear();
         self.breakdowns.condition_cache.clear();
-        let keys = self.breakdowns.bonuses.keys().cloned().collect_vec();
-        self.recalculate_attributes(keys)
+        let attributes = self.breakdowns.bonuses.keys().cloned().collect_vec();
+        self.recalculate_attributes(attributes)
     }
 }
 
