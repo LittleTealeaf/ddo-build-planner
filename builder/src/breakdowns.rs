@@ -5,13 +5,15 @@ mod breakdown;
 mod buffer;
 mod calculation;
 mod dynamic;
-mod inserting;
+// mod inserting;
+mod edit;
 
 use std::collections::HashMap;
 
 use rust_decimal::Decimal;
 
 pub use breakdown::*;
+pub use edit::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
