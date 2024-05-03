@@ -1,7 +1,7 @@
 #![allow(missing_docs)]
 
-use core::iter::{empty, once};
-use std::{collections::HashSet, iter::Empty};
+use core::iter::{empty, once, Empty};
+use std::collections::HashSet;
 
 use itertools::{chain, Itertools};
 use rust_decimal::Decimal;
