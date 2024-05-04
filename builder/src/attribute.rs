@@ -20,7 +20,8 @@ use crate::{
         flag::Flag, heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
         saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spell_points::SpellPoints,
         spell_power::SpellPower, spell_selector::SpellSelector,
-        summoned_attribute::SummonedAttribute, toggle::Toggle, weapon_attribute::WeaponAttribute,
+        summoned_attribute::SummonedAttribute, tactics::Tactics, toggle::Toggle,
+        weapon_attribute::WeaponAttribute,
     },
 };
 use fmt::Display;
@@ -130,6 +131,9 @@ pub enum Attribute {
     HealingAmplification(HealingAmplification),
     /// Movement Speed
     MovementSpeed,
+    /// Tactics
+    #[serde(rename = "tct", alias = "Tactics")]
+    Tactics(Tactics),
 }
 
 impl Display for Attribute {
@@ -166,6 +170,7 @@ impl Display for Attribute {
             Self::ItemSet(set) => write!(f, "Item Set: {set}"),
             Self::HealingAmplification(heal_amp) => heal_amp.fmt(f),
             Self::MovementSpeed => write!(f, "Movement Speed"),
+            Self::Tactics(tactics) => tactics.fmt(f),
         }
     }
 }
@@ -205,9 +210,18 @@ impl CloneBonus for Attribute {
             Self::Weapon(stat) => stat.clone_bonus(bonus),
             Self::SummonedAttribute(attribute) => attribute.clone_bonus(bonus),
             Self::HealingAmplification(heal_amp) => heal_amp.clone_bonus(bonus),
+            Self::Tactics(tactics) => tactics.clone_bonus(bonus),
             _ => None,
         }
     }
+}
+
+macro_rules! static_attribute {
+    ($($class:ident),+) => {
+        chain!(
+            $($class::get_static().map(ToAttribute::to_attribute),)+
+        )
+    };
 }
 
 impl StaticOptions for Attribute {
@@ -223,8 +237,6 @@ impl StaticOptions for Attribute {
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
-            Skill::get_static().map(Self::Skill),
-            SavingThrow::get_static().map(Self::SavingThrow),
             SpellPower::get_static().flat_map(|sp| {
                 [
                     Self::SpellPower(sp),
@@ -232,10 +244,6 @@ impl StaticOptions for Attribute {
                     Self::SpellCriticalDamage(sp),
                 ]
             }),
-            Toggle::get_static().map(Self::Toggle),
-            Flag::get_static().map(Self::Flag),
-            Feat::get_static().map(Self::Feat),
-            PlayerClass::get_static().map(Self::ClassLevel),
             SpellSelector::get_static().flat_map(|selector| {
                 [
                     Self::CasterLevel(selector),
@@ -243,15 +251,23 @@ impl StaticOptions for Attribute {
                     Self::SpellDC(selector),
                 ]
             }),
-            WeaponAttribute::get_static().map(Self::Weapon),
-            ArmorClass::get_static().map(Self::ArmorClass),
-            Sheltering::get_static().map(Self::Sheltering),
-            DamageType::get_static().map(Self::Resistance),
-            Absorption::get_static().map(Self::Absorption),
-            Health::get_static().map(Self::Health),
-            SpellPoints::get_static().map(Self::SpellPoints),
-            SummonedAttribute::get_static().map(Self::SummonedAttribute),
-            HealingAmplification::get_static().map(Self::HealingAmplification),
+            static_attribute!(
+                Skill,
+                SavingThrow,
+                Toggle,
+                Flag,
+                Feat,
+                PlayerClass,
+                WeaponAttribute,
+                ArmorClass,
+                Sheltering,
+                Absorption,
+                Health,
+                SpellPoints,
+                SummonedAttribute,
+                HealingAmplification,
+                Tactics
+            )
         )
     }
 }

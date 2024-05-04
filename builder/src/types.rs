@@ -27,3 +27,4 @@ pub mod summoned_attribute;
 pub mod toggle;
 pub mod toggle_group;
 pub mod weapon_attribute;
+pub mod tactics;

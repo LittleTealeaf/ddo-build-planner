@@ -16,6 +16,7 @@ use crate::{
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         spell_school::SpellSchool,
+        tactics::Tactics,
         toggle::{GetToggleGroup, ToToggle, Toggle},
         toggle_group::ToggleGroup,
         weapon_attribute::{WeaponHand, WeaponStat},
@@ -195,7 +196,12 @@ impl GetBonuses for IconicPastLife {
             Race::Trailblazer => Some(vec![
                 BonusTemplate::toggle(Self(Race::Trailblazer), None),
                 BonusTemplate::new(SavingThrow::Traps, BonusType::Stacking, value, None),
-                // TODO: +1 Trip DCs / past life (toggled)
+                BonusTemplate::new(
+                    Tactics::Trip,
+                    BonusType::Stacking,
+                    value,
+                    Condition::toggled(Self(Race::Trailblazer)),
+                ),
             ]),
             Race::Scoundrel => Some(vec![
                 BonusTemplate::toggle(Self(Race::Scoundrel), None),

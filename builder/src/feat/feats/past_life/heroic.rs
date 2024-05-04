@@ -21,6 +21,7 @@ use crate::{
         skill::Skill,
         spell_points::SpellPoints,
         spell_school::SpellSchool,
+        tactics::Tactics,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
@@ -85,7 +86,8 @@ impl GetBonuses for HeroicPastLife {
                         BonusType::Stacking,
                         value,
                         None,
-                    ), // TODO: Tactical DC
+                    ),
+                    BonusTemplate::new(Tactics::All, BonusType::Stacking, value, None),
                 ],
                 PlayerClass::Monk => vec![BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Damage),
