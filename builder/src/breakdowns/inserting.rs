@@ -119,7 +119,9 @@ impl Breakdowns {
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            if !forced && initial_value == self.get_attribute(attribute.clone()) {
+            if !forced
+                && initial_value == self.calculate_attribute(&attribute).unwrap_or(Decimal::ZERO)
+            {
                 continue;
             }
 
@@ -136,7 +138,7 @@ impl Breakdowns {
                     .cloned(),
             );
 
-            let value = self.get_attribute(attribute.clone());
+            let value = self.calculate_attribute(&attribute).unwrap_or(Decimal::ZERO);
 
             let attribute_bonuses = attribute.get_bonuses(value);
 

@@ -16,7 +16,7 @@ where
 {
     let mut breakdowns = Breakdowns::new();
     breakdowns.insert_bonuses(bonuses);
-    let value = breakdowns.get_attribute(Attribute::Debug(0));
+    let value = breakdowns.evaluate_from_attribute(Attribute::Debug(0));
     let expected: Decimal = expected.into();
     assert_eq!(value, expected, "Expected {expected}, found {value}",);
 }
@@ -185,7 +185,7 @@ mod value {
             let mut breakdowns = Breakdowns::new();
             breakdowns.set_dice_strategy(DiceStrategy::Average);
             breakdowns.insert_bonuses(bonuses);
-            let value = breakdowns.get_attribute(Attribute::Debug(0));
+            let value = breakdowns.evaluate_from_attribute(Attribute::Debug(0));
             assert_eq!(value, expected, "Expected {expected}, found {value}",);
         };
     }
@@ -198,7 +198,7 @@ mod value {
             let mut breakdowns = Breakdowns::new();
             breakdowns.set_dice_strategy(DiceStrategy::Minimum);
             breakdowns.insert_bonuses(bonuses);
-            let value = breakdowns.get_attribute(Attribute::Debug(0));
+            let value = breakdowns.evaluate_from_attribute(Attribute::Debug(0));
             assert_eq!(value, expected, "Expected {expected}, found {value}",);
         };
     }
@@ -211,7 +211,7 @@ mod value {
             let mut breakdowns = Breakdowns::new();
             breakdowns.set_dice_strategy(DiceStrategy::Maximum);
             breakdowns.insert_bonuses(bonuses);
-            let value = breakdowns.get_attribute(Attribute::Debug(0));
+            let value = breakdowns.evaluate_from_attribute(Attribute::Debug(0));
             assert_eq!(value, expected, "Expected {expected}, found {value}",);
         };
     }
@@ -231,7 +231,7 @@ mod condition {
             DebugValue(0),
         ));
 
-        let value = breakdowns.get_attribute(Attribute::from(DebugValue(0)));
+        let value = breakdowns.evaluate_from_attribute(Attribute::from(DebugValue(0)));
         let result = value == 10.into();
 
         assert_eq!(
@@ -312,7 +312,7 @@ mod dynamic {
             vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10, None)],
         );
 
-        assert_eq!(breakdowns.get_attribute(DebugValue(1)), 0.into());
+        assert_eq!(breakdowns.evaluate_from_attribute(DebugValue(1)), 0.into());
     }
 
     #[test]
@@ -332,7 +332,7 @@ mod dynamic {
             DebugValue(0),
         ));
 
-        assert_eq!(breakdowns.get_attribute(DebugValue(1)), 10.into());
+        assert_eq!(breakdowns.evaluate_from_attribute(DebugValue(1)), 10.into());
     }
 
     #[test]
@@ -344,7 +344,7 @@ mod dynamic {
             vec![BonusTemplate::new(Ability::All, DebugValue(0), 10, None)],
         );
 
-        let before = breakdowns.get_attribute(Ability::Constitution);
+        let before = breakdowns.evaluate_from_attribute(Ability::Constitution);
 
         breakdowns.insert_bonus(Bonus::new(
             Attribute::Debug(0),
@@ -354,7 +354,7 @@ mod dynamic {
             DebugValue(0),
         ));
 
-        let after = breakdowns.get_attribute(Ability::Constitution);
+        let after = breakdowns.evaluate_from_attribute(Ability::Constitution);
 
         assert_eq!(after - before, 10.into());
     }
@@ -390,9 +390,18 @@ mod sources {
             ),
         ]);
         breakdowns.remove_source(BonusSource::Debug(0));
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(0)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(1)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(2)), 1.into());
+        assert_eq!(
+            breakdowns.evaluate_from_attribute(Attribute::Debug(0)),
+            0.into()
+        );
+        assert_eq!(
+            breakdowns.evaluate_from_attribute(Attribute::Debug(1)),
+            0.into()
+        );
+        assert_eq!(
+            breakdowns.evaluate_from_attribute(Attribute::Debug(2)),
+            1.into()
+        );
     }
 
     #[test]
@@ -422,9 +431,18 @@ mod sources {
             ),
         ]);
         breakdowns.remove_sources([BonusSource::Debug(0), BonusSource::Debug(1)]);
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(0)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(1)), 0.into());
-        assert_eq!(breakdowns.get_attribute(Attribute::Debug(2)), 1.into());
+        assert_eq!(
+            breakdowns.evaluate_from_attribute(Attribute::Debug(0)),
+            0.into()
+        );
+        assert_eq!(
+            breakdowns.evaluate_from_attribute(Attribute::Debug(1)),
+            0.into()
+        );
+        assert_eq!(
+            breakdowns.evaluate_from_attribute(Attribute::Debug(2)),
+            1.into()
+        );
     }
 }
 
@@ -493,7 +511,7 @@ mod breakdowns {
             Bonus::new(DebugValue(0), DebugValue(1), 4, None, DebugValue(0)),
         ]);
 
-        let expected = breakdowns.get_attribute(DebugValue(0));
+        let expected = breakdowns.evaluate_from_attribute(DebugValue(0));
 
         let breakdown = breakdowns
             .get_breakdowns(&Attribute::Debug(0))
@@ -601,19 +619,19 @@ mod dice_strategy {
         ));
 
         assert_eq!(
-            breakdowns.get_attribute(DebugValue(0)),
+            breakdowns.evaluate_from_attribute(DebugValue(0)),
             Decimal::from_str("3.5").unwrap()
         );
 
         breakdowns.set_dice_strategy(DiceStrategy::Minimum);
         assert_eq!(
-            breakdowns.get_attribute(DebugValue(0)),
+            breakdowns.evaluate_from_attribute(DebugValue(0)),
             Decimal::from_str("1").unwrap()
         );
 
         breakdowns.set_dice_strategy(DiceStrategy::Maximum);
         assert_eq!(
-            breakdowns.get_attribute(DebugValue(0)),
+            breakdowns.evaluate_from_attribute(DebugValue(0)),
             Decimal::from_str("6").unwrap()
         );
     }

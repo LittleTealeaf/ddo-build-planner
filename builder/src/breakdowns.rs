@@ -3,9 +3,9 @@
 mod base;
 mod breakdown;
 mod buffer;
-mod calculation;
 mod dynamic;
 mod inserting;
+mod evaluation;
 
 use std::collections::HashMap;
 
@@ -85,7 +85,7 @@ impl Breakdowns {
 
         attributes
             .into_iter()
-            .map(|attribute| (attribute.clone(), self.get_attribute(attribute)))
+            .map(|attribute| (attribute.clone(), self.evaluate_from_value(attribute)))
     }
 
     /// Returns the current dice strategy being used
