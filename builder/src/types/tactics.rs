@@ -32,16 +32,16 @@ pub enum Tactics {
 impl Tactics {
     /// All tactics DCs
     pub const ALL: [Tactics; 4] = [
-        Tactics::Trip,
-        Tactics::Sunder,
-        Tactics::Assassinate,
-        Tactics::Stun,
+        Self::Trip,
+        Self::Sunder,
+        Self::Assassinate,
+        Self::Stun,
     ];
 }
 
 impl StaticOptions for Tactics {
     fn get_static() -> impl Iterator<Item = Self> {
-        Tactics::ALL.iter().cloned()
+        Self::ALL.iter().cloned()
     }
 }
 
