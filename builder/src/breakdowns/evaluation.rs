@@ -9,13 +9,15 @@ use crate::{
 
 use super::{Breakdowns, DiceStrategy};
 
-/// Public API
+/// Non-Mutating API
 impl Breakdowns {
+    /// Attempts to return the result of the value from the value cache
     #[must_use]
     pub fn get_value(&self, value: &Value) -> Option<&Decimal> {
         self.value_cache.get(value)
     }
 
+    /// Attempts to return the result of the value from the value cache.
     #[must_use]
     pub fn get_from_value<V>(&self, value: V) -> Option<&Decimal>
     where
@@ -24,18 +26,23 @@ impl Breakdowns {
         self.get_value(&value.into())
     }
 
+    /// Attempts to return the result of the condition from the condition cache
     #[must_use]
     pub fn get_condition(&self, condition: &Condition) -> Option<bool> {
         self.condition_cache.get(condition).copied()
     }
 
+    /// Attempts to return the result of the condition from the condition cache
     pub fn get_from_condition<C>(&self, condition: C) -> Option<bool>
     where
         C: Into<Condition>,
     {
         self.get_condition(&condition.into())
     }
+}
 
+/// Mutable API
+impl Breakdowns {
     pub fn evaluate_from_condition<C>(&mut self, condition: C) -> bool
     where
         C: Into<Condition>,
