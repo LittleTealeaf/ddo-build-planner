@@ -150,7 +150,7 @@ impl Breakdowns {
     /// Calculates the current value of a given [`Attribute`].
     /// Only takes the highest value of bonuses of the same [`BonusType`], except for
     /// [`BonusType::Stacking`]
-    /// 
+    ///
     /// Returns [`Some`] with the resulting value if there are bonuses for it
     /// Returns [`None`] if there are no bonuses available for that [`Attribute`].
     ///
