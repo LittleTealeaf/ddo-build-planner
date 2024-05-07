@@ -141,10 +141,24 @@ impl Breakdowns {
         result
     }
 
+    /// Evaluates the value of the given attribute. Defaults to [`Decimal::ZERO`] if there are no
+    /// bonuses to that attribute.
     pub fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {
         self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
     }
 
+    /// Calculates the current value of a given [`Attribute`].
+    /// Only takes the highest value of bonuses of the same [`BonusType`], except for
+    /// [`BonusType::Stacking`]
+    /// 
+    /// Returns [`Some`] with the resulting value if there are bonuses for it
+    /// Returns [`None`] if there are no bonuses available for that [`Attribute`].
+    ///
+    /// If a [`None`] result should default the value to [`Decimal::ZERO`], then use
+    /// [`Breakdowns::evaluate_attribute`]
+    ///
+    /// [`BonusType`]: crate::bonus::BonusType
+    /// [`BonusType::Stacking`]: crate::bonus::BonusType::Stacking
     pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut map = HashMap::new();
         let mut stacking = Decimal::ZERO;
