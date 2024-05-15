@@ -18,4 +18,4 @@ workspace = true
 iced = { version = "0.12.1", features = ["tokio"] }
 utils = { path = "../utils/" }
 builder = { path = "../builder/" }
-iced_aw = { version = "0.8.0", default-features = false, features = ["icons"] }
+iced_aw = { version = "0.9.3", default-features = false, features = ["icons"] }
