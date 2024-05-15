@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use rust_decimal::Decimal;
+use utils::hashmap::MapGetOr;
 
 use crate::{
     attribute::Attribute,
@@ -14,13 +15,13 @@ impl Breakdowns {
     /// Attempts to return the result of the value from the value cache
     #[must_use]
     pub fn get_value(&self, value: &Value) -> Option<&Decimal> {
-        self.value_cache.get(value)
+        self.cache.value.get(value)
     }
 
     /// Attempts to return the result of the condition from the condition cache
     #[must_use]
     pub fn get_condition(&self, condition: &Condition) -> Option<bool> {
-        self.condition_cache.get(condition).copied()
+        self.cache.condition.get(condition).copied()
     }
 }
 
@@ -116,8 +117,8 @@ struct Snapshot<'a> {
 impl<'a> From<&'a mut Breakdowns> for Snapshot<'a> {
     fn from(value: &'a mut Breakdowns) -> Self {
         Snapshot {
-            value: &mut value.value_cache,
-            condition: &mut value.condition_cache,
+            value: &mut value.cache.value,
+            condition: &mut value.cache.condition,
             bonuses: &value.bonuses,
             dice_strategy: value.dice_strategy,
         }
@@ -139,10 +140,8 @@ impl<'a> Snapshot<'a> {
                 if bonus.bonus_type().is_stacking() {
                     stacking += value;
                 } else {
-                    map.insert(
-                        *bonus.bonus_type(),
-                        value.max(*map.get(bonus.bonus_type()).unwrap_or(&Decimal::MIN)),
-                    );
+                    let val = map.get_mut_or(bonus.bonus_type(), Decimal::MIN);
+                    *val = value.max(*val);
                 }
             }
         }

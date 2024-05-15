@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use itertools::chain;
 use rust_decimal::Decimal;
-use utils::{hashmap::MapGetMutOrDefault, vecs::FilterRemove};
+use utils::{hashmap::MapGetOrDefault, vecs::FilterRemove};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
@@ -91,8 +91,8 @@ impl Breakdowns {
 
     /// Forces the recalculation of all attributes
     pub fn recalculate_all_attributes(&mut self) {
-        self.value_cache.clear();
-        self.condition_cache.clear();
+        self.cache.condition.clear();
+        self.cache.value.clear();
 
         let mut buffer = Buffer::new();
         buffer.insert_attributes(self.bonuses.keys().cloned());
@@ -111,7 +111,8 @@ impl Breakdowns {
 
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
-                .value_cache
+                .cache
+                .value
                 .remove(&attribute.clone().to_value())
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
@@ -128,8 +129,8 @@ impl Breakdowns {
                 continue;
             }
 
-            self.value_cache.retain(filter_cache(&attribute));
-            self.condition_cache.retain(filter_cache(&attribute));
+            self.cache.value.retain(filter_cache(&attribute));
+            self.cache.condition.retain(filter_cache(&attribute));
 
             let source = BonusSource::Attribute(attribute.clone());
 
