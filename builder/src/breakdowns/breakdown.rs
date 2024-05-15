@@ -90,16 +90,14 @@ impl Breakdowns {
             let value = match bonus.value() {
                 Value::Const(val) => val,
                 other => self
-                    .value_cache
-                    .get(other)
-                    .unwrap_or_else(|| panic!("Expected Value to be Cached: {value}")),
+                    .get_value(other)
+                    .unwrap_or_else(|| panic!("Expected Value to be Cached {value}")),
             };
 
             let condition = bonus.condition().map_or(true, |condition| match condition {
                 Condition::Constant(value) => *value,
-                condition => *self
-                    .condition_cache
-                    .get(condition)
+                condition => self
+                    .get_condition(condition)
                     .unwrap_or_else(|| panic!("Expected Condition to be Cached: {condition}")),
             });
 

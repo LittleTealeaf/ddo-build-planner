@@ -5,6 +5,7 @@ use core::ops::Not;
 use builder::{
     attribute::Attribute,
     bonus::{Condition, ToValue, Value},
+    breakdowns::Breakdowns,
 };
 use ron::to_string;
 
@@ -20,6 +21,10 @@ fn main() {
                 Value::from(3),
                 Value::from(2),
             );
+
+    let mut breakdowns = Breakdowns::new();
+
+    println!("{}", breakdowns.evaluate_value(&value));
 
     println!("{}", to_string(&value).unwrap());
 }

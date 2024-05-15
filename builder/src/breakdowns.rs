@@ -3,8 +3,8 @@
 mod base;
 mod breakdown;
 mod buffer;
-mod calculation;
 mod dynamic;
+mod evaluation;
 mod inserting;
 
 use std::collections::HashMap;
@@ -28,8 +28,7 @@ use self::base::get_base_bonuses;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
-    value_cache: HashMap<Value, Decimal>,
-    condition_cache: HashMap<Condition, bool>,
+    cache: BreakdownCache,
     children: HashMap<BonusSource, Vec<Attribute>>,
     dynamic_bonuses: HashMap<Attribute, Vec<BonusTemplate>>,
     dice_strategy: DiceStrategy,
@@ -44,6 +43,12 @@ pub enum DiceStrategy {
     Average,
     /// Dice will always roll the highest value possible
     Maximum,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+struct BreakdownCache {
+    value: HashMap<Value, Decimal>,
+    condition: HashMap<Condition, bool>,
 }
 
 /// Simple methods for creating new instances, and obtaining a list of bonuses or attributes
@@ -61,8 +66,7 @@ impl Breakdowns {
     pub fn new() -> Self {
         let mut breakdowns = Self {
             bonuses: HashMap::new(),
-            value_cache: HashMap::new(),
-            condition_cache: HashMap::new(),
+            cache: BreakdownCache::default(),
             children: HashMap::new(),
             dynamic_bonuses: HashMap::new(),
             dice_strategy: DiceStrategy::Average,
@@ -85,7 +89,7 @@ impl Breakdowns {
 
         attributes
             .into_iter()
-            .map(|attribute| (attribute.clone(), self.get_attribute(attribute)))
+            .map(|attribute| (attribute.clone(), self.evaluate_value(&attribute.into())))
     }
 
     /// Returns the current dice strategy being used
@@ -98,8 +102,8 @@ impl Breakdowns {
     pub fn set_dice_strategy(&mut self, strategy: DiceStrategy) {
         self.dice_strategy = strategy;
 
-        self.value_cache.retain(|val, _| !val.has_dice());
-        self.condition_cache.retain(|val, _| !val.has_dice());
+        self.cache.value.retain(|val, _| !val.has_dice());
+        self.cache.condition.retain(|val, _| !val.has_dice());
 
         let attributes = self
             .get_bonuses()
