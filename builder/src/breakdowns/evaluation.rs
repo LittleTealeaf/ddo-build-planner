@@ -17,61 +17,16 @@ impl Breakdowns {
         self.value_cache.get(value)
     }
 
-    /// Attempts to return the result of the value from the value cache.
-    #[must_use]
-    pub fn get_from_value<V>(&self, value: V) -> Option<&Decimal>
-    where
-        V: Into<Value>,
-    {
-        self.get_value(&value.into())
-    }
-
     /// Attempts to return the result of the condition from the condition cache
     #[must_use]
     pub fn get_condition(&self, condition: &Condition) -> Option<bool> {
         self.condition_cache.get(condition).copied()
     }
-
-    /// Attempts to return the result of the condition from the condition cache
-    pub fn get_from_condition<C>(&self, condition: C) -> Option<bool>
-    where
-        C: Into<Condition>,
-    {
-        self.get_condition(&condition.into())
-    }
 }
 
 /// Mutable API
 impl Breakdowns {
-    pub fn evaluate_from_condition<C>(&mut self, condition: C) -> bool
-    where
-        C: Into<Condition>,
-    {
-        self.evaluate_condition(&condition.into())
-    }
-
-    pub fn evaluate_from_value<V>(&mut self, value: V) -> Decimal
-    where
-        V: Into<Value>,
-    {
-        self.evaluate_value(&value.into())
-    }
-
-    pub fn evaluate_from_attribute<A>(&mut self, attribute: A) -> Decimal
-    where
-        A: Into<Attribute>,
-    {
-        self.calculate_from_attribute(attribute)
-            .unwrap_or(Decimal::ZERO)
-    }
-
-    pub fn calculate_from_attribute<A>(&mut self, attribute: A) -> Option<Decimal>
-    where
-        A: Into<Attribute>,
-    {
-        self.calculate_attribute(&attribute.into())
-    }
-
+    /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
     pub fn evaluate_condition(&mut self, condition: &Condition) -> bool {
         if let Some(value) = self.condition_cache.get(condition) {
             return *value;
@@ -92,6 +47,7 @@ impl Breakdowns {
         result
     }
 
+    /// Evaluates a given value based on values within the current [`Breakdowns`] object.
     pub fn evaluate_value(&mut self, value: &Value) -> Decimal {
         if let Some(value) = self.value_cache.get(value) {
             return *value;
