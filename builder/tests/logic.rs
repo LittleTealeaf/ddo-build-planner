@@ -59,13 +59,13 @@ mod ability {
         for ability in Ability::ABILITIES {
             for (score, modifier) in &values {
                 let mut compiler = Breakdowns::new();
-                compiler.insert_bonus(Bonus::new(
+                compiler += Bonus::new(
                     Attribute::Ability(ability),
                     BonusType::Stacking,
                     score - Decimal::from(8),
                     None,
                     BonusSource::Debug(0),
-                ));
+                );
                 assert_eq!(
                     compiler.evaluate_attribute(&Attribute::AbilityModifier(ability)),
                     *modifier
@@ -78,15 +78,16 @@ mod ability {
     fn all_increases_ability_score() {
         for ability in Ability::ABILITIES {
             let mut breakdowns = Breakdowns::new();
-
-            breakdowns.insert_bonus(Bonus::new(
+            breakdowns += Bonus::new(
                 Attribute::Ability(Ability::All),
                 BonusType::Stacking,
                 10,
                 None,
                 BonusSource::Debug(0),
-            ));
+            );
+
             let result_value = breakdowns.evaluate_attribute_from(ability);
+
             assert_eq!(Decimal::from(18), result_value);
         }
     }
@@ -210,13 +211,14 @@ mod skills {
     #[test]
     fn default_no_skill_bonus() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonus(Bonus::new(
+
+        breakdowns += Bonus::new(
             Ability::All,
             BonusType::Stacking,
             2,
             None,
             BonusSource::Debug(0),
-        ));
+        );
 
         for skill in Skill::SKILLS {
             assert_eq!(breakdowns.evaluate_attribute_from(skill), Decimal::ZERO);
@@ -228,13 +230,13 @@ mod skills {
         for skill in Skill::SKILLS {
             let mut breakdowns = Breakdowns::new();
             let initial = breakdowns.evaluate_attribute_from(skill);
-            breakdowns.insert_bonus(Bonus::new(
+            breakdowns += Bonus::new(
                 Skill::All,
                 BonusType::Stacking,
                 10,
                 None,
                 BonusSource::Debug(0),
-            ));
+            );
             let result = breakdowns.evaluate_attribute_from(skill);
             assert_eq!(result - initial, 10.into());
         }
@@ -495,13 +497,15 @@ mod sheltering {
 
             for (input, expected) in test_points {
                 let mut breakdowns = Breakdowns::new();
-                breakdowns.insert_bonus(Bonus::new(
+
+                breakdowns += Bonus::new(
                     Sheltering::Physical,
                     BonusType::Stacking,
                     input,
                     None,
                     BonusSource::Debug(0),
-                ));
+                );
+
                 assert_eq!(
                     breakdowns.evaluate_attribute_from(Sheltering::PhysicalReduction),
                     expected
@@ -516,7 +520,8 @@ mod sheltering {
 
             for (input, expected) in test_points {
                 let mut breakdowns = Breakdowns::new();
-                breakdowns.insert_bonuses([
+
+                breakdowns += [
                     Bonus::new(
                         Sheltering::MagicalCap,
                         BonusType::Stacking,
@@ -531,7 +536,8 @@ mod sheltering {
                         None,
                         BonusSource::Debug(0),
                     ),
-                ]);
+                ];
+
                 assert_eq!(
                     breakdowns.evaluate_attribute_from(Sheltering::MagicalReduction),
                     expected
