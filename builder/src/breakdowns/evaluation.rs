@@ -4,10 +4,17 @@ use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Condition, Value},
+    bonus::{Bonus, Condition, Value},
 };
 
 use super::{Breakdowns, DiceStrategy};
+
+// TODO: Change to an Object that has:
+// BreakdownsSnapshot {
+//      value: &mut HashMap<Value, Decimal>,
+//      condition: &mut HashMap<Condition, bool>,
+//      bonuses: &HashMap<Attribute, Vec<Bonus>>
+// }
 
 /// Non-Mutating API
 impl Breakdowns {
@@ -75,7 +82,86 @@ impl Breakdowns {
 impl Breakdowns {
     /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
     pub fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        if let Some(value) = self.condition_cache.get(condition) {
+        Snapshot::from(self).evaluate_condition(condition)
+    }
+
+    /// Evaluates a given value based on values within the current [`Breakdowns`] object.
+    pub fn evaluate_value(&mut self, value: &Value) -> Decimal {
+    }
+
+    /// Evaluates the value of the given attribute. Defaults to [`Decimal::ZERO`] if there are no
+    /// bonuses to that attribute.
+    pub fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {
+        self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
+    }
+
+    /// Calculates the current value of a given [`Attribute`].
+    /// Only takes the highest value of bonuses of the same [`BonusType`], except for
+    /// [`BonusType::Stacking`]
+    ///
+    /// Returns [`Some`] with the resulting value if there are bonuses for it
+    /// Returns [`None`] if there are no bonuses available for that [`Attribute`].
+    ///
+    /// If a [`None`] result should default the value to [`Decimal::ZERO`], then use
+    /// [`Breakdowns::evaluate_attribute`]
+    ///
+    /// [`BonusType`]: crate::bonus::BonusType
+    /// [`BonusType::Stacking`]: crate::bonus::BonusType::Stacking
+    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
+        Snapshot::from(self).calculate_attribute(attribute)
+    }
+}
+
+struct Snapshot<'a> {
+    value: &'a mut HashMap<Value, Decimal>,
+    condition: &'a mut HashMap<Condition, bool>,
+    bonuses: &'a HashMap<Attribute, Vec<Bonus>>,
+}
+
+impl<'a> From<&'a mut Breakdowns> for Snapshot<'a> {
+    fn from(value: &'a mut Breakdowns) -> Self {
+        Snapshot {
+            value: &mut value.value_cache,
+            condition: &mut value.condition_cache,
+            bonuses: &value.bonuses,
+        }
+    }
+}
+
+impl<'a> Snapshot<'a> {
+    fn calculate_attribute(&self, attribute: &Attribute) -> Option<Decimal> {
+        let mut map = HashMap::new();
+        let mut stacking = Decimal::ZERO;
+
+        for bonus in self.bonuses.get(attribute)? {
+            let condition = bonus
+                .condition()
+                .map_or(true, |cond| self.evaluate_condition(cond));
+
+            if condition {
+                let value = self.evaluate_value(bonus.value());
+                if bonus.bonus_type().is_stacking() {
+                    stacking += value;
+                } else {
+                    map.insert(
+                        *bonus.bonus_type(),
+                        value.max(*map.get(bonus.bonus_type()).unwrap_or(&Decimal::MIN)),
+                    );
+                }
+            }
+        }
+
+        Some(stacking + map.values().sum::<Decimal>())
+    }
+
+    fn evaluate_attribute(&self, attribute: &Attribute) -> Decimal {
+        todo!()
+    }
+
+    // TODO: add dce strategy
+
+    fn evaluate_condition(&self, condition: &Condition) -> bool {
+        if let Some(value) = self.condition.get(condition) {
             return *value;
         }
 
@@ -90,13 +176,12 @@ impl Breakdowns {
             Condition::Xor(a, b) => self.evaluate_condition(a) != self.evaluate_condition(b),
         };
 
-        self.condition_cache.insert(condition.clone(), result);
+        self.condition.insert(condition.clone(), result);
         result
     }
 
-    /// Evaluates a given value based on values within the current [`Breakdowns`] object.
-    pub fn evaluate_value(&mut self, value: &Value) -> Decimal {
-        if let Some(value) = self.value_cache.get(value) {
+    fn evaluate_value(&self, value: &Value) -> Decimal {
+        if let Some(value) = self.value.get(value) {
             return *value;
         }
 
@@ -139,51 +224,9 @@ impl Breakdowns {
             }
         };
 
-        self.value_cache.insert(value.clone(), result);
+        self.value.insert(value.clone(), result);
 
         result
-    }
 
-    /// Evaluates the value of the given attribute. Defaults to [`Decimal::ZERO`] if there are no
-    /// bonuses to that attribute.
-    pub fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {
-        self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
-    }
-
-    /// Calculates the current value of a given [`Attribute`].
-    /// Only takes the highest value of bonuses of the same [`BonusType`], except for
-    /// [`BonusType::Stacking`]
-    ///
-    /// Returns [`Some`] with the resulting value if there are bonuses for it
-    /// Returns [`None`] if there are no bonuses available for that [`Attribute`].
-    ///
-    /// If a [`None`] result should default the value to [`Decimal::ZERO`], then use
-    /// [`Breakdowns::evaluate_attribute`]
-    ///
-    /// [`BonusType`]: crate::bonus::BonusType
-    /// [`BonusType::Stacking`]: crate::bonus::BonusType::Stacking
-    pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
-        let mut map = HashMap::new();
-        let mut stacking = Decimal::ZERO;
-
-        for bonus in self.bonuses.get(attribute)?.clone() {
-            let condition = bonus
-                .condition()
-                .map_or(true, |cond| self.evaluate_condition(cond));
-
-            if condition {
-                let value = self.evaluate_value(bonus.value());
-                if bonus.bonus_type().is_stacking() {
-                    stacking += value;
-                } else {
-                    map.insert(
-                        *bonus.bonus_type(),
-                        value.max(*map.get(bonus.bonus_type()).unwrap_or(&Decimal::MIN)),
-                    );
-                }
-            }
-        }
-
-        Some(stacking + map.values().sum::<Decimal>())
     }
 }
