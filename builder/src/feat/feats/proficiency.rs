@@ -6,7 +6,7 @@ use core::fmt;
 use itertools::chain;
 use serde::{Deserialize, Serialize};
 pub use shield_class::*;
-use utils::enums::StaticOptions;
+use utils::{chain_tree, enums::StaticOptions};
 pub use weapon_class::*;
 
 use fmt::Display;
@@ -115,7 +115,7 @@ impl ToFeat for Proficiency {
 
 impl StaticOptions for Proficiency {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!(
+        chain_tree!(
             [
                 Self::SimpleWeaponProficiency,
                 Self::MartialWeaponProficiency,

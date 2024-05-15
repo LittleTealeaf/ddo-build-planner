@@ -11,7 +11,7 @@ pub use main_hand::*;
 pub use off_hand::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::{chain_tree, enums::StaticOptions};
 
 use fmt::Display;
 
@@ -93,7 +93,7 @@ where
 
 impl StaticOptions for Flag {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!(
+        chain_tree!(
             Toggle::get_static().map(Self::HasToggle),
             Race::get_static().map(Self::Race),
             Immunity::get_static().map(Self::Immunity),
