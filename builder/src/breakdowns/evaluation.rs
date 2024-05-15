@@ -24,6 +24,53 @@ impl Breakdowns {
     }
 }
 
+/// Mutable API From methods
+impl Breakdowns {
+    /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
+    pub fn evaluate_condition_from<C>(&mut self, condition: C) -> bool
+    where
+        C: Into<Condition>,
+    {
+        self.evaluate_condition(&condition.into())
+    }
+
+    /// Evaluates a given value based on values within the current [`Breakdowns`] object.
+    pub fn evaluate_value_from<V>(&mut self, value: V) -> Decimal
+    where
+        V: Into<Value>,
+    {
+        self.evaluate_value(&value.into())
+    }
+
+    /// Evaluates the value of the given attribute. Defaults to [`Decimal::ZERO`] if there are no
+    /// bonuses to that attribute.
+    pub fn evaluate_attribute_from<A>(&mut self, attribute: A) -> Decimal
+    where
+        A: Into<Attribute>,
+    {
+        self.evaluate_attribute(&attribute.into())
+    }
+
+    /// Calculates the current value of a given [`Attribute`].
+    /// Only takes the highest value of bonuses of the same [`BonusType`], except for
+    /// [`BonusType::Stacking`]
+    ///
+    /// Returns [`Some`] with the resulting value if there are bonuses for it
+    /// Returns [`None`] if there are no bonuses available for that [`Attribute`].
+    ///
+    /// If a [`None`] result should default the value to [`Decimal::ZERO`], then use
+    /// [`Breakdowns::evaluate_attribute`]
+    ///
+    /// [`BonusType`]: crate::bonus::BonusType
+    /// [`BonusType::Stacking`]: crate::bonus::BonusType::Stacking
+    pub fn calculate_attribute_from<A>(&mut self, attribute: A) -> Option<Decimal>
+    where
+        A: Into<Attribute>,
+    {
+        self.calculate_attribute(&attribute.into())
+    }
+}
+
 /// Mutable API
 impl Breakdowns {
     /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
