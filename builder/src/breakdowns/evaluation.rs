@@ -76,18 +76,18 @@ impl Breakdowns {
 impl Breakdowns {
     /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
     pub fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        Snapshot::from(self).evaluate_condition(condition)
+        self.snapshot().evaluate_condition(condition)
     }
 
     /// Evaluates a given value based on values within the current [`Breakdowns`] object.
     pub fn evaluate_value(&mut self, value: &Value) -> Decimal {
-        Snapshot::from(self).evaluate_value(value)
+        self.snapshot().evaluate_value(value)
     }
 
     /// Evaluates the value of the given attribute. Defaults to [`Decimal::ZERO`] if there are no
     /// bonuses to that attribute.
     pub fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {
-        self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
+        self.snapshot().evaluate_attribute(attribute)
     }
 
     /// Calculates the current value of a given [`Attribute`].
@@ -103,7 +103,7 @@ impl Breakdowns {
     /// [`BonusType`]: crate::bonus::BonusType
     /// [`BonusType::Stacking`]: crate::bonus::BonusType::Stacking
     pub fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
-        Snapshot::from(self).calculate_attribute(attribute)
+        self.snapshot().calculate_attribute(attribute)
     }
 }
 
@@ -114,13 +114,14 @@ struct Snapshot<'a> {
     dice_strategy: DiceStrategy,
 }
 
-impl<'a> From<&'a mut Breakdowns> for Snapshot<'a> {
-    fn from(value: &'a mut Breakdowns) -> Self {
+/// Snapshot Conversion
+impl Breakdowns {
+    fn snapshot(&mut self) -> Snapshot<'_> {
         Snapshot {
-            value: &mut value.cache.value,
-            condition: &mut value.cache.condition,
-            bonuses: &value.bonuses,
-            dice_strategy: value.dice_strategy,
+            value: &mut self.cache.value,
+            condition: &mut self.cache.condition,
+            bonuses: &self.bonuses,
+            dice_strategy: self.dice_strategy,
         }
     }
 }
@@ -180,9 +181,7 @@ impl<'a> Snapshot<'a> {
 
         let result = match value {
             Value::Const(val) => return *val,
-            Value::Attribute(attribute) => {
-                self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
-            }
+            Value::Attribute(attribute) => self.evaluate_attribute(attribute),
             Value::Max(a, b) => self.evaluate_value(a).max(self.evaluate_value(b)),
             Value::Min(a, b) => self.evaluate_value(a).min(self.evaluate_value(b)),
             Value::Floor(val) => self.evaluate_value(val).floor(),
