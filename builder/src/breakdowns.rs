@@ -7,7 +7,6 @@ mod dynamic;
 mod evaluation;
 mod inserting;
 
-use core::ops::{AddAssign, SubAssign};
 use std::collections::HashMap;
 
 use rust_decimal::Decimal;
@@ -73,7 +72,7 @@ impl Breakdowns {
             dice_strategy: DiceStrategy::Average,
         };
 
-        breakdowns += get_base_bonuses();
+        breakdowns.insert_bonuses(get_base_bonuses());
         breakdowns.children.remove(&BonusSource::Base);
 
         breakdowns
@@ -120,36 +119,6 @@ impl Breakdowns {
 impl Default for Breakdowns {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-impl AddAssign<Bonus> for Breakdowns {
-    fn add_assign(&mut self, rhs: Bonus) {
-        self.insert_bonus(rhs);
-    }
-}
-
-impl<I> AddAssign<I> for Breakdowns
-where
-    I: IntoIterator<Item = Bonus>,
-{
-    fn add_assign(&mut self, rhs: I) {
-        self.insert_bonuses(rhs);
-    }
-}
-
-impl SubAssign<BonusSource> for Breakdowns {
-    fn sub_assign(&mut self, rhs: BonusSource) {
-        self.remove_source(rhs);
-    }
-}
-
-impl<I> SubAssign<I> for Breakdowns
-where
-    I: IntoIterator<Item = BonusSource>,
-{
-    fn sub_assign(&mut self, rhs: I) {
-        self.remove_sources(rhs);
     }
 }
 
