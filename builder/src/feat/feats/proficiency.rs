@@ -3,7 +3,6 @@ mod weapon_class;
 
 use core::fmt;
 
-use itertools::chain;
 use serde::{Deserialize, Serialize};
 pub use shield_class::*;
 use utils::{chain_tree, enums::StaticOptions};

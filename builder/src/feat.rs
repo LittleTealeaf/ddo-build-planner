@@ -3,7 +3,6 @@ public_modules!(feats, requirements, to_feat);
 
 use core::fmt;
 
-use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::{chain_tree, enums::StaticOptions, public_modules};

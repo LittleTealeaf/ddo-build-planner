@@ -6,7 +6,6 @@ mod off_hand;
 
 use core::fmt;
 
-use itertools::chain;
 pub use main_hand::*;
 pub use off_hand::*;
 use rust_decimal::Decimal;
