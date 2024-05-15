@@ -9,13 +9,6 @@ use crate::{
 
 use super::{Breakdowns, DiceStrategy};
 
-// TODO: Change to an Object that has:
-// BreakdownsSnapshot {
-//      value: &mut HashMap<Value, Decimal>,
-//      condition: &mut HashMap<Condition, bool>,
-//      bonuses: &HashMap<Attribute, Vec<Bonus>>
-// }
-
 /// Non-Mutating API
 impl Breakdowns {
     /// Attempts to return the result of the value from the value cache
@@ -87,6 +80,7 @@ impl Breakdowns {
 
     /// Evaluates a given value based on values within the current [`Breakdowns`] object.
     pub fn evaluate_value(&mut self, value: &Value) -> Decimal {
+        Snapshot::from(self).evaluate_value(value)
     }
 
     /// Evaluates the value of the given attribute. Defaults to [`Decimal::ZERO`] if there are no
@@ -116,6 +110,7 @@ struct Snapshot<'a> {
     value: &'a mut HashMap<Value, Decimal>,
     condition: &'a mut HashMap<Condition, bool>,
     bonuses: &'a HashMap<Attribute, Vec<Bonus>>,
+    dice_strategy: DiceStrategy,
 }
 
 impl<'a> From<&'a mut Breakdowns> for Snapshot<'a> {
@@ -124,12 +119,13 @@ impl<'a> From<&'a mut Breakdowns> for Snapshot<'a> {
             value: &mut value.value_cache,
             condition: &mut value.condition_cache,
             bonuses: &value.bonuses,
+            dice_strategy: value.dice_strategy,
         }
     }
 }
 
 impl<'a> Snapshot<'a> {
-    fn calculate_attribute(&self, attribute: &Attribute) -> Option<Decimal> {
+    fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut map = HashMap::new();
         let mut stacking = Decimal::ZERO;
 
@@ -154,13 +150,11 @@ impl<'a> Snapshot<'a> {
         Some(stacking + map.values().sum::<Decimal>())
     }
 
-    fn evaluate_attribute(&self, attribute: &Attribute) -> Decimal {
-        todo!()
+    fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {
+        self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
     }
 
-    // TODO: add dce strategy
-
-    fn evaluate_condition(&self, condition: &Condition) -> bool {
+    fn evaluate_condition(&mut self, condition: &Condition) -> bool {
         if let Some(value) = self.condition.get(condition) {
             return *value;
         }
@@ -180,7 +174,7 @@ impl<'a> Snapshot<'a> {
         result
     }
 
-    fn evaluate_value(&self, value: &Value) -> Decimal {
+    fn evaluate_value(&mut self, value: &Value) -> Decimal {
         if let Some(value) = self.value.get(value) {
             return *value;
         }
@@ -227,6 +221,5 @@ impl<'a> Snapshot<'a> {
         self.value.insert(value.clone(), result);
 
         result
-
     }
 }
