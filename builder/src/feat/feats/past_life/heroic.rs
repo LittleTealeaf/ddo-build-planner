@@ -19,6 +19,7 @@ use crate::{
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        sneak_attack::SneakAttack,
         spell_points::SpellPoints,
         spell_school::SpellSchool,
         tactics::Tactics,
@@ -234,8 +235,8 @@ impl GetBonuses for HeroicPastLife {
                         .cond_any(),
                 )],
                 PlayerClass::DarkHunter => vec![
-                    // TODO: +1 hit sneak attack
-                    // TODO: +1 sneak attack damage
+                    BonusTemplate::new(SneakAttack::Attack, BonusType::Stacking, 1, None),
+                    BonusTemplate::new(SneakAttack::Damage, BonusType::Stacking, 1, None),
                 ],
                 PlayerClass::Warlock => vec![BonusTemplate::new(
                     Sheltering::Magical,
