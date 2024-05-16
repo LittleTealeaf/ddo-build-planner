@@ -5,6 +5,7 @@ pub mod enums;
 pub mod float;
 pub mod from_into;
 pub mod hashmap;
+pub mod iters;
 pub mod modules;
 pub mod ord;
 pub mod ron;

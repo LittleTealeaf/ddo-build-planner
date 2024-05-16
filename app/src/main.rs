@@ -1,6 +1,7 @@
 //! Application Starting Point
 
 use builder::{
+
     bonus::{Bonus, BonusType},
     breakdowns::Breakdowns,
     debug::DebugValue,
@@ -38,6 +39,7 @@ fn main() {
         None,
         DebugValue(2),
     ));
+
 
     breakdowns.get_attribute((WeaponHand::Main, WeaponStat::Damage));
 }

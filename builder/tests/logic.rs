@@ -30,7 +30,10 @@ mod ability {
     #[test]
     fn base_score_is_8() {
         for ability in Ability::ABILITIES {
-            assert_eq!(Breakdowns::new().get_attribute(ability), 8.into());
+            assert_eq!(
+                Breakdowns::new().evaluate_attribute(&ability.into()),
+                8.into()
+            );
         }
     }
 
@@ -64,7 +67,7 @@ mod ability {
                     BonusSource::Debug(0),
                 ));
                 assert_eq!(
-                    compiler.get_attribute(Attribute::AbilityModifier(ability)),
+                    compiler.evaluate_attribute(&Attribute::AbilityModifier(ability)),
                     *modifier
                 );
             }
@@ -75,7 +78,6 @@ mod ability {
     fn all_increases_ability_score() {
         for ability in Ability::ABILITIES {
             let mut breakdowns = Breakdowns::new();
-
             breakdowns.insert_bonus(Bonus::new(
                 Attribute::Ability(Ability::All),
                 BonusType::Stacking,
@@ -83,7 +85,9 @@ mod ability {
                 None,
                 BonusSource::Debug(0),
             ));
-            let result_value = breakdowns.get_attribute(ability);
+
+            let result_value = breakdowns.evaluate_attribute_from(ability);
+
             assert_eq!(Decimal::from(18), result_value);
         }
     }
@@ -100,7 +104,7 @@ mod saving_throw {
                 #[test]
                 fn $name() {
                     let mut breakdowns = Breakdowns::new();
-                    let initial = breakdowns.get_attribute(SavingThrow::$save);
+                    let initial = breakdowns.evaluate_attribute(&SavingThrow::$save.into());
                     breakdowns.insert_bonus(Bonus::new(
                         Attribute::Ability(Ability::$ability),
                         BonusType::Stacking,
@@ -108,7 +112,7 @@ mod saving_throw {
                         None,
                         BonusSource::Debug(0),
                     ));
-                    let result = breakdowns.get_attribute(SavingThrow::$save);
+                    let result = breakdowns.evaluate_attribute_from(SavingThrow::$save);
                     assert_eq!(result - initial, 5.into());
                 }
             };
@@ -127,7 +131,7 @@ mod saving_throw {
                 #[test]
                 fn $name() {
                     let mut breakdowns = Breakdowns::new();
-                    let initial = breakdowns.get_attribute(SavingThrow::$save);
+                    let initial = breakdowns.evaluate_attribute_from(SavingThrow::$save);
                     breakdowns.insert_bonus(Bonus::new(
                         SavingThrow::$parent,
                         DebugValue(0),
@@ -135,7 +139,7 @@ mod saving_throw {
                         None,
                         DebugValue(0),
                     ));
-                    let result = breakdowns.get_attribute(SavingThrow::$save);
+                    let result = breakdowns.evaluate_attribute_from(SavingThrow::$save);
                     assert_eq!(result - initial, 10.into());
                 }
             };
@@ -165,7 +169,7 @@ mod skills {
                 fn $name() {
                     let mut breakdowns = Breakdowns::new();
 
-                    let value = breakdowns.get_attribute(Skill::$skill);
+                    let value = breakdowns.evaluate_attribute_from(Skill::$skill);
 
                     breakdowns.insert_bonus(Bonus::new(
                         Ability::$ability,
@@ -174,7 +178,7 @@ mod skills {
                         None,
                         BonusSource::Debug(0),
                     ));
-                    let result_value = breakdowns.get_attribute(Skill::$skill);
+                    let result_value = breakdowns.evaluate_attribute_from(Skill::$skill);
 
                     assert_eq!(result_value - value, Decimal::from(2));
                 }
@@ -207,6 +211,7 @@ mod skills {
     #[test]
     fn default_no_skill_bonus() {
         let mut breakdowns = Breakdowns::new();
+
         breakdowns.insert_bonus(Bonus::new(
             Ability::All,
             BonusType::Stacking,
@@ -216,7 +221,7 @@ mod skills {
         ));
 
         for skill in Skill::SKILLS {
-            assert_eq!(breakdowns.get_attribute(skill), Decimal::ZERO);
+            assert_eq!(breakdowns.evaluate_attribute_from(skill), Decimal::ZERO);
         }
     }
 
@@ -224,7 +229,7 @@ mod skills {
     fn all_includes_all_skills() {
         for skill in Skill::SKILLS {
             let mut breakdowns = Breakdowns::new();
-            let initial = breakdowns.get_attribute(skill);
+            let initial = breakdowns.evaluate_attribute_from(skill);
             breakdowns.insert_bonus(Bonus::new(
                 Skill::All,
                 BonusType::Stacking,
@@ -232,7 +237,7 @@ mod skills {
                 None,
                 BonusSource::Debug(0),
             ));
-            let result = breakdowns.get_attribute(skill);
+            let result = breakdowns.evaluate_attribute_from(skill);
             assert_eq!(result - initial, 10.into());
         }
     }
@@ -247,9 +252,9 @@ mod spells {
             fn $name() {
                 let mut breakdowns = Breakdowns::new();
 
-                let initial = breakdowns.get_attribute(Attribute::$attribute(SpellPower::Damage(
-                    DamageType::$damage,
-                )));
+                let initial = breakdowns.evaluate_attribute_from(Attribute::$attribute(
+                    SpellPower::Damage(DamageType::$damage),
+                ));
 
                 breakdowns.insert_bonus(Bonus::new(
                     Attribute::$attribute(SpellPower::Universal),
@@ -259,9 +264,9 @@ mod spells {
                     BonusSource::Debug(0),
                 ));
 
-                let result = breakdowns.get_attribute(Attribute::$attribute(SpellPower::Damage(
-                    DamageType::$damage,
-                )));
+                let result = breakdowns.evaluate_attribute_from(Attribute::$attribute(
+                    SpellPower::Damage(DamageType::$damage),
+                ));
 
                 assert_eq!(result - initial, 100.into());
             }
@@ -276,7 +281,7 @@ mod spells {
                     Attribute::$attribute(SpellPower::Damage(DamageType::$damage));
                 let mut breakdowns = Breakdowns::new();
 
-                let initial = breakdowns.get_attribute(ATTRIBUTE);
+                let initial = breakdowns.evaluate_attribute_from(ATTRIBUTE);
 
                 breakdowns.insert_bonus(Bonus::new(
                     Attribute::$attribute(SpellPower::Potency),
@@ -286,7 +291,7 @@ mod spells {
                     DebugValue(0),
                 ));
 
-                let with_potency = breakdowns.get_attribute(ATTRIBUTE);
+                let with_potency = breakdowns.evaluate_attribute_from(ATTRIBUTE);
                 assert_eq!(with_potency - initial, 100.into());
 
                 breakdowns.insert_bonus(Bonus::new(
@@ -297,7 +302,7 @@ mod spells {
                     DebugValue(1),
                 ));
 
-                let with_lower = breakdowns.get_attribute(ATTRIBUTE);
+                let with_lower = breakdowns.evaluate_attribute_from(ATTRIBUTE);
                 assert_eq!(with_potency, with_lower);
 
                 breakdowns.insert_bonus(Bonus::new(
@@ -308,7 +313,7 @@ mod spells {
                     DebugValue(2),
                 ));
 
-                let with_higher = breakdowns.get_attribute(ATTRIBUTE);
+                let with_higher = breakdowns.evaluate_attribute_from(ATTRIBUTE);
                 assert_eq!(with_higher - initial, 150.into());
             }
         };
@@ -326,7 +331,7 @@ mod spells {
                     fn $name() {
                         let mut breakdowns = Breakdowns::new();
 
-                        let initial = breakdowns.get_attribute(Attribute::SpellPower(
+                        let initial = breakdowns.evaluate_attribute_from(Attribute::SpellPower(
                             SpellPower::from(DamageType::$damagetype),
                         ));
 
@@ -338,7 +343,7 @@ mod spells {
                             BonusSource::Debug(0),
                         ));
 
-                        let result = breakdowns.get_attribute(Attribute::SpellPower(
+                        let result = breakdowns.evaluate_attribute_from(Attribute::SpellPower(
                             SpellPower::from(DamageType::$damagetype),
                         ));
 
@@ -492,6 +497,7 @@ mod sheltering {
 
             for (input, expected) in test_points {
                 let mut breakdowns = Breakdowns::new();
+
                 breakdowns.insert_bonus(Bonus::new(
                     Sheltering::Physical,
                     BonusType::Stacking,
@@ -499,8 +505,9 @@ mod sheltering {
                     None,
                     BonusSource::Debug(0),
                 ));
+
                 assert_eq!(
-                    breakdowns.get_attribute(Sheltering::PhysicalReduction),
+                    breakdowns.evaluate_attribute_from(Sheltering::PhysicalReduction),
                     expected
                 );
             }
@@ -513,6 +520,7 @@ mod sheltering {
 
             for (input, expected) in test_points {
                 let mut breakdowns = Breakdowns::new();
+
                 breakdowns.insert_bonuses([
                     Bonus::new(
                         Sheltering::MagicalCap,
@@ -529,8 +537,9 @@ mod sheltering {
                         BonusSource::Debug(0),
                     ),
                 ]);
+
                 assert_eq!(
-                    breakdowns.get_attribute(Sheltering::MagicalReduction),
+                    breakdowns.evaluate_attribute_from(Sheltering::MagicalReduction),
                     expected
                 );
             }
@@ -545,7 +554,7 @@ mod sheltering {
             let mut breakdowns = Breakdowns::new();
 
             assert_eq!(
-                breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalCap)),
+                breakdowns.evaluate_attribute_from(Attribute::Sheltering(Sheltering::MagicalCap)),
                 Decimal::from(50)
             );
 
@@ -558,14 +567,14 @@ mod sheltering {
             ));
 
             assert_eq!(
-                breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalTotal)),
+                breakdowns.evaluate_attribute_from(Attribute::Sheltering(Sheltering::MagicalTotal)),
                 Decimal::from(50)
             );
 
             breakdowns.insert_bonus(Bonus::flag(ArmorType::Cloth, None, BonusSource::Debug(1)));
 
             assert_eq!(
-                breakdowns.get_attribute(Attribute::Sheltering(Sheltering::MagicalTotal)),
+                breakdowns.evaluate_attribute_from(Attribute::Sheltering(Sheltering::MagicalTotal)),
                 Decimal::from(50)
             );
         }
@@ -580,8 +589,8 @@ mod sheltering {
 
             breakdowns.insert_bonus(Bonus::flag(ArmorType::Light, None, BonusSource::Debug(0)));
 
-            assert_eq!(breakdowns.get_attribute(CAP), 100.into());
-            assert_eq!(breakdowns.get_attribute(TOTAL), 0.into());
+            assert_eq!(breakdowns.evaluate_attribute_from(CAP), 100.into());
+            assert_eq!(breakdowns.evaluate_attribute_from(TOTAL), 0.into());
 
             breakdowns.insert_bonus(Bonus::new(
                 Sheltering::Magical,
@@ -591,8 +600,8 @@ mod sheltering {
                 BonusSource::Debug(1),
             ));
 
-            assert_eq!(breakdowns.get_attribute(CAP), 100.into());
-            assert_eq!(breakdowns.get_attribute(TOTAL), 100.into());
+            assert_eq!(breakdowns.evaluate_attribute_from(CAP), 100.into());
+            assert_eq!(breakdowns.evaluate_attribute_from(TOTAL), 100.into());
         }
 
         #[test]
@@ -615,7 +624,7 @@ mod sheltering {
                     ),
                 ]);
 
-                assert_eq!(breakdowns.get_attribute(TOTAL), 200.into());
+                assert_eq!(breakdowns.evaluate_attribute_from(TOTAL), 200.into());
             }
         }
     }
@@ -632,7 +641,7 @@ mod armor_class {
                 #[test]
                 fn $name() {
                     let mut breakdowns = Breakdowns::new();
-                    let initial = breakdowns.get_attribute(ArmorClass::Total);
+                    let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
                     breakdowns.insert_bonus(Bonus::new(
                         $attribute,
                         DebugValue(0),
@@ -640,7 +649,7 @@ mod armor_class {
                         None,
                         DebugValue(0),
                     ));
-                    let result = breakdowns.get_attribute(ArmorClass::Total);
+                    let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
                     assert!(result > initial);
                 }
             };
@@ -665,7 +674,7 @@ mod armor_class {
                 None,
                 DebugValue(0),
             ));
-            let initial = breakdowns.get_attribute(ArmorClass::Total);
+            let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::ArmorBonus,
                 DebugValue(0),
@@ -673,7 +682,7 @@ mod armor_class {
                 None,
                 DebugValue(1),
             ));
-            let result = breakdowns.get_attribute(ArmorClass::Total);
+            let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
             assert_eq!(result - initial, 20.into());
         }
 
@@ -687,7 +696,7 @@ mod armor_class {
                 None,
                 DebugValue(0),
             ));
-            let initial = breakdowns.get_attribute(ArmorClass::Total);
+            let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::ShieldBonus,
                 DebugValue(0),
@@ -695,7 +704,7 @@ mod armor_class {
                 None,
                 DebugValue(1),
             ));
-            let result = breakdowns.get_attribute(ArmorClass::Total);
+            let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
             assert_eq!(result - initial, 20.into());
         }
 
@@ -709,7 +718,7 @@ mod armor_class {
                 None,
                 DebugValue(0),
             ));
-            let initial = breakdowns.get_attribute(ArmorClass::Total);
+            let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::TotalScalar,
                 DebugValue(0),
@@ -717,7 +726,7 @@ mod armor_class {
                 None,
                 DebugValue(1),
             ));
-            let result = breakdowns.get_attribute(ArmorClass::Total);
+            let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
             assert_eq!(result / initial, 2.into());
         }
@@ -740,11 +749,11 @@ mod armor_class {
                         DebugValue(0),
                     ));
 
-                    let initial = breakdowns.get_attribute(ArmorClass::Total);
+                    let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
                     breakdowns.insert_bonus(Bonus::flag($flag, None, DebugValue(1)));
 
-                    let with_armor = breakdowns.get_attribute(ArmorClass::Total);
+                    let with_armor = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
                     assert!(initial > with_armor);
 
@@ -756,7 +765,7 @@ mod armor_class {
                         DebugValue(2),
                     ));
 
-                    let with_increased_max = breakdowns.get_attribute(ArmorClass::Total);
+                    let with_increased_max = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
                     assert_eq!(with_increased_max - with_armor, 2.into());
                 }
@@ -786,7 +795,7 @@ mod armor_class {
                     Bonus::new(Ability::Dexterity, DebugValue(0), 100, None, DebugValue(0)),
                 ]);
 
-                let initial = breakdowns.get_attribute(ArmorClass::Total);
+                let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
                 breakdowns.insert_bonuses([
                     Bonus::new(
@@ -805,7 +814,7 @@ mod armor_class {
                     ),
                 ]);
 
-                let result = breakdowns.get_attribute(ArmorClass::Total);
+                let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
                 assert_eq!(result - initial, 1.into());
             }
@@ -824,7 +833,7 @@ mod race {
             let mut breakdowns = Breakdowns::new();
             breakdowns.insert_bonus(Bonus::flag(Race::Dwarf, None, DebugValue(0)));
             assert_eq!(
-                breakdowns.get_attribute(Proficiency::from(WeaponType::DwarvenWarAxe)),
+                breakdowns.evaluate_attribute_from(Proficiency::from(WeaponType::DwarvenWarAxe)),
                 0.into()
             );
             breakdowns.insert_bonus(Bonus::feat(
@@ -833,7 +842,8 @@ mod race {
                 DebugValue(1),
             ));
             assert!(
-                breakdowns.get_attribute(Proficiency::from(WeaponType::DwarvenWarAxe)) > 0.into()
+                breakdowns.evaluate_attribute_from(Proficiency::from(WeaponType::DwarvenWarAxe))
+                    > 0.into()
             );
         }
     }
@@ -856,7 +866,9 @@ mod feats {
                 BonusSource::Debug(0),
             ));
 
-            assert!(compiler.get_attribute(Proficiency::from(WeaponType::Dagger)) > 0.into());
+            assert!(
+                compiler.evaluate_attribute_from(Proficiency::from(WeaponType::Dagger)) > 0.into()
+            );
         }
 
         #[test]
@@ -870,7 +882,10 @@ mod feats {
                 BonusSource::Debug(0),
             ));
 
-            assert!(compiler.get_attribute(Proficiency::from(WeaponType::Falchion)) > 0.into());
+            assert!(
+                compiler.evaluate_attribute_from(Proficiency::from(WeaponType::Falchion))
+                    > 0.into()
+            );
         }
     }
 
@@ -957,7 +972,7 @@ mod armor_check_penalty {
                 #[test]
                 fn $name() {
                     let mut breakdowns = Breakdowns::new();
-                    let initial = breakdowns.get_attribute(Skill::$skill);
+                    let initial = breakdowns.evaluate_attribute_from(Skill::$skill);
                     breakdowns.insert_bonus(Bonus::new(
                         Attribute::ArmorCheckPenalty,
                         DebugValue(0),
@@ -965,7 +980,7 @@ mod armor_check_penalty {
                         None,
                         DebugValue(0),
                     ));
-                    let result = breakdowns.get_attribute(Skill::$skill);
+                    let result = breakdowns.evaluate_attribute_from(Skill::$skill);
                     assert_eq!(initial - result, $scale.into());
                 }
             };
@@ -982,7 +997,7 @@ mod armor_check_penalty {
     #[test]
     fn ignore_negative_values() {
         let mut breakdowns = Breakdowns::new();
-        let initial = breakdowns.get_attribute(Skill::Balance);
+        let initial = breakdowns.evaluate_attribute_from(Skill::Balance);
         breakdowns.insert_bonus(Bonus::new(
             Attribute::ArmorCheckPenalty,
             DebugValue(0),
@@ -990,7 +1005,7 @@ mod armor_check_penalty {
             None,
             DebugValue(0),
         ));
-        let result = breakdowns.get_attribute(Skill::Balance);
+        let result = breakdowns.evaluate_attribute_from(Skill::Balance);
         assert_eq!(result, initial);
     }
 }
@@ -1011,6 +1026,6 @@ mod toggles {
             DebugValue(0),
         ));
 
-        assert!(breakdowns.get_attribute(Flag::HasToggle(Toggle::Blocking)) > 0.into());
+        assert!(breakdowns.evaluate_attribute_from(Flag::HasToggle(Toggle::Blocking)) > 0.into());
     }
 }

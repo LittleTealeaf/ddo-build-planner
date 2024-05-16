@@ -4,13 +4,12 @@ mod traits;
 mod to_attribute;
 use core::fmt;
 
-use itertools::chain;
 pub use to_attribute::*;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
-use utils::enums::StaticOptions;
+use utils::{chain_tree, enums::StaticOptions};
 
 use crate::{
     bonus::{Bonus, BonusTemplate, CloneBonus},
@@ -226,7 +225,7 @@ macro_rules! static_attribute {
 
 impl StaticOptions for Attribute {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!(
+        chain_tree!(
             [
                 Self::Dummy,
                 Self::SpellResistance,

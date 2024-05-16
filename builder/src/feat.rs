@@ -3,10 +3,9 @@ public_modules!(feats, requirements, to_feat);
 
 use core::fmt::{self, Debug};
 
-use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::{chain_tree, enums::StaticOptions, public_modules};
 
 use fmt::Display;
 
@@ -104,7 +103,7 @@ where
 
 impl StaticOptions for Feat {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!(
+        chain_tree!(
             RacialFeat::get_static().map(Self::RacialFeat),
             Proficiency::get_static().map(Self::Proficiency),
             SkillFocus::get_static().map(Self::SkillFocus),
