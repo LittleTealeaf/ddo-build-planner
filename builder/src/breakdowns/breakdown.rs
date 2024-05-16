@@ -11,7 +11,7 @@ use crate::{
 // - Create cache for breakdowns
 // - Provide immutable method that returns breakdowns if in cache
 // - Provide mutable method to cache breakdowns
-// - Provide all-inclusive method to do everything
+// - Provide all-inclusive method
 
 use super::Breakdowns;
 
@@ -83,7 +83,7 @@ impl Breakdowns {
     }
 
     pub fn get_breakdowns(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
-        self.Quicache_breakdowns(attribute);
+        self.cache_breakdowns(attribute);
         self.get_cached_breakdowns(attribute)
     }
 
