@@ -185,7 +185,7 @@ impl Breakdowns {
         }
 
         for attribute in breakdowns {
-            self.add_breakdown(attribute);
+            self.track_breakdown(attribute);
         }
     }
 
