@@ -18,8 +18,10 @@ use builder::{
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        sneak_attack::SneakAttack,
         spell_power::SpellPower,
         toggle::Toggle,
+        weapon_attribute::{WeaponAttribute, WeaponHand, WeaponStat},
     },
 };
 use itertools::Itertools;
@@ -467,6 +469,74 @@ mod spells {
             potency_to!(SpellCriticalDamage, to_rust, Rust);
             potency_to!(SpellCriticalDamage, to_alignment, Alignment);
             potency_to!(SpellCriticalDamage, to_light, Light);
+        }
+    }
+}
+
+mod weapons {
+    use super::*;
+
+    mod sneak_attack {
+
+        use builder::bonus::Condition;
+
+        use super::*;
+
+        macro_rules! bonus_to {
+            ($sneak:ident, $stat: ident, $hand: ident, $name: ident) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+                    let initial = breakdowns.evaluate_attribute(&Attribute::Weapon(
+                        WeaponAttribute(WeaponHand::$hand, WeaponStat::$stat),
+                    ));
+
+                    breakdowns.insert_bonus(Bonus::new(
+                        SneakAttack::$sneak,
+                        BonusType::Stacking,
+                        1,
+                        None,
+                        BonusSource::Debug(0),
+                    ));
+
+                    let value = breakdowns.evaluate_attribute(&Attribute::Weapon(WeaponAttribute(
+                        WeaponHand::$hand,
+                        WeaponStat::$stat,
+                    )));
+
+                    assert_eq!(initial, value);
+
+                    breakdowns.insert_bonus(Bonus::new(
+                        Attribute::Toggle(Toggle::SneakAttack),
+                        BonusType::Stacking,
+                        1,
+                        None,
+                        BonusSource::Debug(1),
+                    ));
+
+                    let value = breakdowns.evaluate_attribute(&Attribute::Weapon(WeaponAttribute(
+                        WeaponHand::$hand,
+                        WeaponStat::$stat,
+                    )));
+
+                    assert_eq!(value - initial, Decimal::ONE);
+                }
+            };
+        }
+
+        bonus_to!(Attack, Attack, Main, bonus_to_main_hand_attack);
+        bonus_to!(Attack, Attack, Off, bonus_to_off_hand_attack);
+        bonus_to!(Damage, Damage, Main, bonus_to_main_hand_damage);
+        bonus_to!(Damage, Damage, Off, bonus_to_off_hand_damage);
+
+        #[test]
+        fn sneak_attack_toggle_always_granted() {
+            let mut breakdowns = Breakdowns::new();
+            assert!(
+                breakdowns.evaluate_condition(&Condition::has(Attribute::Flag(Flag::HasToggle(
+                    Toggle::SneakAttack
+                ))))
+            );
         }
     }
 }

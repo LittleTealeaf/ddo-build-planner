@@ -1,6 +1,5 @@
 use core::iter::once;
-use itertools::chain;
-use utils::{enums::StaticOptions, hashmap::IntoGroupedHashMap};
+use utils::{chain_tree, enums::StaticOptions, hashmap::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,
@@ -20,15 +19,18 @@ use crate::{
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        sneak_attack::SneakAttack,
         spell_points::SpellPoints,
         spell_power::SpellPower,
+        toggle::Toggle,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
     val,
 };
 
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
-    chain!(
+    chain_tree!(
         ability_bonuses(),
         armor_class(),
         saving_throw(),
@@ -44,6 +46,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         absorption(),
         completionist_feats(),
         two_handed_fighting(),
+        sneak_attack(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
@@ -342,6 +345,24 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
 
             BonusTemplate::feat(PastLifeFeat::RacialCompletionist, condition)
         },
+    ]
+}
+
+fn sneak_attack() -> impl IntoIterator<Item = BonusTemplate> {
+    [
+        BonusTemplate::toggle(Toggle::SneakAttack, None),
+        BonusTemplate::new(
+            (WeaponHand::Both, WeaponStat::Attack),
+            BonusType::Stacking,
+            Attribute::from(SneakAttack::Attack),
+            Condition::toggled(Toggle::SneakAttack),
+        ),
+        BonusTemplate::new(
+            (WeaponHand::Both, WeaponStat::Damage),
+            BonusType::Stacking,
+            Attribute::from(SneakAttack::Damage),
+            Condition::toggled(Toggle::SneakAttack),
+        ),
     ]
 }
 

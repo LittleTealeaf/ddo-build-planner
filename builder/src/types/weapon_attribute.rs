@@ -14,7 +14,7 @@ use crate::{
 
 /// A `WeaponStat` that is specifically for a weapon hand.
 #[derive(Hash, PartialEq, Eq, Copy, Clone, Debug, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct WeaponAttribute(WeaponHand, WeaponStat);
+pub struct WeaponAttribute(pub WeaponHand, pub WeaponStat);
 
 impl Display for WeaponAttribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

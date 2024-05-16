@@ -29,6 +29,8 @@ pub enum Toggle {
     InReaper,
     /// Is the character attacking a certain target
     Attacking(AttackingTarget),
+    /// Is the character sneak attacking.
+    SneakAttack,
     /// Iconic Past Life
     IconicPastLife(IconicPastLife),
     /// Epic Past Life
@@ -64,6 +66,7 @@ impl Display for Toggle {
             Self::Attacking(target) => write!(f, "Attacking {target} Target"),
             Self::IconicPastLife(past_life) => write!(f, "{past_life}"),
             Self::EpicPastLife(past_life) => write!(f, "{past_life}"),
+            Self::SneakAttack => write!(f, "Sneak Attack"),
         }
     }
 }
