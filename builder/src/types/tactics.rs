@@ -36,7 +36,7 @@ impl Tactics {
 
 impl StaticOptions for Tactics {
     fn get_static() -> impl Iterator<Item = Self> {
-        Self::ALL.iter().cloned()
+        Self::ALL.into_iter()
     }
 }
 
