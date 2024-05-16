@@ -13,30 +13,25 @@ use crate::{
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Tactics {
     /// Trip and Improved Trip bonuses
-    #[serde(rename="tr", alias = "Trip")]
+    #[serde(rename = "tr", alias = "Trip")]
     Trip,
     /// Sunder and Improved Sunder bonuses
-    #[serde(rename="su", alias = "Sunder")]
+    #[serde(rename = "su", alias = "Sunder")]
     Sunder,
     /// Assassinate DCs
-    #[serde(rename="as", alias = "Assassinate")]
+    #[serde(rename = "as", alias = "Assassinate")]
     Assassinate,
     /// Stunning Fist / Stunning Blow
-    #[serde(rename="st", alias = "Stun")]
+    #[serde(rename = "st", alias = "Stun")]
     Stun,
     /// General Tactics DC
-    #[serde(rename="al", alias = "All")]
+    #[serde(rename = "al", alias = "All")]
     All,
 }
 
 impl Tactics {
     /// All tactics DCs
-    pub const ALL: [Tactics; 4] = [
-        Self::Trip,
-        Self::Sunder,
-        Self::Assassinate,
-        Self::Stun,
-    ];
+    pub const ALL: [Self; 4] = [Self::Trip, Self::Sunder, Self::Assassinate, Self::Stun];
 }
 
 impl StaticOptions for Tactics {

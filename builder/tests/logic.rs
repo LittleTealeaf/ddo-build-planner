@@ -930,7 +930,7 @@ mod feats {
 
             for (i, set) in sets.iter_mut().enumerate() {
                 assert_eq!(
-                    breakdowns.get_attribute(PastLifeFeat::HeroicCompletionist),
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist),
                     Decimal::ZERO
                 );
                 breakdowns.insert_bonuses(
@@ -940,7 +940,10 @@ mod feats {
                 );
             }
 
-            assert!(breakdowns.get_attribute(PastLifeFeat::HeroicCompletionist) > Decimal::ZERO);
+            assert!(
+                breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
+                    > Decimal::ZERO
+            );
 
             for (i, set) in sets.into_iter().enumerate() {
                 if !set.is_empty() {
@@ -951,7 +954,7 @@ mod feats {
                             BonusSource::Custom(i),
                         ));
                         assert!(
-                            breakdowns.get_attribute(PastLifeFeat::HeroicCompletionist)
+                            breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
                                 > Decimal::ZERO
                         );
                     }
