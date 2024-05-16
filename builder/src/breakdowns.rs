@@ -49,6 +49,8 @@ pub enum DiceStrategy {
 struct BreakdownCache {
     value: HashMap<Value, Decimal>,
     condition: HashMap<Condition, bool>,
+    attribute: HashMap<Attribute, Decimal>,
+    breakdowns: HashMap<Attribute, AttributeBreakdown>,
 }
 
 /// Simple methods for creating new instances, and obtaining a list of bonuses or attributes

@@ -1,14 +1,14 @@
 use std::collections::HashMap;
 
 use rust_decimal::Decimal;
-use utils::hashmap::MapGetOr;
+use utils::{from_into::FromInto, hashmap::MapGetOr};
 
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, Condition, Value},
 };
 
-use super::{Breakdowns, DiceStrategy};
+use super::{BreakdownCache, Breakdowns, DiceStrategy};
 
 /// Non-Mutating API
 impl Breakdowns {
@@ -75,8 +75,12 @@ impl Breakdowns {
 /// Mutable API
 impl Breakdowns {
     /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
-    pub fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        self.snapshot().evaluate_condition(condition)
+    pub fn evaluate_condition<'a, C>(&mut self, condition: C) -> bool
+    where
+        C: Into<Option<&'a Condition>>,
+    {
+        Option::<&'a Condition>::from_into(condition)
+            .map_or(true, |cond| self.snapshot().evaluate_condition(cond))
     }
 
     /// Evaluates a given value based on values within the current [`Breakdowns`] object.
@@ -108,8 +112,7 @@ impl Breakdowns {
 }
 
 struct Snapshot<'a> {
-    value: &'a mut HashMap<Value, Decimal>,
-    condition: &'a mut HashMap<Condition, bool>,
+    cache: &'a mut BreakdownCache,
     bonuses: &'a HashMap<Attribute, Vec<Bonus>>,
     dice_strategy: DiceStrategy,
 }
@@ -118,8 +121,7 @@ struct Snapshot<'a> {
 impl Breakdowns {
     fn snapshot(&mut self) -> Snapshot<'_> {
         Snapshot {
-            value: &mut self.cache.value,
-            condition: &mut self.cache.condition,
+            cache: &mut self.cache,
             bonuses: &self.bonuses,
             dice_strategy: self.dice_strategy,
         }
@@ -151,11 +153,19 @@ impl<'a> Snapshot<'a> {
     }
 
     fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {
-        self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO)
+        if let Some(value) = self.cache.attribute.get(attribute) {
+            return *value;
+        }
+
+        let value = self.calculate_attribute(attribute).unwrap_or(Decimal::ZERO);
+
+        self.cache.attribute.insert(attribute.clone(), value);
+
+        value
     }
 
     fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        if let Some(value) = self.condition.get(condition) {
+        if let Some(value) = self.cache.condition.get(condition) {
             return *value;
         }
 
@@ -170,12 +180,12 @@ impl<'a> Snapshot<'a> {
             Condition::Xor(a, b) => self.evaluate_condition(a) != self.evaluate_condition(b),
         };
 
-        self.condition.insert(condition.clone(), result);
+        self.cache.condition.insert(condition.clone(), result);
         result
     }
 
     fn evaluate_value(&mut self, value: &Value) -> Decimal {
-        if let Some(value) = self.value.get(value) {
+        if let Some(value) = self.cache.value.get(value) {
             return *value;
         }
 
@@ -216,7 +226,7 @@ impl<'a> Snapshot<'a> {
             }
         };
 
-        self.value.insert(value.clone(), result);
+        self.cache.value.insert(value.clone(), result);
 
         result
     }

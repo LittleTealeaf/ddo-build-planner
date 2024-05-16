@@ -7,7 +7,7 @@ use utils::{hashmap::MapGetOrDefault, vecs::FilterRemove};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},
-    bonus::{Bonus, BonusSource, ToValue},
+    bonus::{Bonus, BonusSource},
 };
 
 use super::{buffer::Buffer, Breakdowns};
@@ -109,14 +109,21 @@ impl Breakdowns {
             |key, _| key.has_attr_dependency(attribute)
         }
 
+        // List of attributes to recalculate
+        let mut breakdowns = HashSet::new();
+
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .cache
-                .value
-                .remove(&attribute.clone().to_value())
+                .attribute
+                .remove(&attribute)
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
+
+            if self.cache.breakdowns.remove(&attribute).is_some() {
+                breakdowns.insert(attribute.clone());
+            }
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
@@ -175,6 +182,10 @@ impl Breakdowns {
                     .cloned()
                     .map(|bonus| bonus.to_bonus(source.clone())),
             );
+        }
+
+        for attribute in breakdowns {
+            self.add_breakdown(attribute);
         }
     }
 
