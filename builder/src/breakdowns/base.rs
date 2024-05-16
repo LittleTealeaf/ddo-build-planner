@@ -7,7 +7,7 @@ use crate::{
     bonus::{
         Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
     },
-    feat::{HeroicPastLife, PastLifeFeat},
+    feat::{HeroicPastLife, PastLifeFeat, RacialPastLife},
     types::{
         ability::Ability,
         absorption::{Absorption, AbsorptionSource},
@@ -42,7 +42,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         sheltering_reduction(),
         armor_check_penalties(),
         absorption(),
-        heoric_completionist(),
+        completionist_feats(),
         two_handed_fighting(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
@@ -309,23 +309,40 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
     })
 }
 
-fn heoric_completionist() -> impl Iterator<Item = BonusTemplate> {
-    let condition = PlayerClass::get_static()
-        .map(|class| (class.get_parent_class().unwrap_or(class), class))
-        .into_grouped_hash_map()
-        .into_values()
-        .map(|set| {
-            set.into_iter()
-                .map(|class| HeroicPastLife(class).to_value())
-                .sum::<Value>()
-                .greater_than(Value::ZERO)
-        })
-        .cond_all();
+fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
+    [
+        {
+            // HEROIC COMPLETIONIST
+            let condition = PlayerClass::get_static()
+                .map(|class| (class.get_parent_class().unwrap_or(class), class))
+                .into_grouped_hash_map()
+                .into_values()
+                .map(|set| {
+                    set.into_iter()
+                        .map(|class| HeroicPastLife(class).to_value())
+                        .sum::<Value>()
+                        .greater_than(Value::ZERO)
+                })
+                .cond_all();
+            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist, condition)
+        },
+        {
+            // RACIAL COMPLETIONIST
+            let condition = RacialPastLife::RACES
+                .map(|race| (race.get_base().unwrap_or(race), race))
+                .into_grouped_hash_map()
+                .into_values()
+                .map(|set| {
+                    set.into_iter()
+                        .map(ToValue::to_value)
+                        .sum::<Value>()
+                        .greater_or_equal_to(val!(3))
+                })
+                .cond_all();
 
-    once(BonusTemplate::feat(
-        PastLifeFeat::HeroicCompletionist,
-        condition,
-    ))
+            BonusTemplate::feat(PastLifeFeat::RacialCompletionist, condition)
+        },
+    ]
 }
 
 // TODO: convert this to the other method (flag to flag)

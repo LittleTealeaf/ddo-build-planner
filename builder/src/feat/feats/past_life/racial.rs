@@ -40,12 +40,18 @@ impl RacialPastLife {
         Self(Race::Warforged),
     ];
 
-    /// Provides the base race if there is any
+    /// Converts back to the race
     #[must_use]
-    pub const fn get_base_race(&self) -> Option<Race> {
+    pub const fn get_race(&self) -> Race {
+        self.0
+    }
+
+    /// Provides the base race if there are any
+    #[must_use]
+    pub const fn get_base(&self) -> Option<Self> {
         let Self(race) = self;
         match race {
-            Race::WoodElf => Some(Race::Elf),
+            Race::WoodElf => Some(Self(Race::Elf)),
             _ => None,
         }
     }
@@ -106,9 +112,9 @@ impl GetBonuses for RacialPastLife {
             return None;
         }
 
-        if let Some(race) = self.get_base_race() {
+        if let Some(race) = self.get_base() {
             return Some(vec![BonusTemplate::new(
-                Self(race),
+                race,
                 BonusType::Stacking,
                 value,
                 None,

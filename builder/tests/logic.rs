@@ -6,14 +6,14 @@ use builder::{
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
     breakdowns::Breakdowns,
     debug::DebugValue,
-    feat::{IconicPastLife, Proficiency},
+    feat::{HeroicPastLife, IconicPastLife, PastLifeFeat, Proficiency, RacialPastLife},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
-        flag::Flag,
-        flag::OffHandType,
+        flag::{Flag, OffHandType},
         item_type::{ArmorType, ShieldType, WeaponType},
+        player_class::PlayerClass,
         race::Race,
         saving_throw::SavingThrow,
         sheltering::Sheltering,
@@ -22,7 +22,9 @@ use builder::{
         toggle::Toggle,
     },
 };
+use itertools::Itertools;
 use rust_decimal::Decimal;
+use utils::hashmap::IntoGroupedHashMap;
 
 mod ability {
     use super::*;
@@ -889,74 +891,172 @@ mod feats {
         }
     }
 
-    mod iconic_past_lives {
-
+    mod past_lives {
         use super::*;
 
-        #[test]
-        fn past_life_gives_toggle() {
-            for race in IconicPastLife::RACES {
-                let Some(bonuses) = race.get_bonuses(Decimal::ONE) else {
-                    panic!("Expected Bonuses for {race}");
-                };
+        mod iconic {
 
-                assert!(
-                    bonuses.contains(&BonusTemplate::toggle(race, None)),
-                    "{race} does not provide toggle"
+            use super::*;
+
+            #[test]
+            fn past_life_gives_toggle() {
+                for race in IconicPastLife::RACES {
+                    let Some(bonuses) = race.get_bonuses(Decimal::ONE) else {
+                        panic!("Expected Bonuses for {race}");
+                    };
+
+                    assert!(
+                        bonuses.contains(&BonusTemplate::toggle(race, None)),
+                        "{race} does not provide toggle"
+                    );
+                }
+            }
+        }
+
+        mod racial {
+
+            use im::HashSet;
+
+            use super::*;
+
+            #[test]
+            fn completionist_not_given_by_default() {
+                let mut breakdowns = Breakdowns::new();
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ZERO
+                );
+            }
+
+            #[test]
+            fn single_does_not_give_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let races = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect::<Vec<_>>();
+
+                breakdowns.insert_bonuses(races.iter().map(|race| {
+                    Bonus::new(*race, BonusType::Stacking, 1, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ZERO
+                );
+            }
+
+            #[test]
+            fn double_does_not_give_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let races = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect::<Vec<_>>();
+
+                breakdowns.insert_bonuses(races.iter().map(|race| {
+                    Bonus::new(*race, BonusType::Stacking, 2, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ZERO
+                );
+            }
+
+            #[test]
+            fn three_of_each_gives_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let races = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect::<Vec<_>>();
+
+                breakdowns.insert_bonuses(races.iter().map(|race| {
+                    Bonus::new(*race, BonusType::Stacking, 3, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ONE
+                );
+            }
+
+            #[test]
+            fn sub_races_can_substitute_for_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let mut races: HashSet<RacialPastLife> = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect();
+
+                RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_some())
+                    .for_each(|race| {
+                        let _ = races.remove(&race.get_base().unwrap());
+                        races.insert(race);
+                    });
+
+                breakdowns.insert_bonuses(races.into_iter().map(|race| {
+                    Bonus::new(race, BonusType::Stacking, 3, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ONE
                 );
             }
         }
-    }
 
-    mod heroic_past_lives {
-        use builder::{
-            feat::{HeroicPastLife, PastLifeFeat},
-            types::player_class::PlayerClass,
-        };
-        use itertools::Itertools;
-        use utils::hashmap::IntoGroupedHashMap;
+        mod heroic {
 
-        use super::*;
+            use super::*;
 
-        #[test]
-        fn all_combinations_give_past_lives() {
-            let mut sets = PlayerClass::CLASSES
-                .map(|class| (class.get_parent_class().unwrap_or(class), class))
-                .into_grouped_hash_map()
-                .into_values()
-                .collect_vec();
+            #[test]
+            fn all_combinations_give_past_lives() {
+                let mut sets = PlayerClass::CLASSES
+                    .map(|class| (class.get_parent_class().unwrap_or(class), class))
+                    .into_grouped_hash_map()
+                    .into_values()
+                    .collect_vec();
 
-            let mut breakdowns = Breakdowns::new();
+                let mut breakdowns = Breakdowns::new();
 
-            for (i, set) in sets.iter_mut().enumerate() {
-                assert_eq!(
-                    breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist),
-                    Decimal::ZERO
-                );
-                breakdowns.insert_bonuses(
-                    set.pop().into_iter().map(|class| {
+                for (i, set) in sets.iter_mut().enumerate() {
+                    assert_eq!(
+                        breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist),
+                        Decimal::ZERO
+                    );
+                    breakdowns.insert_bonuses(set.pop().into_iter().map(|class| {
                         Bonus::feat(HeroicPastLife(class), None, BonusSource::Custom(i))
-                    }),
+                    }));
+                }
+
+                assert!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
+                        > Decimal::ZERO
                 );
-            }
 
-            assert!(
-                breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
-                    > Decimal::ZERO
-            );
-
-            for (i, set) in sets.into_iter().enumerate() {
-                if !set.is_empty() {
-                    for item in set {
-                        breakdowns.insert_bonus(Bonus::feat(
-                            HeroicPastLife(item),
-                            None,
-                            BonusSource::Custom(i),
-                        ));
-                        assert!(
-                            breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
-                                > Decimal::ZERO
-                        );
+                for (i, set) in sets.into_iter().enumerate() {
+                    if !set.is_empty() {
+                        for item in set {
+                            breakdowns.insert_bonus(Bonus::feat(
+                                HeroicPastLife(item),
+                                None,
+                                BonusSource::Custom(i),
+                            ));
+                            assert!(
+                                breakdowns
+                                    .evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
+                                    > Decimal::ZERO
+                            );
+                        }
                     }
                 }
             }
