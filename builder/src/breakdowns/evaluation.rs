@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use rust_decimal::Decimal;
-use utils::hashmap::MapGetOr;
+use utils::{from_into::FromInto, hashmap::MapGetOr};
 
 use crate::{
     attribute::Attribute,
@@ -75,8 +75,12 @@ impl Breakdowns {
 /// Mutable API
 impl Breakdowns {
     /// Evaluates a given condition based on values within the current [`Breakdowns`] object.
-    pub fn evaluate_condition(&mut self, condition: &Condition) -> bool {
-        self.snapshot().evaluate_condition(condition)
+    pub fn evaluate_condition<'a, C>(&mut self, condition: C) -> bool
+    where
+        C: Into<Option<&'a Condition>>,
+    {
+        Option::<&'a Condition>::from_into(condition)
+            .map_or(true, |cond| self.snapshot().evaluate_condition(cond))
     }
 
     /// Evaluates a given value based on values within the current [`Breakdowns`] object.
