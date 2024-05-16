@@ -7,6 +7,12 @@ use crate::{
     bonus::{Bonus, BonusType, Condition, Value},
 };
 
+// TODO: Features Needed
+// - Create cache for breakdowns
+// - Provide immutable method that returns breakdowns if in cache
+// - Provide mutable method to cache breakdowns
+// - Provide all-inclusive method to do everything
+
 use super::Breakdowns;
 
 /// Contains a reference to the bonus as well as the final value of that bonus.
@@ -36,7 +42,7 @@ pub struct AttributeBreakdown<'a> {
     applied: Vec<BonusEntry<'a>>,
     overwritten: Vec<BonusEntry<'a>>,
     disabled: Vec<BonusEntry<'a>>,
-    value: Decimal,
+    value: &'a Decimal,
 }
 
 impl<'a> AttributeBreakdown<'a> {
@@ -64,18 +70,25 @@ impl<'a> AttributeBreakdown<'a> {
     /// Returns the final calculated value
     #[must_use]
     pub const fn value(&self) -> &Decimal {
-        &self.value
+        self.value
     }
 }
 
 impl Breakdowns {
-    /// Returns the bonus breakdowns for a particular attribute in the breakdown
-    ///
-    /// # Panics
-    /// Panics will not happen unless the values in the caches are removed during execution of this
-    /// function
+
+
+    /// Pre-caches the calculations needed to run the breakdowns
+    pub fn cache_breakdowns(&mut self, attribute: &Attribute) {
+        let _ = self.evaluate_attribute(attribute);
+    }
+
     pub fn get_breakdowns(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
-        let value = self.calculate_attribute(attribute)?;
+        self.Quicache_breakdowns(attribute);
+        self.get_cached_breakdowns(attribute)
+    }
+
+    pub fn get_cached_breakdowns(&self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+        let value = self.cache.attribute.get(attribute)?;
 
         let mut breakdown = AttributeBreakdown {
             applied: Vec::new(),
@@ -89,17 +102,15 @@ impl Breakdowns {
         for bonus in self.bonuses.get(attribute)? {
             let value = match bonus.value() {
                 Value::Const(val) => val,
-                other => self
-                    .get_value(other)
-                    .unwrap_or_else(|| panic!("Expected Value to be Cached {value}")),
+                other => self.get_value(other)?,
             };
 
-            let condition = bonus.condition().map_or(true, |condition| match condition {
-                Condition::Constant(value) => *value,
-                condition => self
-                    .get_condition(condition)
-                    .unwrap_or_else(|| panic!("Expected Condition to be Cached: {condition}")),
-            });
+            let condition = bonus
+                .condition()
+                .map_or(Some(true), |condition| match condition {
+                    Condition::Constant(value) => Some(*value),
+                    condition => self.get_condition(condition),
+                })?;
 
             let entry = BonusEntry { bonus, value };
 
@@ -129,4 +140,11 @@ impl Breakdowns {
 
         Some(breakdown)
     }
+
+    // pub fn preload_breakdowns(&mut self, attribute: Attribute) {
+    //     let _ = self.evaluate_value(&Value::Attribute(attribute));
+    // }
+    //
+    // pub fn get_breakdowns(&self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+    // }
 }

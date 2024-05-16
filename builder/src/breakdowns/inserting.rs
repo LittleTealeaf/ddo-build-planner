@@ -112,8 +112,8 @@ impl Breakdowns {
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
             let initial_value = self
                 .cache
-                .value
-                .remove(&attribute.clone().to_value())
+                .attribute
+                .remove(&attribute)
                 .or_else(|| forced.then_some(Decimal::ZERO))
                 .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
