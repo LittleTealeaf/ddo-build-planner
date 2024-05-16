@@ -217,7 +217,7 @@ impl CloneBonus for Attribute {
 
 macro_rules! static_attribute {
     ($($class:ident),+) => {
-        chain!(
+        chain_tree!(
             $($class::get_static().map(ToAttribute::to_attribute),)+
         )
     };
