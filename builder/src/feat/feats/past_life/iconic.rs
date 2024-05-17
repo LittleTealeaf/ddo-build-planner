@@ -9,17 +9,7 @@ use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
     types::{
-        damage_type::DamageType,
-        flag::{MainHandType, OffHandType},
-        item_type::WeaponType,
-        race::Race,
-        saving_throw::SavingThrow,
-        sheltering::Sheltering,
-        spell_school::SpellSchool,
-        tactics::Tactics,
-        toggle::{GetToggleGroup, ToToggle, Toggle},
-        toggle_group::ToggleGroup,
-        weapon_attribute::{WeaponHand, WeaponStat},
+        damage_type::DamageType, flag::{MainHandType, OffHandType}, item_type::WeaponType, race::Race, saving_throw::SavingThrow, sheltering::Sheltering, spellcasting::{SpellSchool, Spellcasting}, tactics::Tactics, toggle::{GetToggleGroup, ToToggle, Toggle}, toggle_group::ToggleGroup, weapon_attribute::{WeaponHand, WeaponStat}
     },
 };
 
@@ -75,7 +65,7 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::toggle(Self(Race::Bladeforged), None),
                 // TODO: Fortification +5% / life (passive)
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Repair.into()),
+                    Spellcasting::SpellPower(DamageType::Repair.into()),
                     BonusType::Stacking,
                     value * dec!(10),
                     Condition::toggled(Self(Race::Bladeforged)),
@@ -90,13 +80,13 @@ impl GetBonuses for IconicPastLife {
                     None,
                 ),
                 BonusTemplate::new(
-                    Attribute::SpellDC(SpellSchool::Illusion.into()),
+                    Spellcasting::SpellDC(SpellSchool::Illusion.into()),
                     BonusType::Stacking,
                     value,
                     Condition::toggled(Self(Race::DeepGnome)),
                 ),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Acid.into()),
+                    Spellcasting::SpellPower(DamageType::Acid.into()),
                     BonusType::Stacking,
                     value * dec!(5),
                     Condition::toggled(Self(Race::DeepGnome)),
@@ -175,19 +165,19 @@ impl GetBonuses for IconicPastLife {
             Race::Morninglord => Some(vec![
                 BonusTemplate::toggle(Self(Race::Morninglord), None),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Positive.into()),
+                    Spellcasting::SpellPower(DamageType::Positive.into()),
                     BonusType::Stacking,
                     value * dec!(3),
                     None,
                 ),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Light.into()),
+                    Spellcasting::SpellPower(DamageType::Light.into()),
                     BonusType::Stacking,
                     value * Decimal::TEN,
                     Condition::toggled(Self(Race::Morninglord)),
                 ),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Alignment.into()),
+                    Spellcasting::SpellPower(DamageType::Alignment.into()),
                     BonusType::Stacking,
                     value * Decimal::TEN,
                     Condition::toggled(Self(Race::Morninglord)),

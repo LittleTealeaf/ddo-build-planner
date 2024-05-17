@@ -12,8 +12,7 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Value},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{
-        ability::Ability, player_class::PlayerClass, skill::Skill, spell_points::SpellPoints,
-        spell_power::SpellPower, summoned_attribute::SummonedAttribute,
+        ability::Ability, player_class::PlayerClass, skill::Skill, spellcasting::{SpellPoints, SpellPower, Spellcasting}, summoned_attribute::SummonedAttribute
     },
     val,
 };
@@ -62,7 +61,7 @@ impl GetBonuses for SpellcastingFeat {
             )]),
             Self::MagicalTraining => Some(vec![
                 BonusTemplate::new(
-                    Attribute::SpellCriticalChance(SpellPower::Potency),
+                    Spellcasting::CriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     val!(5),
                     None,
@@ -71,7 +70,7 @@ impl GetBonuses for SpellcastingFeat {
             ]),
             Self::MentalToughness | Self::ImprovedMentalToughness => Some(vec![
                 BonusTemplate::new(
-                    Attribute::SpellCriticalChance(SpellPower::Potency),
+                    Spellcasting::CriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     val!(1),
                     None,
@@ -85,7 +84,7 @@ impl GetBonuses for SpellcastingFeat {
             ]),
             Self::SpellPenetration | Self::GreaterSpellPenetration => {
                 Some(vec![BonusTemplate::new(
-                    Attribute::SpellPenetration,
+                    Spellcasting::SpellPenetration,
                     BonusType::Stacking,
                     val!(2),
                     None,

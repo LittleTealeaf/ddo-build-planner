@@ -10,20 +10,7 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
     feat::{Feat, ToFeat},
     types::{
-        damage_type::DamageType,
-        flag::MainHandType,
-        heal_amp::HealingAmplification,
-        health::Health,
-        item_type::WeaponType,
-        player_class::PlayerClass,
-        saving_throw::SavingThrow,
-        sheltering::Sheltering,
-        skill::Skill,
-        sneak_attack::SneakAttack,
-        spell_points::SpellPoints,
-        spell_school::SpellSchool,
-        tactics::Tactics,
-        weapon_attribute::{WeaponHand, WeaponStat},
+        damage_type::DamageType, flag::MainHandType, heal_amp::HealingAmplification, health::Health, item_type::WeaponType, player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack, spellcasting::{SpellPoints, SpellSchool, Spellcasting}, tactics::Tactics, weapon_attribute::{WeaponHand, WeaponStat}
     },
 };
 
@@ -54,7 +41,7 @@ impl GetBonuses for HeroicPastLife {
             match class {
                 PlayerClass::Alchemist => vec![
                     BonusTemplate::new(
-                        Attribute::SpellDC(SpellSchool::Transmutation.into()),
+                        Spellcasting::SpellDC(SpellSchool::Transmutation.into()),
                         BonusType::Stacking,
                         value,
                         None,
@@ -107,7 +94,7 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::Sorcerer => vec![
                     BonusTemplate::new(
-                        Attribute::SpellDC(SpellSchool::Evocation.into()),
+                        Spellcasting::SpellDC(SpellSchool::Evocation.into()),
                         BonusType::Stacking,
                         value,
                         None,
@@ -121,7 +108,7 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::Wizard => vec![
                     BonusTemplate::new(
-                        Attribute::SpellPenetration,
+                        Spellcasting::SpellPenetration,
                         BonusType::Stacking,
                         value * Decimal::TWO,
                         None,
@@ -130,7 +117,7 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::FavoredSoul => vec![
                     BonusTemplate::new(
-                        Attribute::SpellPenetration,
+                        Spellcasting::SpellPenetration,
                         BonusType::Stacking,
                         value,
                         None,
@@ -158,13 +145,13 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::Stormsinger => vec![
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Electric.into()),
+                        Spellcasting::SpellPower(DamageType::Electric.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,
                     ),
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Sonic.into()),
+                        Spellcasting::SpellPower(DamageType::Sonic.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,
@@ -172,7 +159,7 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::Cleric => vec![
                     BonusTemplate::new(
-                        Attribute::SpellDC(SpellSchool::Conjuration.into()),
+                        Spellcasting::SpellDC(SpellSchool::Conjuration.into()),
                         BonusType::Stacking,
                         value,
                         None,
@@ -182,7 +169,7 @@ impl GetBonuses for HeroicPastLife {
                 PlayerClass::DarkApostate => vec![
                     // TODO: +5% negative healing amp
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Negative.into()),
+                        Spellcasting::SpellPower(DamageType::Negative.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,
@@ -194,13 +181,13 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::BlightCaster => vec![
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Acid.into()),
+                        Spellcasting::SpellPower(DamageType::Acid.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,
                     ),
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Poison.into()),
+                        Spellcasting::SpellPower(DamageType::Poison.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,
@@ -220,7 +207,7 @@ impl GetBonuses for HeroicPastLife {
                         None,
                     ),
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Positive.into()),
+                        Spellcasting::SpellPower(DamageType::Positive.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,
@@ -247,7 +234,7 @@ impl GetBonuses for HeroicPastLife {
                 PlayerClass::AcolyteOfTheSkin => vec![
                     BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, value, None),
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Fire.into()),
+                        Spellcasting::SpellPower(DamageType::Fire.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                         None,

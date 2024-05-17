@@ -14,19 +14,7 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Condition, ToValue},
     feat::{Feat, ToFeat},
     types::{
-        absorption::{Absorption, AbsorptionSource},
-        armor_class::ArmorClass,
-        damage_type::DamageType,
-        epic_sphere::EpicSphere,
-        flag::Flag,
-        heal_amp::HealingAmplification,
-        health::Health,
-        saving_throw::SavingThrow,
-        sheltering::Sheltering,
-        skill::Skill,
-        toggle::{GetToggleGroup, ToToggle, Toggle},
-        toggle_group::ToggleGroup,
-        weapon_attribute::{WeaponHand, WeaponStat},
+        absorption::{Absorption, AbsorptionSource}, armor_class::ArmorClass, damage_type::DamageType, epic_sphere::EpicSphere, flag::Flag, heal_amp::HealingAmplification, health::Health, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spellcasting::Spellcasting, toggle::{GetToggleGroup, ToToggle, Toggle}, toggle_group::ToggleGroup, weapon_attribute::{WeaponHand, WeaponStat}
     },
     val,
 };
@@ -212,7 +200,7 @@ impl GetBonuses for EpicPastLife {
             ]
             .map(|damage| {
                 BonusTemplate::new(
-                    Attribute::SpellCriticalChance(damage.into()),
+                    Spellcasting::CriticalDamage(damage.into()),
                     BonusType::Stacking,
                     dec!(3) * value,
                     Condition::toggled(*self),
@@ -234,7 +222,7 @@ impl GetBonuses for EpicPastLife {
                 Condition::toggled(*self),
             )],
             Self::EclipsePower => vec![BonusTemplate::new(
-                Attribute::SpellPenetration,
+                Spellcasting::SpellPenetration,
                 BonusType::Stacking,
                 value,
                 Condition::toggled(*self),
@@ -242,7 +230,7 @@ impl GetBonuses for EpicPastLife {
             Self::PowerOverLifeAndDeath => [DamageType::Positive, DamageType::Negative]
                 .map(|damage| {
                     BonusTemplate::new(
-                        Attribute::SpellPower(damage.into()),
+                        Spellcasting::SpellPower(damage.into()),
                         BonusType::Stacking,
                         dec!(10) * value,
                         Condition::toggled(*self),

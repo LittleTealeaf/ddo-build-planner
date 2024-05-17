@@ -1,14 +1,14 @@
-//! Spell Power
-// TODO: Merge with a spell category
-public_modules!(bonuses);
-
 use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::enums::StaticOptions;
 
-use super::damage_type::DamageType;
+use crate::{
+    attribute::Attribute,
+    bonus::{Bonus, CloneBonus},
+    types::{damage_type::DamageType, spellcasting::Spellcasting},
+};
 
 /// Defines specific spell powers that a player can boost to increase damage for spells of that
 /// type.
@@ -64,6 +64,31 @@ impl StaticOptions for SpellPower {
         chain!(
             [Self::Universal, Self::Potency,],
             DamageType::get_static().map(Self::Damage)
+        )
+    }
+}
+
+impl CloneBonus for SpellPower {
+    fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
+        let Attribute::Spellcasting(atr) = bonus.attribute() else {
+            return None;
+        };
+
+        Some(
+            match atr {
+                Spellcasting::SpellPower(Self::Potency) => {
+                    Some(Self::SPELL_POWERS.map(Spellcasting::SpellPower))
+                }
+                Spellcasting::CriticalChance(Self::Potency) => {
+                    Some(Self::SPELL_POWERS.map(Spellcasting::CriticalChance))
+                }
+                Spellcasting::CriticalDamage(Self::Potency) => {
+                    Some(Self::SPELL_POWERS.map(Spellcasting::CriticalDamage))
+                }
+                _ => None,
+            }?
+            .map(|attribute| bonus.clone_into_attribute(attribute))
+            .to_vec(),
         )
     }
 }

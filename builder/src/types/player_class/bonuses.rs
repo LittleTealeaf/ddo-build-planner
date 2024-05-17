@@ -3,14 +3,14 @@ use rust_decimal::Decimal;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType},
-    types::{ability::Ability, player_class::PlayerClass},
+    types::{ability::Ability, player_class::PlayerClass, spellcasting::Spellcasting},
 };
 
 impl GetBonuses for PlayerClass {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         // FIX: Check Logic for if zero-value bonuses are passed in
         let mut bonuses = vec![BonusTemplate::new(
-            Attribute::CasterLevel((*self).into()),
+            Spellcasting::CasterLevel((*self).into()),
             BonusType::Stacking,
             value,
             None,
@@ -27,7 +27,7 @@ impl GetBonuses for PlayerClass {
 impl PlayerClass {
     fn ability_bonus_to_spell_dc(self, ability: Ability) -> BonusTemplate {
         BonusTemplate::new(
-            Attribute::SpellDC(self.into()),
+            Spellcasting::SpellDC(self.into()),
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
             None,

@@ -20,8 +20,7 @@ use crate::{
         sheltering::Sheltering,
         skill::Skill,
         sneak_attack::SneakAttack,
-        spell_points::SpellPoints,
-        spell_power::SpellPower,
+        spellcasting::{SpellPoints, SpellPower, Spellcasting},
         toggle::Toggle,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
@@ -114,7 +113,7 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
     .into_iter()
     .map(|(skill, damage_type)| {
         BonusTemplate::new(
-            Attribute::SpellPower(SpellPower::Damage(damage_type)),
+            Spellcasting::SpellPower(SpellPower::Damage(damage_type)),
             BonusType::Stacking,
             Attribute::Skill(skill),
             None,
@@ -215,9 +214,9 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
 
 fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
     [
-        Attribute::SpellPower,
-        Attribute::SpellCriticalChance,
-        Attribute::SpellCriticalDamage,
+        Spellcasting::SpellPower,
+        Spellcasting::CriticalChance,
+        Spellcasting::CriticalDamage,
     ]
     .into_iter()
     .flat_map(|attribute| {

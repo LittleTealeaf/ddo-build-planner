@@ -19,7 +19,7 @@ use builder::{
         sheltering::Sheltering,
         skill::Skill,
         sneak_attack::SneakAttack,
-        spell_power::SpellPower,
+        spellcasting::{Spellcasting, SpellPower},
         toggle::Toggle,
         weapon_attribute::{WeaponAttribute, WeaponHand, WeaponStat},
     },
@@ -256,19 +256,19 @@ mod spells {
             fn $name() {
                 let mut breakdowns = Breakdowns::new();
 
-                let initial = breakdowns.evaluate_attribute_from(Attribute::$attribute(
+                let initial = breakdowns.evaluate_attribute_from(Spellcasting::$attribute(
                     SpellPower::Damage(DamageType::$damage),
                 ));
 
                 breakdowns.insert_bonus(Bonus::new(
-                    Attribute::$attribute(SpellPower::Universal),
+                    Spellcasting::$attribute(SpellPower::Universal),
                     BonusType::Stacking,
                     100,
                     None,
                     BonusSource::Debug(0),
                 ));
 
-                let result = breakdowns.evaluate_attribute_from(Attribute::$attribute(
+                let result = breakdowns.evaluate_attribute_from(Spellcasting::$attribute(
                     SpellPower::Damage(DamageType::$damage),
                 ));
 
@@ -282,13 +282,13 @@ mod spells {
             #[test]
             fn $name() {
                 const ATTRIBUTE: Attribute =
-                    Attribute::$attribute(SpellPower::Damage(DamageType::$damage));
+                    Attribute::Spellcasting(Spellcasting::$attribute(SpellPower::Damage(DamageType::$damage)));
                 let mut breakdowns = Breakdowns::new();
 
                 let initial = breakdowns.evaluate_attribute_from(ATTRIBUTE);
 
                 breakdowns.insert_bonus(Bonus::new(
-                    Attribute::$attribute(SpellPower::Potency),
+                    Spellcasting::$attribute(SpellPower::Potency),
                     DebugValue(0),
                     100,
                     None,
@@ -335,7 +335,7 @@ mod spells {
                     fn $name() {
                         let mut breakdowns = Breakdowns::new();
 
-                        let initial = breakdowns.evaluate_attribute_from(Attribute::SpellPower(
+                        let initial = breakdowns.evaluate_attribute_from(Spellcasting::SpellPower(
                             SpellPower::from(DamageType::$damagetype),
                         ));
 
@@ -347,7 +347,7 @@ mod spells {
                             BonusSource::Debug(0),
                         ));
 
-                        let result = breakdowns.evaluate_attribute_from(Attribute::SpellPower(
+                        let result = breakdowns.evaluate_attribute_from(Spellcasting::SpellPower(
                             SpellPower::from(DamageType::$damagetype),
                         ));
 
@@ -407,33 +407,33 @@ mod spells {
         mod universal {
             use super::*;
 
-            universal_to!(SpellCriticalChance, to_acid, Acid);
-            universal_to!(SpellCriticalChance, to_fire, Fire);
-            universal_to!(SpellCriticalChance, to_cold, Cold);
-            universal_to!(SpellCriticalChance, to_electric, Electric);
-            universal_to!(SpellCriticalChance, to_positive, Positive);
-            universal_to!(SpellCriticalChance, to_negative, Negative);
-            universal_to!(SpellCriticalChance, to_poison, Poison);
-            universal_to!(SpellCriticalChance, to_repair, Repair);
-            universal_to!(SpellCriticalChance, to_rust, Rust);
-            universal_to!(SpellCriticalChance, to_alignment, Alignment);
-            universal_to!(SpellCriticalChance, to_light, Light);
+            universal_to!(CriticalChance, to_acid, Acid);
+            universal_to!(CriticalChance, to_fire, Fire);
+            universal_to!(CriticalChance, to_cold, Cold);
+            universal_to!(CriticalChance, to_electric, Electric);
+            universal_to!(CriticalChance, to_positive, Positive);
+            universal_to!(CriticalChance, to_negative, Negative);
+            universal_to!(CriticalChance, to_poison, Poison);
+            universal_to!(CriticalChance, to_repair, Repair);
+            universal_to!(CriticalChance, to_rust, Rust);
+            universal_to!(CriticalChance, to_alignment, Alignment);
+            universal_to!(CriticalChance, to_light, Light);
         }
 
         mod potency {
             use super::*;
 
-            potency_to!(SpellCriticalChance, to_acid, Acid);
-            potency_to!(SpellCriticalChance, to_fire, Fire);
-            potency_to!(SpellCriticalChance, to_cold, Cold);
-            potency_to!(SpellCriticalChance, to_electric, Electric);
-            potency_to!(SpellCriticalChance, to_positive, Positive);
-            potency_to!(SpellCriticalChance, to_negative, Negative);
-            potency_to!(SpellCriticalChance, to_poison, Poison);
-            potency_to!(SpellCriticalChance, to_repair, Repair);
-            potency_to!(SpellCriticalChance, to_rust, Rust);
-            potency_to!(SpellCriticalChance, to_alignment, Alignment);
-            potency_to!(SpellCriticalChance, to_light, Light);
+            potency_to!(CriticalChance, to_acid, Acid);
+            potency_to!(CriticalChance, to_fire, Fire);
+            potency_to!(CriticalChance, to_cold, Cold);
+            potency_to!(CriticalChance, to_electric, Electric);
+            potency_to!(CriticalChance, to_positive, Positive);
+            potency_to!(CriticalChance, to_negative, Negative);
+            potency_to!(CriticalChance, to_poison, Poison);
+            potency_to!(CriticalChance, to_repair, Repair);
+            potency_to!(CriticalChance, to_rust, Rust);
+            potency_to!(CriticalChance, to_alignment, Alignment);
+            potency_to!(CriticalChance, to_light, Light);
         }
     }
     mod critical_damage {
@@ -442,33 +442,33 @@ mod spells {
         mod universal {
             use super::*;
 
-            universal_to!(SpellCriticalDamage, to_acid, Acid);
-            universal_to!(SpellCriticalDamage, to_fire, Fire);
-            universal_to!(SpellCriticalDamage, to_cold, Cold);
-            universal_to!(SpellCriticalDamage, to_electric, Electric);
-            universal_to!(SpellCriticalDamage, to_positive, Positive);
-            universal_to!(SpellCriticalDamage, to_negative, Negative);
-            universal_to!(SpellCriticalDamage, to_poison, Poison);
-            universal_to!(SpellCriticalDamage, to_repair, Repair);
-            universal_to!(SpellCriticalDamage, to_rust, Rust);
-            universal_to!(SpellCriticalDamage, to_alignment, Alignment);
-            universal_to!(SpellCriticalDamage, to_light, Light);
+            universal_to!(CriticalDamage, to_acid, Acid);
+            universal_to!(CriticalDamage, to_fire, Fire);
+            universal_to!(CriticalDamage, to_cold, Cold);
+            universal_to!(CriticalDamage, to_electric, Electric);
+            universal_to!(CriticalDamage, to_positive, Positive);
+            universal_to!(CriticalDamage, to_negative, Negative);
+            universal_to!(CriticalDamage, to_poison, Poison);
+            universal_to!(CriticalDamage, to_repair, Repair);
+            universal_to!(CriticalDamage, to_rust, Rust);
+            universal_to!(CriticalDamage, to_alignment, Alignment);
+            universal_to!(CriticalDamage, to_light, Light);
         }
 
         mod potency {
             use super::*;
 
-            potency_to!(SpellCriticalDamage, to_acid, Acid);
-            potency_to!(SpellCriticalDamage, to_fire, Fire);
-            potency_to!(SpellCriticalDamage, to_cold, Cold);
-            potency_to!(SpellCriticalDamage, to_electric, Electric);
-            potency_to!(SpellCriticalDamage, to_positive, Positive);
-            potency_to!(SpellCriticalDamage, to_negative, Negative);
-            potency_to!(SpellCriticalDamage, to_poison, Poison);
-            potency_to!(SpellCriticalDamage, to_repair, Repair);
-            potency_to!(SpellCriticalDamage, to_rust, Rust);
-            potency_to!(SpellCriticalDamage, to_alignment, Alignment);
-            potency_to!(SpellCriticalDamage, to_light, Light);
+            potency_to!(CriticalDamage, to_acid, Acid);
+            potency_to!(CriticalDamage, to_fire, Fire);
+            potency_to!(CriticalDamage, to_cold, Cold);
+            potency_to!(CriticalDamage, to_electric, Electric);
+            potency_to!(CriticalDamage, to_positive, Positive);
+            potency_to!(CriticalDamage, to_negative, Negative);
+            potency_to!(CriticalDamage, to_poison, Poison);
+            potency_to!(CriticalDamage, to_repair, Repair);
+            potency_to!(CriticalDamage, to_rust, Rust);
+            potency_to!(CriticalDamage, to_alignment, Alignment);
+            potency_to!(CriticalDamage, to_light, Light);
         }
     }
 }

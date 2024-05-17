@@ -1,10 +1,11 @@
-//! Spell Points
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
+
+use super::Spellcasting;
 
 #[derive(
     Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
@@ -35,7 +36,7 @@ impl Display for SpellPoints {
 
 impl ToAttribute for SpellPoints {
     fn to_attribute(self) -> Attribute {
-        Attribute::SpellPoints(self)
+        Spellcasting::Points(self).to_attribute()
     }
 }
 

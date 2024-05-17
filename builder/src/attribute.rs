@@ -2,7 +2,7 @@
 mod traits;
 
 mod to_attribute;
-use core::fmt;
+use core::fmt::{self, Debug};
 
 pub use to_attribute::*;
 
@@ -18,9 +18,8 @@ use crate::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
         flag::Flag, heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
         saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack,
-        spell_points::SpellPoints, spell_power::SpellPower, spell_selector::SpellSelector,
-        summoned_attribute::SummonedAttribute, tactics::Tactics, toggle::Toggle,
-        weapon_attribute::WeaponAttribute,
+        spellcasting::Spellcasting, summoned_attribute::SummonedAttribute, tactics::Tactics,
+        toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
 use fmt::Display;
@@ -64,28 +63,9 @@ pub enum Attribute {
     /// Both simple and complex saving throws.
     #[serde(rename = "sav", alias = "Save", alias = "SavingThrow")]
     SavingThrow(SavingThrow),
-    /// Character Spell Power.
-    ///
-    /// For every spell power unit, the character gains `1%` more damage with spells of that given
-    /// [`SpellPower`]. For example, having `102` spell power gives a `+102%` spell damage boost,
-    /// which results in an overall damage scale of `202%`.
-    #[serde(rename = "spow", alias = "SpellPower")]
-    SpellPower(SpellPower),
-    /// The chance that the user has to critically hit with spells.
-    #[serde(rename = "scc", alias = "SpellCriticalChance")]
-    SpellCriticalChance(SpellPower),
-    /// The bonus to damage that the user has with critical hits on spells.
-    #[serde(rename = "scd", alias = "SpellCriticalDamage")]
-    SpellCriticalDamage(SpellPower),
-    /// Bonuses to caster levels of certain spells.
-    #[serde(rename = "cl", alias = "CasterLevel")]
-    CasterLevel(SpellSelector),
-    /// Bonsues to maximum caster level of certain spells.
-    #[serde(rename = "mcl", alias = "MaxCasterLevel")]
-    MaxCasterLevel(SpellSelector),
-    /// Bonuses to the DCs of certain spells.
-    #[serde(rename = "sdc", alias = "SpellDC")]
-    SpellDC(SpellSelector),
+    /// Spellcasting Attributes
+    #[serde(rename = "spl", alias = "Spell")]
+    Spellcasting(Spellcasting),
     /// Bonuses to stats to either the main hand or off hand.
     #[serde(rename = "wep", alias = "Weapon")]
     Weapon(WeaponAttribute),
@@ -104,15 +84,9 @@ pub enum Attribute {
     /// Spell Resistance
     #[serde(rename = "sr", alias = "SpellResistance")]
     SpellResistance,
-    /// Spell Penetration
-    #[serde(rename = "spen", alias = "SpellPenetration")]
-    SpellPenetration,
     /// Health
     #[serde(rename = "hp", alias = "Health")]
     Health(Health),
-    /// Spell Points
-    #[serde(rename = "sp", alias = "SpellPoints")]
-    SpellPoints(SpellPoints),
     /// Total Character Level
     #[serde(rename = "tlvl", alias = "TotalCharacterLevel")]
     TotalCharacterLevel,
@@ -154,38 +128,31 @@ impl Display for Attribute {
             Self::Dummy => write!(f, "Dummy"),
             Self::Ability(ability) => write!(f, "{ability} Score"),
             Self::AbilityModifier(ability) => write!(f, "{ability} Modifier"),
-            Self::Skill(skill) => skill.fmt(f),
+            Self::Skill(skill) => write!(f, "{skill}"),
             Self::Toggle(toggle) => write!(f, "Toggle: {toggle}"),
-            Self::SpellPower(sp) => write!(f, "{sp} Spell Power"),
-            Self::SpellCriticalChance(sp) => write!(f, "{sp} Spell Critical Chance"),
-            Self::SpellCriticalDamage(sp) => write!(f, "{sp} Spell Critical Damage"),
             Self::SavingThrow(saving_throw) => write!(f, "{saving_throw} Saving Throw"),
-            Self::CasterLevel(selector) => write!(f, "{selector} Caster Level"),
-            Self::MaxCasterLevel(selector) => write!(f, "{selector} Max Caster Level"),
-            Self::SpellDC(selector) => write!(f, "{selector} Spell DC"),
-            Self::Weapon(weapon) => weapon.fmt(f),
-            Self::ArmorClass(ac) => ac.fmt(f),
-            Self::Sheltering(sheltering) => sheltering.fmt(f),
+            Self::Weapon(weapon) => write!(f, "{weapon}"),
+            Self::ArmorClass(ac) => write!(f, "{ac}"),
+            Self::Sheltering(sheltering) => write!(f, "{sheltering}"),
             Self::ClassLevel(cl) => write!(f, "{cl} Level"),
             Self::Flag(flag) => write!(f, "Flag: {flag}"),
             Self::Resistance(energy) => write!(f, "{energy} Resistance"),
-            Self::Absorption(absorption) => absorption.fmt(f),
+            Self::Absorption(absorption) => write!(f, "{absorption}"),
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
             Self::SpellResistance => write!(f, "Spell Resistance"),
-            Self::SpellPenetration => write!(f, "Spell Penetration"),
-            Self::Health(health) => health.fmt(f),
-            Self::SpellPoints(sp) => sp.fmt(f),
+            Self::Health(health) => write!(f, "{health}"),
             Self::TotalCharacterLevel => write!(f, "Total Character Level"),
             Self::SummonedAttribute(attribute) => write!(f, "Summoned Creatures: {attribute}"),
             Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
             Self::ItemSet(set) => write!(f, "Item Set: {set}"),
-            Self::HealingAmplification(heal_amp) => heal_amp.fmt(f),
+            Self::HealingAmplification(heal_amp) => write!(f, "{heal_amp}"),
             Self::MovementSpeed => write!(f, "Movement Speed"),
-            Self::Tactics(tactics) => tactics.fmt(f),
-            Self::SneakAttack(sa) => sa.fmt(f),
+            Self::Tactics(tactics) => write!(f, "{tactics}"),
+            Self::SneakAttack(sa) => write!(f, "{sa}"),
             Self::MeleePower => write!(f, "Melee Power"),
             Self::RangedPower => write!(f, "Ranged Power"),
             Self::Fortification => write!(f, "Fortification"),
+            Self::Spellcasting(sp) => write!(f, "{sp}"),
         }
     }
 }
@@ -218,9 +185,7 @@ impl CloneBonus for Attribute {
             Self::Skill(skill) => skill.clone_bonus(bonus),
             Self::Feat(feat) => feat.clone_bonus(bonus),
             Self::Sheltering(sheltering) => sheltering.clone_bonus(bonus),
-            Self::SpellPower(sp)
-            | Self::SpellCriticalChance(sp)
-            | Self::SpellCriticalDamage(sp) => sp.clone_bonus(bonus),
+            Self::Spellcasting(sp) => sp.clone_bonus(bonus),
             Self::SavingThrow(st) => st.clone_bonus(bonus),
             Self::Weapon(stat) => stat.clone_bonus(bonus),
             Self::SummonedAttribute(attribute) => attribute.clone_bonus(bonus),
@@ -245,7 +210,6 @@ impl StaticOptions for Attribute {
             [
                 Self::Dummy,
                 Self::SpellResistance,
-                Self::SpellPenetration,
                 Self::TotalCharacterLevel,
                 Self::ArmorCheckPenalty,
                 Self::MovementSpeed,
@@ -254,21 +218,8 @@ impl StaticOptions for Attribute {
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
-            SpellPower::get_static().flat_map(|sp| {
-                [
-                    Self::SpellPower(sp),
-                    Self::SpellCriticalChance(sp),
-                    Self::SpellCriticalDamage(sp),
-                ]
-            }),
-            SpellSelector::get_static().flat_map(|selector| {
-                [
-                    Self::CasterLevel(selector),
-                    Self::MaxCasterLevel(selector),
-                    Self::SpellDC(selector),
-                ]
-            }),
             static_attribute!(
+                Spellcasting,
                 Skill,
                 SavingThrow,
                 Toggle,
@@ -280,7 +231,6 @@ impl StaticOptions for Attribute {
                 Sheltering,
                 Absorption,
                 Health,
-                SpellPoints,
                 SummonedAttribute,
                 HealingAmplification,
                 Tactics

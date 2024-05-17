@@ -1,13 +1,12 @@
-//! Spell Selector
 use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
-use crate::types::spell_school::SpellSchool;
+use crate::types::player_class::PlayerClass;
 
-use super::{player_class::PlayerClass, spell_power::SpellPower};
+use super::{SpellPower, SpellSchool};
 
 /// Specifies the spell, type of spell, spell class.
 ///
