@@ -540,9 +540,35 @@ impl Product for Value {
     }
 }
 
+/// Expands to a static representation of a constant value
+#[macro_export]
+macro_rules! val {
+    ($value:literal) => {
+        $crate::bonus::Value::Const(rust_decimal_macros::dec!($value))
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    mod val_macro {
+        use rust_decimal_macros::dec;
+
+        use super::*;
+
+        #[test]
+        fn returns_constant() {
+            let value = val!(5);
+            assert_eq!(value, Value::Const(dec!(5)));
+        }
+
+        #[test]
+        fn negative_values() {
+            let value = val!(-5);
+            assert_eq!(value, Value::Const(dec!(-5)));
+        }
+    }
 
     mod consts {
         use super::*;

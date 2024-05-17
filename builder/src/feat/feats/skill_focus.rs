@@ -9,7 +9,7 @@ use utils::enums::StaticOptions;
 
 use crate::{
     attribute::GetBonuses,
-    bonus::{BonusTemplate, BonusType, Value},
+    bonus::{BonusTemplate, BonusType},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
     types::{saving_throw::SavingThrow, skill::Skill},
 };
@@ -92,7 +92,7 @@ impl GetBonuses for SkillFocus {
             Self::ResistPoison => vec![BonusTemplate::new(
                 SavingThrow::Poison,
                 BonusType::Stacking,
-                Value::from(4),
+                4,
                 None,
             )],
             Self::SelfSufficient => vec![

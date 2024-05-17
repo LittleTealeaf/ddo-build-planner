@@ -2,27 +2,31 @@
 // This does not test the actual content of the game, but rather the universal logic things.
 // Basically, testing logic that should apply to basically all characters
 use builder::{
-    attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
+    attribute::{Attribute, GetBonuses},
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
     breakdowns::Breakdowns,
     debug::DebugValue,
-    feat::Proficiency,
+    feat::{HeroicPastLife, IconicPastLife, PastLifeFeat, Proficiency, RacialPastLife},
     types::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
-        flag::Flag,
-        flag::OffHandType,
+        flag::{Flag, OffHandType},
         item_type::{ArmorType, ShieldType, WeaponType},
+        player_class::PlayerClass,
         race::Race,
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        sneak_attack::SneakAttack,
         spell_power::SpellPower,
         toggle::Toggle,
+        weapon_attribute::{WeaponAttribute, WeaponHand, WeaponStat},
     },
 };
+use itertools::Itertools;
 use rust_decimal::Decimal;
+use utils::hashmap::IntoGroupedHashMap;
 
 mod ability {
     use super::*;
@@ -469,6 +473,74 @@ mod spells {
     }
 }
 
+mod weapons {
+    use super::*;
+
+    mod sneak_attack {
+
+        use builder::bonus::Condition;
+
+        use super::*;
+
+        macro_rules! bonus_to {
+            ($sneak:ident, $stat: ident, $hand: ident, $name: ident) => {
+                #[test]
+                fn $name() {
+                    let mut breakdowns = Breakdowns::new();
+                    let initial = breakdowns.evaluate_attribute(&Attribute::Weapon(
+                        WeaponAttribute(WeaponHand::$hand, WeaponStat::$stat),
+                    ));
+
+                    breakdowns.insert_bonus(Bonus::new(
+                        SneakAttack::$sneak,
+                        BonusType::Stacking,
+                        1,
+                        None,
+                        BonusSource::Debug(0),
+                    ));
+
+                    let value = breakdowns.evaluate_attribute(&Attribute::Weapon(WeaponAttribute(
+                        WeaponHand::$hand,
+                        WeaponStat::$stat,
+                    )));
+
+                    assert_eq!(initial, value);
+
+                    breakdowns.insert_bonus(Bonus::new(
+                        Attribute::Toggle(Toggle::SneakAttack),
+                        BonusType::Stacking,
+                        1,
+                        None,
+                        BonusSource::Debug(1),
+                    ));
+
+                    let value = breakdowns.evaluate_attribute(&Attribute::Weapon(WeaponAttribute(
+                        WeaponHand::$hand,
+                        WeaponStat::$stat,
+                    )));
+
+                    assert_eq!(value - initial, Decimal::ONE);
+                }
+            };
+        }
+
+        bonus_to!(Attack, Attack, Main, bonus_to_main_hand_attack);
+        bonus_to!(Attack, Attack, Off, bonus_to_off_hand_attack);
+        bonus_to!(Damage, Damage, Main, bonus_to_main_hand_damage);
+        bonus_to!(Damage, Damage, Off, bonus_to_off_hand_damage);
+
+        #[test]
+        fn sneak_attack_toggle_always_granted() {
+            let mut breakdowns = Breakdowns::new();
+            assert!(
+                breakdowns.evaluate_condition(&Condition::has(Attribute::Flag(Flag::HasToggle(
+                    Toggle::SneakAttack
+                ))))
+            );
+        }
+    }
+}
+
 mod sheltering {
     use super::*;
 
@@ -886,6 +958,178 @@ mod feats {
                 compiler.evaluate_attribute_from(Proficiency::from(WeaponType::Falchion))
                     > 0.into()
             );
+        }
+    }
+
+    mod past_lives {
+        use super::*;
+
+        mod iconic {
+
+            use super::*;
+
+            #[test]
+            fn past_life_gives_toggle() {
+                for race in IconicPastLife::RACES {
+                    let Some(bonuses) = race.get_bonuses(Decimal::ONE) else {
+                        panic!("Expected Bonuses for {race}");
+                    };
+
+                    assert!(
+                        bonuses.contains(&BonusTemplate::toggle(race, None)),
+                        "{race} does not provide toggle"
+                    );
+                }
+            }
+        }
+
+        mod racial {
+
+            use im::HashSet;
+
+            use super::*;
+
+            #[test]
+            fn completionist_not_given_by_default() {
+                let mut breakdowns = Breakdowns::new();
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ZERO
+                );
+            }
+
+            #[test]
+            fn single_does_not_give_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let races = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect::<Vec<_>>();
+
+                breakdowns.insert_bonuses(races.iter().map(|race| {
+                    Bonus::new(*race, BonusType::Stacking, 1, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ZERO
+                );
+            }
+
+            #[test]
+            fn double_does_not_give_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let races = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect::<Vec<_>>();
+
+                breakdowns.insert_bonuses(races.iter().map(|race| {
+                    Bonus::new(*race, BonusType::Stacking, 2, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ZERO
+                );
+            }
+
+            #[test]
+            fn three_of_each_gives_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let races = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect::<Vec<_>>();
+
+                breakdowns.insert_bonuses(races.iter().map(|race| {
+                    Bonus::new(*race, BonusType::Stacking, 3, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ONE
+                );
+            }
+
+            #[test]
+            fn sub_races_can_substitute_for_completionist() {
+                let mut breakdowns = Breakdowns::new();
+
+                let mut races: HashSet<RacialPastLife> = RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_none())
+                    .collect();
+
+                RacialPastLife::RACES
+                    .into_iter()
+                    .filter(|race| race.get_base().is_some())
+                    .for_each(|race| {
+                        let _ = races.remove(&race.get_base().unwrap());
+                        races.insert(race);
+                    });
+
+                breakdowns.insert_bonuses(races.into_iter().map(|race| {
+                    Bonus::new(race, BonusType::Stacking, 3, None, BonusSource::Debug(0))
+                }));
+
+                assert_eq!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
+                    Decimal::ONE
+                );
+            }
+        }
+
+        mod heroic {
+
+            use super::*;
+
+            #[test]
+            fn all_combinations_give_past_lives() {
+                let mut sets = PlayerClass::CLASSES
+                    .map(|class| (class.get_parent_class().unwrap_or(class), class))
+                    .into_grouped_hash_map()
+                    .into_values()
+                    .collect_vec();
+
+                let mut breakdowns = Breakdowns::new();
+
+                for (i, set) in sets.iter_mut().enumerate() {
+                    assert_eq!(
+                        breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist),
+                        Decimal::ZERO
+                    );
+                    breakdowns.insert_bonuses(set.pop().into_iter().map(|class| {
+                        Bonus::feat(HeroicPastLife(class), None, BonusSource::Custom(i))
+                    }));
+                }
+
+                assert!(
+                    breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
+                        > Decimal::ZERO
+                );
+
+                for (i, set) in sets.into_iter().enumerate() {
+                    if !set.is_empty() {
+                        for item in set {
+                            breakdowns.insert_bonus(Bonus::feat(
+                                HeroicPastLife(item),
+                                None,
+                                BonusSource::Custom(i),
+                            ));
+                            assert!(
+                                breakdowns
+                                    .evaluate_attribute_from(PastLifeFeat::HeroicCompletionist)
+                                    > Decimal::ZERO
+                            );
+                        }
+                    }
+                }
+            }
         }
     }
 }

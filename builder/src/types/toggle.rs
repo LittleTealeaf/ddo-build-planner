@@ -1,6 +1,6 @@
 //! Any attribute that requires the user to interact / configure
 
-public_modules!(attacking_target, iconic_past_life);
+public_modules!(attacking_target);
 
 use core::fmt::{self, Display};
 
@@ -12,9 +12,8 @@ use utils::{enums::StaticOptions, public_modules};
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    feat::{EpicPastLife, IconicPastLife},
 };
-
-use self::iconic_past_life::IconicPastLife;
 
 use super::{
     flag::{Flag, ToFlag},
@@ -30,8 +29,12 @@ pub enum Toggle {
     InReaper,
     /// Is the character attacking a certain target
     Attacking(AttackingTarget),
+    /// Is the character sneak attacking.
+    SneakAttack,
     /// Iconic Past Life
     IconicPastLife(IconicPastLife),
+    /// Epic Past Life
+    EpicPastLife(EpicPastLife),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
 
@@ -62,6 +65,8 @@ impl Display for Toggle {
             Self::InReaper => write!(f, "In Reaper"),
             Self::Attacking(target) => write!(f, "Attacking {target} Target"),
             Self::IconicPastLife(past_life) => write!(f, "{past_life}"),
+            Self::EpicPastLife(past_life) => write!(f, "{past_life}"),
+            Self::SneakAttack => write!(f, "Sneak Attack"),
         }
     }
 }
@@ -114,6 +119,7 @@ impl StaticOptions for Toggle {
             [Self::Blocking, Self::InReaper],
             AttackingTarget::get_static().map(Self::Attacking),
             IconicPastLife::get_static().map(Self::IconicPastLife),
+            EpicPastLife::get_static().map(Self::EpicPastLife),
         )
     }
 }
@@ -128,6 +134,7 @@ impl GetToggleGroup for Toggle {
     fn toggle_group(&self) -> Option<ToggleGroup> {
         match self {
             Self::IconicPastLife(life) => life.toggle_group(),
+            Self::EpicPastLife(life) => life.toggle_group(),
             _ => None,
         }
     }

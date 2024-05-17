@@ -1,30 +1,43 @@
 //! Application Starting Point
 
-use core::ops::Not;
-
 use builder::{
-    attribute::Attribute,
-    bonus::{Condition, ToValue, Value},
+    bonus::{Bonus, BonusType},
     breakdowns::Breakdowns,
+    debug::DebugValue,
+    feat::EpicPastLife,
+    types::{
+        flag::MainHandType,
+        item_type::WeaponType,
+        toggle::Toggle,
+        weapon_attribute::{WeaponHand, WeaponStat},
+    },
 };
-use ron::to_string;
 
 fn main() {
-    let value = Value::dice(3, 5)
-        + Value::from(5) * (Attribute::SpellResistance.to_value())
-            / Value::condition(
-                Value::from(3).greater_or_equal_to(Value::Attribute(Attribute::ArmorCheckPenalty))
-                    & Condition::Constant(true)
-                    ^ Value::from(Attribute::SpellPenetration)
-                        .less_than(Value::from(3).floor().abs())
-                        .not(),
-                Value::from(3),
-                Value::from(2),
-            );
-
     let mut breakdowns = Breakdowns::new();
+    breakdowns.insert_bonus(Bonus::new(
+        EpicPastLife::AncientPower,
+        BonusType::Stacking,
+        1,
+        None,
+        DebugValue(0),
+    ));
 
-    println!("{}", breakdowns.evaluate_value(&value));
+    breakdowns.insert_bonus(Bonus::new(
+        Toggle::EpicPastLife(EpicPastLife::AncientPower),
+        BonusType::Stacking,
+        1,
+        None,
+        DebugValue(1),
+    ));
 
-    println!("{}", to_string(&value).unwrap());
+    breakdowns.insert_bonus(Bonus::new(
+        MainHandType::Weapon(WeaponType::Club),
+        BonusType::Stacking,
+        1,
+        None,
+        DebugValue(2),
+    ));
+
+    breakdowns.evaluate_attribute_from((WeaponHand::Main, WeaponStat::Damage));
 }

@@ -20,7 +20,7 @@ pub enum BonusSource {
     /// Toggle Group Specific
     ToggleGroup(ToggleGroup),
     /// Dictates any custom bonuses for general uses. When possible, do not use this source
-    Custom(u8),
+    Custom(usize),
     /// Used for debugging purposes.
     Debug(u8),
     /// Only used for initial values
@@ -45,8 +45,8 @@ impl From<Attribute> for BonusSource {
     }
 }
 
-impl From<u8> for BonusSource {
-    fn from(value: u8) -> Self {
+impl From<usize> for BonusSource {
+    fn from(value: usize) -> Self {
         Self::Custom(value)
     }
 }

@@ -1,32 +1,36 @@
 use core::iter::once;
-use itertools::chain;
-use utils::enums::StaticOptions;
+use utils::{chain_tree, enums::StaticOptions, hashmap::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,
     bonus::{
         Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
     },
+    feat::{HeroicPastLife, PastLifeFeat, RacialPastLife},
     types::{
         ability::Ability,
         absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
         damage_type::DamageType,
-        flag::OffHandType,
+        flag::{Flag, MainHandType, OffHandType},
         health::Health,
-        item_type::{ArmorType, ShieldType},
+        item_type::{ArmorType, ShieldType, WeaponType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        sneak_attack::SneakAttack,
         spell_points::SpellPoints,
         spell_power::SpellPower,
+        toggle::Toggle,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
+    val,
 };
 
 /// Returns all base bonuses that are to be included by default.
 pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
-    chain!(
+    chain_tree!(
         ability_bonuses(),
         armor_class(),
         saving_throw(),
@@ -39,7 +43,10 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         sheltering(),
         sheltering_reduction(),
         armor_check_penalties(),
-        absorption()
+        absorption(),
+        completionist_feats(),
+        two_handed_fighting(),
+        sneak_attack(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
@@ -51,14 +58,14 @@ fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
             BonusTemplate::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
-                ((Value::Attribute(Attribute::Ability(ability)) - Value::TEN) / Value::TWO).floor(),
+                ((Value::Attribute(Attribute::Ability(ability)) - val!(10)) / val!(2)).floor(),
                 None,
             )
         })
         .chain(once(BonusTemplate::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,
-            8,
+            val!(8),
             None,
         )))
 }
@@ -193,8 +200,8 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
             SpellPoints::Scaled.to_value()
                 * (PlayerClass::FavoredSoul.to_value()
                     + PlayerClass::Sorcerer.to_value()
-                    + 20.to_value())
-                / 20.to_value(),
+                    + val!(20))
+                / val!(20),
             None,
         ),
         BonusTemplate::new(
@@ -233,7 +240,7 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
             Value::condition(
                 Condition::has(ArmorType::Medium) | Condition::has(ArmorType::Heavy),
                 Sheltering::Magical,
-                Value::condition(Condition::has(ArmorType::Light), 100, 50),
+                Value::condition(Condition::has(ArmorType::Light), val!(100), val!(50)),
             ),
             None,
         ),
@@ -296,11 +303,75 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Absorption::Total(damage_type),
             BonusType::Stacking,
-            1.to_value()
+            Value::ONE
                 - Value::iter_product(AbsorptionSource::get_static().map(|bonus_type| {
-                    1.to_value() - Absorption::Bonus(damage_type, bonus_type).to_value()
+                    Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
                 })),
             None,
         )
     })
+}
+
+fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
+    [
+        {
+            // HEROIC COMPLETIONIST
+            let condition = PlayerClass::get_static()
+                .map(|class| (class.get_parent_class().unwrap_or(class), class))
+                .into_grouped_hash_map()
+                .into_values()
+                .map(|set| {
+                    set.into_iter()
+                        .map(|class| HeroicPastLife(class).to_value())
+                        .sum::<Value>()
+                        .greater_than(Value::ZERO)
+                })
+                .cond_all();
+            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist, condition)
+        },
+        {
+            // RACIAL COMPLETIONIST
+            let condition = RacialPastLife::RACES
+                .map(|race| (race.get_base().unwrap_or(race), race))
+                .into_grouped_hash_map()
+                .into_values()
+                .map(|set| {
+                    set.into_iter()
+                        .map(ToValue::to_value)
+                        .sum::<Value>()
+                        .greater_or_equal_to(val!(3))
+                })
+                .cond_all();
+
+            BonusTemplate::feat(PastLifeFeat::RacialCompletionist, condition)
+        },
+    ]
+}
+
+fn sneak_attack() -> impl IntoIterator<Item = BonusTemplate> {
+    [
+        BonusTemplate::toggle(Toggle::SneakAttack, None),
+        BonusTemplate::new(
+            (WeaponHand::Both, WeaponStat::Attack),
+            BonusType::Stacking,
+            Attribute::from(SneakAttack::Attack),
+            Condition::toggled(Toggle::SneakAttack),
+        ),
+        BonusTemplate::new(
+            (WeaponHand::Both, WeaponStat::Damage),
+            BonusType::Stacking,
+            Attribute::from(SneakAttack::Damage),
+            Condition::toggled(Toggle::SneakAttack),
+        ),
+    ]
+}
+
+// TODO: convert this to the other method (flag to flag)
+fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
+    once(BonusTemplate::flag(
+        Flag::IsTwoHandedFighting,
+        WeaponType::TWO_HANDED_MELEE_WEAPONS
+            .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+            .cond_any(),
+    ))
 }

@@ -510,15 +510,15 @@ mod breakdowns {
     #[test]
     fn track_added_breakdowns() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         assert!(breakdowns.get_breakdown(&Attribute::Debug(0)).is_some());
     }
 
     #[test]
     fn track_multiple_breakdowns() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.add_breakdown(Attribute::Debug(0));
-        breakdowns.add_breakdown(Attribute::Debug(1));
+        breakdowns.track_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(1));
         assert!(breakdowns.get_breakdown(&Attribute::Debug(0)).is_some());
         assert!(breakdowns.get_breakdown(&Attribute::Debug(1)).is_some());
     }
@@ -533,7 +533,7 @@ mod breakdowns {
             None,
             BonusSource::Debug(0),
         ));
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         assert_eq!(
             breakdowns
                 .get_breakdown(&Attribute::Debug(0))
@@ -546,7 +546,7 @@ mod breakdowns {
     #[test]
     fn value_updates_when_changed() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         assert_eq!(
             breakdowns
                 .get_breakdown(&Attribute::Debug(0))
@@ -573,7 +573,7 @@ mod breakdowns {
     #[test]
     fn total_value_is_correct() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
 
         assert_eq!(
             breakdowns
@@ -603,7 +603,7 @@ mod breakdowns {
         let b = Bonus::new(DebugValue(0), DebugValue(1), 4, None, DebugValue(0));
 
         let mut breakdowns = Breakdowns::new();
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         breakdowns.insert_bonuses([a.clone(), b.clone()]);
         let breakdown = breakdowns
             .get_breakdown(&Attribute::Debug(0))
@@ -624,7 +624,7 @@ mod breakdowns {
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonuses([a.clone(), b.clone()]);
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         let breakdown = breakdowns
             .get_breakdown(&Attribute::Debug(0))
             .expect("Expected Breakdowns");
@@ -644,7 +644,7 @@ mod breakdowns {
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonuses([a.clone(), b.clone()]);
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         let breakdown = breakdowns
             .get_breakdown(&Attribute::Debug(0))
             .expect("Expected Breakdowns");
@@ -669,7 +669,7 @@ mod breakdowns {
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonus(a.clone());
-        breakdowns.add_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(0));
         let breakdown = breakdowns
             .get_breakdown(&Attribute::Debug(0))
             .expect("Expected Breakdowns");

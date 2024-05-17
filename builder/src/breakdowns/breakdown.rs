@@ -82,7 +82,7 @@ impl Breakdowns {
     /// [`get_breakdown()`]. This cached version is updated whenever a change is made.
     ///
     /// [`get_breakdown()`]: crate::breakdowns::Breakdowns::get_breakdown
-    pub fn add_breakdown(&mut self, attribute: Attribute) {
+    pub fn track_breakdown(&mut self, attribute: Attribute) {
         let breakdowns = self.build_breakdowns(&attribute);
         self.cache.breakdowns.insert(attribute, breakdowns);
     }
@@ -99,7 +99,7 @@ impl Breakdowns {
     }
 
     /// Removes an attribute's breakdown from being cached
-    pub fn remove_breakdown(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+    pub fn untrack_breakdown(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
         self.cache.breakdowns.remove(attribute)
     }
 
