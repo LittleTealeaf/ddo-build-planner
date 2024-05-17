@@ -136,6 +136,12 @@ pub enum Attribute {
     /// Sneak Attack
     #[serde(rename = "sa", alias = "SneakAttack")]
     SneakAttack(SneakAttack),
+    /// Melee Power
+    #[serde(rename = "mp", alias = "MeleePower")]
+    MeleePower,
+    /// Ranged Power
+    #[serde(rename = "rp", alias = "RangedPower")]
+    RangedPower,
 }
 
 impl Display for Attribute {
@@ -174,6 +180,8 @@ impl Display for Attribute {
             Self::MovementSpeed => write!(f, "Movement Speed"),
             Self::Tactics(tactics) => tactics.fmt(f),
             Self::SneakAttack(sa) => sa.fmt(f),
+            Self::MeleePower => write!(f, "Melee Power"),
+            Self::RangedPower => write!(f, "Ranged Power"),
         }
     }
 }
@@ -237,6 +245,8 @@ impl StaticOptions for Attribute {
                 Self::TotalCharacterLevel,
                 Self::ArmorCheckPenalty,
                 Self::MovementSpeed,
+                Self::MeleePower,
+                Self::RangedPower,
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
