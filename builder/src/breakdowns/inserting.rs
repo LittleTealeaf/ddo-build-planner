@@ -13,7 +13,7 @@ use crate::{
 use super::{buffer::Buffer, Breakdowns};
 
 impl Breakdowns {
-    /// Removes all bonuses with any of the provided [`BonusSources`]
+    /// Removes all bonuses with any of the provided [`BonusSources`].
     ///
     /// [`BonusSources`]: BonusSource
     pub fn remove_sources<I, B>(&mut self, sources: I)
