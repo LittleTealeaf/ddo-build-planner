@@ -275,10 +275,12 @@ impl GetBonuses for EpicPastLife {
                 value,
                 Condition::toggled(*self),
             )],
-            Self::Fortification => vec![
-                BonusTemplate::new(Attribute::Debug(4), BonusType::Stacking, 0, None),
-                // TODO: Fortification
-            ],
+            Self::Fortification => vec![BonusTemplate::new(
+                Attribute::Fortification,
+                BonusType::Stacking,
+                value * Decimal::TEN,
+                Condition::toggled(*self),
+            )],
             Self::AncientTactics => vec![
                 BonusTemplate::new(Attribute::Debug(5), BonusType::Stacking, 0, None),
                 // TODO: Ancient Tactics

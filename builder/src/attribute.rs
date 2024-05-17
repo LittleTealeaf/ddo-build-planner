@@ -142,6 +142,9 @@ pub enum Attribute {
     /// Ranged Power
     #[serde(rename = "rp", alias = "RangedPower")]
     RangedPower,
+    /// Fortification
+    #[serde(rename = "frt", alias = "Fortification")]
+    Fortification,
 }
 
 impl Display for Attribute {
@@ -182,6 +185,7 @@ impl Display for Attribute {
             Self::SneakAttack(sa) => sa.fmt(f),
             Self::MeleePower => write!(f, "Melee Power"),
             Self::RangedPower => write!(f, "Ranged Power"),
+            Self::Fortification => write!(f, "Fortification"),
         }
     }
 }
