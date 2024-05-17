@@ -64,7 +64,7 @@ pub enum Attribute {
     #[serde(rename = "sav", alias = "Save", alias = "SavingThrow")]
     SavingThrow(SavingThrow),
     /// Spellcasting Attributes
-    #[serde(rename = "spl", alias = "Spell")]
+    #[serde(rename = "s", alias = "spl", alias = "Spell")]
     Spellcasting(Spellcasting),
     /// Bonuses to stats to either the main hand or off hand.
     #[serde(rename = "wep", alias = "Weapon")]
