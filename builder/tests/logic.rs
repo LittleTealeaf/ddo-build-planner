@@ -19,7 +19,7 @@ use builder::{
         sheltering::Sheltering,
         skill::Skill,
         sneak_attack::SneakAttack,
-        spellcasting::{Spellcasting, SpellPower},
+        spellcasting::{SpellPower, Spellcasting},
         toggle::Toggle,
         weapon_attribute::{WeaponAttribute, WeaponHand, WeaponStat},
     },
@@ -281,8 +281,9 @@ mod spells {
         ($attribute: ident, $name: ident, $damage: ident) => {
             #[test]
             fn $name() {
-                const ATTRIBUTE: Attribute =
-                    Attribute::Spellcasting(Spellcasting::$attribute(SpellPower::Damage(DamageType::$damage)));
+                const ATTRIBUTE: Attribute = Attribute::Spellcasting(Spellcasting::$attribute(
+                    SpellPower::Damage(DamageType::$damage),
+                ));
                 let mut breakdowns = Breakdowns::new();
 
                 let initial = breakdowns.evaluate_attribute_from(ATTRIBUTE);
