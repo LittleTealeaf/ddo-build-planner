@@ -13,7 +13,7 @@ use crate::{
         armor_class::ArmorClass,
         damage_type::DamageType,
         flag::{Flag, MainHandType, OffHandType},
-        health::Health,
+        defenses::Health,
         item_type::{ArmorType, ShieldType, WeaponType},
         player_class::PlayerClass,
         saving_throw::SavingThrow,

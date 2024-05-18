@@ -16,7 +16,7 @@ use crate::{
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
+        defenses::Defenses, flag::Flag, heal_amp::HealingAmplification, player_class::PlayerClass,
         saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack,
         spellcasting::Spellcasting, summoned_attribute::SummonedAttribute, tactics::Tactics,
         toggle::Toggle, weapon_attribute::WeaponAttribute,
@@ -38,21 +38,26 @@ pub enum Attribute {
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
     /// Indicates that the user has some flag
-    #[serde(rename = "flg", alias = "Flag")]
+    #[serde(rename = "f", alias = "flg", alias = "Flag")]
     Flag(Flag),
     /// Results from the user interacting with toggles / sliders.
     ///
     /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
     /// associated bonuses can react.
-    #[serde(rename = "tgl", alias = "Toggle")]
+    #[serde(rename = "t", alias = "tgl", alias = "Toggle")]
     Toggle(Toggle),
     /// Does the user have the feat.
     Feat(Feat),
     /// The ability score of the character.
-    #[serde(rename = "ab", alias = "Ability")]
+    #[serde(rename = "a", alias = "ab", alias = "Ability")]
     Ability(Ability),
     /// The modifier, calculated from [`Attribute::Ability`].
-    #[serde(rename = "abm", alias = "AbilMod", alias = "AbilityModifier")]
+    #[serde(
+        rename = "am",
+        alias = "abm",
+        alias = "AbilMod",
+        alias = "AbilityModifier"
+    )]
     AbilityModifier(Ability),
     /// Indicates how many levels the character has of a given class.
     #[serde(rename = "lvl", alias = "ClassLevel")]
@@ -63,6 +68,8 @@ pub enum Attribute {
     /// Both simple and complex saving throws.
     #[serde(rename = "sav", alias = "Save", alias = "SavingThrow")]
     SavingThrow(SavingThrow),
+    /// Defensive Attributes
+    Defenses(Defenses),
     /// Spellcasting Attributes
     #[serde(rename = "s", alias = "spl", alias = "Spell")]
     Spellcasting(Spellcasting),
@@ -81,12 +88,6 @@ pub enum Attribute {
     /// % Damage reduced from energy sources
     #[serde(rename = "abs", alias = "Absorption")]
     Absorption(Absorption),
-    /// Spell Resistance
-    #[serde(rename = "sr", alias = "SpellResistance")]
-    SpellResistance,
-    /// Health
-    #[serde(rename = "hp", alias = "Health")]
-    Health(Health),
     /// Total Character Level
     #[serde(rename = "tlvl", alias = "TotalCharacterLevel")]
     TotalCharacterLevel,
@@ -116,9 +117,6 @@ pub enum Attribute {
     /// Ranged Power
     #[serde(rename = "rp", alias = "RangedPower")]
     RangedPower,
-    /// Fortification
-    #[serde(rename = "frt", alias = "Fortification")]
-    Fortification,
 }
 
 impl Display for Attribute {
@@ -139,8 +137,6 @@ impl Display for Attribute {
             Self::Resistance(energy) => write!(f, "{energy} Resistance"),
             Self::Absorption(absorption) => write!(f, "{absorption}"),
             Self::Feat(feat) => write!(f, "Feat: {feat}"),
-            Self::SpellResistance => write!(f, "Spell Resistance"),
-            Self::Health(health) => write!(f, "{health}"),
             Self::TotalCharacterLevel => write!(f, "Total Character Level"),
             Self::SummonedAttribute(attribute) => write!(f, "Summoned Creatures: {attribute}"),
             Self::ArmorCheckPenalty => write!(f, "Armor Check Penalty"),
@@ -151,8 +147,8 @@ impl Display for Attribute {
             Self::SneakAttack(sa) => write!(f, "{sa}"),
             Self::MeleePower => write!(f, "Melee Power"),
             Self::RangedPower => write!(f, "Ranged Power"),
-            Self::Fortification => write!(f, "Fortification"),
             Self::Spellcasting(sp) => write!(f, "{sp}"),
+            Self::Defenses(d) => write!(f, "{d}"),
         }
     }
 }
@@ -209,7 +205,6 @@ impl StaticOptions for Attribute {
         chain_tree!(
             [
                 Self::Dummy,
-                Self::SpellResistance,
                 Self::TotalCharacterLevel,
                 Self::ArmorCheckPenalty,
                 Self::MovementSpeed,
@@ -230,10 +225,10 @@ impl StaticOptions for Attribute {
                 ArmorClass,
                 Sheltering,
                 Absorption,
-                Health,
                 SummonedAttribute,
                 HealingAmplification,
-                Tactics
+                Tactics,
+                Defenses
             )
         )
     }

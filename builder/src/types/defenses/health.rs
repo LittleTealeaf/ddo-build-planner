@@ -1,4 +1,3 @@
-//! Player Health
 use core::fmt;
 
 use fmt::Display;
@@ -7,6 +6,8 @@ use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
 use crate::attribute::{Attribute, ToAttribute};
+
+use super::Defenses;
 
 #[derive(
     Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize, Default,
@@ -40,7 +41,7 @@ impl Display for Health {
 
 impl ToAttribute for Health {
     fn to_attribute(self) -> Attribute {
-        Attribute::Health(self)
+        Defenses::Health(self).to_attribute()
     }
 }
 

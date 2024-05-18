@@ -12,6 +12,7 @@ use crate::{
     feat::{Feat, ToFeat},
     types::{
         armor_class::ArmorClass,
+        defenses::Defenses,
         flag::MainHandType,
         immunity::Immunity,
         item_type::WeaponType,
@@ -127,7 +128,7 @@ impl GetBonuses for RacialFeat {
             }
             Self::RacialSpellResistance => {
                 vec![BonusTemplate::new(
-                    Attribute::SpellResistance,
+                    Defenses::SpellResistance,
                     BonusType::Stacking,
                     6,
                     None,

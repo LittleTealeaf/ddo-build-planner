@@ -14,7 +14,20 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Condition, ToValue},
     feat::{Feat, ToFeat},
     types::{
-        absorption::{Absorption, AbsorptionSource}, armor_class::ArmorClass, damage_type::DamageType, epic_sphere::EpicSphere, flag::Flag, heal_amp::HealingAmplification, health::Health, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, spellcasting::Spellcasting, toggle::{GetToggleGroup, ToToggle, Toggle}, toggle_group::ToggleGroup, weapon_attribute::{WeaponHand, WeaponStat}
+        absorption::{Absorption, AbsorptionSource},
+        armor_class::ArmorClass,
+        damage_type::DamageType,
+        defenses::{Defenses, Health},
+        epic_sphere::EpicSphere,
+        flag::Flag,
+        heal_amp::HealingAmplification,
+        saving_throw::SavingThrow,
+        sheltering::Sheltering,
+        skill::Skill,
+        spellcasting::Spellcasting,
+        toggle::{GetToggleGroup, ToToggle, Toggle},
+        toggle_group::ToggleGroup,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
     val,
 };
@@ -264,7 +277,7 @@ impl GetBonuses for EpicPastLife {
                 Condition::toggled(*self),
             )],
             Self::Fortification => vec![BonusTemplate::new(
-                Attribute::Fortification,
+                Defenses::Fortification,
                 BonusType::Stacking,
                 value * Decimal::TEN,
                 Condition::toggled(*self),

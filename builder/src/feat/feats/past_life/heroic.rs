@@ -10,7 +10,19 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
     feat::{Feat, ToFeat},
     types::{
-        damage_type::DamageType, flag::MainHandType, heal_amp::HealingAmplification, health::Health, item_type::WeaponType, player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack, spellcasting::{SpellPoints, SpellSchool, Spellcasting}, tactics::Tactics, weapon_attribute::{WeaponHand, WeaponStat}
+        damage_type::DamageType,
+        defenses::Health,
+        flag::MainHandType,
+        heal_amp::HealingAmplification,
+        item_type::WeaponType,
+        player_class::PlayerClass,
+        saving_throw::SavingThrow,
+        sheltering::Sheltering,
+        skill::Skill,
+        sneak_attack::SneakAttack,
+        spellcasting::{SpellPoints, SpellSchool, Spellcasting},
+        tactics::Tactics,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
 
