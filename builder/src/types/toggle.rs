@@ -116,7 +116,7 @@ where
 impl StaticOptions for Toggle {
     fn get_static() -> impl Iterator<Item = Self> {
         chain!(
-            [Self::Blocking, Self::InReaper],
+            [Self::Blocking, Self::InReaper, Self::SneakAttack],
             AttackingTarget::get_static().map(Self::Attacking),
             IconicPastLife::get_static().map(Self::IconicPastLife),
             EpicPastLife::get_static().map(Self::EpicPastLife),
