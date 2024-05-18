@@ -5,9 +5,7 @@ use itertools::chain;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
-use crate::{
-    types::spell_school::SpellSchool,
-};
+use crate::types::spell_school::SpellSchool;
 
 use super::{damage_type::DamageType, player_class::PlayerClass, spell_power::SpellPower};
 
