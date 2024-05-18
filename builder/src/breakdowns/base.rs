@@ -114,7 +114,7 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
     .into_iter()
     .map(|(skill, damage_type)| {
         BonusTemplate::new(
-            Attribute::SpellPower(SpellPower::Damage(damage_type)),
+            Attribute::spell_power(damage_type),
             BonusType::Stacking,
             Attribute::Skill(skill),
             None,

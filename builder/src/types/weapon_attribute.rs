@@ -53,38 +53,17 @@ impl CloneBonus for WeaponAttribute {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         let Self(hand, stat) = self;
         matches!(hand, WeaponHand::Both).then(|| {
-            match stat {
-                WeaponStat::Attack => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Attack)),
-                WeaponStat::Damage => WeaponHand::VALUES.map(|hand| (hand, WeaponStat::Damage)),
-                WeaponStat::CriticalAttack => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalAttack))
-                }
-                WeaponStat::CriticalDamage => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalDamage))
-                }
-                WeaponStat::CriticalMultiplier => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalMultiplier))
-                }
-                WeaponStat::CriticalMultiplier1920 => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalMultiplier1920))
-                }
-                WeaponStat::DamageType(dr) => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::DamageType(*dr)))
-                }
-                WeaponStat::CriticalThreatRange => {
-                    WeaponHand::VALUES.map(|hand| (hand, WeaponStat::CriticalThreatRange))
-                }
-            }
-            .map(|stat| {
-                Bonus::new(
-                    stat,
-                    *bonus.bonus_type(),
-                    bonus.value().clone(),
-                    bonus.condition().cloned(),
-                    bonus.source().clone(),
-                )
-            })
-            .to_vec()
+            WeaponHand::HANDS
+                .map(|hand| {
+                    Bonus::new(
+                        (hand, *stat),
+                        *bonus.bonus_type(),
+                        bonus.value().clone(),
+                        bonus.condition().cloned(),
+                        bonus.source().clone(),
+                    )
+                })
+                .to_vec()
         })
     }
 }
