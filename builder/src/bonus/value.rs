@@ -444,6 +444,16 @@ macro_rules! from_primative {
 
 from_primative!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
 
+impl From<bool> for Value {
+    fn from(value: bool) -> Self {
+        if value {
+            Self::ONE
+        } else {
+            Self::ZERO
+        }
+    }
+}
+
 macro_rules! try_from_primative {
     ($($type:ty), +) => {
         $(

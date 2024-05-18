@@ -51,7 +51,7 @@ impl Toggle {
         Bonus::new(
             self.to_attribute(),
             BonusType::Stacking,
-            u8::from(enable),
+            enable,
             None,
             self.get_toggle_source(),
         )
