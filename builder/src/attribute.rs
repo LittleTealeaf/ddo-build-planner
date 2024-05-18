@@ -208,7 +208,6 @@ impl Attribute {
     #[must_use]
     pub fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
-            Self::Skill(skill) => skill.get_bonuses(value),
             Self::Toggle(toggle) => toggle.get_bonuses(value),
             Self::Weapon(stat) => stat.get_bonuses(value),
             Self::ClassLevel(cl) => cl.get_bonuses(value),

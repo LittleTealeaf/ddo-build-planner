@@ -3,16 +3,15 @@
 use core::fmt::{self, Display};
 
 use itertools::chain;
-use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticOptions;
 
 use crate::{
-    attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::{Bonus, BonusTemplate, BonusType, CloneBonus},
+    attribute::{Attribute, ToAttribute},
+    bonus::{Bonus, CloneBonus},
 };
 
-use super::{ability::Ability, damage_type::DamageType};
+use super::ability::Ability;
 
 /// Different skills that the character can have.
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
