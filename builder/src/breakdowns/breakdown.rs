@@ -93,6 +93,12 @@ impl Breakdowns {
         self.cache.breakdowns.get(attribute)
     }
 
+    /// Returns whether or not the given attribute is currently tracked
+    #[must_use]
+    pub fn is_tracked(&self, attribute: &Attribute) -> bool {
+        self.cache.breakdowns.contains_key(attribute)
+    }
+
     /// Removes and clears all attributes from being cached in breakdowns
     pub fn clear_breakdown(&mut self) {
         self.cache.breakdowns.clear();
