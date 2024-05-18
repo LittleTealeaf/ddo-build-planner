@@ -93,6 +93,12 @@ impl Breakdowns {
         self.cache.breakdowns.get(attribute)
     }
 
+    /// Returns whether or not the given attribute is currently tracked
+    #[must_use]
+    pub fn is_tracked(&self, attribute: &Attribute) -> bool {
+        self.cache.breakdowns.contains_key(attribute)
+    }
+
     /// Removes and clears all attributes from being cached in breakdowns
     pub fn clear_breakdown(&mut self) {
         self.cache.breakdowns.clear();
@@ -150,41 +156,3 @@ impl Breakdowns {
         breakdown
     }
 }
-//     pub fn get_cached_breakdowns(&self, attribute: &Attribute) -> Option<AttributeBreakdown> {
-//         let value = self.cache.attribute.get(attribute)?;
-//
-//         let mut breakdown = AttributeBreakdown {
-//             applied: Vec::new(),
-//             overwritten: Vec::new(),
-//             disabled: Vec::new(),
-//             value,
-//         };
-//
-//         let mut applied: HashMap<BonusType, BonusEntry<'_>> = HashMap::new();
-//
-//         for bonus in self.bonuses.get(attribute)? {
-//             let value = match bonus.value() {
-//                 Value::Const(val) => val,
-//                 other => self.get_value(other)?,
-//             };
-//
-//             let condition = bonus
-//                 .condition()
-//                 .map_or(Some(true), |condition| match condition {
-//                     Condition::Constant(value) => Some(*value),
-//                     condition => self.get_condition(condition),
-//                 })?;
-//
-//             let entry = BonusEntry { bonus, value };
-//
-//         }
-//
-//     }
-//
-//     // pub fn preload_breakdowns(&mut self, attribute: Attribute) {
-//     //     let _ = self.evaluate_value(&Value::Attribute(attribute));
-//     // }
-//     //
-//     // pub fn get_breakdowns(&self, attribute: &Attribute) -> Option<AttributeBreakdown> {
-//     // }
-// }
