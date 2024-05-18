@@ -196,11 +196,9 @@ impl CloneBonus for Attribute {
     }
 }
 
-macro_rules! static_attribute {
-    ($($class:ident),+) => {
-        chain_tree!(
-            $($class::get_static().map(ToAttribute::to_attribute),)+
-        )
+macro_rules! toattr {
+    ($class:ident) => {
+        $class::get_static().map(ToAttribute::to_attribute)
     };
 }
 
@@ -215,26 +213,25 @@ impl StaticOptions for Attribute {
                 Self::MovementSpeed,
                 Self::MeleePower,
                 Self::RangedPower,
+                Self::Fortification
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
-            static_attribute!(
-                Spellcasting,
-                Skill,
-                SavingThrow,
-                Toggle,
-                Flag,
-                Feat,
-                PlayerClass,
-                WeaponAttribute,
-                ArmorClass,
-                Sheltering,
-                Absorption,
-                Health,
-                SummonedAttribute,
-                HealingAmplification,
-                Tactics
-            )
+            toattr!(Spellcasting),
+            toattr!(Skill),
+            toattr!(SavingThrow),
+            toattr!(Toggle),
+            toattr!(Flag),
+            toattr!(Feat),
+            toattr!(PlayerClass),
+            toattr!(WeaponAttribute),
+            toattr!(ArmorClass),
+            toattr!(Sheltering),
+            toattr!(Absorption),
+            toattr!(Health),
+            toattr!(SummonedAttribute),
+            toattr!(HealingAmplification),
+            toattr!(Tactics)
         )
     }
 }
