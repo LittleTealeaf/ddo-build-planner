@@ -132,11 +132,6 @@ mod tests {
     fn inserting_bonus_pops() {
         let mut buffer = Buffer::new();
 
-        buffer.insert_bonuses([Bonus::new(
-            DebugValue(0),
-            DebugValue(0),
-            1,
-            DebugValue(0),
-        )]);
+        buffer.insert_bonuses([Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0))]);
     }
 }

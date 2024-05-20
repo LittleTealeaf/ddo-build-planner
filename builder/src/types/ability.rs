@@ -115,12 +115,7 @@ mod tests {
 
     #[test]
     fn clone_bonus_returns_all_bonuses() {
-        let bonus = Bonus::new(
-            Ability::All,
-            BonusType::Stacking,
-            1,
-            BonusSource::Debug(0),
-        );
+        let bonus = Bonus::new(Ability::All, BonusType::Stacking, 1, BonusSource::Debug(0));
 
         let bonuses = Ability::All
             .clone_bonus(&bonus)
