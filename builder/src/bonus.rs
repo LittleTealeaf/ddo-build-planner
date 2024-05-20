@@ -48,6 +48,12 @@ pub struct Bonus {
     condition: Option<Condition>,
     #[serde(rename = "s", alias = "src", alias = "source")]
     source: BonusSource,
+    #[serde(
+        rename = "d",
+        alias = "display_source",
+        skip_serializing_if = "Option::is_none"
+    )]
+    display_source: Option<BonusSource>,
 }
 
 /// Constructors
@@ -84,6 +90,7 @@ impl Bonus {
             value: value.into(),
             condition: condition.into(),
             source: source.into(),
+            display_source: None,
         }
     }
 
@@ -233,6 +240,12 @@ impl Bonus {
     #[must_use]
     pub const fn condition(&self) -> Option<&Condition> {
         self.condition.as_ref()
+    }
+
+    /// TODO: documentation
+    #[must_use]
+    pub const fn display_source(&self) -> Option<&BonusSource> {
+        self.display_source.as_ref()
     }
 
     /// Clones all the bonuses values, replacing the attribute.

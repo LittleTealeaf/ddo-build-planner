@@ -37,7 +37,7 @@ impl ItemSet {
                     bonus.set_condition({
                         bonus
                             .condition()
-                            .clone()
+                            .cloned()
                             .map_or_else(|| condition.clone(), |cond| cond & condition.clone())
                     });
                     bonus

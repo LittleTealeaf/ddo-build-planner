@@ -25,6 +25,12 @@ pub struct BonusTemplate {
         skip_serializing_if = "Option::is_none"
     )]
     condition: Option<Condition>,
+    #[serde(
+        rename = "d",
+        alias = "display_source",
+        skip_serializing_if = "Option::is_none"
+    )]
+    display_source: Option<BonusSource>,
 }
 
 impl BonusTemplate {
@@ -42,6 +48,7 @@ impl BonusTemplate {
             bonus_type: bonus_type.into(),
             value: value.into(),
             condition: condition.into(),
+            display_source: None,
         }
     }
 
@@ -81,13 +88,14 @@ impl BonusTemplate {
     where
         S: Into<BonusSource>,
     {
-        Bonus::new(
-            self.attribute,
-            self.bonus_type,
-            self.value,
-            self.condition,
-            source,
-        )
+        Bonus {
+            attribute: self.attribute,
+            bonus_type: self.bonus_type,
+            value: self.value,
+            condition: self.condition,
+            display_source: self.display_source,
+            source: source.into(),
+        }
     }
 
     /// Returns a reference to the attribute of this [`BonusTemplate`].
@@ -110,8 +118,14 @@ impl BonusTemplate {
 
     /// Returns a reference to the condition of this [`BonusTemplate`].
     #[must_use]
-    pub const fn condition(&self) -> &Option<Condition> {
-        &self.condition
+    pub const fn condition(&self) -> Option<&Condition> {
+        self.condition.as_ref()
+    }
+
+    /// TODO: documentation
+    #[must_use]
+    pub const fn display_source(&self) -> Option<&BonusSource> {
+        self.display_source.as_ref()
     }
 
     /// Sets the attribute of this [`BonusTemplate`].
