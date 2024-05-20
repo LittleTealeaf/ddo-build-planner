@@ -2,7 +2,7 @@ use rust_decimal::Decimal;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{Bonus, BonusTemplate, BonusType, Condition},
+    bonus::{Bonus, BonusTemplate, BonusType, Condition, Value},
     feat::{Feat, Proficiency, RacialFeat},
     types::{
         ability::Ability,
@@ -17,6 +17,7 @@ use crate::{
         toggle::AttackingTarget,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
+    val,
 };
 
 impl Race {
@@ -33,7 +34,7 @@ impl Race {
     where
         F: Into<Feat>,
     {
-        Bonus::new(feat.into(), BonusType::Stacking, 1, self)
+        Bonus::new(feat.into(), BonusType::Stacking, Value::ONE, self)
     }
 }
 
@@ -41,41 +42,41 @@ impl GetBonuses for Race {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         (value > Decimal::ZERO).then(|| match self {
             Self::Aasimar => Some(vec![
-                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, 2),
-                BonusTemplate::new(Skill::Heal, BonusType::Racial, 2),
-                BonusTemplate::new(Skill::Listen, BonusType::Racial, 2),
-                BonusTemplate::new(Skill::Spot, BonusType::Racial, 2),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Skill::Heal, BonusType::Racial, Value::TWO),
+                BonusTemplate::new(Skill::Listen, BonusType::Racial, Value::TWO),
+                BonusTemplate::new(Skill::Spot, BonusType::Racial, Value::TWO),
                 BonusTemplate::new(
                     Attribute::Resistance(DamageType::Cold),
                     BonusType::Stacking,
-                    5,
+                    val!(5),
                 ),
                 BonusTemplate::new(
                     Attribute::Resistance(DamageType::Acid),
                     BonusType::Stacking,
-                    5,
+                    val!(5),
                 ),
                 BonusTemplate::new(
                     Attribute::Resistance(DamageType::Electric),
                     BonusType::Stacking,
-                    5,
+                    val!(5),
                 ),
             ]),
             Self::Scourge => Some(vec![BonusTemplate::new(
                 Ability::Wisdom,
                 BonusType::Stacking,
-                2,
+                Value::TWO,
             )]),
             Self::Bladeforged => Some(vec![
-                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, -2),
-                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, val!(-2)),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, val!(-2)),
             ]),
             Self::DeepGnome => Some(vec![
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Strength, BonusType::Stacking, -2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, val!(-2)),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::SmallSizeBonus),
                 BonusTemplate::feat(RacialFeat::GnomishProficiencies),
                 BonusTemplate::feat(RacialFeat::RacialSpellResistance),
@@ -84,15 +85,15 @@ impl GetBonuses for Race {
                 BonusTemplate::feat(Proficiency::from(WeaponType::WarHammer)),
             ]),
             Self::Dragonborn => Some(vec![
-                BonusTemplate::new(Ability::Strength, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, val!(-2)),
             ]),
             Self::Drow => Some(vec![
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::RacialSpellResistance),
                 BonusTemplate::feat(RacialFeat::ElvenKeenSenses),
                 BonusTemplate::feat(RacialFeat::EnchantmentSaveBonus),
@@ -103,8 +104,8 @@ impl GetBonuses for Race {
                 // TODO: Shuriken Expertise
             ]),
             Self::Dwarf => Some(vec![
-                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::GiantEvasion),
                 BonusTemplate::feat(RacialFeat::OrcAndGoblinBonus),
                 BonusTemplate::feat(RacialFeat::PoisonSaveBonus),
@@ -115,8 +116,8 @@ impl GetBonuses for Race {
                     .with_condition(Condition::has(Proficiency::MartialWeaponProficiency)),
             ]),
             Self::Elf => Some(vec![
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::ElvenKeenSenses),
                 BonusTemplate::feat(RacialFeat::ImmunityToSleep),
                 BonusTemplate::feat(RacialFeat::EnchantmentSaveBonus),
@@ -126,8 +127,8 @@ impl GetBonuses for Race {
                 BonusTemplate::feat(Proficiency::from(WeaponType::ShortBow)),
             ]),
             Self::Gnome => Some(vec![
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::SmallSizeBonus),
                 BonusTemplate::feat(RacialFeat::GnomishProficiencies),
                 BonusTemplate::feat(Proficiency::from(WeaponType::LightHammer)),
@@ -135,8 +136,8 @@ impl GetBonuses for Race {
                 BonusTemplate::feat(Proficiency::from(WeaponType::WarHammer)),
             ]),
             Self::Halfling => Some(vec![
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Strength, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::HalflingAgility),
                 BonusTemplate::feat(RacialFeat::HalflingBravery),
                 BonusTemplate::feat(RacialFeat::HalflingKeenEars),
@@ -148,47 +149,47 @@ impl GetBonuses for Race {
                 BonusTemplate::new(Skill::Listen, BonusType::Racial, 1),
                 BonusTemplate::new(Skill::Search, BonusType::Racial, 1),
                 BonusTemplate::new(Skill::Spot, BonusType::Racial, 1),
-                BonusTemplate::new(Skill::Diplomacy, BonusType::Racial, 2),
+                BonusTemplate::new(Skill::Diplomacy, BonusType::Racial, Value::TWO),
                 BonusTemplate::feat(RacialFeat::ImmunityToSleep),
             ]),
             Self::HalfOrc => Some(vec![
-                BonusTemplate::new(Ability::Strength, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, -2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, val!(-2)),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, val!(-2)),
             ]),
             Self::Morninglord => Some(vec![
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, val!(-2)),
             ]),
             Self::PurpleDragonKnight | Self::Human => None,
             Self::Razorclaw => Some(vec![
-                BonusTemplate::new(Ability::Strength, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, val!(-2)),
             ]),
             Self::Shadarkai => Some(vec![
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, val!(-2)),
             ]),
             Self::Shifter => Some(vec![
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, val!(-2)),
             ]),
             Self::Tabaxi | Self::Trailblazer => Some(vec![BonusTemplate::new(
                 Ability::Dexterity,
                 BonusType::Stacking,
-                2,
+                Value::TWO,
             )]),
             Self::Tiefling => Some(vec![
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, 2),
-                BonusTemplate::new(Skill::Balance, BonusType::Racial, 2),
-                BonusTemplate::new(SavingThrow::Spell, BonusType::Racial, 2),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Skill::Balance, BonusType::Racial, Value::TWO),
+                BonusTemplate::new(SavingThrow::Spell, BonusType::Racial, Value::TWO),
                 BonusTemplate::toggle(AttackingTarget::Alignment(Alignment::Lawful)),
                 BonusTemplate::toggle(AttackingTarget::Alignment(Alignment::Good)),
                 BonusTemplate::toggle(AttackingTarget::MonsterType(MonsterType::Outsiders)),
                 BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Attack),
                     BonusType::Stacking,
-                    2,
+                    Value::TWO,
                 )
                 .with_condition(
                     (Condition::toggled(AttackingTarget::Alignment(Alignment::Lawful))
@@ -198,7 +199,7 @@ impl GetBonuses for Race {
                 BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Damage),
                     BonusType::Stacking,
-                    2,
+                    Value::TWO,
                 )
                 .with_condition(
                     (Condition::toggled(AttackingTarget::Alignment(Alignment::Lawful))
@@ -210,16 +211,16 @@ impl GetBonuses for Race {
             Self::Scoundrel => Some(vec![BonusTemplate::new(
                 Ability::Charisma,
                 BonusType::Stacking,
-                2,
+                Value::TWO,
             )]),
             Self::Warforged => Some(vec![
-                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, -2),
-                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Constitution, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, val!(-2)),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, val!(-2)),
             ]),
             Self::WoodElf => Some(vec![
-                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, 2),
-                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, -2),
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, val!(-2)),
                 BonusTemplate::feat(RacialFeat::ElvenKeenSenses),
                 BonusTemplate::feat(RacialFeat::EnchantmentSaveBonus),
                 BonusTemplate::feat(RacialFeat::ImmunityToSleep),
