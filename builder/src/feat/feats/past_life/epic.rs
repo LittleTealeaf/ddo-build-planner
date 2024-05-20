@@ -11,7 +11,7 @@ use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{BonusTemplate, BonusType, Condition, ToValue},
+    bonus::{BonusTemplate, BonusType, Condition, ToValue, Value},
     feat::{Feat, ToFeat},
     types::{
         absorption::{Absorption, AbsorptionSource},
@@ -177,8 +177,8 @@ impl GetBonuses for EpicPastLife {
                     * (val!(3)
                         + (val!(4)
                             * ((Attribute::TotalCharacterLevel.to_value()
-                                - (Attribute::TotalCharacterLevel.to_value() % val!(10)))
-                                / val!(10)))),
+                                - (Attribute::TotalCharacterLevel.to_value() % Value::TEN))
+                                / Value::TEN))),
             )],
             EpicSphere::Divine => vec![BonusTemplate::new(
                 Sheltering::Physical,
@@ -189,10 +189,10 @@ impl GetBonuses for EpicPastLife {
                 ArmorClass::Bonus,
                 BonusType::Stacking,
                 value.to_value()
-                    * (val!(2)
+                    * (Value::TWO
                         + ((Attribute::TotalCharacterLevel.to_value()
-                            - (Attribute::TotalCharacterLevel.to_value() % val!(10)))
-                            / val!(10))),
+                            - (Attribute::TotalCharacterLevel.to_value() % Value::TEN))
+                            / Value::TEN)),
             )],
         };
 
@@ -295,12 +295,12 @@ impl GetBonuses for EpicPastLife {
                 BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Attack),
                     BonusType::Stacking,
-                    dec!(2) * value,
+                    Decimal::TWO * value,
                 ),
                 BonusTemplate::new(
                     (WeaponHand::Main, WeaponStat::Damage),
                     BonusType::Stacking,
-                    dec!(2) * value,
+                    Decimal::TWO * value,
                 )
                 .with_condition(Condition::flag(Flag::IsTwoHandedFighting)),
             ],

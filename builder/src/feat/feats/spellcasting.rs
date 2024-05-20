@@ -82,7 +82,7 @@ impl GetBonuses for SpellcastingFeat {
                 Some(vec![BonusTemplate::new(
                     Attribute::SpellPenetration,
                     BonusType::Stacking,
-                    val!(2),
+                    Value::TWO,
                 )])
             }
         })?

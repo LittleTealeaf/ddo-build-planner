@@ -205,7 +205,7 @@ impl BonusTemplate {
     }
 
     #[must_use]
-    pub fn with_dislay_source<S>(self, display_source: S) -> Self
+    pub fn with_display_source<S>(self, display_source: S) -> Self
     where
         S: Into<BonusSource>,
     {

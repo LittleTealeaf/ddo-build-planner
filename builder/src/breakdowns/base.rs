@@ -58,7 +58,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
             BonusTemplate::new(
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
-                ((Value::Attribute(Attribute::Ability(ability)) - val!(10)) / val!(2)).floor(),
+                ((Attribute::Ability(ability).to_value() - Value::TEN) / Value::TWO).floor(),
             )
         })
         .chain(once(BonusTemplate::new(
@@ -81,6 +81,7 @@ fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
         )
+        .with_display_source(Attribute::AbilityModifier(ability))
     })
 }
 
@@ -114,16 +115,21 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
             BonusType::Stacking,
             Attribute::Skill(skill),
         )
+        .with_display_source(skill)
     })
 }
 
 fn skill() -> impl IntoIterator<Item = BonusTemplate> {
     Skill::SKILLS.into_iter().filter_map(|skill| {
-        Some(BonusTemplate::new(
-            skill,
-            BonusType::AbilityModifier,
-            Attribute::AbilityModifier(skill.get_ability()?),
-        ))
+        let ability = skill.get_ability()?;
+        Some(
+            BonusTemplate::new(
+                skill,
+                BonusType::AbilityModifier,
+                Attribute::AbilityModifier(ability),
+            )
+            .with_display_source(Attribute::AbilityModifier(ability)),
+        )
     })
 }
 
