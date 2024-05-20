@@ -33,7 +33,7 @@ iced_aw = { version = "0.9.3", default-features = false, features = [
 	"drop_down" # todo: remove drop down?
 ] }
 fuzzy-filter = "0.1.0"
-itertools = "0.12.1"
+itertools = "0.13.0"
 rust_decimal = "1.35.0"
 
 [dev-dependencies]
