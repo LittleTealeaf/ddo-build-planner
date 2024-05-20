@@ -87,11 +87,8 @@ fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
 
 fn secondary_saves() -> impl Iterator<Item = BonusTemplate> {
     SavingThrow::SECONDARY.into_iter().filter_map(|skill| {
-        Some(BonusTemplate::new(
-            skill,
-            BonusType::Stacking,
-            skill.get_parent()?.to_value(),
-        ))
+        let parent = skill.get_parent()?;
+        Some(BonusTemplate::new(skill, BonusType::Stacking, parent).with_display_source(parent))
     })
 }
 
@@ -109,13 +106,9 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
         (Skill::Spellcraft, DamageType::Poison),
     ]
     .into_iter()
-    .map(|(skill, damage_type)| {
-        BonusTemplate::new(
-            Attribute::spell_power(damage_type),
-            BonusType::Stacking,
-            Attribute::Skill(skill),
-        )
-        .with_display_source(skill)
+    .map(|(skill, damage)| {
+        BonusTemplate::new(Attribute::spell_power(damage), BonusType::Stacking, skill)
+            .with_display_source(skill)
     })
 }
 
@@ -233,7 +226,11 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
             Value::condition(
                 Condition::has(ArmorType::Medium) | Condition::has(ArmorType::Heavy),
                 Sheltering::Magical,
-                Value::condition(Condition::has(ArmorType::Light), val!(100), val!(50)),
+                Value::condition(
+                    Condition::has(ArmorType::Light),
+                    Value::ONE_HUNDRED,
+                    val!(50),
+                ),
             ),
         ),
         BonusTemplate::new(
@@ -269,19 +266,19 @@ fn sheltering_reduction() -> impl IntoIterator<Item = BonusTemplate> {
 
 fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
     [
-        (Skill::Balance, 1),
-        (Skill::Hide, 1),
-        (Skill::Jump, 1),
-        (Skill::MoveSilently, 1),
-        (Skill::Swim, 2),
-        (Skill::Tumble, 1),
+        (Skill::Balance, val!(-1)),
+        (Skill::Hide, val!(-1)),
+        (Skill::Jump, val!(-1)),
+        (Skill::MoveSilently, val!(-1)),
+        (Skill::Swim, val!(-2)),
+        (Skill::Tumble, val!(-1)),
     ]
     .into_iter()
     .map(|(skill, scale)| {
         BonusTemplate::new(
             skill,
             BonusType::Stacking,
-            (-scale).to_value() * Attribute::ArmorCheckPenalty.to_value(),
+            scale * Attribute::ArmorCheckPenalty.to_value(),
         )
         .with_condition(Condition::has(Attribute::ArmorCheckPenalty))
     })

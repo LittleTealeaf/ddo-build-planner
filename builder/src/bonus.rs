@@ -336,6 +336,11 @@ impl Bonus {
         self.display_source.as_ref()
     }
 
+    #[must_use]
+    pub fn displayed_source(&self) -> &BonusSource {
+        self.display_source().unwrap_or(&self.source)
+    }
+
     /// Clones all the bonuses values, replacing the attribute.
     ///
     /// Returns a new [`Bonus`] instance.
