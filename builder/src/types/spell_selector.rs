@@ -7,7 +7,7 @@ use utils::enums::StaticOptions;
 
 use crate::types::spell_school::SpellSchool;
 
-use super::{player_class::PlayerClass, spell_power::SpellPower};
+use super::{damage_type::DamageType, player_class::PlayerClass, spell_power::SpellPower};
 
 /// Specifies the spell, type of spell, spell class.
 ///
@@ -42,6 +42,12 @@ impl Display for SpellSelector {
 impl From<SpellPower> for SpellSelector {
     fn from(value: SpellPower) -> Self {
         Self::SpellPower(value)
+    }
+}
+
+impl From<DamageType> for SpellSelector {
+    fn from(value: DamageType) -> Self {
+        SpellPower::from(value).into()
     }
 }
 

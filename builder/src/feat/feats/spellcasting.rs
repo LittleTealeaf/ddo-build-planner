@@ -49,7 +49,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::AugmentSummoning => Some(vec![BonusTemplate::new(
                 SummonedAttribute::AbilityScore(Ability::All),
                 BonusType::Stacking,
-                4u8,
+                val!(4),
                 None,
             )]),
             Self::MobileSpellcasting => None,
@@ -57,7 +57,7 @@ impl GetBonuses for SpellcastingFeat {
             Self::CombatCasting => Some(vec![BonusTemplate::new(
                 Skill::Concentration,
                 BonusType::Stacking,
-                4u8,
+                val!(4),
                 None,
             )]),
             Self::MagicalTraining => Some(vec![

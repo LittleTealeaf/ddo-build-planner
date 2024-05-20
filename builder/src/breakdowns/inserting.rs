@@ -113,6 +113,10 @@ impl Breakdowns {
         let mut breakdowns = HashSet::new();
 
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
+            if self.cache.breakdowns.remove(&attribute).is_some() {
+                breakdowns.insert(attribute.clone());
+            }
+
             let initial_value = self
                 .cache
                 .attribute
@@ -121,18 +125,13 @@ impl Breakdowns {
                 .or_else(|| self.calculate_attribute(&attribute))
                 .unwrap_or(Decimal::ZERO);
 
-            if self.cache.breakdowns.remove(&attribute).is_some() {
-                breakdowns.insert(attribute.clone());
-            }
-
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            if !forced
-                && initial_value
-                    == self
-                        .calculate_attribute(&attribute)
-                        .unwrap_or(Decimal::ZERO)
-            {
+            let current_value = self
+                .calculate_attribute(&attribute)
+                .unwrap_or(Decimal::ZERO);
+
+            if !forced && initial_value == current_value {
                 continue;
             }
 
@@ -149,39 +148,29 @@ impl Breakdowns {
                     .cloned(),
             );
 
-            let value = self
-                .calculate_attribute(&attribute)
-                .unwrap_or(Decimal::ZERO);
+            let value = self.evaluate_attribute(&attribute);
 
             let attribute_bonuses = attribute.get_bonuses(value);
 
             let dynamic_bonuses = (value > Decimal::ZERO)
                 .then(|| self.dynamic_bonuses.get(&attribute))
-                .unwrap_or_default();
+                .unwrap_or_default()
+                .cloned();
 
-            let bonuses = chain!(&attribute_bonuses, dynamic_bonuses)
+            let mut children = HashSet::new();
+
+            let bonuses = chain!(attribute_bonuses, dynamic_bonuses)
                 .flatten()
-                .collect::<Vec<_>>();
+                .map(|bonus| {
+                    children.insert(bonus.attribute().clone());
+                    bonus.to_bonus(source.clone())
+                });
 
-            if bonuses.is_empty() {
-                continue;
+            buffer.insert_bonuses(bonuses);
+
+            if !children.is_empty() {
+                self.children.insert(source, children.into_iter().collect());
             }
-
-            self.children.insert(
-                source.clone(),
-                bonuses
-                    .iter()
-                    .map(|bonus| bonus.attribute())
-                    .cloned()
-                    .collect(),
-            );
-
-            buffer.insert_bonuses(
-                bonuses
-                    .into_iter()
-                    .cloned()
-                    .map(|bonus| bonus.to_bonus(source.clone())),
-            );
         }
 
         for attribute in breakdowns {

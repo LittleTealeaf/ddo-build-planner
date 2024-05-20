@@ -16,7 +16,7 @@ pub enum WeaponHand {
 
 impl WeaponHand {
     /// Both the Main Hand and the Off Hand
-    pub const VALUES: [Self; 2] = [Self::Main, Self::Off];
+    pub const HANDS: [Self; 2] = [Self::Main, Self::Off];
 }
 
 impl Display for WeaponHand {

@@ -28,6 +28,7 @@ use self::base::get_base_bonuses;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Breakdowns {
     bonuses: HashMap<Attribute, Vec<Bonus>>,
+    #[serde(flatten)]
     cache: BreakdownCache,
     children: HashMap<BonusSource, Vec<Attribute>>,
     dynamic_bonuses: HashMap<Attribute, Vec<BonusTemplate>>,

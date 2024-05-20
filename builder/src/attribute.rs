@@ -1,7 +1,8 @@
 //! Represents each attribute that a character can have
+mod constructors;
+mod to_attribute;
 mod traits;
 
-mod to_attribute;
 use core::fmt;
 
 pub use to_attribute::*;
@@ -39,21 +40,27 @@ pub enum Attribute {
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
     /// Indicates that the user has some flag
-    #[serde(rename = "flg", alias = "Flag")]
+    #[serde(rename = "f", alias = "flg", alias = "Flag")]
     Flag(Flag),
     /// Results from the user interacting with toggles / sliders.
     ///
     /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
     /// associated bonuses can react.
-    #[serde(rename = "tgl", alias = "Toggle")]
+    #[serde(rename = "t", alias = "tgl", alias = "Toggle")]
     Toggle(Toggle),
     /// Does the user have the feat.
+    #[serde(rename = "fe", alias = "Feat")]
     Feat(Feat),
     /// The ability score of the character.
-    #[serde(rename = "ab", alias = "Ability")]
+    #[serde(rename = "a", alias = "ab", alias = "Ability")]
     Ability(Ability),
     /// The modifier, calculated from [`Attribute::Ability`].
-    #[serde(rename = "abm", alias = "AbilMod", alias = "AbilityModifier")]
+    #[serde(
+        rename = "am",
+        alias = "abm",
+        alias = "AbilMod",
+        alias = "AbilityModifier"
+    )]
     AbilityModifier(Ability),
     /// Indicates how many levels the character has of a given class.
     #[serde(rename = "lvl", alias = "ClassLevel")]
@@ -62,7 +69,7 @@ pub enum Attribute {
     #[serde(rename = "skl", alias = "Skill")]
     Skill(Skill),
     /// Both simple and complex saving throws.
-    #[serde(rename = "sav", alias = "Save", alias = "SavingThrow")]
+    #[serde(rename = "st", alias = "sav", alias = "Save", alias = "SavingThrow")]
     SavingThrow(SavingThrow),
     /// Character Spell Power.
     ///
@@ -129,6 +136,7 @@ pub enum Attribute {
     #[serde(rename = "hamp", alias = "HealAmp", alias = "HealingAmplification")]
     HealingAmplification(HealingAmplification),
     /// Movement Speed
+    #[serde(rename = "ms", alias = "MovementSpeed")]
     MovementSpeed,
     /// Tactics
     #[serde(rename = "tct", alias = "Tactics")]
@@ -231,11 +239,9 @@ impl CloneBonus for Attribute {
     }
 }
 
-macro_rules! static_attribute {
-    ($($class:ident),+) => {
-        chain_tree!(
-            $($class::get_static().map(ToAttribute::to_attribute),)+
-        )
+macro_rules! toattr {
+    ($class:ident) => {
+        $class::get_static().map(ToAttribute::to_attribute)
     };
 }
 
@@ -251,6 +257,7 @@ impl StaticOptions for Attribute {
                 Self::MovementSpeed,
                 Self::MeleePower,
                 Self::RangedPower,
+                Self::Fortification,
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
@@ -268,23 +275,21 @@ impl StaticOptions for Attribute {
                     Self::SpellDC(selector),
                 ]
             }),
-            static_attribute!(
-                Skill,
-                SavingThrow,
-                Toggle,
-                Flag,
-                Feat,
-                PlayerClass,
-                WeaponAttribute,
-                ArmorClass,
-                Sheltering,
-                Absorption,
-                Health,
-                SpellPoints,
-                SummonedAttribute,
-                HealingAmplification,
-                Tactics
-            )
+            toattr!(Skill),
+            toattr!(SavingThrow),
+            toattr!(Toggle),
+            toattr!(Flag),
+            toattr!(Feat),
+            toattr!(PlayerClass),
+            toattr!(WeaponAttribute),
+            toattr!(ArmorClass),
+            toattr!(Sheltering),
+            toattr!(Absorption),
+            toattr!(Health),
+            toattr!(SpellPoints),
+            toattr!(SummonedAttribute),
+            toattr!(HealingAmplification),
+            toattr!(Tactics),
         )
     }
 }
