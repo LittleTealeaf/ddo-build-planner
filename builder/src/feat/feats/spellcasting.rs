@@ -50,7 +50,6 @@ impl GetBonuses for SpellcastingFeat {
                 SummonedAttribute::AbilityScore(Ability::All),
                 BonusType::Stacking,
                 val!(4),
-                None,
             )]),
             Self::MobileSpellcasting => None,
             Self::SpellFocus(focus) => focus.get_bonuses(value),
@@ -58,29 +57,25 @@ impl GetBonuses for SpellcastingFeat {
                 Skill::Concentration,
                 BonusType::Stacking,
                 val!(4),
-                None,
             )]),
             Self::MagicalTraining => Some(vec![
                 BonusTemplate::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     val!(5),
-                    None,
                 ),
-                BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, 80, None),
+                BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, val!(80)),
             ]),
             Self::MentalToughness | Self::ImprovedMentalToughness => Some(vec![
                 BonusTemplate::new(
                     Attribute::SpellCriticalChance(SpellPower::Potency),
                     BonusType::Stacking,
                     val!(1),
-                    None,
                 ),
                 BonusTemplate::new(
                     SpellPoints::Base,
                     BonusType::Stacking,
                     val!(5) + (Value::from(Attribute::TotalCharacterLevel) * val!(5)),
-                    None,
                 ),
             ]),
             Self::SpellPenetration | Self::GreaterSpellPenetration => {
@@ -88,7 +83,6 @@ impl GetBonuses for SpellcastingFeat {
                     Attribute::SpellPenetration,
                     BonusType::Stacking,
                     val!(2),
-                    None,
                 )])
             }
         })?

@@ -310,7 +310,7 @@ mod dynamic {
 
         breakdowns.import_dynamic_bonus(
             Attribute::Debug(0),
-            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10, None)],
+            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)],
         );
 
         assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 0.into());
@@ -322,7 +322,7 @@ mod dynamic {
 
         breakdowns.import_dynamic_bonus(
             Attribute::Debug(0),
-            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10, None)],
+            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)],
         );
 
         breakdowns.insert_bonus(Bonus::new(
@@ -342,7 +342,7 @@ mod dynamic {
 
         breakdowns.import_dynamic_bonus(
             Attribute::Debug(0),
-            vec![BonusTemplate::new(Ability::All, DebugValue(0), 10, None)],
+            vec![BonusTemplate::new(Ability::All, DebugValue(0), 10)],
         );
 
         let before = breakdowns.evaluate_attribute_from(Ability::Constitution);

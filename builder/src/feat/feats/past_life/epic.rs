@@ -167,7 +167,6 @@ impl GetBonuses for EpicPastLife {
                     Absorption::Bonus(damage, AbsorptionSource::ArcanePastLife),
                     BonusType::Stacking,
                     value,
-                    None,
                 )
             })
             .to_vec(),
@@ -180,13 +179,11 @@ impl GetBonuses for EpicPastLife {
                             * ((Attribute::TotalCharacterLevel.to_value()
                                 - (Attribute::TotalCharacterLevel.to_value() % val!(10)))
                                 / val!(10)))),
-                None,
             )],
             EpicSphere::Divine => vec![BonusTemplate::new(
                 Sheltering::Physical,
                 BonusType::Stacking,
                 value * dec!(3),
-                None,
             )],
             EpicSphere::Martial => vec![BonusTemplate::new(
                 ArmorClass::Bonus,
@@ -196,11 +193,12 @@ impl GetBonuses for EpicPastLife {
                         + ((Attribute::TotalCharacterLevel.to_value()
                             - (Attribute::TotalCharacterLevel.to_value() % val!(10)))
                             / val!(10))),
-                None,
             )],
         };
 
-        let toggle = BonusTemplate::toggle(*self, None);
+        let toggle = BonusTemplate::toggle(*self);
+
+        // TODO: make toggle bonuses all set conditions at the end
 
         let toggle_bonuses = match self {
             Self::EnergyCriticals => [
@@ -215,90 +213,84 @@ impl GetBonuses for EpicPastLife {
                     Attribute::SpellCriticalChance(damage.into()),
                     BonusType::Stacking,
                     dec!(3) * value,
-                    Condition::toggled(*self),
                 )
+                .with_condition(Condition::toggled(*self))
             })
             .to_vec(),
             Self::EnchantWeapon => vec![
-                BonusTemplate::new(Attribute::Debug(0), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(0), BonusType::Stacking, 0),
                 // TODO: Weapon Enchantment
             ],
             Self::ArcaneAlacrity => vec![
-                BonusTemplate::new(Attribute::Debug(1), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(1), BonusType::Stacking, 0),
                 // TODO: Arcane Alacrity
             ],
-            Self::AncientKnowledge => vec![BonusTemplate::new(
-                Sheltering::Magical,
-                BonusType::Stacking,
-                dec!(3) * value,
-                Condition::toggled(*self),
-            )],
-            Self::EclipsePower => vec![BonusTemplate::new(
-                Attribute::SpellPenetration,
-                BonusType::Stacking,
-                value,
-                Condition::toggled(*self),
-            )],
+            Self::AncientKnowledge => {
+                vec![
+                    BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, dec!(3) * value)
+                        .with_condition(Condition::toggled(*self)),
+                ]
+            }
+            Self::EclipsePower => {
+                vec![
+                    BonusTemplate::new(Attribute::SpellPenetration, BonusType::Stacking, value)
+                        .with_condition(Condition::toggled(*self)),
+                ]
+            }
             Self::PowerOverLifeAndDeath => [DamageType::Positive, DamageType::Negative]
                 .map(|damage| {
                     BonusTemplate::new(
                         Attribute::SpellPower(damage.into()),
                         BonusType::Stacking,
                         dec!(10) * value,
-                        Condition::toggled(*self),
                     )
+                    .with_condition(Condition::toggled(*self))
                 })
                 .to_vec(),
-            Self::Brace => vec![BonusTemplate::new(
-                SavingThrow::All,
-                BonusType::Stacking,
-                value,
-                Condition::toggled(*self),
-            )],
+            Self::Brace => vec![
+                BonusTemplate::new(SavingThrow::All, BonusType::Stacking, value)
+                    .with_condition(Condition::toggled(*self)),
+            ],
             Self::BlockEnergy => vec![
-                BonusTemplate::new(Attribute::Debug(2), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(2), BonusType::Stacking, 0),
                 // TODO: Block Energy
             ],
             Self::AncientBlessngs => vec![BonusTemplate::new(
                 HealingAmplification::All,
                 BonusType::Stacking,
                 dec!(5) * value,
-                Condition::toggled(*self),
-            )],
+            )
+            .with_condition(Condition::toggled(*self))],
             Self::Doublestrike => vec![
-                BonusTemplate::new(Attribute::Debug(3), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(3), BonusType::Stacking, 0),
                 // TODO: Doublestrike +3% / life
             ],
-            Self::SkillMastery => vec![BonusTemplate::new(
-                Skill::All,
-                BonusType::Stacking,
-                value,
-                Condition::toggled(*self),
-            )],
+            Self::SkillMastery => vec![BonusTemplate::new(Skill::All, BonusType::Stacking, value)
+                .with_condition(Condition::toggled(*self))],
             Self::Fortification => vec![BonusTemplate::new(
                 Attribute::Fortification,
                 BonusType::Stacking,
                 value * Decimal::TEN,
-                Condition::toggled(*self),
-            )],
+            )
+            .with_condition(Condition::toggled(*self))],
             Self::AncientTactics => vec![
-                BonusTemplate::new(Attribute::Debug(5), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(5), BonusType::Stacking, 0),
                 // TODO: Ancient Tactics
             ],
             Self::TrapDamageAbsorption => vec![
-                BonusTemplate::new(Attribute::Debug(6), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(6), BonusType::Stacking, 0),
                 // TODO: Trap Absorption
             ],
             Self::Doubleshot => vec![
-                BonusTemplate::new(Attribute::Debug(7), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(7), BonusType::Stacking, 0),
                 // TODO: Doubleshot +3% / life
             ],
             Self::FastHealing => vec![
-                BonusTemplate::new(Attribute::Debug(8), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(8), BonusType::Stacking, 0),
                 // TODO: Fast Healing
             ],
             Self::ColorsOfTheQueen => vec![
-                BonusTemplate::new(Attribute::Debug(9), BonusType::Stacking, 0, None),
+                BonusTemplate::new(Attribute::Debug(9), BonusType::Stacking, 0),
                 // TODO: Colors of the Queen
             ],
             Self::AncientPower => vec![
@@ -306,12 +298,14 @@ impl GetBonuses for EpicPastLife {
                     (WeaponHand::Both, WeaponStat::Attack),
                     BonusType::Stacking,
                     dec!(2) * value,
-                    Condition::toggled(*self),
-                ),
+                )
+                .with_condition(Condition::toggled(*self)),
                 BonusTemplate::new(
                     (WeaponHand::Main, WeaponStat::Damage),
                     BonusType::Stacking,
                     dec!(2) * value,
+                )
+                .with_condition(
                     Condition::toggled(*self) & Condition::flag(Flag::IsTwoHandedFighting),
                 ),
             ],

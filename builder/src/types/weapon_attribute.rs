@@ -42,7 +42,6 @@ impl GetBonuses for WeaponAttribute {
                 (*hand, WeaponStat::CriticalMultiplier1920),
                 BonusType::Stacking,
                 value,
-                None,
             )]),
             _ => None,
         }

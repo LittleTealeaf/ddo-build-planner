@@ -8,7 +8,7 @@ use utils::enums::StaticOptions;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
-    bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
+    bonus::{BonusTemplate, BonusType, Condition, ConditionFold, Value},
     feat::{Feat, ToFeat},
     types::{
         armor_class::ArmorClass,
@@ -88,41 +88,36 @@ impl Display for RacialFeat {
 
 impl GetBonuses for RacialFeat {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
+        // TODO: fix values to use consts
         (value > Decimal::ZERO).then(|| match self {
             Self::SmallSizeBonus => {
                 vec![
-                    BonusTemplate::new(
-                        (WeaponHand::Both, WeaponStat::Attack),
-                        BonusType::Size,
-                        1,
-                        None,
-                    ),
-                    BonusTemplate::new(ArmorClass::Bonus, BonusType::Size, 1, None),
-                    BonusTemplate::new(Skill::Hide, BonusType::Size, 4, None),
+                    BonusTemplate::new((WeaponHand::Both, WeaponStat::Attack), BonusType::Size, 1),
+                    BonusTemplate::new(ArmorClass::Bonus, BonusType::Size, 1),
+                    BonusTemplate::new(Skill::Hide, BonusType::Size, 4),
                 ]
             }
             Self::GnomishProficiencies => {
                 vec![
-                    BonusTemplate::new(Skill::Haggle, BonusType::Stacking, 2, None),
-                    BonusTemplate::new(Skill::UseMagicalDevice, BonusType::Stacking, 2, None),
+                    BonusTemplate::new(Skill::Haggle, BonusType::Stacking, 2),
+                    BonusTemplate::new(Skill::UseMagicalDevice, BonusType::Stacking, 2),
                 ]
             }
             Self::ImmunityToSleep => {
-                vec![BonusTemplate::flag(Immunity::Sleep, None)]
+                vec![BonusTemplate::flag(Immunity::Sleep)]
             }
             Self::EnchantmentSaveBonus => {
                 vec![BonusTemplate::new(
                     SavingThrow::Enchantment,
                     BonusType::Stacking,
                     2,
-                    None,
                 )]
             }
             Self::ElvenKeenSenses => {
                 vec![
-                    BonusTemplate::new(Skill::Listen, BonusType::Stacking, 2, None),
-                    BonusTemplate::new(Skill::Search, BonusType::Stacking, 2, None),
-                    BonusTemplate::new(Skill::Spot, BonusType::Stacking, 2, None),
+                    BonusTemplate::new(Skill::Listen, BonusType::Stacking, 2),
+                    BonusTemplate::new(Skill::Search, BonusType::Stacking, 2),
+                    BonusTemplate::new(Skill::Spot, BonusType::Stacking, 2),
                 ]
             }
             Self::RacialSpellResistance => {
@@ -130,39 +125,29 @@ impl GetBonuses for RacialFeat {
                     Attribute::SpellResistance,
                     BonusType::Stacking,
                     6,
-                    None,
                 )]
             }
             Self::DwarvenStability => {
-                vec![BonusTemplate::new(
-                    Skill::Balance,
-                    BonusType::Stacking,
-                    4,
-                    None,
-                )]
+                vec![BonusTemplate::new(Skill::Balance, BonusType::Stacking, 4)]
             }
             Self::GiantEvasion => {
                 vec![
-                    BonusTemplate::toggle(AttackingTarget::MonsterType(MonsterType::Giant), None),
-                    BonusTemplate::new(
-                        ArmorClass::Bonus,
-                        BonusType::Dodge,
-                        4,
+                    BonusTemplate::toggle(AttackingTarget::MonsterType(MonsterType::Giant)),
+                    BonusTemplate::new(ArmorClass::Bonus, BonusType::Dodge, 4).with_condition(
                         Condition::toggled(AttackingTarget::MonsterType(MonsterType::Giant)),
                     ),
                 ]
             }
             Self::OrcAndGoblinBonus => {
                 vec![
-                    BonusTemplate::toggle(AttackingTarget::MonsterType(MonsterType::Orc), None),
-                    BonusTemplate::toggle(
-                        AttackingTarget::MonsterType(MonsterType::Goblinoid),
-                        None,
-                    ),
+                    BonusTemplate::toggle(AttackingTarget::MonsterType(MonsterType::Orc)),
+                    BonusTemplate::toggle(AttackingTarget::MonsterType(MonsterType::Goblinoid)),
                     BonusTemplate::new(
                         (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Racial,
                         1,
+                    )
+                    .with_condition(
                         Condition::toggled(AttackingTarget::MonsterType(MonsterType::Orc))
                             | Condition::toggled(AttackingTarget::MonsterType(
                                 MonsterType::Goblinoid,
@@ -171,19 +156,13 @@ impl GetBonuses for RacialFeat {
                 ]
             }
             Self::DwarvenStonecunning => {
-                vec![BonusTemplate::new(
-                    Skill::Search,
-                    BonusType::Stacking,
-                    2,
-                    None,
-                )]
+                vec![BonusTemplate::new(Skill::Search, BonusType::Stacking, 2)]
             }
             Self::SpellSaveBonus => {
                 vec![BonusTemplate::new(
                     SavingThrow::Spell,
                     BonusType::Stacking,
                     2,
-                    None,
                 )]
             }
             Self::PoisonSaveBonus => {
@@ -191,39 +170,30 @@ impl GetBonuses for RacialFeat {
                     SavingThrow::Poison,
                     BonusType::Stacking,
                     2,
-                    None,
                 )]
             }
             Self::HalflingAgility => vec![
-                BonusTemplate::new(Skill::Jump, BonusType::Stacking, 2, None),
-                BonusTemplate::new(Skill::MoveSilently, BonusType::Stacking, 2, None),
+                BonusTemplate::new(Skill::Jump, BonusType::Stacking, 2),
+                BonusTemplate::new(Skill::MoveSilently, BonusType::Stacking, 2),
             ],
-            Self::HalflingBravery => vec![BonusTemplate::new(
-                SavingThrow::Fear,
-                BonusType::Morale,
-                2,
-                None,
-            )],
-            Self::HalflingKeenEars => vec![BonusTemplate::new(
-                Skill::Listen,
-                BonusType::Stacking,
-                2,
-                None,
-            )],
-            Self::HalflingLuck => vec![BonusTemplate::new(
-                SavingThrow::All,
-                BonusType::Luck,
-                1,
-                None,
-            )],
+            Self::HalflingBravery => {
+                vec![BonusTemplate::new(SavingThrow::Fear, BonusType::Morale, 2)]
+            }
+            Self::HalflingKeenEars => {
+                vec![BonusTemplate::new(Skill::Listen, BonusType::Stacking, 2)]
+            }
+            Self::HalflingLuck => vec![BonusTemplate::new(SavingThrow::All, BonusType::Luck, 1)],
             Self::HalflingThrownWeaponFocus => {
                 vec![BonusTemplate::new(
                     (WeaponHand::Main, WeaponStat::Attack),
                     BonusType::Stacking,
-                    1,
+                    Value::ONE,
+                )
+                .with_condition(
                     WeaponType::THROWING_WEAPONS
                         .map(|wt| Condition::has(MainHandType::Weapon(wt)))
-                        .cond_any(),
+                        .cond_any()
+                        .expect("Expected Condition"),
                 )]
             }
         })

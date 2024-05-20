@@ -71,10 +71,10 @@ impl GetBonuses for Flag {
         match self {
             Self::Race(race) => race.get_bonuses(value),
             Self::MainHandType(_) => {
-                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasMainHand, None)])
+                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasMainHand)])
             }
             Self::OffHandType(_) => {
-                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasOffHand, None)])
+                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasOffHand)])
             }
             _ => None,
         }

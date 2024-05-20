@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use serde::{Deserialize, Serialize};
 use utils::from_into::FromInto;
 
@@ -33,57 +35,193 @@ pub struct BonusTemplate {
     display_source: Option<BonusSource>,
 }
 
+/// Fetching Types
 impl BonusTemplate {
-    /// Creates a new bonus template with the following values
     #[must_use]
-    pub fn new<A, T, V, C>(attribute: A, bonus_type: T, value: V, condition: C) -> Self
+    pub const fn attribute(&self) -> &Attribute {
+        &self.attribute
+    }
+
+    #[must_use]
+    pub const fn bonus_type(&self) -> &BonusType {
+        &self.bonus_type
+    }
+
+    #[must_use]
+    pub const fn value(&self) -> &Value {
+        &self.value
+    }
+
+    #[must_use]
+    pub const fn condition(&self) -> Option<&Condition> {
+        self.condition.as_ref()
+    }
+
+    #[must_use]
+    pub const fn display_source(&self) -> Option<&BonusSource> {
+        self.display_source.as_ref()
+    }
+}
+
+impl BonusTemplate {
+    #[must_use]
+    pub fn new<A, T, V>(attribute: A, bonus_type: T, value: V) -> Self
     where
         A: Into<Attribute>,
         T: Into<BonusType>,
         V: Into<Value>,
-        C: Into<Option<Condition>>,
     {
         Self {
             attribute: attribute.into(),
             bonus_type: bonus_type.into(),
             value: value.into(),
-            condition: condition.into(),
+            condition: None,
             display_source: None,
         }
     }
 
-    /// Provides the use of a given toggle
-    #[must_use]
-    pub fn toggle<T, C>(toggle: T, condition: C) -> Self
-    where
-        T: Into<Toggle>,
-        C: Into<Option<Condition>>,
-    {
-        Self::flag(Toggle::from_into(toggle), condition)
-    }
-
-    /// Provides the specified flag
-    #[must_use]
-    pub fn flag<F, C>(flag: F, condition: C) -> Self
+    pub fn flag<F>(flag: F) -> Self
     where
         F: Into<Flag>,
-        C: Into<Option<Condition>>,
     {
-        Self::new(flag.into(), BonusType::Stacking, 1, condition)
+        Self::new(flag.into(), BonusType::Stacking, Value::ONE)
     }
 
-    /// Provides the feat
-    #[must_use]
-    pub fn feat<F, C>(feat: F, condition: C) -> Self
+    pub fn toggle<T>(toggle: T) -> Self
+    where
+        T: Into<Toggle>,
+    {
+        Self::flag(Toggle::from_into(toggle))
+    }
+
+    pub fn feat<F>(feat: F) -> Self
     where
         F: Into<Feat>,
-        C: Into<Option<Condition>>,
     {
-        Self::new(feat.into(), BonusType::Stacking, 1, condition)
+        Self::new(feat.into(), BonusType::Stacking, Value::ONE)
+    }
+}
+
+/// Modifier Constructors
+impl BonusTemplate {
+    #[must_use]
+    pub fn with_attribute<A>(self, attribute: A) -> Self
+    where
+        A: Into<Attribute>,
+    {
+        Self {
+            attribute: attribute.into(),
+            ..self
+        }
     }
 
-    /// Converts this bonus template into a bonus
     #[must_use]
+    pub fn with_bonus_type<T>(self, bonus_type: T) -> Self
+    where
+        T: Into<BonusType>,
+    {
+        Self {
+            bonus_type: bonus_type.into(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_value<V>(self, value: V) -> Self
+    where
+        V: Into<Value>,
+    {
+        Self {
+            value: value.into(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        Self {
+            condition: Some(condition.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition_and<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        if let Some(current) = self.condition {
+            Self {
+                condition: Some(current & condition.into()),
+                ..self
+            }
+        } else {
+            self.with_condition(condition)
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition_or<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        if let Some(current) = self.condition {
+            Self {
+                condition: Some(current | condition.into()),
+                ..self
+            }
+        } else {
+            self.with_condition(condition)
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition_xor<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        if let Some(current) = self.condition {
+            Self {
+                condition: Some(current ^ condition.into()),
+                ..self
+            }
+        } else {
+            self.with_condition(condition)
+        }
+    }
+
+    #[must_use]
+    pub fn without_condition(self) -> Self {
+        Self {
+            condition: None,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_dislay_source<S>(self, display_source: S) -> Self
+    where
+        S: Into<BonusSource>,
+    {
+        Self {
+            display_source: Some(display_source.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn without_display_source(self) -> Self {
+        Self {
+            display_source: None,
+            ..self
+        }
+    }
+}
+
+impl BonusTemplate {
     pub fn to_bonus<S>(self, source: S) -> Bonus
     where
         S: Into<BonusSource>,
@@ -97,78 +235,17 @@ impl BonusTemplate {
             source: source.into(),
         }
     }
-
-    /// Returns a reference to the attribute of this [`BonusTemplate`].
-    #[must_use]
-    pub const fn attribute(&self) -> &Attribute {
-        &self.attribute
-    }
-
-    /// Returns a reference to the bonus type of this [`BonusTemplate`].
-    #[must_use]
-    pub const fn bonus_type(&self) -> &BonusType {
-        &self.bonus_type
-    }
-
-    /// Returns a reference to the value of this [`BonusTemplate`].
-    #[must_use]
-    pub const fn value(&self) -> &Value {
-        &self.value
-    }
-
-    /// Returns a reference to the condition of this [`BonusTemplate`].
-    #[must_use]
-    pub const fn condition(&self) -> Option<&Condition> {
-        self.condition.as_ref()
-    }
-
-    /// TODO: documentation
-    #[must_use]
-    pub const fn display_source(&self) -> Option<&BonusSource> {
-        self.display_source.as_ref()
-    }
-
-    /// Sets the attribute of this [`BonusTemplate`].
-    pub fn set_attribute<A>(&mut self, attribute: A)
-    where
-        A: Into<Attribute>,
-    {
-        self.attribute = attribute.into();
-    }
-
-    /// Sets the bonus type of this [`BonusTemplate`].
-    pub fn set_bonus_type<T>(&mut self, bonus_type: T)
-    where
-        T: Into<BonusType>,
-    {
-        self.bonus_type = bonus_type.into();
-    }
-
-    /// Sets the value of this [`BonusTemplate`].
-    pub fn set_value<V>(&mut self, value: V)
-    where
-        V: Into<Value>,
-    {
-        self.value = value.into();
-    }
-
-    /// Sets the condition of this [`BonusTemplate`].
-    pub fn set_condition<C>(&mut self, condition: C)
-    where
-        C: Into<Option<Condition>>,
-    {
-        self.condition = condition.into();
-    }
 }
 
 impl From<Bonus> for BonusTemplate {
     fn from(value: Bonus) -> Self {
-        Self::new(
-            value.attribute,
-            value.bonus_type,
-            value.value,
-            value.condition,
-        )
+        Self {
+            attribute: value.attribute,
+            bonus_type: value.bonus_type,
+            value: value.value,
+            condition: value.condition,
+            display_source: value.display_source,
+        }
     }
 }
 

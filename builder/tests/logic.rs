@@ -976,7 +976,7 @@ mod feats {
                     };
 
                     assert!(
-                        bonuses.contains(&BonusTemplate::toggle(race, None)),
+                        bonuses.contains(&BonusTemplate::toggle(race)),
                         "{race} does not provide toggle"
                     );
                 }

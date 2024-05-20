@@ -59,14 +59,12 @@ fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
                 Attribute::AbilityModifier(ability),
                 BonusType::Stacking,
                 ((Value::Attribute(Attribute::Ability(ability)) - val!(10)) / val!(2)).floor(),
-                None,
             )
         })
         .chain(once(BonusTemplate::new(
             Attribute::Ability(Ability::All),
             BonusType::Stacking,
             val!(8),
-            None,
         )))
 }
 
@@ -82,7 +80,6 @@ fn saving_throw() -> impl IntoIterator<Item = BonusTemplate> {
             saving_throw,
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
-            None,
         )
     })
 }
@@ -93,7 +90,6 @@ fn secondary_saves() -> impl Iterator<Item = BonusTemplate> {
             skill,
             BonusType::Stacking,
             skill.get_parent()?.to_value(),
-            None,
         ))
     })
 }
@@ -117,7 +113,6 @@ fn spell_power_skills() -> impl IntoIterator<Item = BonusTemplate> {
             Attribute::spell_power(damage_type),
             BonusType::Stacking,
             Attribute::Skill(skill),
-            None,
         )
     })
 }
@@ -128,7 +123,6 @@ fn skill() -> impl IntoIterator<Item = BonusTemplate> {
             skill,
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(skill.get_ability()?),
-            None,
         ))
     })
 }
@@ -155,7 +149,6 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                     Value::MAX,
                 ),
             ]),
-            None,
         ),
         // Total Armor Class Bonus
         BonusTemplate::new(
@@ -170,7 +163,6 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                     * (Value::ONE + ArmorClass::ArmorScalar.to_value()),
                 Value::TEN,
             ]) * (Value::ONE + ArmorClass::TotalScalar.to_value()),
-            None,
         ),
     ]
 }
@@ -181,13 +173,11 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
             Health::Bonus,
             BonusType::Stacking,
             Health::Base.to_value() * (Health::BaseModifier.to_value() + Value::ONE),
-            None,
         ),
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
             Health::Bonus.to_value() * (Health::Modifier.to_value() + Value::ONE),
-            None,
         ),
     ]
 }
@@ -202,13 +192,11 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
                     + PlayerClass::Sorcerer.to_value()
                     + val!(20))
                 / val!(20),
-            None,
         ),
         BonusTemplate::new(
             SpellPoints::Total,
             BonusType::Stacking,
             SpellPoints::Base.to_value() * (Value::ONE + SpellPoints::Modifier.to_value()),
-            None,
         ),
     ]
 }
@@ -226,7 +214,6 @@ fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
                 attribute(sp),
                 BonusType::Stacking,
                 attribute(SpellPower::Universal),
-                None,
             )
         })
     })
@@ -242,7 +229,6 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
                 Sheltering::Magical,
                 Value::condition(Condition::has(ArmorType::Light), val!(100), val!(50)),
             ),
-            None,
         ),
         BonusTemplate::new(
             Sheltering::MagicalTotal,
@@ -250,13 +236,11 @@ fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
             Sheltering::Magical
                 .to_value()
                 .min(Sheltering::MagicalCap.to_value()),
-            None,
         ),
         BonusTemplate::new(
             Sheltering::PhysicalTotal,
             BonusType::Stacking,
             Sheltering::Physical,
-            None,
         ),
     ]
 }
@@ -273,7 +257,6 @@ fn sheltering_reduction() -> impl IntoIterator<Item = BonusTemplate> {
             BonusType::Stacking,
             Value::ONE_HUNDRED
                 * (Value::ONE - (Value::ONE_HUNDRED / (Value::ONE_HUNDRED + total.to_value()))),
-            None,
         )
     })
 }
@@ -293,8 +276,8 @@ fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
             skill,
             BonusType::Stacking,
             (-scale).to_value() * Attribute::ArmorCheckPenalty.to_value(),
-            Condition::has(Attribute::ArmorCheckPenalty),
         )
+        .with_condition(Condition::has(Attribute::ArmorCheckPenalty))
     })
 }
 
@@ -307,7 +290,6 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
                 - Value::iter_product(AbsorptionSource::get_static().map(|bonus_type| {
                     Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
                 })),
-            None,
         )
     })
 }
@@ -327,7 +309,8 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                         .greater_than(Value::ZERO)
                 })
                 .cond_all();
-            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist, condition)
+            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist)
+                .with_condition(condition.expect("Expected Condition"))
         },
         {
             // RACIAL COMPLETIONIST
@@ -343,35 +326,38 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                 })
                 .cond_all();
 
-            BonusTemplate::feat(PastLifeFeat::RacialCompletionist, condition)
+            BonusTemplate::feat(PastLifeFeat::RacialCompletionist)
+                .with_condition(condition.expect("Expected Condition"))
         },
     ]
 }
 
 fn sneak_attack() -> impl IntoIterator<Item = BonusTemplate> {
     [
-        BonusTemplate::toggle(Toggle::SneakAttack, None),
+        BonusTemplate::toggle(Toggle::SneakAttack),
         BonusTemplate::new(
             (WeaponHand::Both, WeaponStat::Attack),
             BonusType::Stacking,
             Attribute::from(SneakAttack::Attack),
-            Condition::toggled(Toggle::SneakAttack),
-        ),
+        )
+        .with_condition(Condition::toggled(Toggle::SneakAttack)),
         BonusTemplate::new(
             (WeaponHand::Both, WeaponStat::Damage),
             BonusType::Stacking,
             Attribute::from(SneakAttack::Damage),
-            Condition::toggled(Toggle::SneakAttack),
-        ),
+        )
+        .with_condition(Condition::toggled(Toggle::SneakAttack)),
     ]
 }
 
 // TODO: convert this to the other method (flag to flag)
 fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
-    once(BonusTemplate::flag(
-        Flag::IsTwoHandedFighting,
-        WeaponType::TWO_HANDED_MELEE_WEAPONS
-            .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
-            .cond_any(),
-    ))
+    once(
+        BonusTemplate::flag(Flag::IsTwoHandedFighting).with_condition(
+            WeaponType::TWO_HANDED_MELEE_WEAPONS
+                .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+                .cond_any()
+                .expect("Expected Condition"),
+        ),
+    )
 }

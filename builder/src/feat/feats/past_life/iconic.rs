@@ -67,61 +67,47 @@ impl GetBonuses for IconicPastLife {
 
         match race {
             Race::Scourge => Some(vec![
-                BonusTemplate::toggle(Self(Race::Scourge), None),
-                BonusTemplate::new(SavingThrow::Fortitude, BonusType::Stacking, 1, None),
+                BonusTemplate::toggle(Self(Race::Scourge)),
+                BonusTemplate::new(SavingThrow::Fortitude, BonusType::Stacking, 1),
                 // TODO: Scourge: +2% doublestrike / life (stance)
             ]),
             Race::Bladeforged => Some(vec![
-                BonusTemplate::toggle(Self(Race::Bladeforged), None),
+                BonusTemplate::toggle(Self(Race::Bladeforged)),
                 // TODO: Fortification +5% / life (passive)
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Repair.into()),
                     BonusType::Stacking,
                     value * dec!(10),
-                    Condition::toggled(Self(Race::Bladeforged)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::Bladeforged))),
             ]),
             Race::DeepGnome => Some(vec![
-                BonusTemplate::toggle(Self(Race::DeepGnome), None),
-                BonusTemplate::new(
-                    Sheltering::Magical,
-                    BonusType::Stacking,
-                    value * dec!(3),
-                    None,
-                ),
+                BonusTemplate::toggle(Self(Race::DeepGnome)),
+                BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, value * dec!(3)),
                 BonusTemplate::new(
                     Attribute::SpellDC(SpellSchool::Illusion.into()),
                     BonusType::Stacking,
                     value,
-                    Condition::toggled(Self(Race::DeepGnome)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::DeepGnome))),
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Acid.into()),
                     BonusType::Stacking,
                     value * dec!(5),
-                    Condition::toggled(Self(Race::DeepGnome)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::DeepGnome))),
             ]),
             Race::PurpleDragonKnight => Some(vec![
-                BonusTemplate::toggle(Self(Race::PurpleDragonKnight), None),
-                BonusTemplate::new(
-                    Sheltering::Physical,
-                    BonusType::Stacking,
-                    value * dec!(3),
-                    None,
-                ),
-                BonusTemplate::new(
-                    SavingThrow::All,
-                    BonusType::ActionBoost,
-                    value * dec!(3),
-                    Condition::toggled(Self(Race::PurpleDragonKnight)),
-                ),
+                BonusTemplate::toggle(Self(Race::PurpleDragonKnight)),
+                BonusTemplate::new(Sheltering::Physical, BonusType::Stacking, value * dec!(3)),
+                BonusTemplate::new(SavingThrow::All, BonusType::ActionBoost, value * dec!(3))
+                    .with_condition(Condition::toggled(Self(Race::PurpleDragonKnight))),
                 BonusTemplate::new(
                     Attribute::MovementSpeed,
                     BonusType::ActionBoost,
                     value * dec!(10),
-                    Condition::toggled(Self(Race::PurpleDragonKnight)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::PurpleDragonKnight))),
             ]),
             Race::Razorclaw => {
                 fn build_condition<F, A>(fun: F) -> Condition
@@ -140,78 +126,73 @@ impl GetBonuses for IconicPastLife {
                 let off_hand = build_condition(OffHandType::Weapon);
 
                 Some(vec![
-                    BonusTemplate::toggle(Self(Race::Razorclaw), None),
-                    BonusTemplate::new(SavingThrow::Will, BonusType::Stacking, value, None),
+                    BonusTemplate::toggle(Self(Race::Razorclaw)),
+                    BonusTemplate::new(SavingThrow::Will, BonusType::Stacking, value),
                     BonusTemplate::new(
                         (WeaponHand::Main, WeaponStat::Attack),
                         BonusType::Stacking,
                         value,
-                        main_hand.clone(),
-                    ),
+                    )
+                    .with_condition(main_hand.clone()),
                     BonusTemplate::new(
                         (WeaponHand::Main, WeaponStat::Damage),
                         BonusType::Stacking,
                         value,
-                        main_hand,
-                    ),
+                    )
+                    .with_condition(main_hand),
                     BonusTemplate::new(
                         (WeaponHand::Off, WeaponStat::Attack),
                         BonusType::Stacking,
                         value,
-                        off_hand.clone(),
-                    ),
+                    )
+                    .with_condition(off_hand.clone()),
                     BonusTemplate::new(
                         (WeaponHand::Off, WeaponStat::Damage),
                         BonusType::Stacking,
                         value,
-                        off_hand,
-                    ),
+                    )
+                    .with_condition(off_hand),
                 ])
             }
             Race::Shadarkai => Some(vec![
-                BonusTemplate::toggle(Self(Race::Shadarkai), None),
+                BonusTemplate::toggle(Self(Race::Shadarkai)),
                 // TODO: +1% dodge / past life passive
             ]),
             Race::Morninglord => Some(vec![
-                BonusTemplate::toggle(Self(Race::Morninglord), None),
+                BonusTemplate::toggle(Self(Race::Morninglord)),
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Positive.into()),
                     BonusType::Stacking,
                     value * dec!(3),
-                    None,
                 ),
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Light.into()),
                     BonusType::Stacking,
                     value * Decimal::TEN,
-                    Condition::toggled(Self(Race::Morninglord)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::Morninglord))),
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Alignment.into()),
                     BonusType::Stacking,
                     value * Decimal::TEN,
-                    Condition::toggled(Self(Race::Morninglord)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::Morninglord))),
             ]),
             Race::Trailblazer => Some(vec![
-                BonusTemplate::toggle(Self(Race::Trailblazer), None),
-                BonusTemplate::new(SavingThrow::Traps, BonusType::Stacking, value, None),
-                BonusTemplate::new(
-                    Tactics::Trip,
-                    BonusType::Stacking,
-                    value,
-                    Condition::toggled(Self(Race::Trailblazer)),
-                ),
+                BonusTemplate::toggle(Self(Race::Trailblazer)),
+                BonusTemplate::new(SavingThrow::Traps, BonusType::Stacking, value),
+                BonusTemplate::new(Tactics::Trip, BonusType::Stacking, value)
+                    .with_condition(Condition::toggled(Self(Race::Trailblazer))),
             ]),
             Race::Scoundrel => Some(vec![
-                BonusTemplate::toggle(Self(Race::Scoundrel), None),
-                BonusTemplate::new(SavingThrow::Reflex, BonusType::Stacking, value, None),
+                BonusTemplate::toggle(Self(Race::Scoundrel)),
+                BonusTemplate::new(SavingThrow::Reflex, BonusType::Stacking, value),
                 BonusTemplate::new(
                     Attribute::MovementSpeed,
                     BonusType::Standard,
                     value * dec!(10),
-                    Condition::toggled(Self(Race::Morninglord)),
-                ),
+                )
+                .with_condition(Condition::toggled(Self(Race::Morninglord))),
             ]),
             _ => None,
         }

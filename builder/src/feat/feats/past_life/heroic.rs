@@ -57,14 +57,8 @@ impl GetBonuses for HeroicPastLife {
                         Attribute::SpellDC(SpellSchool::Transmutation.into()),
                         BonusType::Stacking,
                         value,
-                        None,
                     ),
-                    BonusTemplate::new(
-                        SpellPoints::Base,
-                        BonusType::Stacking,
-                        dec!(20) * value,
-                        None,
-                    ),
+                    BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, dec!(20) * value),
                 ],
                 PlayerClass::Artificer => [
                     Skill::DisableDevice,
@@ -73,87 +67,64 @@ impl GetBonuses for HeroicPastLife {
                     Skill::Spellcraft,
                     Skill::UseMagicalDevice,
                 ]
-                .map(|skill| BonusTemplate::new(skill, BonusType::Stacking, value, None))
+                .map(|skill| BonusTemplate::new(skill, BonusType::Stacking, value))
                 .to_vec(),
                 PlayerClass::Barbarian => vec![BonusTemplate::new(
                     Health::Bonus,
                     BonusType::Stacking,
                     dec!(20) * value,
-                    None,
                 )],
                 PlayerClass::Fighter => vec![
                     BonusTemplate::new(
                         (WeaponHand::Both, WeaponStat::Attack),
                         BonusType::Stacking,
                         value,
-                        None,
                     ),
-                    BonusTemplate::new(Tactics::All, BonusType::Stacking, value, None),
+                    BonusTemplate::new(Tactics::All, BonusType::Stacking, value),
                 ],
                 PlayerClass::Monk => vec![BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Damage),
                     BonusType::Stacking,
                     value,
-                    None,
                 )],
                 PlayerClass::Rogue => vec![
                     BonusTemplate::new(
                         SavingThrow::Traps,
                         BonusType::Stacking,
                         value * Decimal::TWO,
-                        None,
                     ),
-                    // Sneak Attack
+                    // TODO: Sneak Attack
                 ],
                 PlayerClass::Sorcerer => vec![
                     BonusTemplate::new(
                         Attribute::SpellDC(SpellSchool::Evocation.into()),
                         BonusType::Stacking,
                         value,
-                        None,
                     ),
-                    BonusTemplate::new(
-                        SpellPoints::Base,
-                        BonusType::Stacking,
-                        dec!(20) * value,
-                        None,
-                    ),
+                    BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, dec!(20) * value),
                 ],
                 PlayerClass::Wizard => vec![
                     BonusTemplate::new(
                         Attribute::SpellPenetration,
                         BonusType::Stacking,
                         value * Decimal::TWO,
-                        None,
                     ),
                     // TODO: +2 DC to wands
                 ],
                 PlayerClass::FavoredSoul => vec![
-                    BonusTemplate::new(
-                        Attribute::SpellPenetration,
-                        BonusType::Stacking,
-                        value,
-                        None,
-                    ),
-                    BonusTemplate::new(
-                        SpellPoints::Base,
-                        BonusType::Stacking,
-                        dec!(20) * value,
-                        None,
-                    ),
+                    BonusTemplate::new(Attribute::SpellPenetration, BonusType::Stacking, value),
+                    BonusTemplate::new(SpellPoints::Base, BonusType::Stacking, dec!(20) * value),
                 ],
                 PlayerClass::Bard => vec![
                     BonusTemplate::new(
                         SavingThrow::Enchantment,
                         BonusType::Stacking,
                         Decimal::TWO * value,
-                        None,
                     ),
                     BonusTemplate::new(
                         SavingThrow::Illusion,
                         BonusType::Stacking,
                         Decimal::TWO * value,
-                        None,
                     ),
                 ],
                 PlayerClass::Stormsinger => vec![
@@ -161,13 +132,11 @@ impl GetBonuses for HeroicPastLife {
                         Attribute::SpellPower(DamageType::Electric.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Sonic.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                 ],
                 PlayerClass::Cleric => vec![
@@ -175,7 +144,6 @@ impl GetBonuses for HeroicPastLife {
                         Attribute::SpellDC(SpellSchool::Conjuration.into()),
                         BonusType::Stacking,
                         value,
-                        None,
                     ),
                     // TODO: +1 turn undead charge
                 ],
@@ -185,72 +153,67 @@ impl GetBonuses for HeroicPastLife {
                         Attribute::SpellPower(DamageType::Negative.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                 ],
                 PlayerClass::Druid => vec![
                     // TODO: +2 stats for companions
-                    BonusTemplate::new(Attribute::Debug(0), BonusType::Stacking, 0, None),
+                    BonusTemplate::new(Attribute::Debug(0), BonusType::Stacking, 0),
                 ],
                 PlayerClass::BlightCaster => vec![
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Acid.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Poison.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                 ],
                 PlayerClass::Paladin => vec![BonusTemplate::new(
                     HealingAmplification::Positive,
                     BonusType::Stacking,
                     dec!(10) * value,
-                    None,
                 )],
                 PlayerClass::SacredFist => vec![
                     BonusTemplate::new(
                         HealingAmplification::Positive,
                         BonusType::Stacking,
                         Decimal::TEN * value,
-                        None,
                     ),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Positive.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                 ],
                 PlayerClass::Ranger => vec![BonusTemplate::new(
                     (WeaponHand::Main, WeaponStat::Damage),
                     BonusType::Stacking,
                     Decimal::TWO * value,
+                )
+                .with_condition(
                     WeaponType::RANGED_WEAPONS
                         .map(|wt| Condition::has(MainHandType::from(wt)))
-                        .cond_any(),
+                        .cond_any()
+                        .expect("Expected Condition"),
                 )],
                 PlayerClass::DarkHunter => vec![
-                    BonusTemplate::new(SneakAttack::Attack, BonusType::Stacking, 1, None),
-                    BonusTemplate::new(SneakAttack::Damage, BonusType::Stacking, 1, None),
+                    BonusTemplate::new(SneakAttack::Attack, BonusType::Stacking, 1),
+                    BonusTemplate::new(SneakAttack::Damage, BonusType::Stacking, 1),
                 ],
                 PlayerClass::Warlock => vec![BonusTemplate::new(
                     Sheltering::Magical,
                     BonusType::Stacking,
                     dec!(3) * value,
-                    None,
                 )],
                 PlayerClass::AcolyteOfTheSkin => vec![
-                    BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, value, None),
+                    BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, value),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Fire.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
-                        None,
                     ),
                 ],
             }
