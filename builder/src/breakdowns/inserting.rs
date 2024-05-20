@@ -168,7 +168,9 @@ impl Breakdowns {
 
             buffer.insert_bonuses(bonuses);
 
-            self.children.insert(source, children.into_iter().collect());
+            if !children.is_empty() {
+                self.children.insert(source, children.into_iter().collect());
+            }
         }
 
         for attribute in breakdowns {
