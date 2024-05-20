@@ -1,4 +1,3 @@
-#![allow(missing_docs)]
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
 mod bonus_type;
 mod condition;
