@@ -155,7 +155,7 @@ impl Value {
         let (sum, count) = iter
             .into_iter()
             .map(|a| (a, 1))
-            .tree_fold1(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
+            .tree_reduce(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
             .expect("Expected at least one value");
 
         sum / Self::from(count)
@@ -170,7 +170,7 @@ impl Value {
         I: IntoIterator<Item = Self>,
     {
         iter.into_iter()
-            .tree_fold1(Self::min)
+            .tree_reduce(Self::min)
             .expect("Expected at least one value")
     }
 
@@ -183,7 +183,7 @@ impl Value {
         I: IntoIterator<Item = Self>,
     {
         iter.into_iter()
-            .tree_fold1(Self::max)
+            .tree_reduce(Self::max)
             .expect("Expected at least one value")
     }
 
@@ -196,7 +196,7 @@ impl Value {
         I: IntoIterator<Item = Self>,
     {
         iter.into_iter()
-            .tree_fold1(Self::add)
+            .tree_reduce(Self::add)
             .expect("Expected at least one value")
     }
 
@@ -209,7 +209,7 @@ impl Value {
         I: IntoIterator<Item = Self>,
     {
         iter.into_iter()
-            .tree_fold1(Self::mul)
+            .tree_reduce(Self::mul)
             .expect("Expected at least one value")
     }
 
