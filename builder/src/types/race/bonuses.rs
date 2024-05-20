@@ -25,7 +25,6 @@ impl Race {
             Attribute::Ability(ability),
             BonusType::Stacking,
             value,
-            None,
             self,
         )
     }
@@ -34,7 +33,7 @@ impl Race {
     where
         F: Into<Feat>,
     {
-        Bonus::new(feat.into(), BonusType::Stacking, 1, None, self)
+        Bonus::new(feat.into(), BonusType::Stacking, 1, self)
     }
 }
 

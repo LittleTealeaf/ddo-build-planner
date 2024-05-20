@@ -31,7 +31,6 @@ mod value {
             Attribute::Debug(attribute),
             BonusType::Stacking,
             value,
-            None,
             BonusSource::Debug(0),
         )
     }
@@ -224,13 +223,10 @@ mod condition {
     #[allow(clippy::needless_pass_by_value)]
     fn test_condition(condition: Condition, expected: bool) {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonus(Bonus::new(
-            DebugValue(0),
-            DebugValue(0),
-            10,
-            condition.clone(),
-            DebugValue(0),
-        ));
+        breakdowns.insert_bonus(
+            Bonus::new(DebugValue(0), DebugValue(0), 10, DebugValue(0))
+                .with_condition(condition.clone()),
+        );
 
         let value = breakdowns.evaluate_attribute_from(Attribute::from(DebugValue(0)));
         let result = value == 10.into();
@@ -325,13 +321,7 @@ mod dynamic {
             vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)],
         );
 
-        breakdowns.insert_bonus(Bonus::new(
-            DebugValue(0),
-            DebugValue(0),
-            1,
-            None,
-            DebugValue(0),
-        ));
+        breakdowns.insert_bonus(Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0)));
 
         assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 10.into());
     }
@@ -351,7 +341,6 @@ mod dynamic {
             Attribute::Debug(0),
             DebugValue(0),
             1,
-            None,
             DebugValue(0),
         ));
 
@@ -372,21 +361,18 @@ mod sources {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(0),
             ),
             Bonus::new(
                 Attribute::Debug(1),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(0),
             ),
             Bonus::new(
                 Attribute::Debug(2),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(1),
             ),
         ]);
@@ -413,21 +399,18 @@ mod sources {
                 Attribute::Debug(0),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(0),
             ),
             Bonus::new(
                 Attribute::Debug(1),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(1),
             ),
             Bonus::new(
                 Attribute::Debug(2),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(2),
             ),
         ]);
@@ -454,8 +437,8 @@ mod stacking {
     fn same_types_do_not_stack() {
         expect_value(
             [
-                Bonus::new(DebugValue(0), DebugValue(0), 1, None, DebugValue(0)),
-                Bonus::new(DebugValue(0), DebugValue(0), 2, None, DebugValue(0)),
+                Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0)),
+                Bonus::new(DebugValue(0), DebugValue(0), 2, DebugValue(0)),
             ],
             2,
         );
@@ -465,8 +448,8 @@ mod stacking {
     fn different_types_stack() {
         expect_value(
             [
-                Bonus::new(DebugValue(0), DebugValue(0), 3, None, DebugValue(0)),
-                Bonus::new(DebugValue(0), DebugValue(1), 2, None, DebugValue(0)),
+                Bonus::new(DebugValue(0), DebugValue(0), 3, DebugValue(0)),
+                Bonus::new(DebugValue(0), DebugValue(1), 2, DebugValue(0)),
             ],
             5,
         );
@@ -476,8 +459,8 @@ mod stacking {
     fn stacking_stacks_with_others() {
         expect_value(
             [
-                Bonus::new(DebugValue(0), BonusType::Stacking, 1, None, DebugValue(0)),
-                Bonus::new(DebugValue(0), DebugValue(0), 2, None, DebugValue(0)),
+                Bonus::new(DebugValue(0), BonusType::Stacking, 1, DebugValue(0)),
+                Bonus::new(DebugValue(0), DebugValue(0), 2, DebugValue(0)),
             ],
             3,
         );
@@ -487,8 +470,8 @@ mod stacking {
     fn stacking_stacks_with_stacking() {
         expect_value(
             [
-                Bonus::new(DebugValue(0), BonusType::Stacking, 3, None, DebugValue(0)),
-                Bonus::new(DebugValue(0), BonusType::Stacking, 5, None, DebugValue(0)),
+                Bonus::new(DebugValue(0), BonusType::Stacking, 3, DebugValue(0)),
+                Bonus::new(DebugValue(0), BonusType::Stacking, 5, DebugValue(0)),
             ],
             8,
         );
@@ -530,7 +513,6 @@ mod breakdowns {
             Attribute::Debug(0),
             BonusType::Stacking,
             10,
-            None,
             BonusSource::Debug(0),
         ));
         breakdowns.track_breakdown(Attribute::Debug(0));
@@ -558,7 +540,6 @@ mod breakdowns {
             Attribute::Debug(0),
             BonusType::Stacking,
             10,
-            None,
             BonusSource::Debug(0),
         ));
         assert_eq!(
@@ -584,8 +565,8 @@ mod breakdowns {
         );
 
         breakdowns.insert_bonuses([
-            Bonus::new(DebugValue(0), DebugValue(0), 6, None, DebugValue(0)),
-            Bonus::new(DebugValue(0), DebugValue(1), 4, None, DebugValue(0)),
+            Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0)),
+            Bonus::new(DebugValue(0), DebugValue(1), 4, DebugValue(0)),
         ]);
 
         assert_eq!(
@@ -599,8 +580,8 @@ mod breakdowns {
 
     #[test]
     fn different_types_in_applied() {
-        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, None, DebugValue(0));
-        let b = Bonus::new(DebugValue(0), DebugValue(1), 4, None, DebugValue(0));
+        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0));
+        let b = Bonus::new(DebugValue(0), DebugValue(1), 4, DebugValue(0));
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.track_breakdown(Attribute::Debug(0));
@@ -619,8 +600,8 @@ mod breakdowns {
 
     #[test]
     fn stacking_all_in_applied() {
-        let a = Bonus::new(DebugValue(0), BonusType::Stacking, 6, None, DebugValue(0));
-        let b = Bonus::new(DebugValue(0), BonusType::Stacking, 4, None, DebugValue(0));
+        let a = Bonus::new(DebugValue(0), BonusType::Stacking, 6, DebugValue(0));
+        let b = Bonus::new(DebugValue(0), BonusType::Stacking, 4, DebugValue(0));
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonuses([a.clone(), b.clone()]);
@@ -639,8 +620,8 @@ mod breakdowns {
 
     #[test]
     fn overwritten_separated() {
-        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, None, DebugValue(0));
-        let b = Bonus::new(DebugValue(0), DebugValue(0), 4, None, DebugValue(0));
+        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0));
+        let b = Bonus::new(DebugValue(0), DebugValue(0), 4, DebugValue(0));
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonuses([a.clone(), b.clone()]);
@@ -659,13 +640,7 @@ mod breakdowns {
 
     #[test]
     fn disabled_not_included() {
-        let a = Bonus::new(
-            DebugValue(0),
-            DebugValue(0),
-            6,
-            Condition::from(false),
-            DebugValue(0),
-        );
+        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0)).with_condition(false);
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonus(a.clone());
@@ -696,7 +671,6 @@ mod dice_strategy {
             DebugValue(0),
             DebugValue(0),
             Value::dice(1, 6),
-            None,
             DebugValue(0),
         ));
 

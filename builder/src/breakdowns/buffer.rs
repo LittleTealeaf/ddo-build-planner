@@ -136,7 +136,6 @@ mod tests {
             DebugValue(0),
             DebugValue(0),
             1,
-            None,
             DebugValue(0),
         )]);
     }

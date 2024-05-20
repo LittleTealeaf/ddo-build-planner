@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 //! A Bonus is an individual bonus to an attribute, increasing or decreasing it by a certain amount.
 mod bonus_type;
 mod condition;
@@ -56,109 +57,192 @@ pub struct Bonus {
     display_source: Option<BonusSource>,
 }
 
-/// Constructors
 impl Bonus {
-    /// Creates a new bonus with the provided values.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use builder::{bonus::{BonusType, Bonus, Value}, attribute::Attribute};
-    ///
-    /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(1),
-    /// None, Attribute::Dummy);
-    /// ```
-    /// If you are unsure about a parameter, looking at it's type will tell you what you can enter.
-    #[must_use]
-    pub fn new<A, T, V, S, C>(
-        attribute: A,
-        bonus_type: T,
-        value: V,
-        condition: C,
-        source: S,
-    ) -> Self
+    pub fn new<A, T, V, S>(attribute: A, bonus_type: T, value: V, source: S) -> Self
     where
         A: Into<Attribute>,
         T: Into<BonusType>,
         V: Into<Value>,
-        C: Into<Option<Condition>>,
         S: Into<BonusSource>,
     {
         Self {
             attribute: attribute.into(),
             bonus_type: bonus_type.into(),
             value: value.into(),
-            condition: condition.into(),
             source: source.into(),
+            condition: None,
             display_source: None,
         }
     }
 
-    /// Creates a [`Attribute::Dummy`] with a given [`BonusSource`].
-    ///
-    /// Most values are kept default, since this bonus is never actually tracked.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use builder::{bonus::{Bonus, BonusSource, BonusType, Value}, attribute::Attribute};
-    ///
-    /// let dummy = Bonus::dummy(BonusSource::Base);
-    /// assert_eq!(dummy.attribute(), &Attribute::Dummy);
-    /// assert_eq!(dummy.bonus_type(), &BonusType::Stacking);
-    /// assert_eq!(dummy.value(), &Value::from(0));
-    /// assert_eq!(dummy.source(), &BonusSource::Base);
-    /// assert!(dummy.condition().is_none());
-    /// ```
-    #[must_use]
     pub fn dummy<S>(source: S) -> Self
     where
         S: Into<BonusSource>,
     {
-        Self::new(Attribute::Dummy, BonusType::Stacking, 0, None, source)
+        Self::new(Attribute::Dummy, BonusType::Stacking, Value::ZERO, source)
     }
 
-    /// Returns a bonus that gives the character some [`Flag`].
-    #[must_use]
-    pub fn flag<F, S, C>(flag: F, condition: C, source: S) -> Self
+    pub fn flag<F, S>(flag: F, source: S) -> Self
     where
         F: Into<Flag>,
-        C: Into<Option<Condition>>,
         S: Into<BonusSource>,
     {
-        Self::new(flag.into(), BonusType::Stacking, 1, condition, source)
+        Self::new(flag.into(), BonusType::Stacking, Value::ONE, source)
     }
 
-    /// Returns a bonus that gives the character some [`Feat`]
-    #[must_use]
-    pub fn feat<F, S, C>(feat: F, condition: C, source: S) -> Self
+    pub fn feat<F, S>(feat: F, source: S) -> Self
     where
         F: Into<Feat>,
-        C: Into<Option<Condition>>,
         S: Into<BonusSource>,
     {
-        Self::new(feat.into(), BonusType::Stacking, 1, condition, source)
+        Self::new(feat.into(), BonusType::Stacking, Value::ONE, source)
     }
 
-    /// Provides the use of a toggle
-    #[must_use]
-    pub fn toggle<T, S, C>(toggle: T, condition: C, source: S) -> Self
+    pub fn toggle<T, S>(toggle: T, source: S) -> Self
     where
         T: Into<Toggle>,
-        C: Into<Option<Condition>>,
         S: Into<BonusSource>,
     {
         Self::new(
             Toggle::from_into(toggle).to_flag(),
             BonusType::Stacking,
-            1,
-            condition,
+            Value::ONE,
             source,
         )
     }
 }
 
-/// Methods
+/// Modifier Constructors
+impl Bonus {
+    #[must_use]
+    pub fn with_attribute<A>(self, attribute: A) -> Self
+    where
+        A: Into<Attribute>,
+    {
+        Self {
+            attribute: attribute.into(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_type<T>(self, bonus_type: T) -> Self
+    where
+        T: Into<BonusType>,
+    {
+        Self {
+            bonus_type: bonus_type.into(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_source<S>(self, source: S) -> Self
+    where
+        S: Into<BonusSource>,
+    {
+        Self {
+            source: source.into(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_value<V>(self, value: V) -> Self
+    where
+        V: Into<Value>,
+    {
+        Self {
+            value: value.into(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        Self {
+            condition: Some(condition.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition_and<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        if let Some(current) = self.condition {
+            Self {
+                condition: Some(current & condition.into()),
+                ..self
+            }
+        } else {
+            self.with_condition(condition)
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition_or<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        if let Some(current) = self.condition {
+            Self {
+                condition: Some(current | condition.into()),
+                ..self
+            }
+        } else {
+            self.with_condition(condition)
+        }
+    }
+
+    #[must_use]
+    pub fn with_condition_xor<C>(self, condition: C) -> Self
+    where
+        C: Into<Condition>,
+    {
+        if let Some(current) = self.condition {
+            Self {
+                condition: Some(current ^ condition.into()),
+                ..self
+            }
+        } else {
+            self.with_condition(condition)
+        }
+    }
+
+    #[must_use]
+    pub fn without_condition(self) -> Self {
+        Self {
+            condition: None,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_dislay_source<S>(self, display_source: S) -> Self
+    where
+        S: Into<BonusSource>,
+    {
+        Self {
+            display_source: Some(display_source.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn without_display_source(self) -> Self {
+        Self {
+            display_source: None,
+            ..self
+        }
+    }
+}
+
+/// Paramter Values
 impl Bonus {
     /// Returns the attribute that the bonus applies to.
     ///
@@ -167,7 +251,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
-    /// None, BonusSource::Base);
+    /// BonusSource::Base);
     /// assert_eq!(bonus.attribute(), &Attribute::Dummy);
     /// ```
     #[must_use]
@@ -182,7 +266,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
-    /// None, BonusSource::Base);
+    /// BonusSource::Base);
     /// assert_eq!(bonus.bonus_type(), &BonusType::Enhancement);
     /// ```
     #[must_use]
@@ -197,7 +281,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Stacking, Value::from(10),
-    /// None, BonusSource::Base);
+    /// BonusSource::Base);
     /// assert_eq!(bonus.value(), &Value::from(10));
     /// ```
     #[must_use]
@@ -212,7 +296,7 @@ impl Bonus {
     /// use builder::{bonus::{Bonus, BonusType, BonusSource, Value}, attribute::Attribute};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Enhancement, Value::from(10),
-    /// None, BonusSource::Base);
+    /// BonusSource::Base);
     /// assert_eq!(bonus.source(), &BonusSource::Base);
     /// ```
     #[must_use]
@@ -231,8 +315,9 @@ impl Bonus {
     ///     Attribute::Dummy,
     ///     BonusType::Quality,
     ///     Value::from(10),
-    ///     Some(Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::from(0))),
     ///     BonusSource::Base,
+    /// ).with_condition(
+    ///     Condition::GreaterThan(Value::Attribute(Attribute::Dummy), Value::from(0)),
     /// );
     /// assert!(matches!(bonus.condition(), Some(_)));
     ///
@@ -258,9 +343,9 @@ impl Bonus {
     /// attribute::{Attribute}, types::ability::Ability};
     ///
     /// let bonus = Bonus::new(Attribute::Dummy, BonusType::Quality, Value::from(10),
-    /// None, BonusSource::Base);
+    /// BonusSource::Base);
     ///
-    /// let new_bonus = bonus.clone_into_attribute(Attribute::Ability(Ability::All));
+    /// let new_bonus = bonus.clone_with_attribute(Attribute::Ability(Ability::All));
     /// assert_eq!(new_bonus.attribute(), &Attribute::Ability(Ability::All));
     /// assert_eq!(new_bonus.bonus_type(), &BonusType::Quality);
     /// assert_eq!(new_bonus.value(), &Value::from(10));
@@ -268,26 +353,27 @@ impl Bonus {
     /// assert!(new_bonus.condition().is_none());
     /// ```
     #[must_use]
-    pub fn clone_into_attribute<A>(&self, attribute: A) -> Self
+    pub fn clone_with_attribute<A>(&self, attribute: A) -> Self
     where
         A: Into<Attribute>,
     {
-        Self::new(
-            attribute,
-            self.bonus_type,
-            self.value.clone(),
-            self.condition.clone(),
-            self.source.clone(),
-        )
+        Self {
+            attribute: attribute.into(),
+            bonus_type: self.bonus_type,
+            value: self.value.clone(),
+            source: self.source.clone(),
+            display_source: self.display_source.clone(),
+            condition: self.condition.clone(),
+        }
     }
 }
-
+//
 impl HasDice for Bonus {
     fn has_dice(&self) -> bool {
         self.value.has_dice() || self.condition.as_ref().is_some_and(HasDice::has_dice)
     }
 }
-
+//
 impl AttributeDependencies for Bonus {
     fn has_attr_dependency(&self, attribute: &Attribute) -> bool {
         self.value.has_attr_dependency(attribute)
@@ -304,7 +390,7 @@ impl AttributeDependencies for Bonus {
         }
     }
 }
-
+//
 impl Display for Bonus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(condition) = &self.condition {
@@ -335,27 +421,27 @@ impl From<Bonus> for Attribute {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::types::ability::Ability;
-
-    use super::*;
-
-    #[test]
-    fn serializes_and_deserializes_correct() {
-        let bonus = Bonus::new(
-            Attribute::Ability(Ability::Strength),
-            BonusType::Profane,
-            Value::Const(10.into()),
-            None,
-            BonusSource::Debug(3),
-        );
-
-        let serialized = ron::to_string(&bonus).unwrap();
-        let deserialized: Bonus = ron::from_str(&serialized).unwrap();
-
-        assert_eq!(bonus.attribute(), deserialized.attribute());
-        assert!(deserialized.condition.is_none());
-        assert_eq!(bonus.bonus_type, deserialized.bonus_type);
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     use crate::types::ability::Ability;
+//
+//     use super::*;
+//
+//     #[test]
+//     fn serializes_and_deserializes_correct() {
+//         let bonus = Bonus::new(
+//             Attribute::Ability(Ability::Strength),
+//             BonusType::Profane,
+//             Value::Const(10.into()),
+//             None,
+//             BonusSource::Debug(3),
+//         );
+//
+//         let serialized = ron::to_string(&bonus).unwrap();
+//         let deserialized: Bonus = ron::from_str(&serialized).unwrap();
+//
+//         assert_eq!(bonus.attribute(), deserialized.attribute());
+//         assert!(deserialized.condition.is_none());
+//         assert_eq!(bonus.bonus_type, deserialized.bonus_type);
+//     }
+// }

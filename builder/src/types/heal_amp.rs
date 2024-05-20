@@ -55,7 +55,7 @@ impl CloneBonus for HealingAmplification {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             Self::ALL
-                .map(|amp| bonus.clone_into_attribute(amp))
+                .map(|amp| bonus.clone_with_attribute(amp))
                 .to_vec()
         })
     }

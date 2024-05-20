@@ -48,7 +48,7 @@ impl CloneBonus for Proficiency {
                     WeaponType::HeavyCrossbow,
                     WeaponType::ThrowingDagger,
                 ]
-                .map(|weapon| bonus.clone_into_attribute(Self::from(weapon)))
+                .map(|weapon| bonus.clone_with_attribute(Self::from(weapon)))
                 .to_vec(),
             ),
             Self::MartialWeaponProficiency => Some(
@@ -74,7 +74,7 @@ impl CloneBonus for Proficiency {
                     WeaponType::ThrowingAxe,
                     WeaponType::ThrowingHammer,
                 ]
-                .map(|weapon| bonus.clone_into_attribute(Self::from(weapon)))
+                .map(|weapon| bonus.clone_with_attribute(Self::from(weapon)))
                 .to_vec(),
             ),
             _ => None,
