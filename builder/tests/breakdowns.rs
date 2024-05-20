@@ -640,7 +640,8 @@ mod breakdowns {
 
     #[test]
     fn disabled_not_included() {
-        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0)).with_condition(false);
+        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0))
+            .with_condition(Condition::FALSE);
 
         let mut breakdowns = Breakdowns::new();
         breakdowns.insert_bonus(a.clone());

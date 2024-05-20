@@ -161,10 +161,10 @@ impl Bonus {
     #[must_use]
     pub fn with_condition<C>(self, condition: C) -> Self
     where
-        C: Into<Condition>,
+        C: Into<Option<Condition>>,
     {
         Self {
-            condition: Some(condition.into()),
+            condition: condition.into(),
             ..self
         }
     }
@@ -172,45 +172,48 @@ impl Bonus {
     #[must_use]
     pub fn with_condition_and<C>(self, condition: C) -> Self
     where
-        C: Into<Condition>,
+        C: Into<Option<Condition>>,
     {
-        if let Some(current) = self.condition {
-            Self {
-                condition: Some(current & condition.into()),
-                ..self
-            }
-        } else {
-            self.with_condition(condition)
+        Self {
+            condition: match (self.condition, condition.into()) {
+                (Some(a), Some(b)) => Some(a & b),
+                (Some(a), None) => Some(a),
+                (None, Some(b)) => Some(b),
+                (None, None) => None,
+            },
+            ..self
         }
     }
 
     #[must_use]
     pub fn with_condition_or<C>(self, condition: C) -> Self
     where
-        C: Into<Condition>,
+        C: Into<Option<Condition>>,
     {
-        if let Some(current) = self.condition {
-            Self {
-                condition: Some(current | condition.into()),
-                ..self
-            }
-        } else {
-            self.with_condition(condition)
+        Self {
+            condition: match (self.condition, condition.into()) {
+                (Some(a), Some(b)) => Some(a | b),
+                (Some(a), None) => Some(a),
+                (None, Some(b)) => Some(b),
+                (None, None) => None,
+            },
+            ..self
         }
     }
 
     #[must_use]
     pub fn with_condition_xor<C>(self, condition: C) -> Self
     where
-        C: Into<Condition>,
+        C: Into<Option<Condition>>,
     {
-        if let Some(current) = self.condition {
-            Self {
-                condition: Some(current ^ condition.into()),
-                ..self
-            }
-        } else {
-            self.with_condition(condition)
+        Self {
+            condition: match (self.condition, condition.into()) {
+                (Some(a), Some(b)) => Some(a ^ b),
+                (Some(a), None) => Some(a),
+                (None, Some(b)) => Some(b),
+                (None, None) => None,
+            },
+            ..self
         }
     }
 
