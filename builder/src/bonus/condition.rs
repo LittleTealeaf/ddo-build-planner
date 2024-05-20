@@ -295,11 +295,11 @@ where
     I: IntoIterator<Item = Condition>,
 {
     fn cond_any(self) -> Option<Condition> {
-        self.into_iter().tree_fold1(|a, b| a | b)
+        self.into_iter().tree_reduce(|a, b| a | b)
     }
 
     fn cond_all(self) -> Option<Condition> {
-        self.into_iter().tree_fold1(|a, b| a & b)
+        self.into_iter().tree_reduce(|a, b| a & b)
     }
 
     fn cond_none(self) -> Option<Condition> {

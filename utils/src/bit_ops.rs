@@ -17,7 +17,7 @@ where
     T: BitAnd<T, Output = T>,
 {
     fn bit_all(self) -> Option<T> {
-        self.into_iter().tree_fold1(|a, b| a & b)
+        self.into_iter().tree_reduce(|a, b| a & b)
     }
 }
 
@@ -34,6 +34,6 @@ where
     T: BitOr<T, Output = T>,
 {
     fn bit_any(self) -> Option<T> {
-        self.into_iter().tree_fold1(|a, b| a | b)
+        self.into_iter().tree_reduce(|a, b| a | b)
     }
 }
