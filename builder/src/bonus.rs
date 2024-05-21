@@ -57,6 +57,10 @@ pub struct Bonus {
 }
 
 impl Bonus {
+    /// Creates a new [`Bonus`] with the required fields.
+    ///
+    /// Additional optional fields can be assigned using the `with_` methods, such as
+    /// [`Bonus::with_condition`]
     pub fn new<A, T, V, S>(attribute: A, bonus_type: T, value: V, source: S) -> Self
     where
         A: Into<Attribute>,
@@ -74,6 +78,7 @@ impl Bonus {
         }
     }
 
+    /// Creates a dummy bonus
     pub fn dummy<S>(source: S) -> Self
     where
         S: Into<BonusSource>,
@@ -81,6 +86,7 @@ impl Bonus {
         Self::new(Attribute::Dummy, BonusType::Stacking, Value::ZERO, source)
     }
 
+    /// Creates a [`Bonus`] that provides a +1 [`BonusType::Stacking`] bonus to a [`Flag`]
     pub fn flag<F, S>(flag: F, source: S) -> Self
     where
         F: Into<Flag>,
@@ -89,6 +95,7 @@ impl Bonus {
         Self::new(flag.into(), BonusType::Stacking, Value::ONE, source)
     }
 
+    /// Creates a [`Bonus`] that provides a +1 [`BonusType::Stacking`] bonus to a [`Feat`]
     pub fn feat<F, S>(feat: F, source: S) -> Self
     where
         F: Into<Feat>,
@@ -97,6 +104,7 @@ impl Bonus {
         Self::new(feat.into(), BonusType::Stacking, Value::ONE, source)
     }
 
+    /// Creates a [`Bonus`] that provides the use of a [`Toggle`]
     pub fn toggle<T, S>(toggle: T, source: S) -> Self
     where
         T: Into<Toggle>,
@@ -113,6 +121,7 @@ impl Bonus {
 
 /// Modifier Constructors
 impl Bonus {
+    /// Updates the [`Attribute`] and returns the result
     #[must_use]
     pub fn with_attribute<A>(self, attribute: A) -> Self
     where
@@ -124,6 +133,7 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`BonusType`] and returns the result
     #[must_use]
     pub fn with_type<T>(self, bonus_type: T) -> Self
     where
@@ -135,6 +145,7 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`BonusSource`] and returns the result
     #[must_use]
     pub fn with_source<S>(self, source: S) -> Self
     where
@@ -146,6 +157,7 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`Value`] and returns the result
     #[must_use]
     pub fn with_value<V>(self, value: V) -> Self
     where
@@ -157,6 +169,7 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`Condition`] and returns the result
     #[must_use]
     pub fn with_condition<C>(self, condition: C) -> Self
     where
@@ -168,6 +181,10 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
+    ///
+    /// If both the current condition and the provided condition exist, this will set the condition
+    /// as the AND product of both conditions
     #[must_use]
     pub fn with_condition_and<C>(self, condition: C) -> Self
     where
@@ -184,6 +201,10 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
+    ///
+    /// If both the current condition and the provided condition exist, this will set the condition
+    /// as the OR product of both conditions
     #[must_use]
     pub fn with_condition_or<C>(self, condition: C) -> Self
     where
@@ -200,6 +221,10 @@ impl Bonus {
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
+    ///
+    /// If both the current condition and the provided condition exist, this will set the condition
+    /// as the XOR product of both conditions
     #[must_use]
     pub fn with_condition_xor<C>(self, condition: C) -> Self
     where
@@ -216,6 +241,7 @@ impl Bonus {
         }
     }
 
+    /// Sets the displayed [`BonusSource`]
     #[must_use]
     pub fn with_dislay_source<S>(self, display_source: S) -> Self
     where
@@ -227,6 +253,7 @@ impl Bonus {
         }
     }
 
+    /// Clears the displayed [`BonusSource`]
     #[must_use]
     pub fn without_display_source(self) -> Self {
         Self {
