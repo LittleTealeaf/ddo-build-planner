@@ -354,6 +354,8 @@ impl Bonus {
         self.display_source.as_ref()
     }
 
+    /// Returns the displayed source. Either this is [`Self::display_source`], or if the display
+    /// source is not set, then [`Self::source`] is returned
     #[must_use]
     pub fn displayed_source(&self) -> &BonusSource {
         self.display_source().unwrap_or(&self.source)
