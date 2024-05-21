@@ -35,26 +35,32 @@ pub struct BonusTemplate {
 
 /// Fetching Types
 impl BonusTemplate {
+    /// Returns the [`Attribute`] that this provides a bonus to
     #[must_use]
     pub const fn attribute(&self) -> &Attribute {
         &self.attribute
     }
 
+    /// Returns the [`BonusType`] that this provides. Bonuses of the same [`BonusType`] will
+    /// not stack, except for [`BonusType::Stacking`]
     #[must_use]
     pub const fn bonus_type(&self) -> &BonusType {
         &self.bonus_type
     }
 
+    /// Returns the [`Value`] of the bonus.
     #[must_use]
     pub const fn value(&self) -> &Value {
         &self.value
     }
 
+    /// Returns the [`Condition`] of the bonus, if there is one
     #[must_use]
     pub const fn condition(&self) -> Option<&Condition> {
         self.condition.as_ref()
     }
 
+    /// Returns the Displayed [`BonusSource`], if there is one
     #[must_use]
     pub const fn display_source(&self) -> Option<&BonusSource> {
         self.display_source.as_ref()
@@ -62,6 +68,10 @@ impl BonusTemplate {
 }
 
 impl BonusTemplate {
+    /// Creates a new [`BonusTemplate`] with the required fields.
+    ///
+    /// Optional fields can be set using the `with_` methods, such as
+    /// [`BonusTemplate::with_condition`]
     #[must_use]
     pub fn new<A, T, V>(attribute: A, bonus_type: T, value: V) -> Self
     where
@@ -78,6 +88,7 @@ impl BonusTemplate {
         }
     }
 
+    /// Creates a new [`BonusTemplate`] that provides a 1 [`BonusType::Stacking`] bonus of a [`Flag`]
     pub fn flag<F>(flag: F) -> Self
     where
         F: Into<Flag>,
@@ -85,6 +96,7 @@ impl BonusTemplate {
         Self::new(flag.into(), BonusType::Stacking, Value::ONE)
     }
 
+    /// Creates a new [`BonusTemplate`] that provides the user with the ability to use a [`Toggle`]
     pub fn toggle<T>(toggle: T) -> Self
     where
         T: Into<Toggle>,
@@ -92,6 +104,7 @@ impl BonusTemplate {
         Self::flag(Toggle::from_into(toggle))
     }
 
+    /// Creates a new [`BonusTemplate`] that provides the user with a feat.
     pub fn feat<F>(feat: F) -> Self
     where
         F: Into<Feat>,
@@ -102,6 +115,7 @@ impl BonusTemplate {
 
 /// Modifier Constructors
 impl BonusTemplate {
+    /// Updates the [`Attribute`] and returns the result
     #[must_use]
     pub fn with_attribute<A>(self, attribute: A) -> Self
     where
@@ -113,6 +127,7 @@ impl BonusTemplate {
         }
     }
 
+    /// Updates the [`BonusType`] and returns the result
     #[must_use]
     pub fn with_bonus_type<T>(self, bonus_type: T) -> Self
     where
@@ -124,6 +139,7 @@ impl BonusTemplate {
         }
     }
 
+    /// Updates the [`Value`] and returns the result
     #[must_use]
     pub fn with_value<V>(self, value: V) -> Self
     where
@@ -135,6 +151,7 @@ impl BonusTemplate {
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
     #[must_use]
     pub fn with_condition<C>(self, condition: C) -> Self
     where
@@ -146,6 +163,10 @@ impl BonusTemplate {
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
+    ///
+    /// If both the current condition and the provided condition exist, this will set the condition
+    /// as the AND product of both conditions
     #[must_use]
     pub fn with_condition_and<C>(self, condition: C) -> Self
     where
@@ -154,14 +175,17 @@ impl BonusTemplate {
         Self {
             condition: match (self.condition, condition.into()) {
                 (Some(a), Some(b)) => Some(a & b),
-                (Some(a), None) => Some(a),
-                (None, Some(b)) => Some(b),
+                (Some(cond), None) | (None, Some(cond)) => Some(cond),
                 (None, None) => None,
             },
             ..self
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
+    ///
+    /// If both the current condition and the provided condition exist, this will set the condition
+    /// as the OR product of both conditions
     #[must_use]
     pub fn with_condition_or<C>(self, condition: C) -> Self
     where
@@ -170,14 +194,17 @@ impl BonusTemplate {
         Self {
             condition: match (self.condition, condition.into()) {
                 (Some(a), Some(b)) => Some(a | b),
-                (Some(a), None) => Some(a),
-                (None, Some(b)) => Some(b),
+                (Some(cond), None) | (None, Some(cond)) => Some(cond),
                 (None, None) => None,
             },
             ..self
         }
     }
 
+    /// Updates the [`Condition`] and returns the result.
+    ///
+    /// If both the current condition and the provided condition exist, this will set the condition
+    /// as the XOR product of both conditions
     #[must_use]
     pub fn with_condition_xor<C>(self, condition: C) -> Self
     where
@@ -186,22 +213,14 @@ impl BonusTemplate {
         Self {
             condition: match (self.condition, condition.into()) {
                 (Some(a), Some(b)) => Some(a ^ b),
-                (Some(a), None) => Some(a),
-                (None, Some(b)) => Some(b),
+                (Some(cond), None) | (None, Some(cond)) => Some(cond),
                 (None, None) => None,
             },
             ..self
         }
     }
 
-    #[must_use]
-    pub fn without_condition(self) -> Self {
-        Self {
-            condition: None,
-            ..self
-        }
-    }
-
+    /// Sets the displayed [`BonusSource`]
     #[must_use]
     pub fn with_display_source<S>(self, display_source: S) -> Self
     where
@@ -213,6 +232,7 @@ impl BonusTemplate {
         }
     }
 
+    /// Clears the displayed [`BonusSource`]
     #[must_use]
     pub fn without_display_source(self) -> Self {
         Self {
@@ -223,6 +243,7 @@ impl BonusTemplate {
 }
 
 impl BonusTemplate {
+    /// Converts this [`BonusTemplate`] into a [`Bonus`]
     pub fn to_bonus<S>(self, source: S) -> Bonus
     where
         S: Into<BonusSource>,
