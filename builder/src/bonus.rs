@@ -217,14 +217,6 @@ impl Bonus {
     }
 
     #[must_use]
-    pub fn without_condition(self) -> Self {
-        Self {
-            condition: None,
-            ..self
-        }
-    }
-
-    #[must_use]
     pub fn with_dislay_source<S>(self, display_source: S) -> Self
     where
         S: Into<BonusSource>,

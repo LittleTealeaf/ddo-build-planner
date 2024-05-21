@@ -60,6 +60,7 @@ fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
                 BonusType::Stacking,
                 ((Attribute::Ability(ability).to_value() - Value::TEN) / Value::TWO).floor(),
             )
+            .with_display_source(Attribute::Ability(ability))
         })
         .chain(once(BonusTemplate::new(
             Attribute::Ability(Ability::All),

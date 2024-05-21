@@ -152,13 +152,14 @@ impl Value {
     where
         I: IntoIterator<Item = Self>,
     {
-        let (sum, count) = iter
-            .into_iter()
-            .map(|a| (a, 1))
-            .tree_reduce(|(v1, c1), (v2, c2)| (v1 + v2, c1 + c2))
-            .expect("Expected at least one value");
+        let mut count = 0;
 
-        sum / Self::from(count)
+        let value = Self::iter_sum(iter.into_iter().map(|c| {
+            count += 1;
+            c
+        }));
+
+        value / count.to_value()
     }
 
     /// Returns the minimum of all of the values
