@@ -49,6 +49,13 @@ impl Display for Selector {
 }
 
 #[derive(Debug, Clone)]
+pub enum SelectorResult {
+    Attribute(Attribute),
+    Value(Value),
+    Condition(Condition),
+}
+
+#[derive(Debug, Clone)]
 pub enum SelectorWidgetMessage {
     Selector(usize, SelectorMessage),
     Submit,
@@ -196,6 +203,16 @@ impl SelectorWidget {
             return None;
         };
         selector.get_value()
+    }
+
+    pub fn get_result(&self) -> Option<SelectorResult> {
+        Some(match self.selector.as_ref()? {
+            Selector::Attribute(selector) => {
+                SelectorResult::Attribute(selector.get_attribute(&self.attributes)?.clone())
+            }
+            Selector::Value(selector) => SelectorResult::Value(selector.get_value()?),
+            Selector::Condition(condition) => SelectorResult::Condition(condition.get_condition()?),
+        })
     }
 }
 

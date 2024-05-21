@@ -88,6 +88,9 @@ impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
             Message::DebugClose => {
+                if let Some(selector) = &self.selector {
+                    println!("{:?}", selector.get_result());
+                }
                 self.selector = None;
                 Command::none()
             }
