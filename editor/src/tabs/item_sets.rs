@@ -80,8 +80,11 @@ impl HandleView<App> for TabSetBonuses {
                     sets.iter()
                         .enumerate()
                         .filter(|(_, set)| matches(&self.filter, set.name()))
-                        .map(|(_index, set)| {
-                            button(text(set.name())).style(theme::Button::Text).into()
+                        .map(|(index, set)| {
+                            button(text(set.name()))
+                                .style(theme::Button::Text)
+                                .on_press(Message::TabSetBonuses(TabSetBonusesMessage::Edit(index)))
+                                .into()
                         }),
                 ))
             }))
