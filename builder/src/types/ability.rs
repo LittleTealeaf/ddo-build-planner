@@ -78,7 +78,7 @@ impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             Self::ABILITIES
-                .map(|ability| bonus.clone_into_attribute(ability))
+                .map(|ability| bonus.clone_with_attribute(ability))
                 .to_vec()
         })
     }
@@ -107,7 +107,6 @@ mod tests {
                 Attribute::Ability(Ability::Wisdom),
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(0),
             ));
             assert!(bonus.is_none());
@@ -116,13 +115,7 @@ mod tests {
 
     #[test]
     fn clone_bonus_returns_all_bonuses() {
-        let bonus = Bonus::new(
-            Ability::All,
-            BonusType::Stacking,
-            1,
-            None,
-            BonusSource::Debug(0),
-        );
+        let bonus = Bonus::new(Ability::All, BonusType::Stacking, 1, BonusSource::Debug(0));
 
         let bonuses = Ability::All
             .clone_bonus(&bonus)

@@ -33,15 +33,9 @@ impl ItemSet {
                     .clone()
                     .to_value()
                     .greater_or_equal_to(count.to_value());
-                bonuses.into_iter().map(move |mut bonus| {
-                    bonus.set_condition({
-                        bonus
-                            .condition()
-                            .clone()
-                            .map_or_else(|| condition.clone(), |cond| cond & condition.clone())
-                    });
-                    bonus
-                })
+                bonuses
+                    .into_iter()
+                    .map(move |bonus| bonus.with_condition_and(condition.clone()))
             }),
         )
     }

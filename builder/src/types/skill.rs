@@ -177,7 +177,7 @@ impl CloneBonus for Skill {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             Self::SKILLS
-                .map(|skill| bonus.clone_into_attribute(skill))
+                .map(|skill| bonus.clone_with_attribute(skill))
                 .to_vec()
         })
     }

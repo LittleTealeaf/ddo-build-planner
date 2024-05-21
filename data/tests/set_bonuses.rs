@@ -26,7 +26,7 @@ fn bonuses_have_valid_attributes() {
                     bonus.value().get_attr_dependencies(),
                     bonus
                         .condition()
-                        .clone()
+                        .cloned()
                         .map(|condition| condition.get_attr_dependencies())
                         .unwrap_or_default()
                 )

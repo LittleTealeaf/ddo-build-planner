@@ -59,8 +59,8 @@ impl GetBonuses for PastLifeFeat {
             Self::RacialCompletionist | Self::HeroicCompletionist => {
                 (value > Decimal::ZERO).then(|| {
                     vec![
-                        BonusTemplate::new(Ability::All, BonusType::Stacking, 2, None),
-                        BonusTemplate::new(Skill::All, BonusType::Stacking, 2, None),
+                        BonusTemplate::new(Ability::All, BonusType::Stacking, 2),
+                        BonusTemplate::new(Skill::All, BonusType::Stacking, 2),
                     ]
                 })
             }

@@ -52,7 +52,6 @@ impl Toggle {
             self.to_attribute(),
             BonusType::Stacking,
             u8::from(enable),
-            None,
             self.get_toggle_source(),
         )
     }
@@ -73,7 +72,7 @@ impl Display for Toggle {
 
 impl GetBonuses<Self> for Toggle {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
-        (value > Decimal::ZERO).then(|| vec![BonusTemplate::toggle(*self, None)])
+        (value > Decimal::ZERO).then(|| vec![BonusTemplate::toggle(*self)])
     }
 }
 

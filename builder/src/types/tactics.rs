@@ -62,7 +62,7 @@ impl CloneBonus for Tactics {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
             [Self::Trip, Self::Sunder, Self::Stun]
-                .map(|t| bonus.clone_into_attribute(t))
+                .map(|t| bonus.clone_with_attribute(t))
                 .to_vec()
         })
     }

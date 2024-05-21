@@ -13,7 +13,6 @@ impl GetBonuses for PlayerClass {
             Attribute::CasterLevel((*self).into()),
             BonusType::Stacking,
             value,
-            None,
         )];
 
         if let Some(mut dc_bonuses) = self.get_ability_spell_dc_bonuses(value) {
@@ -30,7 +29,6 @@ impl PlayerClass {
             Attribute::SpellDC(self.into()),
             BonusType::AbilityModifier,
             Attribute::AbilityModifier(ability),
-            None,
         )
     }
 

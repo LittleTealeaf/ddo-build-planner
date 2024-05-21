@@ -23,6 +23,7 @@ use builder::{
         toggle::Toggle,
         weapon_attribute::{WeaponAttribute, WeaponHand, WeaponStat},
     },
+    val,
 };
 use itertools::Itertools;
 use rust_decimal::Decimal;
@@ -67,7 +68,6 @@ mod ability {
                     Attribute::Ability(ability),
                     BonusType::Stacking,
                     score - Decimal::from(8),
-                    None,
                     BonusSource::Debug(0),
                 ));
                 assert_eq!(
@@ -86,7 +86,6 @@ mod ability {
                 Attribute::Ability(Ability::All),
                 BonusType::Stacking,
                 10,
-                None,
                 BonusSource::Debug(0),
             ));
 
@@ -113,7 +112,6 @@ mod saving_throw {
                         Attribute::Ability(Ability::$ability),
                         BonusType::Stacking,
                         10,
-                        None,
                         BonusSource::Debug(0),
                     ));
                     let result = breakdowns.evaluate_attribute_from(SavingThrow::$save);
@@ -140,7 +138,6 @@ mod saving_throw {
                         SavingThrow::$parent,
                         DebugValue(0),
                         10,
-                        None,
                         DebugValue(0),
                     ));
                     let result = breakdowns.evaluate_attribute_from(SavingThrow::$save);
@@ -179,7 +176,6 @@ mod skills {
                         Ability::$ability,
                         BonusType::Stacking,
                         4,
-                        None,
                         BonusSource::Debug(0),
                     ));
                     let result_value = breakdowns.evaluate_attribute_from(Skill::$skill);
@@ -220,7 +216,6 @@ mod skills {
             Ability::All,
             BonusType::Stacking,
             2,
-            None,
             BonusSource::Debug(0),
         ));
 
@@ -238,7 +233,6 @@ mod skills {
                 Skill::All,
                 BonusType::Stacking,
                 10,
-                None,
                 BonusSource::Debug(0),
             ));
             let result = breakdowns.evaluate_attribute_from(skill);
@@ -264,7 +258,6 @@ mod spells {
                     Attribute::$attribute(SpellPower::Universal),
                     BonusType::Stacking,
                     100,
-                    None,
                     BonusSource::Debug(0),
                 ));
 
@@ -291,31 +284,18 @@ mod spells {
                     Attribute::$attribute(SpellPower::Potency),
                     DebugValue(0),
                     100,
-                    None,
                     DebugValue(0),
                 ));
 
                 let with_potency = breakdowns.evaluate_attribute_from(ATTRIBUTE);
                 assert_eq!(with_potency - initial, 100.into());
 
-                breakdowns.insert_bonus(Bonus::new(
-                    ATTRIBUTE,
-                    DebugValue(0),
-                    50,
-                    None,
-                    DebugValue(1),
-                ));
+                breakdowns.insert_bonus(Bonus::new(ATTRIBUTE, DebugValue(0), 50, DebugValue(1)));
 
                 let with_lower = breakdowns.evaluate_attribute_from(ATTRIBUTE);
                 assert_eq!(with_potency, with_lower);
 
-                breakdowns.insert_bonus(Bonus::new(
-                    ATTRIBUTE,
-                    DebugValue(0),
-                    150,
-                    None,
-                    DebugValue(2),
-                ));
+                breakdowns.insert_bonus(Bonus::new(ATTRIBUTE, DebugValue(0), 150, DebugValue(2)));
 
                 let with_higher = breakdowns.evaluate_attribute_from(ATTRIBUTE);
                 assert_eq!(with_higher - initial, 150.into());
@@ -343,7 +323,6 @@ mod spells {
                             Skill::$skill,
                             BonusType::Stacking,
                             2,
-                            None,
                             BonusSource::Debug(0),
                         ));
 
@@ -495,7 +474,6 @@ mod weapons {
                         SneakAttack::$sneak,
                         BonusType::Stacking,
                         1,
-                        None,
                         BonusSource::Debug(0),
                     ));
 
@@ -510,7 +488,6 @@ mod weapons {
                         Attribute::Toggle(Toggle::SneakAttack),
                         BonusType::Stacking,
                         1,
-                        None,
                         BonusSource::Debug(1),
                     ));
 
@@ -574,7 +551,6 @@ mod sheltering {
                     Sheltering::Physical,
                     BonusType::Stacking,
                     input,
-                    None,
                     BonusSource::Debug(0),
                 ));
 
@@ -598,14 +574,12 @@ mod sheltering {
                         Sheltering::MagicalCap,
                         BonusType::Stacking,
                         1000,
-                        None,
                         BonusSource::Debug(0),
                     ),
                     Bonus::new(
                         Sheltering::Magical,
                         BonusType::Stacking,
                         input,
-                        None,
                         BonusSource::Debug(0),
                     ),
                 ]);
@@ -634,7 +608,6 @@ mod sheltering {
                 Sheltering::Magical,
                 BonusType::Stacking,
                 75,
-                None,
                 BonusSource::Debug(0),
             ));
 
@@ -643,7 +616,7 @@ mod sheltering {
                 Decimal::from(50)
             );
 
-            breakdowns.insert_bonus(Bonus::flag(ArmorType::Cloth, None, BonusSource::Debug(1)));
+            breakdowns.insert_bonus(Bonus::flag(ArmorType::Cloth, BonusSource::Debug(1)));
 
             assert_eq!(
                 breakdowns.evaluate_attribute_from(Attribute::Sheltering(Sheltering::MagicalTotal)),
@@ -659,7 +632,7 @@ mod sheltering {
 
             let mut breakdowns = Breakdowns::new();
 
-            breakdowns.insert_bonus(Bonus::flag(ArmorType::Light, None, BonusSource::Debug(0)));
+            breakdowns.insert_bonus(Bonus::flag(ArmorType::Light, BonusSource::Debug(0)));
 
             assert_eq!(breakdowns.evaluate_attribute_from(CAP), 100.into());
             assert_eq!(breakdowns.evaluate_attribute_from(TOTAL), 0.into());
@@ -668,7 +641,6 @@ mod sheltering {
                 Sheltering::Magical,
                 BonusType::Stacking,
                 125,
-                None,
                 BonusSource::Debug(1),
             ));
 
@@ -686,12 +658,11 @@ mod sheltering {
                 let mut breakdowns = Breakdowns::new();
 
                 breakdowns.insert_bonuses([
-                    Bonus::flag(armor_type, None, BonusSource::Debug(0)),
+                    Bonus::flag(armor_type, BonusSource::Debug(0)),
                     Bonus::new(
                         Sheltering::Magical,
                         BonusType::Stacking,
                         200,
-                        None,
                         BonusSource::Debug(0),
                     ),
                 ]);
@@ -718,7 +689,6 @@ mod armor_class {
                         $attribute,
                         DebugValue(0),
                         10,
-                        None,
                         DebugValue(0),
                     ));
                     let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -743,7 +713,6 @@ mod armor_class {
                 ArmorClass::ArmorScalar,
                 DebugValue(0),
                 1,
-                None,
                 DebugValue(0),
             ));
             let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -751,7 +720,6 @@ mod armor_class {
                 ArmorClass::ArmorBonus,
                 DebugValue(0),
                 10,
-                None,
                 DebugValue(1),
             ));
             let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -765,7 +733,6 @@ mod armor_class {
                 ArmorClass::ShieldScalar,
                 DebugValue(0),
                 1,
-                None,
                 DebugValue(0),
             ));
             let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -773,7 +740,6 @@ mod armor_class {
                 ArmorClass::ShieldBonus,
                 DebugValue(0),
                 10,
-                None,
                 DebugValue(1),
             ));
             let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -787,7 +753,6 @@ mod armor_class {
                 ArmorClass::Bonus,
                 DebugValue(0),
                 100,
-                None,
                 DebugValue(0),
             ));
             let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -795,7 +760,6 @@ mod armor_class {
                 ArmorClass::TotalScalar,
                 DebugValue(0),
                 1,
-                None,
                 DebugValue(1),
             ));
             let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -805,6 +769,7 @@ mod armor_class {
     }
 
     mod max_dex_bonus {
+
         use super::*;
 
         macro_rules! dex_test {
@@ -817,13 +782,12 @@ mod armor_class {
                         Ability::Dexterity,
                         DebugValue(0),
                         100,
-                        None,
                         DebugValue(0),
                     ));
 
                     let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
-                    breakdowns.insert_bonus(Bonus::flag($flag, None, DebugValue(1)));
+                    breakdowns.insert_bonus(Bonus::flag($flag, DebugValue(1)));
 
                     let with_armor = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
@@ -833,7 +797,6 @@ mod armor_class {
                         ArmorClass::$maxbonus,
                         DebugValue(0),
                         2,
-                        None,
                         DebugValue(2),
                     ));
 
@@ -858,32 +821,16 @@ mod armor_class {
             for (a, b) in [(2, 1), (1, 2)] {
                 let mut breakdowns = Breakdowns::new();
                 breakdowns.insert_bonuses([
-                    Bonus::flag(
-                        OffHandType::from(ShieldType::TowerShield),
-                        None,
-                        DebugValue(0),
-                    ),
-                    Bonus::flag(ArmorType::Heavy, None, DebugValue(0)),
-                    Bonus::new(Ability::Dexterity, DebugValue(0), 100, None, DebugValue(0)),
+                    Bonus::flag(OffHandType::from(ShieldType::TowerShield), DebugValue(0)),
+                    Bonus::flag(ArmorType::Heavy, DebugValue(0)),
+                    Bonus::new(Ability::Dexterity, DebugValue(0), val!(100), DebugValue(0)),
                 ]);
 
                 let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
 
                 breakdowns.insert_bonuses([
-                    Bonus::new(
-                        ArmorClass::ShieldMaxDex,
-                        DebugValue(0),
-                        a,
-                        None,
-                        DebugValue(1),
-                    ),
-                    Bonus::new(
-                        ArmorClass::ArmorMaxDex,
-                        DebugValue(0),
-                        b,
-                        None,
-                        DebugValue(1),
-                    ),
+                    Bonus::new(ArmorClass::ShieldMaxDex, DebugValue(0), a, DebugValue(1)),
+                    Bonus::new(ArmorClass::ArmorMaxDex, DebugValue(0), b, DebugValue(1)),
                 ]);
 
                 let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -903,14 +850,13 @@ mod race {
         #[test]
         fn dwarven_war_axe() {
             let mut breakdowns = Breakdowns::new();
-            breakdowns.insert_bonus(Bonus::flag(Race::Dwarf, None, DebugValue(0)));
+            breakdowns.insert_bonus(Bonus::flag(Race::Dwarf, DebugValue(0)));
             assert_eq!(
                 breakdowns.evaluate_attribute_from(Proficiency::from(WeaponType::DwarvenWarAxe)),
                 0.into()
             );
             breakdowns.insert_bonus(Bonus::feat(
                 Proficiency::MartialWeaponProficiency,
-                None,
                 DebugValue(1),
             ));
             assert!(
@@ -934,7 +880,6 @@ mod feats {
                 Proficiency::SimpleWeaponProficiency,
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(0),
             ));
 
@@ -950,7 +895,6 @@ mod feats {
                 Proficiency::MartialWeaponProficiency,
                 BonusType::Stacking,
                 1,
-                None,
                 BonusSource::Debug(0),
             ));
 
@@ -976,7 +920,7 @@ mod feats {
                     };
 
                     assert!(
-                        bonuses.contains(&BonusTemplate::toggle(race, None)),
+                        bonuses.contains(&BonusTemplate::toggle(race)),
                         "{race} does not provide toggle"
                     );
                 }
@@ -1008,9 +952,11 @@ mod feats {
                     .filter(|race| race.get_base().is_none())
                     .collect::<Vec<_>>();
 
-                breakdowns.insert_bonuses(races.iter().map(|race| {
-                    Bonus::new(*race, BonusType::Stacking, 1, None, BonusSource::Debug(0))
-                }));
+                breakdowns.insert_bonuses(
+                    races.iter().map(|race| {
+                        Bonus::new(*race, BonusType::Stacking, 1, BonusSource::Debug(0))
+                    }),
+                );
 
                 assert_eq!(
                     breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
@@ -1027,9 +973,11 @@ mod feats {
                     .filter(|race| race.get_base().is_none())
                     .collect::<Vec<_>>();
 
-                breakdowns.insert_bonuses(races.iter().map(|race| {
-                    Bonus::new(*race, BonusType::Stacking, 2, None, BonusSource::Debug(0))
-                }));
+                breakdowns.insert_bonuses(
+                    races.iter().map(|race| {
+                        Bonus::new(*race, BonusType::Stacking, 2, BonusSource::Debug(0))
+                    }),
+                );
 
                 assert_eq!(
                     breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
@@ -1046,9 +994,11 @@ mod feats {
                     .filter(|race| race.get_base().is_none())
                     .collect::<Vec<_>>();
 
-                breakdowns.insert_bonuses(races.iter().map(|race| {
-                    Bonus::new(*race, BonusType::Stacking, 3, None, BonusSource::Debug(0))
-                }));
+                breakdowns.insert_bonuses(
+                    races.iter().map(|race| {
+                        Bonus::new(*race, BonusType::Stacking, 3, BonusSource::Debug(0))
+                    }),
+                );
 
                 assert_eq!(
                     breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
@@ -1073,9 +1023,11 @@ mod feats {
                         races.insert(race);
                     });
 
-                breakdowns.insert_bonuses(races.into_iter().map(|race| {
-                    Bonus::new(race, BonusType::Stacking, 3, None, BonusSource::Debug(0))
-                }));
+                breakdowns.insert_bonuses(
+                    races.into_iter().map(|race| {
+                        Bonus::new(race, BonusType::Stacking, 3, BonusSource::Debug(0))
+                    }),
+                );
 
                 assert_eq!(
                     breakdowns.evaluate_attribute_from(PastLifeFeat::RacialCompletionist),
@@ -1103,9 +1055,11 @@ mod feats {
                         breakdowns.evaluate_attribute_from(PastLifeFeat::HeroicCompletionist),
                         Decimal::ZERO
                     );
-                    breakdowns.insert_bonuses(set.pop().into_iter().map(|class| {
-                        Bonus::feat(HeroicPastLife(class), None, BonusSource::Custom(i))
-                    }));
+                    breakdowns.insert_bonuses(
+                        set.pop().into_iter().map(|class| {
+                            Bonus::feat(HeroicPastLife(class), BonusSource::Custom(i))
+                        }),
+                    );
                 }
 
                 assert!(
@@ -1118,7 +1072,6 @@ mod feats {
                         for item in set {
                             breakdowns.insert_bonus(Bonus::feat(
                                 HeroicPastLife(item),
-                                None,
                                 BonusSource::Custom(i),
                             ));
                             assert!(
@@ -1150,7 +1103,6 @@ mod armor_check_penalty {
                         Attribute::ArmorCheckPenalty,
                         DebugValue(0),
                         1,
-                        None,
                         DebugValue(0),
                     ));
                     let result = breakdowns.evaluate_attribute_from(Skill::$skill);
@@ -1175,7 +1127,6 @@ mod armor_check_penalty {
             Attribute::ArmorCheckPenalty,
             DebugValue(0),
             -1,
-            None,
             DebugValue(0),
         ));
         let result = breakdowns.evaluate_attribute_from(Skill::Balance);
@@ -1195,7 +1146,6 @@ mod toggles {
             Attribute::Toggle(Toggle::Blocking),
             BonusType::Stacking,
             1,
-            None,
             DebugValue(0),
         ));
 

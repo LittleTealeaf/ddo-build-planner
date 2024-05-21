@@ -16,7 +16,6 @@ mod has_dependency {
             DebugValue(0),
             BonusType::Stacking,
             Attribute::Debug(1),
-            None,
             DebugValue(0),
         );
 
@@ -30,9 +29,9 @@ mod has_dependency {
             DebugValue(0),
             BonusType::Stacking,
             Value::Const(10.into()),
-            Some(Condition::has(DebugValue(1))),
             DebugValue(0),
-        );
+        )
+        .with_condition(Condition::has(DebugValue(1)));
 
         assert!(bonus.has_attr_dependency(&Attribute::Debug(1)));
         assert!(!bonus.has_attr_dependency(&Attribute::Debug(2)));
@@ -277,7 +276,6 @@ mod include_dependencies {
             DebugValue(0),
             BonusType::Stacking,
             Attribute::Debug(1),
-            None,
             DebugValue(0),
         );
 
@@ -292,7 +290,6 @@ mod include_dependencies {
             DebugValue(0),
             BonusType::Stacking,
             Attribute::Debug(1),
-            None,
             DebugValue(0),
         );
 

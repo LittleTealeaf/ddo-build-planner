@@ -113,12 +113,7 @@ impl GetBonuses for RacialPastLife {
         }
 
         if let Some(race) = self.get_base() {
-            return Some(vec![BonusTemplate::new(
-                race,
-                BonusType::Stacking,
-                value,
-                None,
-            )]);
+            return Some(vec![BonusTemplate::new(race, BonusType::Stacking, value)]);
         }
 
         let skill = self.get_skill()?;
@@ -126,9 +121,8 @@ impl GetBonuses for RacialPastLife {
 
         Some(
             [
-                (value >= dec!(1)).then(|| BonusTemplate::new(skill, BonusType::Stacking, 1, None)),
-                (value >= dec!(2))
-                    .then(|| BonusTemplate::new(ability, BonusType::Stacking, 1, None)),
+                (value >= dec!(1)).then(|| BonusTemplate::new(skill, BonusType::Stacking, 1)),
+                (value >= dec!(2)).then(|| BonusTemplate::new(ability, BonusType::Stacking, 1)),
             ]
             .into_iter()
             .flatten()

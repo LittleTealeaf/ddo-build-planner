@@ -42,7 +42,6 @@ impl GetBonuses for WeaponAttribute {
                 (*hand, WeaponStat::CriticalMultiplier1920),
                 BonusType::Stacking,
                 value,
-                None,
             )]),
             _ => None,
         }
@@ -54,15 +53,7 @@ impl CloneBonus for WeaponAttribute {
         let Self(hand, stat) = self;
         matches!(hand, WeaponHand::Both).then(|| {
             WeaponHand::HANDS
-                .map(|hand| {
-                    Bonus::new(
-                        (hand, *stat),
-                        *bonus.bonus_type(),
-                        bonus.value().clone(),
-                        bonus.condition().cloned(),
-                        bonus.source().clone(),
-                    )
-                })
+                .map(|hand| bonus.clone_with_attribute((hand, *stat)))
                 .to_vec()
         })
     }

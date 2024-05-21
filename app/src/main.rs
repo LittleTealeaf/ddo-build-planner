@@ -19,7 +19,6 @@ fn main() {
         EpicPastLife::AncientPower,
         BonusType::Stacking,
         1,
-        None,
         DebugValue(0),
     ));
 
@@ -27,7 +26,6 @@ fn main() {
         Toggle::EpicPastLife(EpicPastLife::AncientPower),
         BonusType::Stacking,
         1,
-        None,
         DebugValue(1),
     ));
 
@@ -35,7 +33,6 @@ fn main() {
         MainHandType::Weapon(WeaponType::Club),
         BonusType::Stacking,
         1,
-        None,
         DebugValue(2),
     ));
 
