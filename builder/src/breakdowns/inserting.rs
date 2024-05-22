@@ -62,12 +62,9 @@ impl Breakdowns {
         buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
 
         for bonus in buffer.get_bonuses() {
-            let attribute = bonus.attribute();
-            let source = bonus.source();
-
-            let set = self.children.get_mut_or_default(source);
-            if !set.contains(attribute) {
-                set.push(attribute.clone());
+            let set = self.children.get_mut_or_default(bonus.source());
+            if !set.contains(bonus.attribute()) {
+                set.push(bonus.attribute().clone());
             }
         }
 
