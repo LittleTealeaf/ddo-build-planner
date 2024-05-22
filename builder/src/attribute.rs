@@ -17,11 +17,11 @@ use crate::{
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, heal_amp::HealingAmplification, health::Health, player_class::PlayerClass,
-        saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack,
-        spell_points::SpellPoints, spell_power::SpellPower, spell_selector::SpellSelector,
-        summoned_attribute::SummonedAttribute, tactics::Tactics, toggle::Toggle,
-        weapon_attribute::WeaponAttribute,
+        flag::Flag, guild::Guild, heal_amp::HealingAmplification, health::Health,
+        player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill,
+        sneak_attack::SneakAttack, spell_points::SpellPoints, spell_power::SpellPower,
+        spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, tactics::Tactics,
+        toggle::Toggle, weapon_attribute::WeaponAttribute,
     },
 };
 use fmt::Display;
@@ -39,6 +39,9 @@ pub enum Attribute {
     /// [`Compiler`]: crate::compiler::Compiler
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
+    /// Guild Attributes
+    #[serde(rename = "g", alias = "Guild")]
+    Guild(Guild),
     /// Indicates that the user has some flag
     #[serde(rename = "f", alias = "flg", alias = "Flag")]
     Flag(Flag),
@@ -194,6 +197,7 @@ impl Display for Attribute {
             Self::MeleePower => write!(f, "Melee Power"),
             Self::RangedPower => write!(f, "Ranged Power"),
             Self::Fortification => write!(f, "Fortification"),
+            Self::Guild(guild) => write!(f, "{guild}"),
         }
     }
 }
