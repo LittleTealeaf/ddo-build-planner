@@ -282,6 +282,7 @@ fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
             scale * Attribute::ArmorCheckPenalty.to_value(),
         )
         .with_condition(Condition::has(Attribute::ArmorCheckPenalty))
+        .with_display_source(Attribute::ArmorCheckPenalty)
     })
 }
 

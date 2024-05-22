@@ -141,10 +141,7 @@ where
 }
 
 /// Provides the `.into_grouped_hash_map` function for iterators
-pub trait IntoGroupedHashMap<K, V>
-where
-    K: Hash + Eq + PartialEq + Clone,
-{
+pub trait IntoGroupedHashMap<K, V> {
     /// Converts this into a grouped hash map
     fn into_grouped_hash_map(self) -> HashMap<K, Vec<V>>;
 }
