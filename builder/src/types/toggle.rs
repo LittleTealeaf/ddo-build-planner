@@ -68,6 +68,7 @@ impl Display for Toggle {
             Self::IconicPastLife(past_life) => write!(f, "{past_life}"),
             Self::EpicPastLife(past_life) => write!(f, "{past_life}"),
             Self::SneakAttack => write!(f, "Sneak Attack"),
+            Self::Flanking => write!(f, "Flanking"),
         }
     }
 }
