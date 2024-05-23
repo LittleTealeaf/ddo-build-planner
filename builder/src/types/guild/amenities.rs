@@ -1,17 +1,31 @@
 use core::fmt;
+use std::iter::once;
 
 use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    attribute::{Attribute, GetBonuses},
-    bonus::{BonusTemplate, BonusType, ToValue, Value},
+    attribute::{Attribute, GetBonuses, ToAttribute},
+    bonus::{BonusTemplate, BonusType, Condition, ToValue, Value},
     types::{
-        ability::Ability, damage_type::DamageType, guild::Guild, heal_amp::HealingAmplification,
-        saving_throw::SavingThrow, skill::Skill,
+        ability::Ability,
+        absorption::{Absorption, AbsorptionSource},
+        armor_class::ArmorClass,
+        damage_type::DamageType,
+        heal_amp::HealingAmplification,
+        health::Health,
+        saving_throw::SavingThrow,
+        skill::Skill,
+        spell_points::SpellPoints,
+        spell_school::SpellSchool,
+        tactics::Tactics,
+        toggle::Toggle,
+        weapon_attribute::{WeaponHand, WeaponStat},
     },
     val,
 };
+
+use super::Guild;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone, Copy)]
 pub enum GuildAmenity {
@@ -198,6 +212,19 @@ impl GetBonuses for GuildAmenity {
             })
         }
 
+        fn state_room<I>(rooms: I) -> impl Iterator<Item = BonusTemplate>
+        where
+            I: IntoIterator<Item = GuildAmenity>,
+        {
+            rooms
+                .into_iter()
+                .map(|room| BonusTemplate::new(room, BonusType::Standard, val!(1)))
+        }
+
+        if value <= Decimal::ZERO {
+            return None;
+        }
+
         match self {
             Self::SignOfTheSilverFlameI => Some(
                 [
@@ -254,8 +281,194 @@ impl GetBonuses for GuildAmenity {
                 ])
                 .collect(),
             ),
+            Self::TacticalTrainingRoom => Some(vec![
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::CriticalDamage),
+                    BonusType::Guild,
+                    scale_with_level(val!(2), val!(4), val!(6)),
+                ),
+                // TODO: +1 Trip / Sunder + Slicing Blow
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Guild,
+                    val!(2),
+                ),
+            ]),
+            Self::DangerRoom => Some(
+                skill_bonus([
+                    Skill::DisableDevice,
+                    Skill::Hide,
+                    Skill::OpenLock,
+                    Skill::Search,
+                    Skill::Spot,
+                ])
+                .collect(),
+            ),
+            Self::ForbiddenLibrary => Some(
+                skill_bonus([
+                    Skill::Concentration,
+                    Skill::Heal,
+                    Skill::Repair,
+                    Skill::Spellcraft,
+                    Skill::UseMagicalDevice,
+                ])
+                .collect(),
+            ),
+            Self::ArcheryRange => Some(vec![
+            // TODO: Doubleshot +2%
+            ]),
+            Self::Armory => Some(vec![
+                BonusTemplate::new(
+                    ArmorClass::Bonus,
+                    BonusType::Guild,
+                    scale_with_level(val!(2), val!(4), val!(6)),
+                ),
+                BonusTemplate::new(
+                    Attribute::Fortification,
+                    BonusType::Guild,
+                    scale_with_level(val!(5), val!(10), val!(15)),
+                ),
+            ]),
+            Self::OttosIrresistableDancehall => Some(
+                skill_bonus([
+                    Skill::Balance,
+                    Skill::Jump,
+                    Skill::MoveSilently,
+                    Skill::Perform,
+                    Skill::Swim,
+                    Skill::Tumble,
+                ])
+                .collect(),
+            ),
+            Self::CrusadersChapel => Some(
+                [DamageType::Positive, DamageType::Negative]
+                    .map(|dt| {
+                        BonusTemplate::new(
+                            Attribute::spell_power(dt),
+                            BonusType::Guild,
+                            scale_with_level(val!(5), val!(10), val!(15)),
+                        )
+                    })
+                    .to_vec(),
+            ),
+            Self::ArcaneSanctum => Some(vec![
+                BonusTemplate::new(SavingThrow::Enchantment, BonusType::Guild, Value::ONE),
+                BonusTemplate::new(SpellPoints::Scaled, BonusType::Guild, val!(25)),
+                BonusTemplate::new(Attribute::SpellPenetration, BonusType::Guild, Value::ONE),
+            ]),
+            Self::TrapsmithsWorkshop => Some(vec![
+                BonusTemplate::new(Attribute::Debug(0), BonusType::Stacking, 0),
+                // TODO: +5% fort bypass
+            ]),
+            Self::GrandmastersDojo => Some(vec![
+                BonusTemplate::new(SavingThrow::Will, BonusType::Guild, val!(2)),
+                BonusTemplate::new(Tactics::Stun, BonusType::Guild, val!(1)),
+                // TODO: Sap and Hamstring DC
+            ]),
+            Self::ProvingGround => Some(
+                state_room([
+                    Self::TacticalTrainingRoom,
+                    Self::ArcheryRange,
+                    Self::Armory,
+                    Self::GrandmastersDojo,
+                ])
+                .collect(),
+            ),
+            Self::CollegiumOfTheTwelve => Some(
+                state_room([
+                    Self::CrusadersChapel,
+                    Self::ArcaneSanctum,
+                    Self::TrapsmithsWorkshop,
+                    Self::WildGrove,
+                ])
+                .collect(),
+            ),
+            Self::BlackAbbotsShadow => Some(
+                // TODO: +1 turn undead, lay on hands, smite evil charges
+                vec![BonusTemplate::new(
+                    Attribute::Debug(1),
+                    BonusType::Stacking,
+                    0,
+                )],
+            ),
+            Self::ConcertHall => Some(vec![
+                BonusTemplate::new(SavingThrow::Enchantment, BonusType::Guild, val!(1)),
+                // TODO: +1 Bard Songs
+                // TODO: +1 Action Boost
+            ]),
+            Self::Archwizard => Some(
+                SpellSchool::ALL
+                    .map(|school| {
+                        BonusTemplate::new(Attribute::spell_dc(school), BonusType::Guild, val!(1))
+                    })
+                    .to_vec(),
+            ),
+            Self::GameHunter => Some(vec![
+                BonusTemplate::new(
+                    SavingThrow::Fortitude,
+                    BonusType::Guild,
+                    scale_with_level(val!(1), val!(2), val!(3)),
+                ),
+                // TODO: +5% damage to helpless enemies
+            ]),
+            Self::FencingMaster => Some(vec![
+                // TODO: +2% guild bonus to max dodge
+                BonusTemplate::new(ArmorClass::ArmorMaxDex, BonusType::Guild, val!(1)),
+            ]),
+            Self::NinjaAssassin => Some(vec![
+                BonusTemplate::new(Attribute::Debug(2), BonusType::Stacking, 0),
+                BonusTemplate::toggle(Toggle::Flanking),
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Guild,
+                    val!(6),
+                )
+                .with_condition(Condition::toggled(Toggle::Flanking)),
+                // TODO: +0.25(W) damage
+            ]),
+            Self::HagApothecary => Some(vec![
+                BonusTemplate::new(Health::Bonus, BonusType::Guild, val!(20)),
+                BonusTemplate::new(SavingThrow::Poison, BonusType::Guild, Value::ONE),
+                BonusTemplate::new(SavingThrow::Disease, BonusType::Guild, Value::ONE),
+            ]),
+            Self::GrandReliquaryI => Some(
+                state_room([
+                    Self::SignOfTheSilverFlameI,
+                    Self::ShrineOfTheDevourerI,
+                    Self::StormreaverMemorialI,
+                ])
+                .collect(),
+            ),
+            Self::SignOfTheSilverFlameII => Some(
+                [
+                    Attribute::spell_power(DamageType::Light),
+                    Attribute::spell_power(DamageType::Fire),
+                    Attribute::spell_power(DamageType::Alignment),
+                    Attribute::Resistance(DamageType::Fire),
+                ]
+                .map(|attribute| {
+                    BonusTemplate::new(
+                        attribute,
+                        BonusType::Guild,
+                        scale_with_level(val!(5), val!(10), val!(15)),
+                    )
+                })
+                .into_iter()
+                .chain(once(BonusTemplate::new(
+                    Absorption::Bonus(DamageType::Fire, AbsorptionSource::Guild),
+                    BonusType::Guild,
+                    val!(5),
+                )))
+                .collect(),
+            ),
             _ => None,
         }
+    }
+}
+
+impl ToAttribute for GuildAmenity {
+    fn to_attribute(self) -> Attribute {
+        Guild::Amenity(self).to_attribute()
     }
 }
 

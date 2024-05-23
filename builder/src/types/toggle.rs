@@ -35,6 +35,8 @@ pub enum Toggle {
     IconicPastLife(IconicPastLife),
     /// Epic Past Life
     EpicPastLife(EpicPastLife),
+    /// Is the user flanking the enemy
+    Flanking,
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
 

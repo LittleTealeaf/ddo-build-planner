@@ -93,7 +93,7 @@ impl BonusTemplate {
     where
         F: Into<Flag>,
     {
-        Self::new(flag.into(), BonusType::Stacking, Value::ONE)
+        Self::new(flag.into(), BonusType::Standard, Value::ONE)
     }
 
     /// Creates a new [`BonusTemplate`] that provides the user with the ability to use a [`Toggle`]

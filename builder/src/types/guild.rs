@@ -5,6 +5,8 @@ use core::fmt;
 use serde::{Deserialize, Serialize};
 use utils::public_modules;
 
+use crate::attribute::{Attribute, ToAttribute};
+
 public_modules!(amenities);
 
 /// Guild-focused attributes
@@ -14,6 +16,12 @@ pub enum Guild {
     Level,
     /// Guild Amenities
     Amenity(GuildAmenity),
+}
+
+impl ToAttribute for Guild {
+    fn to_attribute(self) -> Attribute {
+        Attribute::Guild(self)
+    }
 }
 
 impl fmt::Display for Guild {
