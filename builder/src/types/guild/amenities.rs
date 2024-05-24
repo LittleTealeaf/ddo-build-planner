@@ -1,5 +1,5 @@
 use core::fmt;
-use std::iter::once;
+use core::iter::once;
 
 use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
@@ -27,6 +27,7 @@ use crate::{
 
 use super::Guild;
 
+/// Guild Amenities
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone, Copy)]
 pub enum GuildAmenity {
     /// Sign of the Silver Flame I
