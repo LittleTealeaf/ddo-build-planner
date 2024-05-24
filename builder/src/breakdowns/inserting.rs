@@ -106,7 +106,7 @@ impl Breakdowns {
         where
             K: AttributeDependencies,
         {
-            |key, _| key.has_attr_dependency(attribute)
+            |key, _| !key.has_attr_dependency(attribute)
         }
 
         // List of attributes to recalculate
