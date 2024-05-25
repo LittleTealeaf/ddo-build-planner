@@ -29,7 +29,7 @@ use super::Guild;
 
 /// Guild Amenities
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash, Clone, Copy)]
-pub enum GuildAmenity {
+pub enum GuildAmenityOld {
     /// Sign of the Silver Flame I
     SignOfTheSilverFlameI,
     /// Shrine of the Devourer I
@@ -152,7 +152,7 @@ pub enum GuildAmenity {
     GrandReliquaryIV,
 }
 
-impl GetBonuses for GuildAmenity {
+impl GetBonuses for GuildAmenityOld {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         fn scale_with_level<A, B, C>(a: A, b: B, c: C) -> Value
         where
@@ -215,7 +215,7 @@ impl GetBonuses for GuildAmenity {
 
         fn state_room<I>(rooms: I) -> impl Iterator<Item = BonusTemplate>
         where
-            I: IntoIterator<Item = GuildAmenity>,
+            I: IntoIterator<Item = GuildAmenityOld>,
         {
             rooms
                 .into_iter()
@@ -467,13 +467,13 @@ impl GetBonuses for GuildAmenity {
     }
 }
 
-impl ToAttribute for GuildAmenity {
+impl ToAttribute for GuildAmenityOld {
     fn to_attribute(self) -> Attribute {
         Guild::Amenity(self).to_attribute()
     }
 }
 
-impl fmt::Display for GuildAmenity {
+impl fmt::Display for GuildAmenityOld {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::SignOfTheSilverFlameI => write!(f, "Sign of the Silver Flame I"),

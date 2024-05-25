@@ -206,7 +206,7 @@ impl ToToggle for IconicPastLife {
 }
 
 impl GetToggleGroup for IconicPastLife {
-    fn toggle_group(&self) -> Option<ToggleGroup> {
+    fn custom_toggle_group(&self) -> Option<ToggleGroup> {
         Some(ToggleGroup::IconicPastLife)
     }
 }

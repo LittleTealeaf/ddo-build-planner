@@ -325,7 +325,7 @@ impl ToFeat for EpicPastLife {
 }
 
 impl GetToggleGroup for EpicPastLife {
-    fn toggle_group(&self) -> Option<ToggleGroup> {
+    fn custom_toggle_group(&self) -> Option<ToggleGroup> {
         Some(ToggleGroup::EpicPastLife(self.get_sphere()))
     }
 }

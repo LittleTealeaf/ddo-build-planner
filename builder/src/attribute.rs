@@ -17,7 +17,7 @@ use crate::{
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, guild::Guild, heal_amp::HealingAmplification, health::Health,
+        flag::Flag, guild::GuildLevel, heal_amp::HealingAmplification, health::Health,
         player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill,
         sneak_attack::SneakAttack, spell_points::SpellPoints, spell_power::SpellPower,
         spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, tactics::Tactics,
@@ -39,9 +39,8 @@ pub enum Attribute {
     /// [`Compiler`]: crate::compiler::Compiler
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
-    /// Guild Attributes
-    #[serde(rename = "g", alias = "Guild")]
-    Guild(Guild),
+    #[serde(rename = "gl", alias = "GuildLevel")]
+    GuildLevel,
     /// Indicates that the user has some flag
     #[serde(rename = "f", alias = "flg", alias = "Flag")]
     Flag(Flag),
@@ -197,7 +196,7 @@ impl Display for Attribute {
             Self::MeleePower => write!(f, "Melee Power"),
             Self::RangedPower => write!(f, "Ranged Power"),
             Self::Fortification => write!(f, "Fortification"),
-            Self::Guild(guild) => write!(f, "{guild}"),
+            Self::GuildLevel => write!(f, "Guild Level"),
         }
     }
 }
@@ -218,6 +217,7 @@ impl Attribute {
             Self::Flag(flag) => flag.get_bonuses(value),
             Self::Feat(feat) => feat.get_bonuses(value),
             Self::SummonedAttribute(attribute) => attribute.get_bonuses(value),
+            Self::GuildLevel => GuildLevel.get_bonuses(value),
             _ => None,
         }
     }
