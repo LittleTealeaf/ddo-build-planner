@@ -39,6 +39,7 @@ pub enum Attribute {
     /// [`Compiler`]: crate::compiler::Compiler
     /// [`BonusSource`]: crate::bonus::BonusSource
     Dummy,
+    /// Player's Guild Level
     #[serde(rename = "gl", alias = "GuildLevel")]
     GuildLevel,
     /// Indicates that the user has some flag
