@@ -110,6 +110,8 @@ jobs:
   cargo-lock:
     name: Cargo Lock
     runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -A warnings
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -134,6 +136,8 @@ jobs:
   data-serde:
     name: Data Serialization
     runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -A warnings
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
