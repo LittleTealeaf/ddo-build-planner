@@ -56,7 +56,7 @@ impl GetBonuses for GuildLevel {
         bonuses.extend(chain!(
             [
                 BonusTemplate::toggle(GuildAmenity::SignOfTheSilverFlameI),
-                BonusTemplate::toggle(GuildAmenity::ShrineToTheDevourerII),
+                BonusTemplate::toggle(GuildAmenity::ShrineToTheDevourerI),
                 BonusTemplate::toggle(GuildAmenity::StormreaverMemorialI),
                 BonusTemplate::toggle(GuildAmenity::ShrineOfExperienceI),
                 BonusTemplate::toggle(GuildAmenity::TheOrienExpress),
@@ -167,13 +167,13 @@ impl GetBonuses for GuildLevel {
                 })
         ));
 
-        if value == dec!(10) {
+        if value < dec!(11) {
             return Some(bonuses);
         }
 
         bonuses.push(BonusTemplate::toggle(GuildAmenity::FarshiftersChambers));
 
-        if value == dec!(11) {
+        if value < dec!(12) {
             return Some(bonuses);
         }
 
@@ -190,14 +190,14 @@ impl GetBonuses for GuildLevel {
             .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::Chronoscope)))
         ));
 
-        if value == dec!(12) {
+        if value < dec!(13) {
             return Some(bonuses);
         }
 
         bonuses.push(BonusTemplate::toggle(GuildAmenity::SellswordsTavern));
         // TODO: +4/8/12 mrr/prr of hires
 
-        if value == dec!(13) {
+        if value < dec!(14) {
             return Some(bonuses);
         }
 
@@ -211,7 +211,7 @@ impl GetBonuses for GuildLevel {
             .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::BathHouse)))
         ));
 
-        if value == dec!(14) {
+        if value < dec!(15) {
             return Some(bonuses);
         }
 
@@ -224,7 +224,7 @@ impl GetBonuses for GuildLevel {
             .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::BathHouse)))
         ));
 
-        if value == dec!(15) {
+        if value < dec!(16) {
             return Some(bonuses);
         }
 
@@ -238,7 +238,7 @@ impl GetBonuses for GuildLevel {
                 .with_condition(Condition::toggled(GuildAmenity::ParadoxicalPuzzleBox)))
         ));
 
-        if value == dec!(16) {
+        if value < dec!(17) {
             return Some(bonuses);
         }
 
@@ -253,7 +253,7 @@ impl GetBonuses for GuildLevel {
             )
         ));
 
-        if value == dec!(17) {
+        if value < dec!(18) {
             return Some(bonuses);
         }
 
