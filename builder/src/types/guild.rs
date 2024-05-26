@@ -1,6 +1,6 @@
 //! Guild Attributes
 
-use std::iter::once;
+use core::iter::once;
 
 use itertools::chain;
 use rust_decimal::prelude::Decimal;
@@ -9,7 +9,13 @@ use rust_decimal_macros::dec;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value},
-    types::{heal_amp::HealingAmplification, saving_throw::SavingThrow},
+    types::{
+        ability::Ability,
+        heal_amp::HealingAmplification,
+        saving_throw::SavingThrow,
+        skill::Skill,
+        weapon_attribute::{WeaponHand, WeaponStat},
+    },
     val,
 };
 
@@ -208,6 +214,146 @@ impl GetBonuses for GuildLevel {
         if value == dec!(14) {
             return Some(bonuses);
         }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::FloatingRockGarden)),
+            [
+                BonusTemplate::new(Ability::Strength, BonusType::Guild, val!(2)),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Guild, val!(2)),
+            ]
+            .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::BathHouse)))
+        ));
+
+        if value == dec!(15) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::ParadoxicalPuzzleBox)),
+            [
+                BonusTemplate::new(Ability::Dexterity, BonusType::Guild, val!(2)),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Guild, val!(2)),
+            ]
+            .map(|bonus| bonus
+                .with_condition(Condition::toggled(GuildAmenity::ParadoxicalPuzzleBox)))
+        ));
+
+        if value == dec!(16) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::OldSullysGrogCellar)),
+            [
+                BonusTemplate::new(Ability::Constitution, BonusType::Guild, val!(2)),
+                BonusTemplate::new(Ability::Charisma, BonusType::Guild, val!(2)),
+            ]
+            .map(
+                |bonus| bonus.with_condition(Condition::toggled(GuildAmenity::OldSullysGrogCellar))
+            )
+        ));
+
+        if value == dec!(17) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::ThroneRoom)),
+            [
+                Skill::Bluff,
+                Skill::Diplomacy,
+                Skill::Haggle,
+                Skill::Intimidate,
+                Skill::Listen
+            ]
+            .map(|skill| {
+                BonusTemplate::new(
+                    skill,
+                    BonusType::Guild,
+                    scale_with_level(val!(1), val!(2), val!(3)),
+                )
+                .with_condition(Condition::toggled(GuildAmenity::ThroneRoom))
+            })
+        ));
+
+        // if value == dec!(18) {
+        //     return Some(bonuses);
+        // }
+        //
+        // // bonuses.push(BonusTemplate::toggle(GuildAmenity::GuildStorageI));
+        //
+        // if value == dec!(19) {
+        //     return Some(bonuses);
+        // }
+
+        if value < dec!(21) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::TacticalTrainingRoom)),
+            [
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::CriticalDamage),
+                    BonusType::Guild,
+                    scale_with_level(val!(2), val!(4), val!(6))
+                ),
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Guild,
+                    val!(2)
+                ),
+                // TODO: +1 DCs of Trip, Sunder, Slicing Blow
+            ]
+            .map(|bonus| bonus
+                .with_condition(Condition::toggled(GuildAmenity::TacticalTrainingRoom)))
+        ));
+
+        if value < dec!(22) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::DangerRoom)),
+            [
+                Skill::DisableDevice,
+                Skill::Hide,
+                Skill::OpenLock,
+                Skill::Search,
+                Skill::Spot
+            ]
+            .map(|skill| {
+                BonusTemplate::new(
+                    skill,
+                    BonusType::Guild,
+                    scale_with_level(val!(1), val!(2), val!(3)),
+                )
+                .with_condition(Condition::toggled(GuildAmenity::DangerRoom))
+            })
+        ));
+
+        if value < dec!(23) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(chain!(
+            once(BonusTemplate::toggle(GuildAmenity::ForbiddenLibrary)),
+            [
+                Skill::Concentration,
+                Skill::Heal,
+                Skill::Repair,
+                Skill::Spellcraft,
+                Skill::UseMagicalDevice
+            ]
+            .map(|skill| {
+                BonusTemplate::new(
+                    skill,
+                    BonusType::Guild,
+                    scale_with_level(val!(1), val!(2), val!(3)),
+                )
+                .with_condition(Condition::toggled(GuildAmenity::ForbiddenLibrary))
+            })
+        ));
 
         Some(bonuses)
     }
