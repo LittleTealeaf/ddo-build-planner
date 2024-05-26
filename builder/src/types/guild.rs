@@ -47,6 +47,39 @@ impl GetBonuses for GuildLevel {
             )
         }
 
+        fn amenity<I>(amenity: GuildAmenity, bonuses: I) -> impl Iterator<Item = BonusTemplate>
+        where
+            I: IntoIterator<Item = BonusTemplate>,
+        {
+            chain!(
+                once(BonusTemplate::toggle(amenity)),
+                bonuses
+                    .into_iter()
+                    .map(move |bonus| bonus.with_condition_and(Condition::toggled(amenity)))
+            )
+        }
+
+        fn amenity_with_alternates<A, I>(
+            amenity: GuildAmenity,
+            alternates: A,
+            bonuses: I,
+        ) -> impl Iterator<Item = BonusTemplate>
+        where
+            A: IntoIterator<Item = GuildAmenity>,
+            I: IntoIterator<Item = BonusTemplate>,
+        {
+            let condition = chain!(once(amenity), alternates)
+                .map(Condition::toggled)
+                .cond_any()
+                .unwrap();
+            chain!(
+                once(BonusTemplate::toggle(amenity)),
+                bonuses
+                    .into_iter()
+                    .map(move |bonus| bonus.with_condition_and(condition.clone()))
+            )
+        }
+
         if value < dec!(10) {
             return None;
         }
@@ -336,23 +369,22 @@ impl GetBonuses for GuildLevel {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::ForbiddenLibrary)),
+        bonuses.extend(amenity(
+            GuildAmenity::ForbiddenLibrary,
             [
                 Skill::Concentration,
                 Skill::Heal,
                 Skill::Repair,
                 Skill::Spellcraft,
-                Skill::UseMagicalDevice
+                Skill::UseMagicalDevice,
             ]
             .map(|skill| {
                 BonusTemplate::new(
                     skill,
                     BonusType::Guild,
-                    scale_with_level(val!(1), val!(2), val!(3)),
+                    scale_with_level(val![1], val![2], val![3]),
                 )
-                .with_condition(Condition::toggled(GuildAmenity::ForbiddenLibrary))
-            })
+            }),
         ));
 
         Some(bonuses)
