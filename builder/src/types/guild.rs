@@ -16,9 +16,11 @@ use crate::{
         heal_amp::HealingAmplification,
         health::Health,
         saving_throw::SavingThrow,
+        sheltering::Sheltering,
         skill::Skill,
         spell_points::SpellPoints,
         spell_selector::SpellSelector,
+        summoned_attribute::SummonedAttribute,
         toggle::Toggle,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
@@ -205,8 +207,14 @@ impl GetBonuses for GuildLevel {
             return Some(bonuses);
         }
 
-        bonuses.push(BonusTemplate::toggle(GuildAmenity::SellswordsTavern));
-        // TODO: +4/8/12 mrr/prr of hires
+        bonuses.extend(amenity(
+            GuildAmenity::SellswordsTavern,
+            once(BonusTemplate::new(
+                SummonedAttribute::Sheltering(Sheltering::Both),
+                BonusType::Guild,
+                scale_with_level(val!(4), val!(8), val!(12)),
+            )),
+        ));
 
         if value < dec!(14) {
             return Some(bonuses);
