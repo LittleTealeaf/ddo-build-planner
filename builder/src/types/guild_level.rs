@@ -182,12 +182,6 @@ impl GetBonuses for GuildLevel {
             ),
         ));
 
-        // if value < dec!(11) {
-        //     return Some(bonuses);
-        // }
-
-        // bonuses.push(BonusTemplate::toggle(GuildAmenity::FarshiftersChambers));
-
         if value < dec!(12) {
             return Some(bonuses);
         }
