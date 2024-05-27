@@ -2,16 +2,9 @@
 
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    bonus::{Bonus, BonusSource, BonusType},
     breakdowns::Breakdowns,
-    debug::DebugValue,
-    feat::EpicPastLife,
-    types::{
-        flag::MainHandType,
-        item_type::WeaponType,
-        toggle::{GuildAmenity, Toggle},
-        weapon_attribute::{WeaponHand, WeaponStat},
-    },
+    types::toggle::{GuildAmenity, Toggle},
 };
 use ron::ser::{to_string_pretty, PrettyConfig};
 

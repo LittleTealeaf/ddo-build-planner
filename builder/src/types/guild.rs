@@ -1,7 +1,6 @@
 //! Guild Attributes
 
-use core::iter::once;
-use std::iter::empty;
+use core::iter::{empty, once};
 
 use itertools::chain;
 use rust_decimal::prelude::Decimal;
@@ -19,9 +18,8 @@ use crate::{
         saving_throw::SavingThrow,
         skill::Skill,
         spell_points::SpellPoints,
-        spell_school::SpellSchool,
         spell_selector::SpellSelector,
-        toggle::{AttackingTarget, Toggle},
+        toggle::Toggle,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
     val,
