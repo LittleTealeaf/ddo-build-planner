@@ -550,7 +550,11 @@ impl GetBonuses for GuildLevel {
         bonuses.extend(amenity(
             GuildAmenity::NinjaAssassin,
             [
-                // TODO: +0.25[W] damage
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::DiceMultiplier),
+                    BonusType::Guild,
+                    val!(0.25),
+                ),
                 BonusTemplate::toggle(Toggle::Flanking),
                 BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Attack),
