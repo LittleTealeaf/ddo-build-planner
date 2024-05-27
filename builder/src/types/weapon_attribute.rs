@@ -35,6 +35,18 @@ impl From<(WeaponHand, WeaponStat)> for Attribute {
     }
 }
 
+impl From<(WeaponStat, WeaponHand)> for WeaponAttribute {
+    fn from((stat, hand): (WeaponStat, WeaponHand)) -> Self {
+        Self(hand, stat)
+    }
+}
+
+impl From<(WeaponStat, WeaponHand)> for Attribute {
+    fn from(value: (WeaponStat, WeaponHand)) -> Self {
+        WeaponAttribute::from(value).into()
+    }
+}
+
 impl GetBonuses for WeaponAttribute {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
