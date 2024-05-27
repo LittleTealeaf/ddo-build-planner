@@ -6,7 +6,7 @@ use crate::{
 };
 
 /// Standard attribute that converts into any enum that has a debug variant
-pub struct DebugValue(pub u8);
+pub struct DebugValue(pub usize);
 
 impl From<DebugValue> for Attribute {
     fn from(value: DebugValue) -> Self {

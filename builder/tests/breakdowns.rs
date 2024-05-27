@@ -26,7 +26,7 @@ mod value {
 
     use super::*;
 
-    fn dbg_bonus(attribute: u8, value: Value) -> Bonus {
+    fn dbg_bonus(attribute: usize, value: Value) -> Bonus {
         Bonus::new(
             Attribute::Debug(attribute),
             BonusType::Stacking,

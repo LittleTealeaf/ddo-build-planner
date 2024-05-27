@@ -1056,9 +1056,9 @@ mod feats {
                         Decimal::ZERO
                     );
                     breakdowns.insert_bonuses(
-                        set.pop().into_iter().map(|class| {
-                            Bonus::feat(HeroicPastLife(class), BonusSource::Custom(i))
-                        }),
+                        set.pop()
+                            .into_iter()
+                            .map(|class| Bonus::feat(HeroicPastLife(class), BonusSource::Debug(i))),
                     );
                 }
 
@@ -1072,7 +1072,7 @@ mod feats {
                         for item in set {
                             breakdowns.insert_bonus(Bonus::feat(
                                 HeroicPastLife(item),
-                                BonusSource::Custom(i),
+                                BonusSource::Debug(i),
                             ));
                             assert!(
                                 breakdowns

@@ -30,7 +30,7 @@ use fmt::Display;
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Attribute {
     /// Behaves as a debuggable attribute
-    Debug(u8),
+    Debug(usize),
     /// Behaves as a dummy variable
     ///
     /// The use of `Dummy` is for the [`Compiler`], where a `Dummy` bonus can be added to remove

@@ -72,7 +72,11 @@ impl GetBonuses for GuildLevel {
 
             bonuses
                 .into_iter()
-                .map(move |bonus: BonusTemplate| bonus.with_condition_and(condition.clone()))
+                .map(move |bonus: BonusTemplate| {
+                    bonus
+                        .with_condition_and(condition.clone())
+                        .with_display_source(String::from("Guild"))
+                })
                 .chain(once(BonusTemplate::toggle(amenity)))
         }
 

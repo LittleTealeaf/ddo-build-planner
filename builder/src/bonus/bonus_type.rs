@@ -14,7 +14,7 @@ use utils::enums::StaticOptions;
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum BonusType {
     /// Used in debugging bonus types
-    Debug(u8),
+    Debug(usize),
     /// Bonuses that come from [`Attribute::AbilityModifier`]
     ///
     /// [`Attribute::AbilityModifier`]: crate::attribute::Attribute::AbilityModifier
