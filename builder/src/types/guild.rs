@@ -597,12 +597,12 @@ impl GetBonuses for GuildLevel {
                 Value::condition(
                     Condition::toggled(GuildAmenity::SignOfTheSilverFlameIV)
                         | Condition::toggled(GuildAmenity::GrandReliquaryIV),
-                    val!(15),
+                    val!(0.15),
                     Value::condition(
                         Condition::toggled(GuildAmenity::SignOfTheSilverFlameIII)
                             | Condition::toggled(GuildAmenity::GrandReliquaryIII),
-                        val!(10),
-                        val!(5),
+                        val!(0.1),
+                        val!(0.05),
                     ),
                 ),
             )),
@@ -628,12 +628,12 @@ impl GetBonuses for GuildLevel {
                     Value::condition(
                         Condition::toggled(GuildAmenity::ShrineToTheDevourerIV)
                             | Condition::toggled(GuildAmenity::GrandReliquaryIV),
-                        val!(15),
+                        val!(0.15),
                         Value::condition(
                             Condition::toggled(GuildAmenity::ShrineToTheDevourerIII)
                                 | Condition::toggled(GuildAmenity::GrandReliquaryIII),
-                            val!(10),
-                            val!(5),
+                            val!(0.1),
+                            val!(0.05),
                         ),
                     ),
                 )
@@ -660,12 +660,12 @@ impl GetBonuses for GuildLevel {
                     Value::condition(
                         Condition::toggled(GuildAmenity::StormreaverMemorialIV)
                             | Condition::toggled(GuildAmenity::GrandReliquaryIV),
-                        val!(15),
+                        val!(0.15),
                         Value::condition(
                             Condition::toggled(GuildAmenity::StormreaverMemorialIII)
                                 | Condition::toggled(GuildAmenity::GrandReliquaryIII),
-                            val!(10),
-                            val!(5),
+                            val!(0.10),
+                            val!(0.05),
                         ),
                     ),
                 )
