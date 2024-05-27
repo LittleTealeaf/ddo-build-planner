@@ -1,6 +1,7 @@
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
+use utils::enums::StaticOptions;
 
 use super::{ToToggle, Toggle};
 
@@ -129,6 +130,72 @@ pub enum GuildAmenity {
     GrandReliquaryIV,
 }
 
+impl GuildAmenity {
+    /// All guild amenities
+    pub const ALL: [Self; 60] = [
+        Self::SignOfTheSilverFlameI,
+        Self::ShrineToTheDevourerI,
+        Self::StormreaverMemorialI,
+        Self::ShrineOfExperienceI,
+        Self::TheOrienExpress,
+        Self::ThreeFingerThads,
+        Self::FarshiftersChambers,
+        Self::Chronoscope,
+        Self::SellswordsTavern,
+        Self::BathHouse,
+        Self::FloatingRockGarden,
+        Self::ParadoxicalPuzzleBox,
+        Self::OldSullysGrogCellar,
+        Self::ThroneRoom,
+        Self::GuildStorageI,
+        Self::ShrineOfExperienceII,
+        Self::TacticalTrainingRoom,
+        Self::DangerRoom,
+        Self::ForbiddenLibrary,
+        Self::ArcheryRange,
+        Self::Armory,
+        Self::OttosIrresistableDancehall,
+        Self::CrusadersChapel,
+        Self::ArcaneSanctum,
+        Self::TrapsmithsWorkshop,
+        Self::ShrineOfExperienceIII,
+        Self::WildGrove,
+        Self::GrandmastersDojo,
+        Self::ProvingGround,
+        Self::CollegiumOfTheTwelve,
+        Self::BashTheBreakablesCargoBay,
+        Self::BlackAbbotsShadow,
+        Self::BanquetHall,
+        Self::ConcertHall,
+        Self::Archwizard,
+        Self::GreenSteelCraftingHall,
+        Self::ShrineOfExperienceIV,
+        Self::CannithCraftingHall,
+        Self::GameHunter,
+        Self::FencingMaster,
+        Self::NinjaAssassin,
+        Self::HagApothecary,
+        Self::GuildStorageII,
+        Self::GrandReliquaryI,
+        Self::ShrineOfExperienceV,
+        Self::SignOfTheSilverFlameII,
+        Self::ShrineToTheDevourerII,
+        Self::GuildStorageIII,
+        Self::StormreaverMemorialII,
+        Self::GrandReliquaryII,
+        Self::SignOfTheSilverFlameIII,
+        Self::ShrineToTheDevourerIII,
+        Self::GuildStorageIV,
+        Self::StormreaverMemorialIII,
+        Self::GrandReliquaryIII,
+        Self::GuildStorageV,
+        Self::SignOfTheSilverFlameIV,
+        Self::ShrineToTheDevourerIV,
+        Self::StormreaverMemorialIV,
+        Self::GrandReliquaryIV,
+    ];
+}
+
 impl fmt::Display for GuildAmenity {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -199,5 +266,11 @@ impl fmt::Display for GuildAmenity {
 impl ToToggle for GuildAmenity {
     fn to_toggle(self) -> Toggle {
         Toggle::Guild(self)
+    }
+}
+
+impl StaticOptions for GuildAmenity {
+    fn get_static() -> impl Iterator<Item = Self> {
+        Self::ALL.into_iter()
     }
 }

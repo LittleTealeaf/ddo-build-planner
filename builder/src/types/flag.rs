@@ -28,12 +28,16 @@ use super::{item_type::ArmorType, toggle::Toggle};
 #[derive(Copy, Hash, Clone, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Flag {
     /// Indicates that the user has access to a given toggle.
+    #[serde(rename = "t", alias = "HasToggle")]
     HasToggle(Toggle),
     /// Indicates that the user is a given race
+    #[serde(rename = "r", alias = "Race")]
     Race(Race),
     /// Has an immunity to something
+    #[serde(rename = "i", alias = "Immunity")]
     Immunity(Immunity),
     /// The alignment that the character is
+    #[serde(rename = "a", alias = "Alignment")]
     Alignment(Alignment),
     /// Whether or not something is in the main hand
     HasMainHand,

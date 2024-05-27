@@ -1,6 +1,7 @@
 //! Guild Attributes
 
 use core::iter::once;
+use std::iter::empty;
 
 use itertools::chain;
 use rust_decimal::prelude::Decimal;
@@ -11,9 +12,16 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value},
     types::{
         ability::Ability,
+        absorption::{Absorption, AbsorptionSource},
+        armor_class::ArmorClass,
         heal_amp::HealingAmplification,
+        health::Health,
         saving_throw::SavingThrow,
         skill::Skill,
+        spell_points::SpellPoints,
+        spell_school::SpellSchool,
+        spell_selector::SpellSelector,
+        toggle::{AttackingTarget, Toggle},
         weapon_attribute::{WeaponHand, WeaponStat},
     },
     val,
@@ -47,37 +55,31 @@ impl GetBonuses for GuildLevel {
             )
         }
 
-        fn amenity<I>(amenity: GuildAmenity, bonuses: I) -> impl Iterator<Item = BonusTemplate>
-        where
-            I: IntoIterator<Item = BonusTemplate>,
-        {
-            chain!(
-                once(BonusTemplate::toggle(amenity)),
-                bonuses
-                    .into_iter()
-                    .map(move |bonus| bonus.with_condition_and(Condition::toggled(amenity)))
-            )
-        }
-
-        fn amenity_with_alternates<A, I>(
+        fn amenity_with_alternates<A, B>(
             amenity: GuildAmenity,
             alternates: A,
-            bonuses: I,
+            bonuses: B,
         ) -> impl Iterator<Item = BonusTemplate>
         where
             A: IntoIterator<Item = GuildAmenity>,
-            I: IntoIterator<Item = BonusTemplate>,
+            B: IntoIterator<Item = BonusTemplate>,
         {
             let condition = chain!(once(amenity), alternates)
                 .map(Condition::toggled)
                 .cond_any()
                 .unwrap();
-            chain!(
-                once(BonusTemplate::toggle(amenity)),
-                bonuses
-                    .into_iter()
-                    .map(move |bonus| bonus.with_condition_and(condition.clone()))
-            )
+
+            bonuses
+                .into_iter()
+                .map(move |bonus: BonusTemplate| bonus.with_condition_and(condition.clone()))
+                .chain(once(BonusTemplate::toggle(amenity)))
+        }
+
+        fn amenity<I>(amenity: GuildAmenity, bonuses: I) -> impl Iterator<Item = BonusTemplate>
+        where
+            I: IntoIterator<Item = BonusTemplate>,
+        {
+            amenity_with_alternates(amenity, empty(), bonuses)
         }
 
         if value < dec!(10) {
@@ -87,140 +89,118 @@ impl GetBonuses for GuildLevel {
         let mut bonuses = Vec::new();
 
         bonuses.extend(chain!(
-            [
-                BonusTemplate::toggle(GuildAmenity::SignOfTheSilverFlameI),
-                BonusTemplate::toggle(GuildAmenity::ShrineToTheDevourerI),
-                BonusTemplate::toggle(GuildAmenity::StormreaverMemorialI),
-                BonusTemplate::toggle(GuildAmenity::ShrineOfExperienceI),
-                BonusTemplate::toggle(GuildAmenity::TheOrienExpress),
-                BonusTemplate::toggle(GuildAmenity::ThreeFingerThads),
-            ],
-            [
-                BonusTemplate::new(
-                    Attribute::Resistance(DamageType::Fire),
-                    BonusType::Guild,
-                    scale_with_level(val!(5), val!(10), val!(15)),
-                ),
-                BonusTemplate::new(
-                    Attribute::spell_power(DamageType::Fire),
-                    BonusType::Guild,
-                    scale_with_level(val!(5), val!(10), val!(15)),
-                ),
-                BonusTemplate::new(
-                    Attribute::spell_power(DamageType::Light),
-                    BonusType::Guild,
-                    scale_with_level(val!(5), val!(10), val!(15)),
-                ),
-                BonusTemplate::new(
-                    Attribute::spell_power(DamageType::Alignment),
-                    BonusType::Guild,
-                    scale_with_level(val!(5), val!(10), val!(15)),
-                ),
-            ]
-            .into_iter()
-            .map(|bonus| {
-                bonus.with_condition(
-                    [
-                        GuildAmenity::SignOfTheSilverFlameI,
-                        GuildAmenity::SignOfTheSilverFlameII,
-                        GuildAmenity::SignOfTheSilverFlameIII,
-                        GuildAmenity::SignOfTheSilverFlameIV,
-                        GuildAmenity::GrandReliquaryI,
-                        GuildAmenity::GrandReliquaryII,
-                        GuildAmenity::GrandReliquaryIII,
-                        GuildAmenity::GrandReliquaryIV,
-                    ]
-                    .map(Condition::toggled)
-                    .cond_any(),
-                )
-            }),
-            [DamageType::Acid, DamageType::Cold]
-                .into_iter()
-                .flat_map(|dt| {
-                    [
-                        BonusTemplate::new(
-                            Attribute::spell_power(dt),
-                            BonusType::Guild,
-                            scale_with_level(val!(5), val!(10), val!(15)),
-                        ),
-                        BonusTemplate::new(
-                            Attribute::Resistance(dt),
-                            BonusType::Guild,
-                            scale_with_level(val!(5), val!(10), val!(15)),
-                        ),
-                    ]
-                })
-                .map(|bonus| {
-                    bonus.with_condition(
+            amenity_with_alternates(
+                GuildAmenity::SignOfTheSilverFlameI,
+                [
+                    GuildAmenity::SignOfTheSilverFlameII,
+                    GuildAmenity::SignOfTheSilverFlameIII,
+                    GuildAmenity::SignOfTheSilverFlameIV,
+                    GuildAmenity::GrandReliquaryI,
+                    GuildAmenity::GrandReliquaryII,
+                    GuildAmenity::GrandReliquaryIII,
+                    GuildAmenity::GrandReliquaryIV,
+                ],
+                [
+                    BonusTemplate::new(
+                        Attribute::Resistance(DamageType::Fire),
+                        BonusType::Guild,
+                        scale_with_level(val!(5), val!(10), val!(15)),
+                    ),
+                    BonusTemplate::new(
+                        Attribute::spell_power(DamageType::Fire),
+                        BonusType::Guild,
+                        scale_with_level(val!(5), val!(10), val!(15)),
+                    ),
+                    BonusTemplate::new(
+                        Attribute::spell_power(DamageType::Light),
+                        BonusType::Guild,
+                        scale_with_level(val!(5), val!(10), val!(15)),
+                    ),
+                    BonusTemplate::new(
+                        Attribute::spell_power(DamageType::Alignment),
+                        BonusType::Guild,
+                        scale_with_level(val!(5), val!(10), val!(15)),
+                    ),
+                ]
+            ),
+            amenity_with_alternates(
+                GuildAmenity::ShrineToTheDevourerI,
+                [
+                    GuildAmenity::ShrineToTheDevourerII,
+                    GuildAmenity::ShrineToTheDevourerIII,
+                    GuildAmenity::ShrineToTheDevourerIV,
+                    GuildAmenity::GrandReliquaryI,
+                    GuildAmenity::GrandReliquaryII,
+                    GuildAmenity::GrandReliquaryIII,
+                    GuildAmenity::GrandReliquaryIV,
+                ],
+                [DamageType::Acid, DamageType::Cold]
+                    .into_iter()
+                    .flat_map(|dt| {
                         [
-                            GuildAmenity::ShrineToTheDevourerI,
-                            GuildAmenity::ShrineToTheDevourerII,
-                            GuildAmenity::ShrineToTheDevourerIII,
-                            GuildAmenity::ShrineToTheDevourerIV,
-                            GuildAmenity::GrandReliquaryI,
-                            GuildAmenity::GrandReliquaryII,
-                            GuildAmenity::GrandReliquaryIII,
-                            GuildAmenity::GrandReliquaryIV,
+                            BonusTemplate::new(
+                                Attribute::spell_power(dt),
+                                BonusType::Guild,
+                                scale_with_level(val!(5), val!(10), val!(15)),
+                            ),
+                            BonusTemplate::new(
+                                Attribute::Resistance(dt),
+                                BonusType::Guild,
+                                scale_with_level(val!(5), val!(10), val!(15)),
+                            ),
                         ]
-                        .map(Condition::toggled)
-                        .cond_any(),
-                    )
-                }),
-            [DamageType::Sonic, DamageType::Electric]
-                .into_iter()
-                .flat_map(|dt| {
-                    [
-                        BonusTemplate::new(
-                            Attribute::spell_power(dt),
-                            BonusType::Guild,
-                            scale_with_level(val!(5), val!(10), val!(15)),
-                        ),
-                        BonusTemplate::new(
-                            Attribute::Resistance(dt),
-                            BonusType::Guild,
-                            scale_with_level(val!(5), val!(10), val!(15)),
-                        ),
-                    ]
-                })
-                .map(|bonus| {
-                    bonus.with_condition(
+                    }),
+            ),
+            amenity_with_alternates(
+                GuildAmenity::StormreaverMemorialI,
+                [
+                    GuildAmenity::StormreaverMemorialII,
+                    GuildAmenity::StormreaverMemorialIII,
+                    GuildAmenity::StormreaverMemorialIV,
+                    GuildAmenity::GrandReliquaryI,
+                    GuildAmenity::GrandReliquaryII,
+                    GuildAmenity::GrandReliquaryIII,
+                    GuildAmenity::GrandReliquaryIV,
+                ],
+                [DamageType::Sonic, DamageType::Electric]
+                    .into_iter()
+                    .flat_map(|dt| {
                         [
-                            GuildAmenity::StormreaverMemorialI,
-                            GuildAmenity::StormreaverMemorialII,
-                            GuildAmenity::StormreaverMemorialIII,
-                            GuildAmenity::StormreaverMemorialIV,
-                            GuildAmenity::GrandReliquaryI,
-                            GuildAmenity::GrandReliquaryII,
-                            GuildAmenity::GrandReliquaryIII,
-                            GuildAmenity::GrandReliquaryIV,
+                            BonusTemplate::new(
+                                Attribute::spell_power(dt),
+                                BonusType::Guild,
+                                scale_with_level(val!(5), val!(10), val!(15)),
+                            ),
+                            BonusTemplate::new(
+                                Attribute::Resistance(dt),
+                                BonusType::Guild,
+                                scale_with_level(val!(5), val!(10), val!(15)),
+                            ),
                         ]
-                        .map(Condition::toggled)
-                        .cond_any(),
-                    )
-                })
+                    }),
+            ),
         ));
 
         if value < dec!(11) {
             return Some(bonuses);
         }
 
-        bonuses.push(BonusTemplate::toggle(GuildAmenity::FarshiftersChambers));
+        // bonuses.push(BonusTemplate::toggle(GuildAmenity::FarshiftersChambers));
 
         if value < dec!(12) {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            [BonusTemplate::toggle(GuildAmenity::Chronoscope)],
+        bonuses.extend(amenity(
+            GuildAmenity::Chronoscope,
             [
                 BonusTemplate::new(
                     SavingThrow::Reflex,
                     BonusType::Guild,
-                    scale_with_level(val!(1), val!(2), val!(3))
+                    scale_with_level(val!(1), val!(2), val!(3)),
                 ),
                 BonusTemplate::new(Attribute::MovementSpeed, BonusType::Guild, val!(40)),
-            ]
-            .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::Chronoscope)))
+            ],
         ));
 
         if value < dec!(13) {
@@ -234,70 +214,63 @@ impl GetBonuses for GuildLevel {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::BathHouse)),
-            [
-                BonusTemplate::new(HealingAmplification::All, BonusType::Guild, val!(20)),
-                // TODO: uncon range +5/10/15
-                // TODO: -10% damage helpless
-            ]
-            .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::BathHouse)))
+        bonuses.extend(amenity(
+            GuildAmenity::BathHouse,
+            [BonusTemplate::new(
+                HealingAmplification::All,
+                BonusType::Guild,
+                val!(20),
+            )],
         ));
 
         if value < dec!(15) {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::FloatingRockGarden)),
+        bonuses.extend(amenity(
+            GuildAmenity::FloatingRockGarden,
             [
                 BonusTemplate::new(Ability::Strength, BonusType::Guild, val!(2)),
                 BonusTemplate::new(Ability::Wisdom, BonusType::Guild, val!(2)),
-            ]
-            .map(|bonus| bonus.with_condition(Condition::toggled(GuildAmenity::BathHouse)))
+            ],
         ));
 
         if value < dec!(16) {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::ParadoxicalPuzzleBox)),
+        bonuses.extend(amenity(
+            GuildAmenity::ParadoxicalPuzzleBox,
             [
                 BonusTemplate::new(Ability::Dexterity, BonusType::Guild, val!(2)),
                 BonusTemplate::new(Ability::Intelligence, BonusType::Guild, val!(2)),
-            ]
-            .map(|bonus| bonus
-                .with_condition(Condition::toggled(GuildAmenity::ParadoxicalPuzzleBox)))
+            ],
         ));
 
         if value < dec!(17) {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::OldSullysGrogCellar)),
+        bonuses.extend(amenity(
+            GuildAmenity::OldSullysGrogCellar,
             [
                 BonusTemplate::new(Ability::Constitution, BonusType::Guild, val!(2)),
                 BonusTemplate::new(Ability::Charisma, BonusType::Guild, val!(2)),
-            ]
-            .map(
-                |bonus| bonus.with_condition(Condition::toggled(GuildAmenity::OldSullysGrogCellar))
-            )
+            ],
         ));
 
         if value < dec!(18) {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::ThroneRoom)),
+        bonuses.extend(amenity(
+            GuildAmenity::ThroneRoom,
             [
                 Skill::Bluff,
                 Skill::Diplomacy,
                 Skill::Haggle,
                 Skill::Intimidate,
-                Skill::Listen
+                Skill::Listen,
             ]
             .map(|skill| {
                 BonusTemplate::new(
@@ -305,8 +278,7 @@ impl GetBonuses for GuildLevel {
                     BonusType::Guild,
                     scale_with_level(val!(1), val!(2), val!(3)),
                 )
-                .with_condition(Condition::toggled(GuildAmenity::ThroneRoom))
-            })
+            }),
         ));
 
         // if value == dec!(18) {
@@ -323,37 +295,36 @@ impl GetBonuses for GuildLevel {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::TacticalTrainingRoom)),
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::TacticalTrainingRoom,
+            once(GuildAmenity::ProvingGround),
             [
                 BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::CriticalDamage),
                     BonusType::Guild,
-                    scale_with_level(val!(2), val!(4), val!(6))
+                    scale_with_level(val!(2), val!(4), val!(6)),
                 ),
                 BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Attack),
                     BonusType::Guild,
-                    val!(2)
+                    val!(2),
                 ),
                 // TODO: +1 DCs of Trip, Sunder, Slicing Blow
-            ]
-            .map(|bonus| bonus
-                .with_condition(Condition::toggled(GuildAmenity::TacticalTrainingRoom)))
+            ],
         ));
 
         if value < dec!(22) {
             return Some(bonuses);
         }
 
-        bonuses.extend(chain!(
-            once(BonusTemplate::toggle(GuildAmenity::DangerRoom)),
+        bonuses.extend(amenity(
+            GuildAmenity::DangerRoom,
             [
                 Skill::DisableDevice,
                 Skill::Hide,
                 Skill::OpenLock,
                 Skill::Search,
-                Skill::Spot
+                Skill::Spot,
             ]
             .map(|skill| {
                 BonusTemplate::new(
@@ -361,8 +332,7 @@ impl GetBonuses for GuildLevel {
                     BonusType::Guild,
                     scale_with_level(val!(1), val!(2), val!(3)),
                 )
-                .with_condition(Condition::toggled(GuildAmenity::DangerRoom))
-            })
+            }),
         ));
 
         if value < dec!(23) {
@@ -370,7 +340,7 @@ impl GetBonuses for GuildLevel {
         }
 
         bonuses.extend(amenity(
-            GuildAmenity::ForbiddenLibrary,
+            GuildAmenity::DangerRoom,
             [
                 Skill::Concentration,
                 Skill::Heal,
@@ -382,45 +352,382 @@ impl GetBonuses for GuildLevel {
                 BonusTemplate::new(
                     skill,
                     BonusType::Guild,
-                    scale_with_level(val![1], val![2], val![3]),
+                    scale_with_level(val!(1), val!(2), val!(3)),
                 )
             }),
         ));
 
+        if value < dec!(24) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::ArcheryRange,
+            once(GuildAmenity::ProvingGround),
+            [
+                // TODO: +2% doubleshot
+        ],
+        ));
+
+        if value < dec!(25) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::Armory,
+            once(GuildAmenity::ProvingGround),
+            [
+                BonusTemplate::new(
+                    ArmorClass::Bonus,
+                    BonusType::Guild,
+                    scale_with_level(val!(2), val!(4), val!(6)),
+                ),
+                BonusTemplate::new(
+                    Attribute::Fortification,
+                    BonusType::Guild,
+                    scale_with_level(val!(5), val!(10), val!(15)),
+                ),
+            ],
+        ));
+
+        if value < dec!(26) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::OttosIrresistableDancehall,
+            [
+                Skill::Balance,
+                Skill::Jump,
+                Skill::MoveSilently,
+                Skill::Perform,
+                Skill::Swim,
+                Skill::Tumble,
+            ]
+            .map(|skill| {
+                BonusTemplate::new(
+                    skill,
+                    BonusType::Guild,
+                    scale_with_level(val!(1), val!(2), val!(3)),
+                )
+            }),
+        ));
+
+        if value < dec!(27) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::CrusadersChapel,
+            once(GuildAmenity::CollegiumOfTheTwelve),
+            [DamageType::Positive, DamageType::Negative].map(|dt| {
+                BonusTemplate::new(
+                    Attribute::spell_power(dt),
+                    BonusType::Guild,
+                    scale_with_level(val!(5), val!(10), val!(15)),
+                )
+            }),
+        ));
+
+        if value < dec!(28) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::ArcaneSanctum,
+            once(GuildAmenity::CollegiumOfTheTwelve),
+            [
+                BonusTemplate::new(SavingThrow::Enchantment, BonusType::Guild, val!(1)),
+                BonusTemplate::new(SpellPoints::Base, BonusType::Guild, val!(25)),
+                BonusTemplate::new(Attribute::SpellPenetration, BonusType::Guild, val!(1)),
+            ],
+        ));
+
+        if value < dec!(29) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::TrapsmithsWorkshop,
+            once(GuildAmenity::CollegiumOfTheTwelve),
+            [
+                // TODO: +5% fortification bypass
+        ],
+        ));
+
+        // TODO: wild grove
+        // once(GuildAmenity::CollegiumOfTheTwelve),
+
+        if value < dec!(32) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::GrandmastersDojo,
+            once(GuildAmenity::ProvingGround),
+            [
+                BonusTemplate::new(SavingThrow::Will, BonusType::Guild, val!(2)),
+                // TODO: +1 DC stunning, sap, hamstring
+            ],
+        ));
+
+        if value < dec!(34) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::ProvingGround));
+
+        if value < dec!(35) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::CollegiumOfTheTwelve));
+
+        if value < dec!(33) {
+            return Some(bonuses);
+        }
+
+        // TODO: Black Abbots Shadow
+
+        if value < dec!(38) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::ConcertHall,
+            [
+                BonusTemplate::new(SavingThrow::Enchantment, BonusType::Guild, val!(1)),
+                // TODO: +1 bard song
+                // TODO: +1 action boost
+            ],
+        ));
+
+        if value < dec!(39) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::Archwizard,
+            once(BonusTemplate::new(
+                Attribute::spell_dc(SpellSelector::All),
+                BonusType::Guild,
+                val!(1),
+            )),
+        ));
+
+        if value < dec!(42) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::GameHunter,
+            [
+                BonusTemplate::new(
+                    SavingThrow::Fortitude,
+                    BonusType::Guild,
+                    scale_with_level(val!(1), val!(2), val!(3)),
+                ),
+                // TODO: +5% helpless damage
+            ],
+        ));
+
+        if value < dec!(43) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::FencingMaster,
+            [
+                // TODO: max dodge
+                BonusTemplate::new(ArmorClass::ArmorMaxDex, BonusType::Guild, val!(1)),
+            ],
+        ));
+
+        if value < dec!(44) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::NinjaAssassin,
+            [
+                // TODO: +0.25[W] damage
+                BonusTemplate::toggle(Toggle::Flanking),
+                BonusTemplate::new(
+                    (WeaponHand::Both, WeaponStat::Attack),
+                    BonusType::Guild,
+                    val!(6),
+                )
+                .with_condition(Condition::toggled(Toggle::Flanking)),
+            ],
+        ));
+
+        if value < dec!(45) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity(
+            GuildAmenity::HagApothecary,
+            [
+                BonusTemplate::new(Health::Bonus, BonusType::Guild, val!(20)),
+                BonusTemplate::new(SavingThrow::Poison, BonusType::Guild, val!(1)),
+                BonusTemplate::new(SavingThrow::Disease, BonusType::Guild, val!(1)),
+            ],
+        ));
+
+        if value < dec!(55) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::GrandReliquaryI));
+
+        if value < dec!(65) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::SignOfTheSilverFlameII,
+            [
+                GuildAmenity::SignOfTheSilverFlameIII,
+                GuildAmenity::SignOfTheSilverFlameIV,
+                GuildAmenity::GrandReliquaryII,
+                GuildAmenity::GrandReliquaryIII,
+                GuildAmenity::GrandReliquaryIV,
+            ],
+            once(BonusTemplate::new(
+                Absorption::Bonus(DamageType::Fire, AbsorptionSource::Guild),
+                BonusType::Stacking,
+                Value::condition(
+                    Condition::toggled(GuildAmenity::SignOfTheSilverFlameIV)
+                        | Condition::toggled(GuildAmenity::GrandReliquaryIV),
+                    val!(15),
+                    Value::condition(
+                        Condition::toggled(GuildAmenity::SignOfTheSilverFlameIII)
+                            | Condition::toggled(GuildAmenity::GrandReliquaryIII),
+                        val!(10),
+                        val!(5),
+                    ),
+                ),
+            )),
+        ));
+
+        if value < dec!(70) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::ShrineToTheDevourerII,
+            [
+                GuildAmenity::ShrineToTheDevourerIII,
+                GuildAmenity::ShrineToTheDevourerIV,
+                GuildAmenity::GrandReliquaryII,
+                GuildAmenity::GrandReliquaryIII,
+                GuildAmenity::GrandReliquaryIV,
+            ],
+            [DamageType::Acid, DamageType::Cold].map(|dt| {
+                BonusTemplate::new(
+                    Absorption::Bonus(dt, AbsorptionSource::Guild),
+                    BonusType::Stacking,
+                    Value::condition(
+                        Condition::toggled(GuildAmenity::ShrineToTheDevourerIV)
+                            | Condition::toggled(GuildAmenity::GrandReliquaryIV),
+                        val!(15),
+                        Value::condition(
+                            Condition::toggled(GuildAmenity::ShrineToTheDevourerIII)
+                                | Condition::toggled(GuildAmenity::GrandReliquaryIII),
+                            val!(10),
+                            val!(5),
+                        ),
+                    ),
+                )
+            }),
+        ));
+
+        if value < dec!(80) {
+            return Some(bonuses);
+        }
+
+        bonuses.extend(amenity_with_alternates(
+            GuildAmenity::StormreaverMemorialII,
+            [
+                GuildAmenity::StormreaverMemorialIII,
+                GuildAmenity::StormreaverMemorialIV,
+                GuildAmenity::GrandReliquaryII,
+                GuildAmenity::GrandReliquaryIII,
+                GuildAmenity::GrandReliquaryIV,
+            ],
+            [DamageType::Sonic, DamageType::Electric].map(|dt| {
+                BonusTemplate::new(
+                    Absorption::Bonus(dt, AbsorptionSource::Guild),
+                    BonusType::Stacking,
+                    Value::condition(
+                        Condition::toggled(GuildAmenity::StormreaverMemorialIV)
+                            | Condition::toggled(GuildAmenity::GrandReliquaryIV),
+                        val!(15),
+                        Value::condition(
+                            Condition::toggled(GuildAmenity::StormreaverMemorialIII)
+                                | Condition::toggled(GuildAmenity::GrandReliquaryIII),
+                            val!(10),
+                            val!(5),
+                        ),
+                    ),
+                )
+            }),
+        ));
+
+        if value < dec!(85) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::GrandReliquaryII));
+
+        if value < dec!(90) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::SignOfTheSilverFlameIII));
+
+        if value < dec!(95) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::ShrineToTheDevourerIII));
+
+        if value < dec!(110) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::StormreaverMemorialIII));
+
+        if value < dec!(120) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::GrandReliquaryIII));
+
+        if value < dec!(125) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::SignOfTheSilverFlameIV));
+
+        if value < dec!(130) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::ShrineToTheDevourerIV));
+
+        if value < dec!(140) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::StormreaverMemorialIV));
+
+        if value < dec!(150) {
+            return Some(bonuses);
+        }
+
+        bonuses.push(BonusTemplate::toggle(GuildAmenity::GrandReliquaryIV));
+
         Some(bonuses)
     }
 }
-
-//
-// use core::fmt;
-//
-// use serde::{Deserialize, Serialize};
-// use utils::public_modules;
-//
-// use crate::attribute::{Attribute, ToAttribute};
-//
-// public_modules!(amenities);
-//
-// /// Guild-focused attributes
-// #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
-// pub enum Guild {
-//     /// Guild Level
-//     Level,
-//     /// Guild Amenities
-//     Amenity(GuildAmenityOld),
-// }
-//
-// impl ToAttribute for Guild {
-//     fn to_attribute(self) -> Attribute {
-//         Attribute::Guild(self)
-//     }
-// }
-//
-// impl fmt::Display for Guild {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         match self {
-//             Self::Level => write!(f, "Guild Level"),
-//             Self::Amenity(a) => write!(f, "Guild Amenity: {a}"),
-//         }
-//     }
-// }

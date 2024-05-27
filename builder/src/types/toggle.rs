@@ -24,20 +24,28 @@ use super::{
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
     /// Is the character blocking
+    #[serde(rename = "bl", alias = "Blocking")]
     Blocking,
     /// Is the character in reaper mode
+    #[serde(rename = "r", alias = "InReaper")]
     InReaper,
     /// Is the character attacking a certain target
+    #[serde(rename = "at", alias = "Attacking")]
     Attacking(AttackingTarget),
     /// Is the character sneak attacking.
+    #[serde(rename = "sa", alias = "SneakAttack")]
     SneakAttack,
     /// Iconic Past Life
+    #[serde(rename = "ipl", alias = "IconicPastLife")]
     IconicPastLife(IconicPastLife),
     /// Epic Past Life
+    #[serde(rename = "epl", alias = "EpicPastLife")]
     EpicPastLife(EpicPastLife),
     /// Is the user flanking the enemy
+    #[serde(rename = "fla", alias = "Flanking")]
     Flanking,
     /// Guild Amenities
+    #[serde(rename = "gb", alias = "Guild")]
     Guild(GuildAmenity),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)

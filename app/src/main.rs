@@ -1,40 +1,40 @@
 //! Application Starting Point
 
 use builder::{
-    bonus::{Bonus, BonusType},
+    attribute::Attribute,
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
     breakdowns::Breakdowns,
     debug::DebugValue,
     feat::EpicPastLife,
     types::{
         flag::MainHandType,
         item_type::WeaponType,
-        toggle::Toggle,
+        toggle::{GuildAmenity, Toggle},
         weapon_attribute::{WeaponHand, WeaponStat},
     },
 };
+use ron::ser::{to_string_pretty, PrettyConfig};
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
     breakdowns.insert_bonus(Bonus::new(
-        EpicPastLife::AncientPower,
+        Attribute::GuildLevel,
         BonusType::Stacking,
-        1,
-        DebugValue(0),
+        200,
+        BonusSource::Debug(0),
     ));
 
-    breakdowns.insert_bonus(Bonus::new(
-        Toggle::EpicPastLife(EpicPastLife::AncientPower),
-        BonusType::Stacking,
-        1,
-        DebugValue(1),
-    ));
+    breakdowns.insert_bonuses(GuildAmenity::ALL.into_iter().map(|ga| {
+        Bonus::new(
+            Toggle::Guild(ga),
+            BonusType::Standard,
+            1,
+            BonusSource::Debug(2),
+        )
+    }));
 
-    breakdowns.insert_bonus(Bonus::new(
-        MainHandType::Weapon(WeaponType::Club),
-        BonusType::Stacking,
-        1,
-        DebugValue(2),
-    ));
-
-    breakdowns.evaluate_attribute_from((WeaponHand::Main, WeaponStat::Damage));
+    println!(
+        "{}",
+        to_string_pretty(&breakdowns, PrettyConfig::new()).unwrap()
+    );
 }
