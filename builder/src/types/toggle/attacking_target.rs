@@ -13,6 +13,8 @@ use super::{ToToggle, Toggle};
 pub enum AttackingTarget {
     /// The enemy is tripped
     Tripped,
+    /// Helpless
+    Helpless,
     /// The enemy is a certain monster type
     MonsterType(MonsterType),
     /// The enemy is a certain alignment
@@ -22,6 +24,7 @@ pub enum AttackingTarget {
 impl Display for AttackingTarget {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::Helpless => write!(f, "Helpless Target"),
             Self::Tripped => write!(f, "Tripped Target"),
             Self::MonsterType(monster_type) => monster_type.fmt(f),
             Self::Alignment(alignment) => alignment.fmt(f),
