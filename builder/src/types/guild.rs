@@ -21,6 +21,7 @@ use crate::{
         spell_points::SpellPoints,
         spell_selector::SpellSelector,
         summoned_attribute::SummonedAttribute,
+        tactics::Tactics,
         toggle::Toggle,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
@@ -181,9 +182,9 @@ impl GetBonuses for GuildLevel {
             ),
         ));
 
-        if value < dec!(11) {
-            return Some(bonuses);
-        }
+        // if value < dec!(11) {
+        //     return Some(bonuses);
+        // }
 
         // bonuses.push(BonusTemplate::toggle(GuildAmenity::FarshiftersChambers));
 
@@ -287,16 +288,6 @@ impl GetBonuses for GuildLevel {
             }),
         ));
 
-        // if value == dec!(18) {
-        //     return Some(bonuses);
-        // }
-        //
-        // // bonuses.push(BonusTemplate::toggle(GuildAmenity::GuildStorageI));
-        //
-        // if value == dec!(19) {
-        //     return Some(bonuses);
-        // }
-
         if value < dec!(21) {
             return Some(bonuses);
         }
@@ -315,7 +306,9 @@ impl GetBonuses for GuildLevel {
                     BonusType::Guild,
                     val!(2),
                 ),
-                // TODO: +1 DCs of Trip, Sunder, Slicing Blow
+                BonusTemplate::new(Tactics::Trip, BonusType::Guild, Value::ONE),
+                BonusTemplate::new(Tactics::Sunder, BonusType::Guild, Value::ONE),
+                BonusTemplate::new(Tactics::SlicingBlow, BonusType::Guild, Value::ONE),
             ],
         ));
 
@@ -473,7 +466,8 @@ impl GetBonuses for GuildLevel {
             once(GuildAmenity::ProvingGround),
             [
                 BonusTemplate::new(SavingThrow::Will, BonusType::Guild, val!(2)),
-                // TODO: +1 DC stunning, sap, hamstring
+                BonusTemplate::new(Tactics::Stun, BonusType::Guild, Value::ONE),
+                // Sap and Hamstring have no DC
             ],
         ));
 

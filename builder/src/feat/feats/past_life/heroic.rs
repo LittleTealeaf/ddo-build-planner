@@ -80,7 +80,7 @@ impl GetBonuses for HeroicPastLife {
                         BonusType::Stacking,
                         value,
                     ),
-                    BonusTemplate::new(Tactics::All, BonusType::Stacking, value),
+                    BonusTemplate::new(Tactics::Tactics, BonusType::Stacking, value),
                 ],
                 PlayerClass::Monk => vec![BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Damage),
