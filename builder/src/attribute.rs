@@ -156,6 +156,12 @@ pub enum Attribute {
     /// Fortification
     #[serde(rename = "frt", alias = "Fortification")]
     Fortification,
+    /// Doubleshot
+    #[serde(rename = "dsh", alias = "Doubleshot")]
+    Doubleshot,
+    /// Doublestrike
+    #[serde(rename = "dst", alias = "Doublestrike")]
+    Doublestrike,
 }
 
 impl Display for Attribute {
@@ -198,6 +204,8 @@ impl Display for Attribute {
             Self::RangedPower => write!(f, "Ranged Power"),
             Self::Fortification => write!(f, "Fortification"),
             Self::GuildLevel => write!(f, "Guild Level"),
+            Self::Doubleshot => write!(f, "Doubleshot"),
+            Self::Doublestrike => write!(f, "Doublestrike"),
         }
     }
 }
@@ -263,6 +271,8 @@ impl StaticOptions for Attribute {
                 Self::MeleePower,
                 Self::RangedPower,
                 Self::Fortification,
+                Self::Doublestrike,
+                Self::Doubleshot,
             ],
             Ability::get_static()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),

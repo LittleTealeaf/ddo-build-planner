@@ -363,9 +363,11 @@ impl GetBonuses for GuildLevel {
         bonuses.extend(amenity_with_alternates(
             GuildAmenity::ArcheryRange,
             once(GuildAmenity::ProvingGround),
-            [
-                // TODO: +2% doubleshot
-        ],
+            once(BonusTemplate::new(
+                Attribute::Doubleshot,
+                BonusType::Guild,
+                val!(2),
+            )),
         ));
 
         if value < dec!(25) {
