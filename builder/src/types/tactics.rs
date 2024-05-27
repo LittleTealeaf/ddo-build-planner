@@ -13,6 +13,7 @@ use crate::{
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Tactics {
     /// Quivering Palm
+    #[serde(rename = "qp", alias = "QuiveringPalm")]
     QuiveringPalm,
     /// Trip and Improved Trip bonuses
     #[serde(rename = "tr", alias = "Trip")]
@@ -27,6 +28,7 @@ pub enum Tactics {
     #[serde(rename = "st", alias = "Stun")]
     Stun,
     /// Slicing Blow
+    #[serde(rename = "sb", alias = "SlicingBlow")]
     SlicingBlow,
     /// General Tactics DC
     #[serde(rename = "al", alias = "All")]

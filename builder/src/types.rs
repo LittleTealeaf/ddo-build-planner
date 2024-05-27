@@ -9,7 +9,7 @@ pub mod damage_type;
 pub mod epic_sphere;
 pub mod flag;
 pub mod gear_slot;
-pub mod guild;
+pub mod guild_level;
 pub mod heal_amp;
 pub mod health;
 pub mod immunity;

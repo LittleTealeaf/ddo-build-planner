@@ -17,7 +17,7 @@ use crate::{
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, guild::GuildLevel, heal_amp::HealingAmplification, health::Health,
+        flag::Flag, guild_level::GuildLevel, heal_amp::HealingAmplification, health::Health,
         player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill,
         sneak_attack::SneakAttack, spell_points::SpellPoints, spell_power::SpellPower,
         spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, tactics::Tactics,
