@@ -16,11 +16,14 @@ pub enum SneakAttack {
     /// Bonuses to Damage
     #[serde(rename = "b", alias = "Damage")]
     Damage,
+    /// Bonus Sneak Attack Dice
+    #[serde(rename = "i", alias = "Dice")]
+    Dice,
 }
 
 impl SneakAttack {
     /// All possible values of [`SneakAttack`]
-    pub const ALL: [Self; 2] = [Self::Attack, Self::Damage];
+    pub const ALL: [Self; 3] = [Self::Attack, Self::Damage, Self::Dice];
 }
 
 impl Display for SneakAttack {
@@ -28,6 +31,7 @@ impl Display for SneakAttack {
         match self {
             Self::Attack => write!(f, "Sneak Attack Hit"),
             Self::Damage => write!(f, "Sneak Attack Damage"),
+            Self::Dice => write!(f, "Sneak Attack Dice"),
         }
     }
 }

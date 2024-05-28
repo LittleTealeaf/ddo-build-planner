@@ -352,6 +352,12 @@ fn sneak_attack() -> impl IntoIterator<Item = BonusTemplate> {
             Attribute::from(SneakAttack::Damage),
         )
         .with_condition(Condition::toggled(Toggle::SneakAttack)),
+        BonusTemplate::new(
+            (WeaponHand::Both, WeaponStat::TotalDamage),
+            BonusType::Stacking,
+            Value::dice(SneakAttack::Dice.to_value(), val!(6)),
+        )
+        .with_condition(Condition::toggled(Toggle::SneakAttack)),
     ]
 }
 
