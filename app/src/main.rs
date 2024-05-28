@@ -4,9 +4,7 @@ use core::iter::once;
 
 use builder::{
     attribute::Attribute,
-    bonus::{
-        Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
-    },
+    bonus::{BonusSource, BonusTemplate, BonusType},
     breakdowns::Breakdowns,
     feat::{HeroicPastLife, IconicPastLife, RacialPastLife},
     types::{
