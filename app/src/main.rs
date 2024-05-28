@@ -18,6 +18,10 @@ use utils::{chain_tree, enums::StaticOptions};
 fn main() {
     let mut breakdowns = Breakdowns::new();
 
+    for attribute in Attribute::get_static() {
+        breakdowns.track_breakdown(attribute);
+    }
+
     breakdowns.insert_bonuses(
         chain_tree!(
             once(BonusTemplate::new(
@@ -40,7 +44,7 @@ fn main() {
             )),
             GuildAmenity::ALL
                 .into_iter()
-                .map(|ga| { BonusTemplate::new(Toggle::Guild(ga), BonusType::Standard, 1,) })
+                .map(|ga| { BonusTemplate::new(Toggle::Guild(ga), BonusType::Standard, 1,) }),
         )
         .map(|bonus| bonus.to_bonus(BonusSource::Debug(1))),
     );
