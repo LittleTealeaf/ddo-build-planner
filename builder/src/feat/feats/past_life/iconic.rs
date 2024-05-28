@@ -69,11 +69,20 @@ impl GetBonuses for IconicPastLife {
             Race::Scourge => Some(vec![
                 BonusTemplate::toggle(Self(Race::Scourge)),
                 BonusTemplate::new(SavingThrow::Fortitude, BonusType::Stacking, 1),
-                // TODO: Scourge: +2% doublestrike / life (stance)
+                BonusTemplate::new(
+                    Attribute::Doublestrike,
+                    BonusType::Stacking,
+                    dec!(2) * value,
+                )
+                .with_condition(Condition::toggled(Self(Race::Scourge))),
             ]),
             Race::Bladeforged => Some(vec![
                 BonusTemplate::toggle(Self(Race::Bladeforged)),
-                // TODO: Fortification +5% / life (passive)
+                BonusTemplate::new(
+                    Attribute::Fortification,
+                    BonusType::Stacking,
+                    dec!(5) * value,
+                ),
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Repair.into()),
                     BonusType::Stacking,
