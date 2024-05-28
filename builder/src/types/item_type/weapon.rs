@@ -156,7 +156,7 @@ impl WeaponType {
     ];
 
     /// All Melee Weapons
-    pub const MELEE_WEAPONS: [Self; 29] = [
+    pub const MELEE_WEAPONS: [Self; 27] = [
         Self::Club,
         Self::Quarterstaff,
         Self::Dagger,
@@ -164,8 +164,6 @@ impl WeaponType {
         Self::LightMace,
         Self::HeavyMace,
         Self::Morningstar,
-        Self::HeavyCrossbow,
-        Self::LightCrossbow,
         Self::Handaxe,
         Self::GreatAxe,
         Self::Kukri,

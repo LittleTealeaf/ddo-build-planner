@@ -8,6 +8,7 @@ use utils::enums::StaticOptions;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
+    feat::{Feat, ToFeat},
     types::{
         damage_type::DamageType,
         flag::{MainHandType, OffHandType},
@@ -23,9 +24,11 @@ use crate::{
     },
 };
 
+use super::PastLifeFeat;
+
 /// Iconic Past Life Feats
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct IconicPastLife(Race);
+pub struct IconicPastLife(pub Race);
 
 impl IconicPastLife {
     /// Acceptable versions of this Iconic Past Life
@@ -205,6 +208,12 @@ impl GetBonuses for IconicPastLife {
             ]),
             _ => None,
         }
+    }
+}
+
+impl ToFeat for IconicPastLife {
+    fn to_feat(self) -> Feat {
+        PastLifeFeat::Iconic(self).to_feat()
     }
 }
 
