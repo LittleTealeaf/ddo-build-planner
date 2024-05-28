@@ -4,45 +4,48 @@ use core::iter::once;
 
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusType},
+    bonus::{
+        Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
+    },
     breakdowns::Breakdowns,
-    feat::IconicPastLife,
+    feat::{HeroicPastLife, IconicPastLife, RacialPastLife},
     types::{
         race::Race,
         toggle::{GuildAmenity, Toggle},
     },
 };
 use ron::ser::{to_string_pretty, PrettyConfig};
-use utils::enums::StaticOptions;
+use utils::{chain_tree, enums::StaticOptions};
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
-    breakdowns.insert_bonus(Bonus::new(
-        Attribute::GuildLevel,
-        BonusType::Stacking,
-        200,
-        BonusSource::Debug(0),
-    ));
 
     breakdowns.insert_bonuses(
-        IconicPastLife::get_static()
-            .map(|ipl| Bonus::feat(ipl, BonusSource::Debug(1)))
-            .chain(once(Bonus::new(
+        chain_tree!(
+            once(BonusTemplate::new(
+                Attribute::GuildLevel,
+                BonusType::Stacking,
+                200
+            )),
+            IconicPastLife::get_static().map(BonusTemplate::feat),
+            once(BonusTemplate::new(
                 Toggle::IconicPastLife(IconicPastLife(Race::Razorclaw)),
                 BonusType::Stacking,
                 1,
-                BonusSource::Debug(1),
-            ))),
-    );
-
-    breakdowns.insert_bonuses(GuildAmenity::ALL.into_iter().map(|ga| {
-        Bonus::new(
-            Toggle::Guild(ga),
-            BonusType::Standard,
-            1,
-            BonusSource::Debug(2),
+            )),
+            HeroicPastLife::get_static().map(BonusTemplate::feat),
+            RacialPastLife::get_static().map(BonusTemplate::feat),
+            once(BonusTemplate::new(
+                Attribute::GuildLevel,
+                BonusType::Stacking,
+                200
+            )),
+            GuildAmenity::ALL
+                .into_iter()
+                .map(|ga| { BonusTemplate::new(Toggle::Guild(ga), BonusType::Standard, 1,) })
         )
-    }));
+        .map(|bonus| bonus.to_bonus(BonusSource::Debug(1))),
+    );
 
     println!(
         "{}",
