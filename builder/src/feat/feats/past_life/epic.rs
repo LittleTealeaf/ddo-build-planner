@@ -24,6 +24,7 @@ use crate::{
         saving_throw::SavingThrow,
         sheltering::Sheltering,
         skill::Skill,
+        tactics::Tactics,
         toggle::{GetToggleGroup, ToToggle, Toggle},
         toggle_group::ToggleGroup,
         weapon_attribute::{WeaponHand, WeaponStat},
@@ -260,29 +261,30 @@ impl GetBonuses for EpicPastLife {
                 dec!(5) * value,
             )
             .with_condition(Condition::toggled(*self))],
-            Self::Doublestrike => vec![
-                BonusTemplate::new(Attribute::Debug(3), BonusType::Stacking, 0),
-                // TODO: Doublestrike +3% / life
-            ],
-            Self::SkillMastery => vec![BonusTemplate::new(Skill::All, BonusType::Stacking, value)
-                .with_condition(Condition::toggled(*self))],
+            Self::Doublestrike => vec![BonusTemplate::new(
+                Attribute::Doublestrike,
+                BonusType::Stacking,
+                dec!(3) * value,
+            )],
+            Self::SkillMastery => vec![BonusTemplate::new(Skill::All, BonusType::Stacking, value)],
             Self::Fortification => vec![BonusTemplate::new(
                 Attribute::Fortification,
                 BonusType::Stacking,
                 value * Decimal::TEN,
             )],
             Self::AncientTactics => vec![
-                BonusTemplate::new(Attribute::Debug(5), BonusType::Stacking, 0),
-                // TODO: Ancient Tactics
+                BonusTemplate::new(Tactics::Tactics, BonusType::Stacking, dec!(2) * value),
+                BonusTemplate::new(Tactics::Assassinate, BonusType::Stacking, value),
             ],
             Self::TrapDamageAbsorption => vec![
                 BonusTemplate::new(Attribute::Debug(6), BonusType::Stacking, 0),
                 // TODO: Trap Absorption
             ],
-            Self::Doubleshot => vec![
-                BonusTemplate::new(Attribute::Debug(7), BonusType::Stacking, 0),
-                // TODO: Doubleshot +3% / life
-            ],
+            Self::Doubleshot => vec![BonusTemplate::new(
+                Attribute::Doubleshot,
+                BonusType::Stacking,
+                dec!(3) * value,
+            )],
             Self::FastHealing => vec![
                 BonusTemplate::new(Attribute::Debug(8), BonusType::Stacking, 0),
                 // TODO: Fast Healing
