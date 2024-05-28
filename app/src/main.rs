@@ -1,10 +1,10 @@
 //! Application Starting Point
 
-use std::iter::once;
+use core::iter::once;
 
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    bonus::{Bonus, BonusSource, BonusType},
     breakdowns::Breakdowns,
     feat::IconicPastLife,
     types::{
