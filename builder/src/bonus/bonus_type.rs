@@ -14,7 +14,7 @@ use utils::enums::StaticOptions;
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum BonusType {
     /// Used in debugging bonus types
-    Debug(u8),
+    Debug(usize),
     /// Bonuses that come from [`Attribute::AbilityModifier`]
     ///
     /// [`Attribute::AbilityModifier`]: crate::attribute::Attribute::AbilityModifier
@@ -57,6 +57,8 @@ pub enum BonusType {
     Festive,
     /// Fortune bonus
     Fortune,
+    /// Guild
+    Guild,
     /// Insightful bonus
     #[serde(rename = "ins", alias = "Insightful")]
     Insightful,
@@ -123,6 +125,7 @@ impl Display for BonusType {
             Self::Feat => write!(f, "Feat"),
             Self::Festive => write!(f, "Festive"),
             Self::Fortune => write!(f, "Fortune"),
+            Self::Guild => write!(f, "Guild"),
             Self::Insightful => write!(f, "Insightful"),
             Self::Legendary => write!(f, "Legendary"),
             Self::Morale => write!(f, "Morale"),
@@ -189,6 +192,7 @@ impl StaticOptions for BonusType {
             Self::Morale,
             Self::Music,
             Self::Primal,
+            Self::Guild,
             Self::Profane,
             Self::Quality,
             Self::Sacred,

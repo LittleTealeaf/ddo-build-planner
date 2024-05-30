@@ -1,6 +1,6 @@
 //! Any attribute that requires the user to interact / configure
 
-public_modules!(attacking_target);
+public_modules!(attacking_target, guild_amenities);
 
 use core::fmt::{self, Display};
 
@@ -24,25 +24,40 @@ use super::{
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Toggle {
     /// Is the character blocking
+    #[serde(rename = "bl", alias = "Blocking")]
     Blocking,
     /// Is the character in reaper mode
+    #[serde(rename = "r", alias = "InReaper")]
     InReaper,
     /// Is the character attacking a certain target
+    #[serde(rename = "at", alias = "Attacking")]
     Attacking(AttackingTarget),
     /// Is the character sneak attacking.
+    #[serde(rename = "sa", alias = "SneakAttack")]
     SneakAttack,
     /// Iconic Past Life
+    #[serde(rename = "ipl", alias = "IconicPastLife")]
     IconicPastLife(IconicPastLife),
     /// Epic Past Life
+    #[serde(rename = "epl", alias = "EpicPastLife")]
     EpicPastLife(EpicPastLife),
+    /// Is the user flanking the enemy
+    #[serde(rename = "fla", alias = "Flanking")]
+    Flanking,
+    /// Guild Amenities
+    #[serde(rename = "gb", alias = "Guild")]
+    Guild(GuildAmenity),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
 
 impl Toggle {
     /// Returns the toggle source used to enable this toggle
     #[must_use]
-    pub fn get_toggle_source(&self) -> BonusSource {
-        BonusSource::ToggleGroup(self.toggle_group().unwrap_or(ToggleGroup::Toggle(*self)))
+    pub fn toggl_source(&self) -> BonusSource {
+        BonusSource::ToggleGroup(
+            self.custom_toggle_group()
+                .unwrap_or(ToggleGroup::Toggle(*self)),
+        )
     }
 
     /// Creates a bonus that either enables or disables this toggle
@@ -52,7 +67,7 @@ impl Toggle {
             self.to_attribute(),
             BonusType::Stacking,
             u8::from(enable),
-            self.get_toggle_source(),
+            self.toggl_source(),
         )
     }
 }
@@ -66,6 +81,8 @@ impl Display for Toggle {
             Self::IconicPastLife(past_life) => write!(f, "{past_life}"),
             Self::EpicPastLife(past_life) => write!(f, "{past_life}"),
             Self::SneakAttack => write!(f, "Sneak Attack"),
+            Self::Flanking => write!(f, "Flanking"),
+            Self::Guild(amenity) => write!(f, "{amenity}"),
         }
     }
 }
@@ -126,14 +143,14 @@ impl StaticOptions for Toggle {
 /// Indicates that a toggle may have a toggle group that it must specifically entail
 pub trait GetToggleGroup {
     /// Returns the toggle group for this toggle, if any
-    fn toggle_group(&self) -> Option<ToggleGroup>;
+    fn custom_toggle_group(&self) -> Option<ToggleGroup>;
 }
 
 impl GetToggleGroup for Toggle {
-    fn toggle_group(&self) -> Option<ToggleGroup> {
+    fn custom_toggle_group(&self) -> Option<ToggleGroup> {
         match self {
-            Self::IconicPastLife(life) => life.toggle_group(),
-            Self::EpicPastLife(life) => life.toggle_group(),
+            Self::IconicPastLife(life) => life.custom_toggle_group(),
+            Self::EpicPastLife(life) => life.custom_toggle_group(),
             _ => None,
         }
     }

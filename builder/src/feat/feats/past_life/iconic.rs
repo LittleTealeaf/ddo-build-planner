@@ -8,6 +8,7 @@ use utils::enums::StaticOptions;
 use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
+    feat::{Feat, ToFeat},
     types::{
         damage_type::DamageType,
         flag::{MainHandType, OffHandType},
@@ -23,9 +24,11 @@ use crate::{
     },
 };
 
+use super::PastLifeFeat;
+
 /// Iconic Past Life Feats
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct IconicPastLife(Race);
+pub struct IconicPastLife(pub Race);
 
 impl IconicPastLife {
     /// Acceptable versions of this Iconic Past Life
@@ -69,11 +72,20 @@ impl GetBonuses for IconicPastLife {
             Race::Scourge => Some(vec![
                 BonusTemplate::toggle(Self(Race::Scourge)),
                 BonusTemplate::new(SavingThrow::Fortitude, BonusType::Stacking, 1),
-                // TODO: Scourge: +2% doublestrike / life (stance)
+                BonusTemplate::new(
+                    Attribute::Doublestrike,
+                    BonusType::Stacking,
+                    dec!(2) * value,
+                )
+                .with_condition(Condition::toggled(Self(Race::Scourge))),
             ]),
             Race::Bladeforged => Some(vec![
                 BonusTemplate::toggle(Self(Race::Bladeforged)),
-                // TODO: Fortification +5% / life (passive)
+                BonusTemplate::new(
+                    Attribute::Fortification,
+                    BonusType::Stacking,
+                    dec!(5) * value,
+                ),
                 BonusTemplate::new(
                     Attribute::SpellPower(DamageType::Repair.into()),
                     BonusType::Stacking,
@@ -199,6 +211,12 @@ impl GetBonuses for IconicPastLife {
     }
 }
 
+impl ToFeat for IconicPastLife {
+    fn to_feat(self) -> Feat {
+        PastLifeFeat::Iconic(self).to_feat()
+    }
+}
+
 impl ToToggle for IconicPastLife {
     fn to_toggle(self) -> Toggle {
         Toggle::IconicPastLife(self)
@@ -206,7 +224,7 @@ impl ToToggle for IconicPastLife {
 }
 
 impl GetToggleGroup for IconicPastLife {
-    fn toggle_group(&self) -> Option<ToggleGroup> {
+    fn custom_toggle_group(&self) -> Option<ToggleGroup> {
         Some(ToggleGroup::IconicPastLife)
     }
 }

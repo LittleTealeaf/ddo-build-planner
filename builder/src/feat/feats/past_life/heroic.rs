@@ -10,6 +10,7 @@ use crate::{
     bonus::{BonusTemplate, BonusType, Condition, ConditionFold},
     feat::{Feat, ToFeat},
     types::{
+        ability::Ability,
         damage_type::DamageType,
         flag::MainHandType,
         heal_amp::HealingAmplification,
@@ -22,6 +23,7 @@ use crate::{
         sneak_attack::SneakAttack,
         spell_points::SpellPoints,
         spell_school::SpellSchool,
+        summoned_attribute::SummonedAttribute,
         tactics::Tactics,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
@@ -80,7 +82,7 @@ impl GetBonuses for HeroicPastLife {
                         BonusType::Stacking,
                         value,
                     ),
-                    BonusTemplate::new(Tactics::All, BonusType::Stacking, value),
+                    BonusTemplate::new(Tactics::Tactics, BonusType::Stacking, value),
                 ],
                 PlayerClass::Monk => vec![BonusTemplate::new(
                     (WeaponHand::Both, WeaponStat::Damage),
@@ -93,7 +95,7 @@ impl GetBonuses for HeroicPastLife {
                         BonusType::Stacking,
                         value * Decimal::TWO,
                     ),
-                    // TODO: Sneak Attack
+                    BonusTemplate::new(SneakAttack::Damage, BonusType::Stacking, value),
                 ],
                 PlayerClass::Sorcerer => vec![
                     BonusTemplate::new(
@@ -148,17 +150,22 @@ impl GetBonuses for HeroicPastLife {
                     // TODO: +1 turn undead charge
                 ],
                 PlayerClass::DarkApostate => vec![
-                    // TODO: +5% negative healing amp
+                    BonusTemplate::new(
+                        HealingAmplification::Negative,
+                        BonusType::Stacking,
+                        dec!(5) * value,
+                    ),
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Negative.into()),
                         BonusType::Stacking,
                         dec!(5) * value,
                     ),
                 ],
-                PlayerClass::Druid => vec![
-                    // TODO: +2 stats for companions
-                    BonusTemplate::new(Attribute::Debug(0), BonusType::Stacking, 0),
-                ],
+                PlayerClass::Druid => vec![BonusTemplate::new(
+                    SummonedAttribute::AbilityScore(Ability::All),
+                    BonusType::Stacking,
+                    dec!(2) * value,
+                )],
                 PlayerClass::BlightCaster => vec![
                     BonusTemplate::new(
                         Attribute::SpellPower(DamageType::Acid.into()),

@@ -12,6 +12,9 @@ use crate::{
 /// Tactic Attack DCs
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Tactics {
+    /// Quivering Palm
+    #[serde(rename = "qp", alias = "QuiveringPalm")]
+    QuiveringPalm,
     /// Trip and Improved Trip bonuses
     #[serde(rename = "tr", alias = "Trip")]
     Trip,
@@ -24,14 +27,24 @@ pub enum Tactics {
     /// Stunning Fist / Stunning Blow
     #[serde(rename = "st", alias = "Stun")]
     Stun,
+    /// Slicing Blow
+    #[serde(rename = "sb", alias = "SlicingBlow")]
+    SlicingBlow,
     /// General Tactics DC
     #[serde(rename = "al", alias = "All")]
-    All,
+    Tactics,
 }
 
 impl Tactics {
     /// All tactics DCs
-    pub const ALL: [Self; 4] = [Self::Trip, Self::Sunder, Self::Assassinate, Self::Stun];
+    pub const ALL: [Self; 6] = [
+        Self::Trip,
+        Self::Sunder,
+        Self::Assassinate,
+        Self::Stun,
+        Self::SlicingBlow,
+        Self::QuiveringPalm,
+    ];
 }
 
 impl StaticOptions for Tactics {
@@ -43,11 +56,13 @@ impl StaticOptions for Tactics {
 impl fmt::Display for Tactics {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::QuiveringPalm => write!(f, "Quivering Palm"),
             Self::Trip => write!(f, "Trip"),
             Self::Sunder => write!(f, "Sunder"),
             Self::Assassinate => write!(f, "Assassinate"),
             Self::Stun => write!(f, "Stunning"),
-            Self::All => write!(f, "All"),
+            Self::Tactics => write!(f, "Tactics"),
+            Self::SlicingBlow => write!(f, "Slicing Blow"),
         }
     }
 }
@@ -60,10 +75,16 @@ impl ToAttribute for Tactics {
 
 impl CloneBonus for Tactics {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
-        matches!(self, Self::All).then(|| {
-            [Self::Trip, Self::Sunder, Self::Stun]
-                .map(|t| bonus.clone_with_attribute(t))
-                .to_vec()
+        matches!(self, Self::Tactics).then(|| {
+            [
+                Self::Trip,
+                Self::Sunder,
+                Self::Stun,
+                Self::QuiveringPalm,
+                Self::SlicingBlow,
+            ]
+            .map(|t| bonus.clone_with_attribute(t))
+            .to_vec()
         })
     }
 }

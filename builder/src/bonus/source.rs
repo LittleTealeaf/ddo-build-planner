@@ -20,9 +20,9 @@ pub enum BonusSource {
     /// Toggle Group Specific
     ToggleGroup(ToggleGroup),
     /// Dictates any custom bonuses for general uses. When possible, do not use this source
-    Custom(usize),
+    Custom(String),
     /// Used for debugging purposes.
-    Debug(u8),
+    Debug(usize),
     /// Only used for initial values
     Base,
 }
@@ -31,7 +31,7 @@ impl Display for BonusSource {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Attribute(attr) => write!(f, "Attribute: {attr}"),
-            Self::Custom(num) => write!(f, "Custom: {num}"),
+            Self::Custom(string) => write!(f, "{string}"),
             Self::Debug(num) => write!(f, "Debug: {num}"),
             Self::Base => write!(f, "Base"),
             Self::ToggleGroup(group) => write!(f, "Toggle Group: {group}"),
@@ -45,8 +45,8 @@ impl From<Attribute> for BonusSource {
     }
 }
 
-impl From<usize> for BonusSource {
-    fn from(value: usize) -> Self {
+impl From<String> for BonusSource {
+    fn from(value: String) -> Self {
         Self::Custom(value)
     }
 }

@@ -196,7 +196,7 @@ mod has_dependency {
             bonus::{Condition, Value},
         };
 
-        fn attr_condition(n: u8) -> Condition {
+        fn attr_condition(n: usize) -> Condition {
             Value::from(Attribute::Debug(n)).equal_to(0.into())
         }
 
@@ -475,7 +475,7 @@ mod include_dependencies {
             bonus::{Condition, Value},
         };
 
-        fn attr_condition(n: u8) -> Condition {
+        fn attr_condition(n: usize) -> Condition {
             Value::from(Attribute::Debug(n)).equal_to(0.into())
         }
 

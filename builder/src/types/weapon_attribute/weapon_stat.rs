@@ -33,6 +33,15 @@ pub enum WeaponStat {
     /// Damage Types
     #[serde(rename = "bypass", alias = "DamageType")]
     DamageType(DamageType),
+    /// Weapon-specific damage (damage that is included in the [`WeaponStat::DiceMultiplier`])
+    #[serde(rename = "wdam", alias = "WeaponDamage")]
+    WeaponDamage,
+    /// Dice Multiplier, or W
+    #[serde(rename = "W", alias = "DiceMultiplier")]
+    DiceMultiplier,
+    /// Total final damage dealt
+    #[serde(rename = "td", alias = "TotalDamage")]
+    TotalDamage,
 }
 
 impl Display for WeaponStat {
@@ -46,6 +55,9 @@ impl Display for WeaponStat {
             Self::CriticalMultiplier1920 => write!(f, "Critical Multiplier (19-20)"),
             Self::DamageType(damage_type) => write!(f, "{damage_type} Damage"),
             Self::CriticalThreatRange => write!(f, "Critical Threat Range"),
+            Self::WeaponDamage => write!(f, "Weapon Damage"),
+            Self::DiceMultiplier => write!(f, "Dice Multiplier"),
+            Self::TotalDamage => write!(f, "Total Damage"),
         }
     }
 }
@@ -66,7 +78,10 @@ impl StaticOptions for WeaponStat {
                 Self::CriticalDamage,
                 Self::CriticalThreatRange,
                 Self::CriticalMultiplier,
-                Self::CriticalMultiplier1920
+                Self::CriticalMultiplier1920,
+                Self::WeaponDamage,
+                Self::DiceMultiplier,
+                Self::TotalDamage
             ],
             DamageType::get_static().map(Self::DamageType)
         )

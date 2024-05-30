@@ -1,40 +1,56 @@
 //! Application Starting Point
 
+use core::iter::once;
+
 use builder::{
-    bonus::{Bonus, BonusType},
+    attribute::Attribute,
+    bonus::{BonusSource, BonusTemplate, BonusType},
     breakdowns::Breakdowns,
-    debug::DebugValue,
-    feat::EpicPastLife,
+    feat::{HeroicPastLife, IconicPastLife, RacialPastLife},
     types::{
-        flag::MainHandType,
-        item_type::WeaponType,
-        toggle::Toggle,
-        weapon_attribute::{WeaponHand, WeaponStat},
+        race::Race,
+        toggle::{GuildAmenity, Toggle},
     },
 };
+use ron::ser::{to_string_pretty, PrettyConfig};
+use utils::{chain_tree, enums::StaticOptions};
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
-    breakdowns.insert_bonus(Bonus::new(
-        EpicPastLife::AncientPower,
-        BonusType::Stacking,
-        1,
-        DebugValue(0),
-    ));
 
-    breakdowns.insert_bonus(Bonus::new(
-        Toggle::EpicPastLife(EpicPastLife::AncientPower),
-        BonusType::Stacking,
-        1,
-        DebugValue(1),
-    ));
+    for attribute in Attribute::get_static() {
+        breakdowns.track_breakdown(attribute);
+    }
 
-    breakdowns.insert_bonus(Bonus::new(
-        MainHandType::Weapon(WeaponType::Club),
-        BonusType::Stacking,
-        1,
-        DebugValue(2),
-    ));
+    breakdowns.insert_bonuses(
+        chain_tree!(
+            once(BonusTemplate::new(
+                Attribute::GuildLevel,
+                BonusType::Stacking,
+                200
+            )),
+            IconicPastLife::get_static().map(BonusTemplate::feat),
+            once(BonusTemplate::new(
+                Toggle::IconicPastLife(IconicPastLife(Race::Razorclaw)),
+                BonusType::Stacking,
+                1,
+            )),
+            HeroicPastLife::get_static().map(BonusTemplate::feat),
+            RacialPastLife::get_static().map(BonusTemplate::feat),
+            once(BonusTemplate::new(
+                Attribute::GuildLevel,
+                BonusType::Stacking,
+                200
+            )),
+            GuildAmenity::ALL
+                .into_iter()
+                .map(|ga| { BonusTemplate::new(Toggle::Guild(ga), BonusType::Standard, 1,) }),
+        )
+        .map(|bonus| bonus.to_bonus(BonusSource::Debug(1))),
+    );
 
-    breakdowns.evaluate_attribute_from((WeaponHand::Main, WeaponStat::Damage));
+    println!(
+        "{}",
+        to_string_pretty(&breakdowns, PrettyConfig::new()).unwrap()
+    );
 }

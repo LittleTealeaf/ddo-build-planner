@@ -47,6 +47,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         completionist_feats(),
         two_handed_fighting(),
         sneak_attack(),
+        weapon_damage(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
@@ -351,7 +352,26 @@ fn sneak_attack() -> impl IntoIterator<Item = BonusTemplate> {
             Attribute::from(SneakAttack::Damage),
         )
         .with_condition(Condition::toggled(Toggle::SneakAttack)),
+        BonusTemplate::new(
+            (WeaponHand::Both, WeaponStat::TotalDamage),
+            BonusType::Stacking,
+            Value::dice(SneakAttack::Dice.to_value(), val!(6)),
+        )
+        .with_condition(Condition::toggled(Toggle::SneakAttack)),
     ]
+}
+
+fn weapon_damage() -> impl Iterator<Item = BonusTemplate> {
+    [WeaponHand::Main, WeaponHand::Off]
+        .into_iter()
+        .flat_map(|hand| {
+            [BonusTemplate::new(
+                (hand, WeaponStat::TotalDamage),
+                BonusType::Stacking,
+                Attribute::from((hand, WeaponStat::WeaponDamage)).to_value()
+                    * (Value::ONE + Attribute::from((hand, WeaponStat::DiceMultiplier)).to_value()),
+            )]
+        })
 }
 
 // TODO: convert this to the other method (flag to flag)
