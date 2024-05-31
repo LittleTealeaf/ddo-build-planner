@@ -3,31 +3,37 @@
 use std::{
     fs::{File, OpenOptions},
     io::{BufReader, Write},
-    path::Path,
+    path::PathBuf,
 };
 
 use anyhow::Result;
 use builder::equipment::set_bonus::ItemSet;
 use ron::{de::from_reader, ser::to_string_pretty};
+use serde::{Deserialize, Serialize};
 use utils::ron::pretty_config::compact_pretty_config;
 
 fn main() -> Result<()> {
-    item_sets()?;
+    process_file::<Vec<ItemSet>>([".", "data", "data", "item_sets.ron"].into_iter().collect())?;
+
     Ok(())
 }
 
-fn item_sets() -> Result<()> {
-    let path = Path::new(".")
-        .join("data")
-        .join("data")
-        .join("item_sets.ron");
-
+fn process_file<T>(path: PathBuf) -> Result<()>
+where
+    for<'de> T: Deserialize<'de> + Serialize,
+{
+    // Read file
     let file = OpenOptions::new().read(true).open(path.clone())?;
-    let data: Vec<ItemSet> = from_reader(BufReader::new(file))?;
+    let reader = BufReader::new(file);
+    let data: T = from_reader(reader)?;
 
+    // Write file
     let mut file = File::create(path)?;
 
-    file.write_all(to_string_pretty(&data, compact_pretty_config())?.as_bytes())?;
+    let config = compact_pretty_config();
+    let serialized = to_string_pretty(&data, config)?;
+
+    file.write_all(serialized.as_bytes())?;
 
     Ok(())
 }
