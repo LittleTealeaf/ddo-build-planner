@@ -1,36 +1,39 @@
 //! Loads and saves the data files to update their serialization
 
 use std::{
-    fs::{remove_file, File, OpenOptions},
+    fs::{File, OpenOptions},
     io::{BufReader, Write},
-    path::Path,
+    path::PathBuf,
 };
 
+use anyhow::Result;
 use builder::equipment::set_bonus::ItemSet;
 use ron::{de::from_reader, ser::to_string_pretty};
+use serde::{Deserialize, Serialize};
 use utils::ron::pretty_config::compact_pretty_config;
 
-fn main() {
-    update_item_sets();
+fn main() -> Result<()> {
+    process_file::<Vec<ItemSet>>([".", "data", "data", "item_sets.ron"].into_iter().collect())?;
+
+    Ok(())
 }
 
-fn update_item_sets() {
-    let path = Path::new(".")
-        .join("data")
-        .join("data")
-        .join("item_sets.ron");
+fn process_file<T>(path: PathBuf) -> Result<()>
+where
+    for<'de> T: Deserialize<'de> + Serialize,
+{
+    // Read file
+    let file = OpenOptions::new().read(true).open(path.clone())?;
+    let reader = BufReader::new(file);
+    let data: T = from_reader(reader)?;
 
-    let file = OpenOptions::new().read(true).open(path.clone()).unwrap();
+    // Write file
+    let mut file = File::create(path)?;
 
-    let data: Vec<ItemSet> = from_reader(BufReader::new(file)).unwrap();
+    let config = compact_pretty_config();
+    let serialized = to_string_pretty(&data, config)?;
 
-    remove_file(path.clone()).unwrap();
+    file.write_all(serialized.as_bytes())?;
 
-    let mut file = File::create(path).unwrap();
-    file.write_all(
-        to_string_pretty(&data, compact_pretty_config())
-            .unwrap()
-            .as_bytes(),
-    )
-    .unwrap();
+    Ok(())
 }

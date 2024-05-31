@@ -1,12 +1,13 @@
 use core::fmt::Debug;
 use std::path::{Path, PathBuf};
 
+use anyhow::Result;
 use iced::{Application, Command};
-use ron::{de::SpannedError, from_str, ser::to_string_pretty};
+use ron::{from_str, ser::to_string_pretty};
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs::File,
-    io::{self, AsyncReadExt, AsyncWriteExt, BufWriter},
+    io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 use ui::HandleMessage;
 use utils::ron::pretty_config::compact_pretty_config;
@@ -120,7 +121,7 @@ where
     }
 }
 
-async fn load_data<T, P>(path: P) -> Result<T, DataError>
+async fn load_data<T, P>(path: P) -> Result<T>
 where
     for<'de> T: Deserialize<'de>,
     P: AsRef<Path> + Send,
@@ -132,7 +133,7 @@ where
     Ok(data)
 }
 
-async fn save_data<T, P>(path: P, data: T) -> Result<(), DataError>
+async fn save_data<T, P>(path: P, data: T) -> Result<()>
 where
     T: Serialize + Send + Sync,
     P: AsRef<Path> + Send,
@@ -145,31 +146,6 @@ where
     Ok(())
 }
 
-#[derive(Debug)]
-enum DataError {
-    IO(io::Error),
-    SpannedError(SpannedError),
-    Ron(ron::Error),
-}
-
-impl From<io::Error> for DataError {
-    fn from(value: io::Error) -> Self {
-        Self::IO(value)
-    }
-}
-
-impl From<SpannedError> for DataError {
-    fn from(value: SpannedError) -> Self {
-        Self::SpannedError(value)
-    }
-}
-
-impl From<ron::Error> for DataError {
-    fn from(value: ron::Error) -> Self {
-        Self::Ron(value)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
@@ -180,19 +156,21 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn save_and_load_file() {
-        let dir = tempdir().unwrap();
+    async fn save_and_load_file() -> anyhow::Result<()> {
+        let dir = tempdir()?;
         let file_path = dir.path().join("serialized-file");
         let data = Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0));
 
         assert!(!file_path.exists());
 
-        save_data(file_path.clone(), data.clone()).await.unwrap();
+        save_data(file_path.clone(), data.clone()).await?;
 
         assert!(file_path.exists());
 
-        let result = load_data::<Bonus, PathBuf>(file_path).await.unwrap();
+        let result = load_data::<Bonus, PathBuf>(file_path).await?;
 
         assert_eq!(data, result);
+
+        Ok(())
     }
 }

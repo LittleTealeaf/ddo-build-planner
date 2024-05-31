@@ -30,11 +30,12 @@ iced_aw = { version = "0.9.3", default-features = false, features = [
 	"icons",
 	"modal",
 	"card",
-	"drop_down" # todo: remove drop down?
+	"drop_down",        # todo: remove drop down?
 ] }
 fuzzy-filter = "0.1.0"
 itertools = "0.13.0"
 rust_decimal = "1.35.0"
+anyhow = "1.0.86"
 
 [dev-dependencies]
 tempfile = { version = "3.10.1" }
