@@ -3,11 +3,11 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use iced::{Application, Command};
-use ron::{de::SpannedError, from_str, ser::to_string_pretty};
+use ron::{from_str, ser::to_string_pretty};
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs::File,
-    io::{self, AsyncReadExt, AsyncWriteExt, BufWriter},
+    io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
 use ui::HandleMessage;
 use utils::ron::pretty_config::compact_pretty_config;
