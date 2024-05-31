@@ -1,6 +1,7 @@
 use core::fmt::Debug;
 use std::path::{Path, PathBuf};
 
+use anyhow::Result;
 use iced::{Application, Command};
 use ron::{de::SpannedError, from_str, ser::to_string_pretty};
 use serde::{Deserialize, Serialize};
@@ -120,7 +121,7 @@ where
     }
 }
 
-async fn load_data<T, P>(path: P) -> Result<T, DataError>
+async fn load_data<T, P>(path: P) -> Result<T>
 where
     for<'de> T: Deserialize<'de>,
     P: AsRef<Path> + Send,
@@ -132,7 +133,7 @@ where
     Ok(data)
 }
 
-async fn save_data<T, P>(path: P, data: T) -> Result<(), DataError>
+async fn save_data<T, P>(path: P, data: T) -> Result<()>
 where
     T: Serialize + Send + Sync,
     P: AsRef<Path> + Send,
@@ -143,31 +144,6 @@ where
     writer.write_all(serialized.as_bytes()).await?;
     writer.flush().await?;
     Ok(())
-}
-
-#[derive(Debug)]
-enum DataError {
-    IO(io::Error),
-    SpannedError(SpannedError),
-    Ron(ron::Error),
-}
-
-impl From<io::Error> for DataError {
-    fn from(value: io::Error) -> Self {
-        Self::IO(value)
-    }
-}
-
-impl From<SpannedError> for DataError {
-    fn from(value: SpannedError) -> Self {
-        Self::SpannedError(value)
-    }
-}
-
-impl From<ron::Error> for DataError {
-    fn from(value: ron::Error) -> Self {
-        Self::Ron(value)
-    }
 }
 
 #[cfg(test)]
