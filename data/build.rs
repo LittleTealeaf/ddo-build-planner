@@ -8,11 +8,11 @@ use std::{
     path::Path,
 };
 
-use anyhow::Result;
 use data::item_sets;
+use errors::Error;
 use serde::Serialize;
 
-fn main() -> Result<()> {
+fn main() -> Result<(), self::errors::Error> {
     write_artifact(
         "test",
         String::from("This is test data from the build script"),
@@ -23,7 +23,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn write_artifact<S>(name: &str, item: S) -> Result<()>
+fn write_artifact<S>(name: &str, item: S) -> Result<(), Error>
 where
     S: Serialize,
 {
@@ -36,7 +36,7 @@ where
     Ok(())
 }
 
-fn get_data_files(dir: &str) -> Result<ReadDir> {
+fn get_data_files(dir: &str) -> Result<ReadDir, Error> {
     let path = Path::new(".").join("data").join(dir);
     let path_str = path.to_str().unwrap();
 
@@ -46,19 +46,57 @@ fn get_data_files(dir: &str) -> Result<ReadDir> {
 }
 
 mod data {
-    use std::io::BufReader;
+    use std::{fs::File, io::BufReader, path::Path};
 
     use builder::equipment::set_bonus::ItemSet;
     use ron::de::from_reader;
 
-    use super::{File, Path, Result};
+    use crate::errors;
 
-    pub fn item_sets() -> Result<Vec<ItemSet>> {
+    pub fn item_sets() -> Result<Vec<ItemSet>, errors::Error> {
         println!("cargo:rerun-if-changed=./data/item_sets.ron");
         let path = Path::new("./data/item_sets.ron");
         let file = File::open(path)?;
         let reader = BufReader::new(file);
         let items = from_reader(reader)?;
         Ok(items)
+    }
+}
+
+mod errors {
+    use std::{env::VarError, io};
+
+    use ron::de::SpannedError;
+
+    #[derive(Debug)]
+    pub enum Error {
+        Environment(VarError),
+        Serialize(ron::Error),
+        Spanned(SpannedError),
+        IO(io::Error),
+    }
+
+    impl From<VarError> for Error {
+        fn from(value: VarError) -> Self {
+            Self::Environment(value)
+        }
+    }
+
+    impl From<ron::Error> for Error {
+        fn from(value: ron::Error) -> Self {
+            Self::Serialize(value)
+        }
+    }
+
+    impl From<io::Error> for Error {
+        fn from(value: io::Error) -> Self {
+            Self::IO(value)
+        }
+    }
+
+    impl From<SpannedError> for Error {
+        fn from(value: SpannedError) -> Self {
+            Self::Spanned(value)
+        }
     }
 }
