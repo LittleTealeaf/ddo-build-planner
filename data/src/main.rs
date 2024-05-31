@@ -12,6 +12,11 @@ use ron::{de::from_reader, ser::to_string_pretty};
 use utils::ron::pretty_config::compact_pretty_config;
 
 fn main() -> Result<()> {
+    item_sets()?;
+    Ok(())
+}
+
+fn item_sets() -> Result<()> {
     let path = Path::new(".")
         .join("data")
         .join("data")
