@@ -21,6 +21,7 @@ builder = { path = "../builder/" }
 serde = { version = "1.0.203", features = ["derive"] }
 utils = { path = "../utils/" }
 ron = "0.8.1"
+anyhow = "1.0.86"
 
 [build-dependencies]
 serde = { version = "1.0.203" }
