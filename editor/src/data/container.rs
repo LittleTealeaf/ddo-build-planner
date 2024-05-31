@@ -156,19 +156,21 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn save_and_load_file() {
-        let dir = tempdir().unwrap();
+    async fn save_and_load_file() -> anyhow::Result<()> {
+        let dir = tempdir()?;
         let file_path = dir.path().join("serialized-file");
         let data = Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0));
 
         assert!(!file_path.exists());
 
-        save_data(file_path.clone(), data.clone()).await.unwrap();
+        save_data(file_path.clone(), data.clone()).await?;
 
         assert!(file_path.exists());
 
-        let result = load_data::<Bonus, PathBuf>(file_path).await.unwrap();
+        let result = load_data::<Bonus, PathBuf>(file_path).await?;
 
         assert_eq!(data, result);
+
+        Ok(())
     }
 }
