@@ -1,5 +1,3 @@
-use core::fmt::{Display, Formatter, Result};
-
 use builder::bonus::{Condition, Value};
 
 use self::types::ConditionType;
@@ -21,15 +19,6 @@ pub struct ConditionSelector {
     condition_b: Option<Condition>,
     value_a: Option<Value>,
     value_b: Option<Value>,
-}
-
-impl Display for ConditionSelector {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", self.cond)?;
-        self.selector
-            .as_ref()
-            .map_or(Ok(()), |selector| write!(f, "{selector}"))
-    }
 }
 
 impl ConditionSelector {
@@ -129,17 +118,6 @@ pub enum ConditionSubSelector {
     ConditionB(Box<ConditionSelector>),
     ValueA(Box<ValueSelector>),
     ValueB(Box<ValueSelector>),
-}
-
-impl Display for ConditionSubSelector {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self {
-            Self::ConditionA(selector) => write!(f, "> Condition A {selector}"),
-            Self::ConditionB(selector) => write!(f, "> Condition B {selector}"),
-            Self::ValueA(selector) => write!(f, "> Value A {selector}"),
-            Self::ValueB(selector) => write!(f, "> Value B {selector}"),
-        }
-    }
 }
 
 #[cfg(test)]

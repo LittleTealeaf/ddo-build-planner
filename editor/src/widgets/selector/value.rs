@@ -2,7 +2,6 @@ use builder::{
     attribute::Attribute,
     bonus::{Condition, ToValue, Value},
 };
-use core::fmt::{Display, Formatter, Result};
 use rust_decimal::Decimal;
 
 use self::types::ValueType;
@@ -166,32 +165,12 @@ impl ValueSelector {
     }
 }
 
-impl Display for ValueSelector {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{} ", self.val)?;
-        self.selector
-            .as_ref()
-            .map_or(Ok(()), |selector| write!(f, "{selector}"))
-    }
-}
-
 #[derive(Debug, Clone)]
 pub enum ValueSubSelector {
     ValueA(Box<ValueSelector>),
     ValueB(Box<ValueSelector>),
     Condition(Box<ConditionSelector>),
     Attribute(Box<AttributeSelector>),
-}
-
-impl Display for ValueSubSelector {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match &self {
-            Self::ValueA(selector) => write!(f, "> Value A {selector}"),
-            Self::ValueB(selector) => write!(f, "> Value B {selector}"),
-            Self::Condition(selector) => write!(f, "> Condition {selector}"),
-            Self::Attribute(_) => write!(f, "> Attribute"),
-        }
-    }
 }
 
 #[cfg(test)]

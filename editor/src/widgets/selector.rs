@@ -1,13 +1,8 @@
-use core::fmt::{self, Display};
-
 use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
 };
-use iced::{
-    widget::{button, column, text},
-    Application, Command, Element, Renderer,
-};
+use iced::{Application, Command, Element, Renderer};
 use itertools::Itertools;
 use ui::{HandleMessage, HandleView};
 
@@ -36,16 +31,6 @@ pub enum Selector {
     Attribute(AttributeSelector),
     Value(ValueSelector),
     Condition(ConditionSelector),
-}
-
-impl Display for Selector {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Attribute(_) => write!(f, "Attribute"),
-            Self::Value(selector) => write!(f, "Value {selector}"),
-            Self::Condition(selector) => write!(f, "Condition {selector}"),
-        }
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -202,25 +187,9 @@ impl SelectorWidget {
 impl HandleView<App> for SelectorWidget {
     fn handle_view<'a>(
         &'a self,
-        app: &'a App,
+        _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        let Some(selector) = &self.selector else {
-            return column!(
-                text("Error: Selector not Specified"),
-                button(text("Close")).on_press_maybe(self.on_cancel.clone())
-            )
-            .into();
-        };
-
-        column!(
-            text(selector),
-            match selector {
-                Selector::Attribute(sel) => sel.handle_view(app),
-                Selector::Value(sel) => sel.handle_view(app),
-                Selector::Condition(sel) => sel.handle_view(app),
-            },
-        )
-        .into()
+        todo!()
     }
 }
 
