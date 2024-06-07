@@ -1,7 +1,6 @@
 //! Editor Application
 mod data;
 mod tabs;
-mod widgets;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
@@ -11,7 +10,6 @@ use tabs::{
     Tab,
 };
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
-use widgets::selector::{SelectorWidget, SelectorWidgetMessage};
 
 fn main() -> iced::Result {
     App::run(Settings::default())
@@ -24,7 +22,6 @@ struct App {
     tab_item_sets: TabSetBonuses,
     icons_loaded: bool,
     selected_tab: Tab,
-    selector: Option<SelectorWidget>,
 }
 
 #[derive(Clone, Debug)]
@@ -34,11 +31,6 @@ enum Message {
     Error(String),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
-    Selector(SelectorWidgetMessage),
-    DebugOpenCondition,
-    DebugOpenValue,
-    DebugOpenAttribute,
-    DebugClose,
 }
 
 impl Application for App {
@@ -57,7 +49,6 @@ impl Application for App {
             icons_loaded: false,
             selected_tab: Tab::Home,
             tab_item_sets: TabSetBonuses::default(),
-            selector: None,
         };
 
         let command = Command::batch([
@@ -77,48 +68,13 @@ impl Application for App {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-        self.selector.as_ref().map_or_else(
-            || self.selected_tab.handle_view(self),
-            |selector| selector.handle_view(self),
-        )
+        self.selected_tab.handle_view(self)
     }
 }
 
 impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
-            Message::DebugClose => {
-                self.selector = None;
-                Command::none()
-            }
-            Message::DebugOpenCondition => {
-                self.selector = Some(
-                    SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_condition(None)
-                        .with_on_submit(Message::DebugClose)
-                        .with_on_cancel(Message::DebugClose),
-                );
-                Command::none()
-            }
-
-            Message::DebugOpenValue => {
-                self.selector = Some(
-                    SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_value(None)
-                        .with_on_submit(Message::DebugClose)
-                        .with_on_cancel(Message::DebugClose),
-                );
-                Command::none()
-            }
-            Message::DebugOpenAttribute => {
-                self.selector = Some(
-                    SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_attribute(None)
-                        .with_on_submit(Message::DebugClose)
-                        .with_on_cancel(Message::DebugClose),
-                );
-                Command::none()
-            }
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()
@@ -130,7 +86,6 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::TabSetBonuses(message) => self.handle_message(message),
-            Message::Selector(message) => self.handle_message(message),
         }
     }
 }
