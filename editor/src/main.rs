@@ -6,7 +6,7 @@ use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use tabs::{
     home::TabHome,
-    item_sets::{TabSetBonuses, TabSetBonusesMessage},
+    item_sets::{TabItemSets, TabSetBonusesMessage},
     Tab,
 };
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
@@ -19,7 +19,7 @@ fn main() -> iced::Result {
 struct App {
     data: Data,
     tab_home: TabHome,
-    tab_item_sets: TabSetBonuses,
+    tab_item_sets: TabItemSets,
     icons_loaded: bool,
     selected_tab: Tab,
 }
@@ -48,7 +48,7 @@ impl Application for App {
             tab_home: TabHome::default(),
             icons_loaded: false,
             selected_tab: Tab::Home,
-            tab_item_sets: TabSetBonuses::default(),
+            tab_item_sets: TabItemSets::default(),
         };
 
         let command = Command::batch([

@@ -13,7 +13,7 @@ use crate::{App, Message};
 use self::edit_set::{ItemSetEditor, ItemSetEditorMessage};
 
 #[derive(Debug, Clone, Default)]
-pub struct TabSetBonuses {
+pub struct TabItemSets {
     filter: String,
     editing: Option<ItemSetEditor>,
 }
@@ -59,7 +59,7 @@ impl HandleMessage<TabSetBonusesMessage> for App {
     }
 }
 
-impl HandleView<App> for TabSetBonuses {
+impl HandleView<App> for TabItemSets {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
