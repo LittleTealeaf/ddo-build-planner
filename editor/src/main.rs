@@ -1,9 +1,11 @@
 //! Editor Application
 mod data;
+mod modals;
 mod tabs;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
+use modals::attribute::{AttributeSelector, AttributeSelectorMessage};
 use tabs::{
     home::TabHome,
     item_sets::{TabItemSets, TabSetBonusesMessage},
@@ -22,6 +24,7 @@ struct App {
     tab_item_sets: TabItemSets,
     icons_loaded: bool,
     selected_tab: Tab,
+    attribute_selector: Option<AttributeSelector>,
 }
 
 #[derive(Clone, Debug)]
@@ -31,6 +34,7 @@ enum Message {
     Error(String),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
+    AttributeSelector(AttributeSelectorMessage),
 }
 
 impl Application for App {
@@ -49,6 +53,7 @@ impl Application for App {
             icons_loaded: false,
             selected_tab: Tab::Home,
             tab_item_sets: TabItemSets::default(),
+            attribute_selector: None,
         };
 
         let command = Command::batch([
@@ -86,6 +91,7 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::TabSetBonuses(message) => self.handle_message(message),
+            Message::AttributeSelector(message) => self.handle_message(message),
         }
     }
 }
