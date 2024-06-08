@@ -1,5 +1,5 @@
-use core::convert::Into;
-use std::{collections::HashMap, str::FromStr};
+use core::{convert::Into, str::FromStr};
+use std::collections::HashMap;
 
 use builder::{
     attribute::Attribute,
@@ -36,7 +36,7 @@ impl ModalExpression {
     {
         let value = Option::<Value>::from_into(value);
         let mut selector = Self::new();
-        selector.cached_value = value.clone();
+        selector.cached_value.clone_from(&value);
         selector.base = selector.add_selector_value(value);
         selector
     }
@@ -47,7 +47,7 @@ impl ModalExpression {
     {
         let condition = Option::<Condition>::from_into(condition);
         let mut selector = Self::new();
-        selector.cached_condition = condition.clone();
+        selector.cached_condition.clone_from(&condition);
         selector.base = selector.add_selector_condition(condition);
         selector
     }
