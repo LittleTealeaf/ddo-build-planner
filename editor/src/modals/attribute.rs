@@ -20,6 +20,12 @@ pub struct AttributeSelector {
     on_cancel: Option<Message>,
 }
 
+impl App {
+    pub fn select_attribute(&self) -> AttributeSelector {
+        AttributeSelector::new(self.data.generate_attributes())
+    }
+}
+
 impl AttributeSelector {
     fn new<I>(attributes: I) -> Self
     where
@@ -35,7 +41,7 @@ impl AttributeSelector {
         }
     }
 
-    fn select<A>(self, attribute: A) -> Self
+    pub fn select<A>(self, attribute: A) -> Self
     where
         A: Into<Option<Attribute>>,
     {
@@ -51,7 +57,7 @@ impl AttributeSelector {
         }
     }
 
-    fn title<S>(self, title: S) -> Self
+    pub fn title<S>(self, title: S) -> Self
     where
         S: Into<String>,
     {
@@ -61,24 +67,48 @@ impl AttributeSelector {
         }
     }
 
-    fn on_submit<M>(self, message: M) -> Self
+    pub fn on_submit<M>(self, message: M) -> Self
     where
-        M: Into<Option<Message>>,
+        M: Into<Message>,
     {
         Self {
-            on_submit: message.into(),
+            on_submit: Some(message.into()),
             ..self
         }
     }
 
-    fn on_cancel<M>(self, message: M) -> Self
+    pub fn on_submit_maybe<M>(self, message: Option<M>) -> Self
     where
-        M: Into<Option<Message>>,
+        M: Into<Message>,
     {
         Self {
-            on_cancel: message.into(),
+            on_submit: message.map(Into::into),
             ..self
         }
+    }
+
+    pub fn on_cancel<M>(self, message: M) -> Self
+    where
+        M: Into<Message>,
+    {
+        Self {
+            on_cancel: Some(message.into()),
+            ..self
+        }
+    }
+
+    pub fn on_cancel_maybe<M>(self, message: Option<M>) -> Self
+    where
+        M: Into<Message>,
+    {
+        Self {
+            on_cancel: message.map(Into::into),
+            ..self
+        }
+    }
+
+    pub fn get_attribute(&self) -> Option<Attribute> {
+        self.attributes.get(self.selected?).cloned()
     }
 }
 
