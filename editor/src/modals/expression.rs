@@ -1,6 +1,7 @@
 use core::{convert::Into, str::FromStr};
 use std::collections::HashMap;
 
+use ::ui::HandleMessage;
 use builder::{
     attribute::Attribute,
     bonus::{Condition, Value},
@@ -8,13 +9,13 @@ use builder::{
 use condition::ConditionType;
 use iced::{Application, Command};
 use rust_decimal::Decimal;
-use ui::HandleMessage;
 use utils::from_into::FromInto;
 use value::ValueType;
 
 use crate::{App, Message};
 
 mod condition;
+mod ui;
 mod value;
 
 #[derive(Debug, Clone)]
