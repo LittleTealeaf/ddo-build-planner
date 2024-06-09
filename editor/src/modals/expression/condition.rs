@@ -1,3 +1,6 @@
+use core::fmt;
+use std::fmt::Display;
+
 use crate::modals::expression::ModalExpressionType;
 use builder::bonus::Condition;
 
@@ -14,6 +17,36 @@ pub enum ConditionType {
     And,
     Or,
     Xor,
+}
+
+impl ConditionType {
+    pub const TYPES: [Self; 9] = [
+        Self::Not,
+        Self::GreaterThan,
+        Self::LessThan,
+        Self::EqualTo,
+        Self::True,
+        Self::False,
+        Self::And,
+        Self::Or,
+        Self::Xor,
+    ];
+}
+
+impl Display for ConditionType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Not => write!(f, "Not"),
+            Self::GreaterThan => write!(f, "Greater Than"),
+            Self::LessThan => write!(f, "Less Than"),
+            Self::EqualTo => write!(f, "Equal To"),
+            Self::True => write!(f, "True"),
+            Self::False => write!(f, "Fase"),
+            Self::And => write!(f, "And"),
+            Self::Or => write!(f, "Or"),
+            Self::Xor => write!(f, "Xor"),
+        }
+    }
 }
 
 impl ModalExpression {

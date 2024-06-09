@@ -40,6 +40,10 @@ enum Message {
     TabSetBonuses(TabSetBonusesMessage),
     AttributeSelector(AttributeSelectorMessage),
     ExpressionSelector(ModalExpressionMessage),
+    DebugOpenAttribute,
+    DebugOpenCondition,
+    DebugOpenValue,
+    DebugSubmit,
 }
 
 impl Application for App {
@@ -80,7 +84,12 @@ impl Application for App {
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
         self.attribute_selector.as_ref().map_or_else(
-            || self.selected_tab.handle_view(self),
+            || {
+                self.expression_selector.as_ref().map_or_else(
+                    || self.selected_tab.handle_view(self),
+                    |selector| selector.handle_view(self),
+                )
+            },
             |selector| selector.handle_view(self),
         )
     }
@@ -102,6 +111,48 @@ impl HandleMessage<Message> for App {
             Message::TabSetBonuses(message) => self.handle_message(message),
             Message::AttributeSelector(message) => self.handle_message(message),
             Message::ExpressionSelector(message) => self.handle_message(message),
+            Message::DebugOpenAttribute => {
+                self.attribute_selector = Some(
+                    self.select_attribute()
+                        .title("Debug")
+                        .on_submit(Message::DebugSubmit),
+                );
+                Command::none()
+            }
+            Message::DebugOpenCondition => {
+                self.expression_selector = Some(
+                    ModalExpression::condition(None)
+                        .on_submit(Message::DebugSubmit)
+                        .title("Debug Condition"),
+                );
+                Command::none()
+            }
+            Message::DebugOpenValue => {
+                self.expression_selector = Some(
+                    ModalExpression::value(None)
+                        .on_submit(Message::DebugSubmit)
+                        .title("Debug Submit"),
+                );
+                Command::none()
+            }
+            Message::DebugSubmit => {
+                if let Some(attr) = &self.attribute_selector {
+                    if let Some(attr) = attr.get_attribute() {
+                        println!("{attr}");
+                    }
+                }
+
+                if let Some(sel) = &self.expression_selector {
+                    if let Some(value) = sel.get_value() {
+                        println!("{value}");
+                    }
+                    if let Some(cond) = sel.get_condition() {
+                        println!("{cond}");
+                    }
+                }
+
+                Command::none()
+            }
         }
     }
 }

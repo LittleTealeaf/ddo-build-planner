@@ -4,7 +4,7 @@ use iced::{
 };
 use ui::HandleView;
 
-use crate::App;
+use crate::{App, Message};
 
 #[allow(clippy::empty_structs_with_brackets)]
 #[derive(Debug, Clone, Default)]
@@ -17,9 +17,9 @@ impl HandleView<App> for TabHome {
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
     {
         column!(
-            button(text("Attribute")),
-            button(text("Value")),
-            button(text("Condition")),
+            button(text("Attribute")).on_press(Message::DebugOpenAttribute),
+            button(text("Value")).on_press(Message::DebugOpenValue),
+            button(text("Condition")).on_press(Message::DebugOpenCondition),
         )
         .into()
     }

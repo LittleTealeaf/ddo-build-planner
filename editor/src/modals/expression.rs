@@ -233,6 +233,8 @@ impl ModalExpression {
             (_, val) => val,
         };
 
+        selector.selector_type = selector_type;
+
         self.selectors.insert(id, selector);
     }
 }

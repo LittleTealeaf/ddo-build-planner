@@ -1,3 +1,6 @@
+use core::fmt;
+use std::fmt::Display;
+
 use builder::bonus::Value;
 
 use super::{InternalSelector, ModalExpression, ModalExpressionType};
@@ -19,6 +22,48 @@ pub enum ValueType {
     Rem,
     If,
     Dice,
+}
+
+impl ValueType {
+    pub const TYPES: [Self; 15] = [
+        Self::Const,
+        Self::Attribute,
+        Self::Min,
+        Self::Max,
+        Self::Floor,
+        Self::Ceil,
+        Self::Round,
+        Self::Abs,
+        Self::Add,
+        Self::Sub,
+        Self::Mul,
+        Self::Div,
+        Self::Rem,
+        Self::If,
+        Self::Dice,
+    ];
+}
+
+impl Display for ValueType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Const => write!(f, "Constant"),
+            Self::Attribute => write!(f, "Attribute"),
+            Self::Min => write!(f, "Min"),
+            Self::Max => write!(f, "Max"),
+            Self::Floor => write!(f, "Floor"),
+            Self::Ceil => write!(f, "Ceil"),
+            Self::Round => write!(f, "Round"),
+            Self::Abs => write!(f, "Abs"),
+            Self::Add => write!(f, "Add"),
+            Self::Sub => write!(f, "Sub"),
+            Self::Mul => write!(f, "Mul"),
+            Self::Div => write!(f, "Div"),
+            Self::Rem => write!(f, "Rem"),
+            Self::If => write!(f, "If"),
+            Self::Dice => write!(f, "Dice"),
+        }
+    }
 }
 
 impl ModalExpression {

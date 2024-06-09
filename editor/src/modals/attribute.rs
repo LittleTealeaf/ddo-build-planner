@@ -199,7 +199,7 @@ impl HandleView<App> for AttributeSelector {
                         .width(Length::Fill)
                         .into()
                     })
-            )),
+            )).height(Length::Fill),
             row!(
                 horizontal_space().width(Length::Fill),
                 button(text("Cancel"))
