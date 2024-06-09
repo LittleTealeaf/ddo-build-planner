@@ -147,7 +147,7 @@ impl HandleMessage<AttributeSelectorMessage> for App {
         &mut self,
         message: AttributeSelectorMessage,
     ) -> Command<<Self as Application>::Message> {
-        let Some(sel) = &mut self.attribute_selector else {
+        let Some(sel) = &mut self.modal_attribute else {
             return Command::none();
         };
 
@@ -165,7 +165,7 @@ impl HandleMessage<AttributeSelectorMessage> for App {
                     .on_submit
                     .clone()
                     .map_or_else(Command::none, |message| self.handle_message(message));
-                self.attribute_selector = None;
+                self.modal_attribute = None;
                 command
             }
             AttributeSelectorMessage::Cancel => {
@@ -173,7 +173,7 @@ impl HandleMessage<AttributeSelectorMessage> for App {
                     .on_cancel
                     .clone()
                     .map_or_else(Command::none, |message| self.handle_message(message));
-                self.attribute_selector = None;
+                self.modal_attribute = None;
                 command
             }
             AttributeSelectorMessage::Clear => {

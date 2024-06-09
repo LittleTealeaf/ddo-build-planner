@@ -296,7 +296,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
         &mut self,
         message: ModalExpressionMessage,
     ) -> Command<<Self as Application>::Message> {
-        let Some(modal) = &mut self.expression_selector else {
+        let Some(modal) = &mut self.modal_expression else {
             return Command::none();
         };
 
@@ -306,7 +306,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                     .on_submit
                     .clone()
                     .map_or_else(Command::none, |message| self.handle_message(message));
-                self.expression_selector = None;
+                self.modal_expression = None;
                 command
             }
             ModalExpressionMessage::Cancel => {
@@ -314,7 +314,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                     .on_cancel
                     .clone()
                     .map_or_else(Command::none, |message| self.handle_message(message));
-                self.expression_selector = None;
+                self.modal_expression = None;
                 command
             }
             ModalExpressionMessage::Message(id, message) => match message {
@@ -334,7 +334,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                         .and_then(|selector| selector.attribute.as_ref())
                         .cloned();
 
-                    self.attribute_selector = Some(
+                    self.modal_attribute = Some(
                         self.select_attribute()
                             .title("Select Attribute")
                             .on_submit((id, ModalExpressionInternalMessage::OnAttributeSelected))
@@ -344,7 +344,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                 }
                 ModalExpressionInternalMessage::OnAttributeSelected => {
                     if let (Some(selector), Some(attribute_selector)) =
-                        (modal.selectors.get_mut(&id), &self.attribute_selector)
+                        (modal.selectors.get_mut(&id), &self.modal_attribute)
                     {
                         selector.attribute = attribute_selector.get_attribute();
                         modal.update_cached();
