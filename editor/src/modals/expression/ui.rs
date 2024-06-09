@@ -2,7 +2,7 @@ use iced::{
     theme,
     widget::{
         button, column, container, horizontal_space, pick_list, row, scrollable, text, text_input,
-        vertical_space
+        vertical_space,
     },
     Application, Element, Length, Renderer,
 };
