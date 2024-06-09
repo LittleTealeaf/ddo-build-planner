@@ -356,7 +356,7 @@ impl Display for Value {
                 if_true,
                 if_false,
             } => {
-                write!(f, "If ({condition}) then {if_true} else {if_false}")
+                write!(f, "If ({condition}) then ({if_true}) else ({if_false})")
             }
             Self::Dice { count, size } => write!(f, "({count})d({size})"),
         }
