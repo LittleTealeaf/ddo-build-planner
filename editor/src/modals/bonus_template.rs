@@ -108,7 +108,7 @@ impl HandleMessage<ModalBonusMessage> for App {
         &mut self,
         message: ModalBonusMessage,
     ) -> Command<<Self as Application>::Message> {
-        let Some(modal) = &self.modal_bonus else {
+        let Some(modal) = &mut self.modal_bonus else {
             return Command::none();
         };
 
@@ -130,26 +130,23 @@ impl HandleMessage<ModalBonusMessage> for App {
                 command
             }
             ModalBonusMessage::OpenAttributeModal => {
+                let attribute = modal.attribute.clone();
                 self.modal_attribute = Some(
                     self.select_attribute()
                         .title("Bonus Attribute")
                         .on_submit(ModalBonusMessage::OnAttributeSelected)
-                        .select_maybe(modal.attribute.clone()),
+                        .select_maybe(attribute),
                 );
                 Command::none()
             }
             ModalBonusMessage::OnAttributeSelected => {
-                if let (Some(modal_attribute), Some(modal)) =
-                    (&self.modal_attribute, &mut self.modal_bonus)
-                {
+                if let Some(modal_attribute) = &self.modal_attribute {
                     modal.attribute = modal_attribute.get_attribute();
                 }
                 Command::none()
             }
             ModalBonusMessage::SetBonusType(bonus_type) => {
-                if let Some(modal) = &mut self.modal_bonus {
-                    modal.bonus_type = bonus_type;
-                }
+                modal.bonus_type = bonus_type;
                 Command::none()
             }
             ModalBonusMessage::OpenValueModal => {
@@ -161,9 +158,7 @@ impl HandleMessage<ModalBonusMessage> for App {
                 Command::none()
             }
             ModalBonusMessage::OnValueSelected => {
-                if let (Some(modal_expression), Some(modal)) =
-                    (&self.modal_expression, &mut self.modal_bonus)
-                {
+                if let Some(modal_expression) = &self.modal_expression {
                     modal.value = modal_expression.get_value();
                 }
                 Command::none()
@@ -177,23 +172,17 @@ impl HandleMessage<ModalBonusMessage> for App {
                 Command::none()
             }
             ModalBonusMessage::OnConditionSelected => {
-                if let (Some(modal_expression), Some(modal)) =
-                    (&self.modal_expression, &mut self.modal_bonus)
-                {
+                if let Some(modal_expression) = &self.modal_expression {
                     modal.condition = modal_expression.get_condition();
                 }
                 Command::none()
             }
             ModalBonusMessage::ClearCondition => {
-                if let Some(modal) = &mut self.modal_bonus {
-                    modal.condition = None;
-                }
+                modal.condition = None;
                 Command::none()
             }
             ModalBonusMessage::SetDisplaySource(source) => {
-                if let Some(modal) = &mut self.modal_bonus {
-                    modal.display_source = source;
-                }
+                modal.display_source = source;
                 Command::none()
             }
         }
