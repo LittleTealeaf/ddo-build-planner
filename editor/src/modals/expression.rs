@@ -39,6 +39,7 @@ impl ModalExpression {
         let mut selector = Self::new();
         selector.cached_value.clone_from(&value);
         selector.base = selector.add_selector_value(value);
+        selector.update_cached();
         selector
     }
 
@@ -50,6 +51,7 @@ impl ModalExpression {
         let mut selector = Self::new();
         selector.cached_condition.clone_from(&condition);
         selector.base = selector.add_selector_condition(condition);
+        selector.update_cached();
         selector
     }
 
@@ -321,10 +323,17 @@ impl HandleMessage<ModalExpressionMessage> for App {
                     Command::none()
                 }
                 ModalExpressionInternalMessage::SelectAttribute => {
+                    let attribute = modal
+                        .selectors
+                        .get(&id)
+                        .and_then(|selector| selector.attribute.as_ref())
+                        .cloned();
+
                     self.attribute_selector = Some(
                         self.select_attribute()
                             .title("Select Attribute")
-                            .on_submit((id, ModalExpressionInternalMessage::OnAttributeSelected)),
+                            .on_submit((id, ModalExpressionInternalMessage::OnAttributeSelected))
+                            .select_maybe(attribute),
                     );
                     Command::none()
                 }

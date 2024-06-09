@@ -2,7 +2,6 @@ use iced::{
     theme,
     widget::{
         button, column, container, horizontal_space, pick_list, row, scrollable, text, text_input,
-        vertical_space,
     },
     Application, Element, Length, Renderer,
 };
@@ -158,18 +157,12 @@ impl HandleView<App> for ModalExpression {
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         column!(
-            text(
-                self.title
-                    .as_ref()
-                    .unwrap_or(&String::from("Configure Expression"))
-            ),
-            scrollable(
-                self.handle_internal_view(self.base)
-                    .unwrap_or_else(|| text("No Base Expression Set").into())
-            )
-            .width(Length::Fill),
-            vertical_space(),
             row!(
+                text(
+                    self.title
+                        .as_ref()
+                        .unwrap_or(&String::from("Configure Expression"))
+                ),
                 horizontal_space().width(Length::Fill),
                 button("Cancel")
                     .on_press(ModalExpressionMessage::Cancel.into())
@@ -180,7 +173,12 @@ impl HandleView<App> for ModalExpression {
                             .then_some(ModalExpressionMessage::Submit.into())
                     )
                     .style(theme::Button::Primary)
+            ),
+            scrollable(
+                self.handle_internal_view(self.base)
+                    .unwrap_or_else(|| text("No Base Expression Set").into())
             )
+            .width(Length::Fill),
         )
         .into()
     }

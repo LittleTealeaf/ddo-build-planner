@@ -43,15 +43,30 @@ impl AttributeSelector {
 
     pub fn select<A>(self, attribute: A) -> Self
     where
-        A: Into<Option<Attribute>>,
+        A: Into<Attribute>,
     {
-        let attribute = Option::<Attribute>::from_into(attribute);
+        let attribute = Attribute::from_into(attribute);
         Self {
-            selected: attribute.and_then(|attribute| {
+            selected: self
+                .attributes
+                .iter()
+                .enumerate()
+                .find_map(|(index, a)| a.eq(&attribute).then_some(index)),
+            ..self
+        }
+    }
+
+    pub fn select_maybe<A>(self, attribute: Option<A>) -> Self
+    where
+        A: Into<Attribute>,
+    {
+        let attribute = attribute.map(|attribute| Attribute::from_into(attribute));
+        Self {
+            selected: attribute.and_then(|attr| {
                 self.attributes
                     .iter()
                     .enumerate()
-                    .find_map(|(index, a)| a.eq(&attribute).then_some(index))
+                    .find_map(|(index, a)| a.eq(&attr).then_some(index))
             }),
             ..self
         }
