@@ -8,7 +8,6 @@ use iced::{
     Application, Command,
 };
 use ui::{HandleMessage, HandleView};
-use utils::enums::StaticOptions;
 
 use crate::{App, Message};
 
