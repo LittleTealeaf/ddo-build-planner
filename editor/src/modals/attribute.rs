@@ -2,7 +2,7 @@ use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
     theme,
-    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
+    widget::{button, column, container, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
 use ui::{HandleMessage, HandleView};
@@ -193,8 +193,21 @@ impl HandleView<App> for ModalAttribute {
         let selected = self.selected.unwrap_or(self.attributes.len());
 
         column!(
-            text_input("Filter...", &self.filter)
-                .on_input(|filter| { ModalAttributeMessage::Filter(filter).into() }),
+            row!(
+                text_input("Filter...", &self.filter)
+                    .on_input(|filter| { ModalAttributeMessage::Filter(filter).into() })
+                    .width(Length::Fill),
+                button(text("Cancel"))
+                    .style(theme::Button::Secondary)
+                    .on_press(ModalAttributeMessage::Cancel.into()),
+                button(text("Submit"))
+                    .style(theme::Button::Primary)
+                    .on_press_maybe(
+                        self.selected
+                            .is_some()
+                            .then_some(ModalAttributeMessage::Submit.into())
+                    )
+            ),
             scrollable(column(
                 self.attributes
                     .iter()
@@ -216,19 +229,6 @@ impl HandleView<App> for ModalAttribute {
                     })
             ))
             .height(Length::Fill),
-            row!(
-                horizontal_space().width(Length::Fill),
-                button(text("Cancel"))
-                    .style(theme::Button::Secondary)
-                    .on_press(ModalAttributeMessage::Cancel.into()),
-                button(text("Submit"))
-                    .style(theme::Button::Primary)
-                    .on_press_maybe(
-                        self.selected
-                            .is_some()
-                            .then_some(ModalAttributeMessage::Submit.into())
-                    )
-            )
         )
         .into()
     }

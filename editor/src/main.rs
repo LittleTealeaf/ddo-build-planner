@@ -35,6 +35,7 @@ struct App {
 
 #[derive(Clone, Debug)]
 enum Message {
+    None,
     IconsLoaded,
     Data(DataMessage),
     Error(String),
@@ -46,6 +47,7 @@ enum Message {
     DebugOpenAttribute,
     DebugOpenCondition,
     DebugOpenValue,
+    DebugOpenBonus,
     DebugSubmit,
 }
 
@@ -103,6 +105,7 @@ impl Application for App {
 impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
+            Message::None => Command::none(),
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()
@@ -141,6 +144,14 @@ impl HandleMessage<Message> for App {
                 );
                 Command::none()
             }
+            Message::DebugOpenBonus => {
+                self.modal_bonus = Some(
+                    ModalBonus::new(None)
+                        .on_submit(Message::DebugSubmit)
+                        .title("Debug Bonus"),
+                );
+                Command::none()
+            }
             Message::DebugSubmit => {
                 if let Some(attr) = &self.modal_attribute {
                     if let Some(attr) = attr.get_attribute() {
@@ -154,6 +165,12 @@ impl HandleMessage<Message> for App {
                     }
                     if let Some(cond) = sel.get_condition() {
                         println!("{cond}");
+                    }
+                }
+
+                if let Some(modal) = &self.modal_bonus {
+                    if let Some(bonus) = modal.get_bonus() {
+                        println!("{bonus:?}");
                     }
                 }
 
