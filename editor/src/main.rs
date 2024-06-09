@@ -1,17 +1,20 @@
 //! Editor Application
 mod data;
+mod modals;
 mod tabs;
-mod widgets;
 
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
+use modals::{
+    attribute::{AttributeSelector, AttributeSelectorMessage},
+    expression::{ModalExpression, ModalExpressionMessage},
+};
 use tabs::{
     home::TabHome,
-    item_sets::{TabSetBonuses, TabSetBonusesMessage},
+    item_sets::{TabItemSets, TabSetBonusesMessage},
     Tab,
 };
 use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
-use widgets::selector::{SelectorWidget, SelectorWidgetMessage};
 
 fn main() -> iced::Result {
     App::run(Settings::default())
@@ -21,10 +24,11 @@ fn main() -> iced::Result {
 struct App {
     data: Data,
     tab_home: TabHome,
-    tab_item_sets: TabSetBonuses,
+    tab_item_sets: TabItemSets,
     icons_loaded: bool,
     selected_tab: Tab,
-    selector: Option<SelectorWidget>,
+    modal_attribute: Option<AttributeSelector>,
+    modal_expression: Option<ModalExpression>,
 }
 
 #[derive(Clone, Debug)]
@@ -34,11 +38,12 @@ enum Message {
     Error(String),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
-    Selector(SelectorWidgetMessage),
+    AttributeSelector(AttributeSelectorMessage),
+    ExpressionSelector(ModalExpressionMessage),
+    DebugOpenAttribute,
     DebugOpenCondition,
     DebugOpenValue,
-    DebugOpenAttribute,
-    DebugClose,
+    DebugSubmit,
 }
 
 impl Application for App {
@@ -56,8 +61,9 @@ impl Application for App {
             tab_home: TabHome::default(),
             icons_loaded: false,
             selected_tab: Tab::Home,
-            tab_item_sets: TabSetBonuses::default(),
-            selector: None,
+            tab_item_sets: TabItemSets::default(),
+            modal_attribute: None,
+            modal_expression: None,
         };
 
         let command = Command::batch([
@@ -77,8 +83,13 @@ impl Application for App {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-        self.selector.as_ref().map_or_else(
-            || self.selected_tab.handle_view(self),
+        self.modal_attribute.as_ref().map_or_else(
+            || {
+                self.modal_expression.as_ref().map_or_else(
+                    || self.selected_tab.handle_view(self),
+                    |selector| selector.handle_view(self),
+                )
+            },
             |selector| selector.handle_view(self),
         )
     }
@@ -87,38 +98,6 @@ impl Application for App {
 impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
-            Message::DebugClose => {
-                self.selector = None;
-                Command::none()
-            }
-            Message::DebugOpenCondition => {
-                self.selector = Some(
-                    SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_condition(None)
-                        .with_on_submit(Message::DebugClose)
-                        .with_on_cancel(Message::DebugClose),
-                );
-                Command::none()
-            }
-
-            Message::DebugOpenValue => {
-                self.selector = Some(
-                    SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_value(None)
-                        .with_on_submit(Message::DebugClose)
-                        .with_on_cancel(Message::DebugClose),
-                );
-                Command::none()
-            }
-            Message::DebugOpenAttribute => {
-                self.selector = Some(
-                    SelectorWidget::new(self.data.generate_attributes())
-                        .with_select_attribute(None)
-                        .with_on_submit(Message::DebugClose)
-                        .with_on_cancel(Message::DebugClose),
-                );
-                Command::none()
-            }
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()
@@ -130,7 +109,50 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::TabSetBonuses(message) => self.handle_message(message),
-            Message::Selector(message) => self.handle_message(message),
+            Message::AttributeSelector(message) => self.handle_message(message),
+            Message::ExpressionSelector(message) => self.handle_message(message),
+            Message::DebugOpenAttribute => {
+                self.modal_attribute = Some(
+                    self.select_attribute()
+                        .title("Debug")
+                        .on_submit(Message::DebugSubmit),
+                );
+                Command::none()
+            }
+            Message::DebugOpenCondition => {
+                self.modal_expression = Some(
+                    ModalExpression::condition(None)
+                        .on_submit(Message::DebugSubmit)
+                        .title("Debug Condition"),
+                );
+                Command::none()
+            }
+            Message::DebugOpenValue => {
+                self.modal_expression = Some(
+                    ModalExpression::value(None)
+                        .on_submit(Message::DebugSubmit)
+                        .title("Debug Submit"),
+                );
+                Command::none()
+            }
+            Message::DebugSubmit => {
+                if let Some(attr) = &self.modal_attribute {
+                    if let Some(attr) = attr.get_attribute() {
+                        println!("{attr}");
+                    }
+                }
+
+                if let Some(sel) = &self.modal_expression {
+                    if let Some(value) = sel.get_value() {
+                        println!("{value}");
+                    }
+                    if let Some(cond) = sel.get_condition() {
+                        println!("{cond}");
+                    }
+                }
+
+                Command::none()
+            }
         }
     }
 }
