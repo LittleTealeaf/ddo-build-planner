@@ -6,7 +6,8 @@ mod tabs;
 use data::{container::DataContainerMessage, Data, DataMessage};
 use iced::{executor, font, Application, Command, Element, Renderer, Settings, Theme};
 use modals::{
-    attribute::{AttributeSelector, AttributeSelectorMessage},
+    attribute::{ModalAttribute, ModalAttributeMessage},
+    bonus_template::{ModalBonus, ModalBonusMessage},
     expression::{ModalExpression, ModalExpressionMessage},
 };
 use tabs::{
@@ -27,8 +28,9 @@ struct App {
     tab_item_sets: TabItemSets,
     icons_loaded: bool,
     selected_tab: Tab,
-    modal_attribute: Option<AttributeSelector>,
+    modal_attribute: Option<ModalAttribute>,
     modal_expression: Option<ModalExpression>,
+    modal_bonus: Option<ModalBonus>,
 }
 
 #[derive(Clone, Debug)]
@@ -38,8 +40,9 @@ enum Message {
     Error(String),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
-    AttributeSelector(AttributeSelectorMessage),
-    ExpressionSelector(ModalExpressionMessage),
+    ModalAttribute(ModalAttributeMessage),
+    ModalExpression(ModalExpressionMessage),
+    ModalBonus(ModalBonusMessage),
     DebugOpenAttribute,
     DebugOpenCondition,
     DebugOpenValue,
@@ -64,6 +67,7 @@ impl Application for App {
             tab_item_sets: TabItemSets::default(),
             modal_attribute: None,
             modal_expression: None,
+            modal_bonus: None,
         };
 
         let command = Command::batch([
@@ -83,15 +87,16 @@ impl Application for App {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-        self.modal_attribute.as_ref().map_or_else(
-            || {
-                self.modal_expression.as_ref().map_or_else(
-                    || self.selected_tab.handle_view(self),
-                    |selector| selector.handle_view(self),
-                )
-            },
-            |selector| selector.handle_view(self),
-        )
+        match (
+            &self.modal_attribute,
+            &self.modal_expression,
+            &self.modal_bonus,
+        ) {
+            (Some(modal), _, _) => modal.handle_view(self),
+            (_, Some(modal), _) => modal.handle_view(self),
+            (_, _, Some(modal)) => modal.handle_view(self),
+            _ => self.selected_tab.handle_view(self),
+        }
     }
 }
 
@@ -109,8 +114,9 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::TabSetBonuses(message) => self.handle_message(message),
-            Message::AttributeSelector(message) => self.handle_message(message),
-            Message::ExpressionSelector(message) => self.handle_message(message),
+            Message::ModalAttribute(message) => self.handle_message(message),
+            Message::ModalExpression(message) => self.handle_message(message),
+            Message::ModalBonus(message) => self.handle_message(message),
             Message::DebugOpenAttribute => {
                 self.modal_attribute = Some(
                     self.select_attribute()
