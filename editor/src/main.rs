@@ -27,8 +27,8 @@ struct App {
     tab_item_sets: TabItemSets,
     icons_loaded: bool,
     selected_tab: Tab,
-    attribute_selector: Option<AttributeSelector>,
-    expression_selector: Option<ModalExpression>,
+    modal_attribute: Option<AttributeSelector>,
+    modal_expression: Option<ModalExpression>,
 }
 
 #[derive(Clone, Debug)]
@@ -62,8 +62,8 @@ impl Application for App {
             icons_loaded: false,
             selected_tab: Tab::Home,
             tab_item_sets: TabItemSets::default(),
-            attribute_selector: None,
-            expression_selector: None,
+            modal_attribute: None,
+            modal_expression: None,
         };
 
         let command = Command::batch([
@@ -83,9 +83,9 @@ impl Application for App {
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
-        self.attribute_selector.as_ref().map_or_else(
+        self.modal_attribute.as_ref().map_or_else(
             || {
-                self.expression_selector.as_ref().map_or_else(
+                self.modal_expression.as_ref().map_or_else(
                     || self.selected_tab.handle_view(self),
                     |selector| selector.handle_view(self),
                 )
@@ -112,7 +112,7 @@ impl HandleMessage<Message> for App {
             Message::AttributeSelector(message) => self.handle_message(message),
             Message::ExpressionSelector(message) => self.handle_message(message),
             Message::DebugOpenAttribute => {
-                self.attribute_selector = Some(
+                self.modal_attribute = Some(
                     self.select_attribute()
                         .title("Debug")
                         .on_submit(Message::DebugSubmit),
@@ -120,7 +120,7 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::DebugOpenCondition => {
-                self.expression_selector = Some(
+                self.modal_expression = Some(
                     ModalExpression::condition(None)
                         .on_submit(Message::DebugSubmit)
                         .title("Debug Condition"),
@@ -128,7 +128,7 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::DebugOpenValue => {
-                self.expression_selector = Some(
+                self.modal_expression = Some(
                     ModalExpression::value(None)
                         .on_submit(Message::DebugSubmit)
                         .title("Debug Submit"),
@@ -136,13 +136,13 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::DebugSubmit => {
-                if let Some(attr) = &self.attribute_selector {
+                if let Some(attr) = &self.modal_attribute {
                     if let Some(attr) = attr.get_attribute() {
                         println!("{attr}");
                     }
                 }
 
-                if let Some(sel) = &self.expression_selector {
+                if let Some(sel) = &self.modal_expression {
                     if let Some(value) = sel.get_value() {
                         println!("{value}");
                     }
