@@ -1,3 +1,5 @@
+use std::string::ToString;
+
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
@@ -31,8 +33,11 @@ impl ModalAttribute {
     where
         I: IntoIterator<Item = Attribute>,
     {
+        let mut attributes = attributes.into_iter().collect::<Vec<_>>();
+        attributes.sort_by_cached_key(ToString::to_string);
+
         Self {
-            attributes: attributes.into_iter().collect(),
+            attributes,
             selected: None,
             title: None,
             filter: String::new(),
