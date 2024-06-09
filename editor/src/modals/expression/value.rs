@@ -1,5 +1,4 @@
-use core::fmt;
-use std::fmt::Display;
+use core::fmt::{self, Display};
 
 use builder::bonus::Value;
 
