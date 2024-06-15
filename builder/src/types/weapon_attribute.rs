@@ -79,7 +79,6 @@ impl ToAttribute for WeaponAttribute {
 
 impl StaticValues for WeaponAttribute {
     fn values() -> impl Iterator<Item = Self> {
-        WeaponHand::values()
-            .flat_map(|hand| WeaponStat::values().map(move |stat| Self(hand, stat)))
+        WeaponHand::values().flat_map(|hand| WeaponStat::values().map(move |stat| Self(hand, stat)))
     }
 }
