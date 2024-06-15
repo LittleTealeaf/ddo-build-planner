@@ -42,12 +42,15 @@ pub enum Flag {
     /// Whether or not something is in the main hand
     HasMainHand,
     /// Wielding an item in the main hand
+    #[serde(rename = "mht", alias = "MainHandType")]
     MainHandType(MainHandType),
     /// Whether or not something is in the off hand
     HasOffHand,
     /// Item type in the off hand
+    #[serde(rename = "oht", alias = "OffHandType")]
     OffHandType(OffHandType),
     /// Wearing Armor Type
+    #[serde(rename = "at", alias = "ArmorType")]
     ArmorType(ArmorType),
     /// Whether the user is using a two handed fighting weapon
     IsTwoHandedFighting,

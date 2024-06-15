@@ -17,10 +17,13 @@ use super::{Flag, ToFlag};
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum OffHandType {
     /// The character is wielding a weapon in their off hand
+    #[serde(rename = "w", alias = "Weapon")]
     Weapon(WeaponType),
     /// The character is wielding a shield in their off-hand
+    #[serde(rename = "s", alias = "Shield")]
     Shield(ShieldType),
     /// The character is wielding a runearm in their off-hand
+    #[serde(rename = "r", alias = "RuneArm")]
     RuneArm,
 }
 
