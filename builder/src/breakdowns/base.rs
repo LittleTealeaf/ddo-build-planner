@@ -150,7 +150,8 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                     Value::MAX,
                 ),
             ]),
-        ),
+        )
+        .with_display_source(Attribute::AbilityModifier(Ability::Dexterity)),
         // Total Armor Class Bonus
         BonusTemplate::new(
             ArmorClass::Total,
@@ -203,19 +204,20 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
 }
 
 fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
-    [
-        Attribute::SpellPower,
-        Attribute::SpellCriticalChance,
-        Attribute::SpellCriticalDamage,
-    ]
-    .into_iter()
-    .flat_map(|attribute| {
-        SpellPower::SPELL_POWERS.into_iter().map(move |sp| {
+    SpellPower::SPELL_POWERS.into_iter().flat_map(|sp| {
+        [
+            Attribute::SpellPower,
+            Attribute::SpellCriticalChance,
+            Attribute::SpellCriticalDamage,
+        ]
+        .into_iter()
+        .map(move |attribute| {
             BonusTemplate::new(
                 attribute(sp),
                 BonusType::Stacking,
                 attribute(SpellPower::Universal),
             )
+            .with_display_source(attribute(SpellPower::Universal))
         })
     })
 }
