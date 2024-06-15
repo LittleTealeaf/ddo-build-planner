@@ -380,6 +380,16 @@ fn weapon_damage() -> impl Iterator<Item = BonusTemplate> {
 }
 
 fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
+    let one_hand_main_hand = WeaponType::ONE_HANDED_MELEE_WEAPONS
+        .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+        .cond_any()
+        .expect("Expected Condition");
+
+    let one_hand_off_hand = WeaponType::ONE_HANDED_MELEE_WEAPONS
+        .map(|weapon| Condition::has(OffHandType::Weapon(weapon)))
+        .cond_any()
+        .expect("Expected Condition");
+
     [
         BonusTemplate::flag(Flag::TwoHandedFighting).with_condition(
             WeaponType::TWO_HANDED_MELEE_WEAPONS
@@ -388,36 +398,25 @@ fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
                 .expect("Expected Condition"),
         ),
         BonusTemplate::flag(Flag::SingleWeaponFighting).with_condition(
-            WeaponType::ONE_HANDED_MELEE_WEAPONS
-                .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
-                .cond_any()
-                .expect("Expected Condition")
+            one_hand_main_hand.clone()
                 & chain!(
-                    WeaponType::values().map(|weapon| Condition::has(OffHandType::Weapon(weapon))),
+                    [
+                        one_hand_off_hand.clone(),
+                        Condition::has(OffHandType::Shield(ShieldType::Buckler))
+                            & !Condition::has(Flag::BucklerSingleWeaponFighting)
+                    ],
                     [
                         ShieldType::LargeShield,
                         ShieldType::TowerShield,
                         ShieldType::SmallShield
                     ]
                     .map(|st| Condition::has(OffHandType::Shield(st))),
-                    once(
-                        Condition::has(OffHandType::Shield(ShieldType::Buckler))
-                            & !Condition::has(Flag::BucklerSingleWeaponFighting)
-                    )
                 )
                 .cond_none()
                 .expect("Expected Condition"),
         ),
-        BonusTemplate::flag(Flag::TwoWeaponFighting).with_condition(
-            WeaponType::ONE_HANDED_MELEE_WEAPONS
-                .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
-                .cond_any()
-                .expect("Expected Condition")
-                & WeaponType::ONE_HANDED_MELEE_WEAPONS
-                    .map(|weapon| Condition::has(OffHandType::Weapon(weapon)))
-                    .cond_any()
-                    .expect("Expected Condition"),
-        ),
+        BonusTemplate::flag(Flag::TwoWeaponFighting)
+            .with_condition(one_hand_main_hand & one_hand_off_hand),
     ]
 }
 
