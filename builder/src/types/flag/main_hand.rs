@@ -4,7 +4,7 @@ use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -19,6 +19,7 @@ pub enum MainHandType {
     /// The character is wielding a wand in their main hand.
     Wand,
     /// The character is wielding some weapon in their main hand.
+    #[serde(rename = "w", alias = "Weapon")]
     Weapon(WeaponType),
 }
 
@@ -49,8 +50,8 @@ impl ToAttribute for MainHandType {
     }
 }
 
-impl StaticOptions for MainHandType {
-    fn get_static() -> impl Iterator<Item = Self> {
-        chain!([Self::Wand], WeaponType::get_static().map(Self::Weapon))
+impl StaticValues for MainHandType {
+    fn values() -> impl Iterator<Item = Self> {
+        chain!([Self::Wand], WeaponType::values().map(Self::Weapon))
     }
 }

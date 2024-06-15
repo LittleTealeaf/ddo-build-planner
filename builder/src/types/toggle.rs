@@ -1,13 +1,12 @@
 //! Any attribute that requires the user to interact / configure
 
-public_modules!(attacking_target, guild_amenities);
+public_modules!(attacking_target, guild_amenities, seasonal_affinity);
 
 use core::fmt::{self, Display};
 
-use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::{chain_tree, enums::StaticValues, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -47,6 +46,9 @@ pub enum Toggle {
     /// Guild Amenities
     #[serde(rename = "gb", alias = "Guild")]
     Guild(GuildAmenity),
+    /// Seasonal Affinity
+    #[serde(rename = "eladrin", alias = "SeasonalAffinity")]
+    SeasonalAffinity(SeasonalAffinity),
 }
 // TODO: Make a sub-toggle for "Attacking" (such as attacking a certain type of enemy)
 
@@ -83,6 +85,7 @@ impl Display for Toggle {
             Self::SneakAttack => write!(f, "Sneak Attack"),
             Self::Flanking => write!(f, "Flanking"),
             Self::Guild(amenity) => write!(f, "{amenity}"),
+            Self::SeasonalAffinity(affinity) => write!(f, "{affinity} Affinity"),
         }
     }
 }
@@ -129,13 +132,14 @@ where
     }
 }
 
-impl StaticOptions for Toggle {
-    fn get_static() -> impl Iterator<Item = Self> {
-        chain!(
+impl StaticValues for Toggle {
+    fn values() -> impl Iterator<Item = Self> {
+        chain_tree!(
             [Self::Blocking, Self::InReaper],
-            AttackingTarget::get_static().map(Self::Attacking),
-            IconicPastLife::get_static().map(Self::IconicPastLife),
-            EpicPastLife::get_static().map(Self::EpicPastLife),
+            AttackingTarget::values().map(Self::Attacking),
+            IconicPastLife::values().map(Self::IconicPastLife),
+            EpicPastLife::values().map(Self::EpicPastLife),
+            SeasonalAffinity::values().map(Self::SeasonalAffinity),
         )
     }
 }
@@ -151,6 +155,7 @@ impl GetToggleGroup for Toggle {
         match self {
             Self::IconicPastLife(life) => life.custom_toggle_group(),
             Self::EpicPastLife(life) => life.custom_toggle_group(),
+            Self::SeasonalAffinity(seasonal) => seasonal.custom_toggle_group(),
             _ => None,
         }
     }

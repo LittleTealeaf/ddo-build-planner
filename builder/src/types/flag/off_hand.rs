@@ -4,7 +4,7 @@ use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -17,10 +17,13 @@ use super::{Flag, ToFlag};
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum OffHandType {
     /// The character is wielding a weapon in their off hand
+    #[serde(rename = "w", alias = "Weapon")]
     Weapon(WeaponType),
     /// The character is wielding a shield in their off-hand
+    #[serde(rename = "s", alias = "Shield")]
     Shield(ShieldType),
     /// The character is wielding a runearm in their off-hand
+    #[serde(rename = "r", alias = "RuneArm")]
     RuneArm,
 }
 
@@ -58,11 +61,11 @@ impl ToFlag for OffHandType {
     }
 }
 
-impl StaticOptions for OffHandType {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for OffHandType {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
-            WeaponType::get_static().map(Self::Weapon),
-            ShieldType::get_static().map(Self::Shield),
+            WeaponType::values().map(Self::Weapon),
+            ShieldType::values().map(Self::Shield),
             [Self::RuneArm]
         )
     }

@@ -3,7 +3,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -36,8 +36,8 @@ impl Display for SneakAttack {
     }
 }
 
-impl StaticOptions for SneakAttack {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SneakAttack {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

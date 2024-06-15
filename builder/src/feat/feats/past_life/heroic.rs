@@ -3,7 +3,7 @@ use core::fmt::{self, Display};
 use rust_decimal::prelude::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -22,6 +22,7 @@ use crate::{
         skill::Skill,
         sneak_attack::SneakAttack,
         spell_points::SpellPoints,
+        spell_power::SpellPower,
         spell_school::SpellSchool,
         summoned_attribute::SummonedAttribute,
         tactics::Tactics,
@@ -42,9 +43,9 @@ impl Display for HeroicPastLife {
     }
 }
 
-impl StaticOptions for HeroicPastLife {
-    fn get_static() -> impl Iterator<Item = Self> {
-        PlayerClass::get_static().map(Self)
+impl StaticValues for HeroicPastLife {
+    fn values() -> impl Iterator<Item = Self> {
+        PlayerClass::values().map(Self)
     }
 }
 
@@ -223,6 +224,11 @@ impl GetBonuses for HeroicPastLife {
                         dec!(5) * value,
                     ),
                 ],
+                PlayerClass::WildMage => vec![BonusTemplate::new(
+                    Attribute::spell_power(SpellPower::Universal),
+                    BonusType::Stacking,
+                    dec!(3) * value,
+                )],
             }
         })
     }

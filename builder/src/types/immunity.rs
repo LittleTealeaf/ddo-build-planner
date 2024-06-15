@@ -4,7 +4,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -19,6 +19,11 @@ pub enum Immunity {
     Fear,
     /// Immunity to most forms of knockdown
     Knockdown,
+}
+
+impl Immunity {
+    /// All possible values
+    pub const VALUES: [Self; 3] = [Self::Sleep, Self::Fear, Self::Knockdown];
 }
 
 impl Display for Immunity {
@@ -43,8 +48,8 @@ impl ToFlag for Immunity {
     }
 }
 
-impl StaticOptions for Immunity {
-    fn get_static() -> impl Iterator<Item = Self> {
-        [Self::Sleep, Self::Fear, Self::Knockdown].into_iter()
+impl StaticValues for Immunity {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }

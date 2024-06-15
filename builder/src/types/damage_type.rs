@@ -5,7 +5,7 @@ use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use super::alignment::Alignment;
 
@@ -81,8 +81,8 @@ impl Display for DamageType {
     }
 }
 
-impl StaticOptions for DamageType {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for DamageType {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::Physical,
@@ -105,7 +105,7 @@ impl StaticOptions for DamageType {
                 Self::Untyped,
                 Self::Magical,
             ],
-            Alignment::get_static().map(Self::Aligned)
+            Alignment::values().map(Self::Aligned)
         )
     }
 }

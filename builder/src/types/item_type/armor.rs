@@ -3,7 +3,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -50,8 +50,8 @@ impl ToAttribute for ArmorType {
     }
 }
 
-impl StaticOptions for ArmorType {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for ArmorType {
+    fn values() -> impl Iterator<Item = Self> {
         [Self::Cloth, Self::Light, Self::Medium, Self::Heavy].into_iter()
     }
 }

@@ -3,7 +3,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// The types of shields.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -34,8 +34,8 @@ impl Display for ShieldType {
     }
 }
 
-impl StaticOptions for ShieldType {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for ShieldType {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::Buckler,
             Self::SmallShield,

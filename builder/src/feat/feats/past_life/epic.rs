@@ -7,7 +7,7 @@ use itertools::chain;
 use rust_decimal::prelude::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -332,8 +332,8 @@ impl GetToggleGroup for EpicPastLife {
     }
 }
 
-impl StaticOptions for EpicPastLife {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for EpicPastLife {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

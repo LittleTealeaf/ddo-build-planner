@@ -1,7 +1,5 @@
 //! Application Starting Point
 
-use core::iter::once;
-
 use builder::{
     attribute::Attribute,
     bonus::{BonusSource, BonusTemplate, BonusType},
@@ -13,35 +11,29 @@ use builder::{
     },
 };
 use ron::ser::{to_string_pretty, PrettyConfig};
-use utils::{chain_tree, enums::StaticOptions};
+use utils::{chain_tree, enums::StaticValues};
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
 
-    for attribute in Attribute::get_static() {
+    for attribute in Attribute::values() {
         breakdowns.track_breakdown(attribute);
     }
 
     breakdowns.insert_bonuses(
         chain_tree!(
-            once(BonusTemplate::new(
-                Attribute::GuildLevel,
-                BonusType::Stacking,
-                200
-            )),
-            IconicPastLife::get_static().map(BonusTemplate::feat),
-            once(BonusTemplate::new(
-                Toggle::IconicPastLife(IconicPastLife(Race::Razorclaw)),
-                BonusType::Stacking,
-                1,
-            )),
-            HeroicPastLife::get_static().map(BonusTemplate::feat),
-            RacialPastLife::get_static().map(BonusTemplate::feat),
-            once(BonusTemplate::new(
-                Attribute::GuildLevel,
-                BonusType::Stacking,
-                200
-            )),
+            [
+                BonusTemplate::new(Attribute::GuildLevel, BonusType::Stacking, 200),
+                BonusTemplate::new(
+                    Toggle::IconicPastLife(IconicPastLife(Race::Razorclaw)),
+                    BonusType::Stacking,
+                    1,
+                ),
+                BonusTemplate::new(Attribute::GuildLevel, BonusType::Stacking, 200)
+            ],
+            IconicPastLife::values().map(BonusTemplate::feat),
+            HeroicPastLife::values().map(BonusTemplate::feat),
+            RacialPastLife::values().map(BonusTemplate::feat),
             GuildAmenity::ALL
                 .into_iter()
                 .map(|ga| { BonusTemplate::new(Toggle::Guild(ga), BonusType::Standard, 1,) }),

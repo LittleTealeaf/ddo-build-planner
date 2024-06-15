@@ -1,9 +1,8 @@
 //! Spell Selector
 use core::fmt::{self, Display};
 
-use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::{chain_tree, enums::StaticValues};
 
 use crate::types::spell_school::SpellSchool;
 
@@ -63,13 +62,13 @@ impl From<PlayerClass> for SpellSelector {
     }
 }
 
-impl StaticOptions for SpellSelector {
-    fn get_static() -> impl Iterator<Item = Self> {
-        chain!(
+impl StaticValues for SpellSelector {
+    fn values() -> impl Iterator<Item = Self> {
+        chain_tree!(
             [Self::All],
-            SpellPower::get_static().map(Self::SpellPower),
-            SpellSchool::get_static().map(Self::School),
-            PlayerClass::get_static().map(Self::Class),
+            SpellPower::values().map(Self::SpellPower),
+            SpellSchool::values().map(Self::School),
+            PlayerClass::values().map(Self::Class),
         )
     }
 }

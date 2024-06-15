@@ -14,7 +14,7 @@ use crate::{
         race::Race,
         saving_throw::SavingThrow,
         skill::Skill,
-        toggle::AttackingTarget,
+        toggle::{AttackingTarget, SeasonalAffinity},
         weapon_attribute::{WeaponHand, WeaponStat},
     },
     val,
@@ -228,6 +228,48 @@ impl GetBonuses for Race {
                 BonusTemplate::feat(Proficiency::from(WeaponType::LongSword)),
                 BonusTemplate::feat(Proficiency::from(WeaponType::LongSword)),
             ]),
+            Self::Eladrin => Some(vec![
+                BonusTemplate::new(Ability::Dexterity, BonusType::Stacking, Value::TWO),
+                BonusTemplate::feat(RacialFeat::ImmunityToSleep),
+                BonusTemplate::feat(RacialFeat::EnchantmentSaveBonus),
+                BonusTemplate::toggle(SeasonalAffinity::Spring),
+                BonusTemplate::toggle(SeasonalAffinity::Summer),
+                BonusTemplate::toggle(SeasonalAffinity::Winter),
+                BonusTemplate::toggle(SeasonalAffinity::Autumn),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Spring))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Spring)),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Summer))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Summer)),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Autumn))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Autumn)),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Winter))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Winter)),
+            ]),
+            Self::Chaosmancer => Some(vec![
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::TWO),
+                BonusTemplate::feat(RacialFeat::ImmunityToSleep),
+                BonusTemplate::feat(RacialFeat::EnchantmentSaveBonus),
+                BonusTemplate::toggle(SeasonalAffinity::Spring),
+                BonusTemplate::toggle(SeasonalAffinity::Summer),
+                BonusTemplate::toggle(SeasonalAffinity::Winter),
+                BonusTemplate::toggle(SeasonalAffinity::Autumn),
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Spring))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Spring)),
+                BonusTemplate::new(Ability::Strength, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Summer))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Summer)),
+                BonusTemplate::new(Ability::Wisdom, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Autumn))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Autumn)),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::ONE)
+                    .with_condition(Condition::toggled(SeasonalAffinity::Winter))
+                    .with_display_source(Attribute::toggle(SeasonalAffinity::Winter)),
+            ]),
         })?
     }
 }
@@ -238,32 +280,7 @@ mod tests {
 
     #[test]
     fn zero_returns_nothing() {
-        let races = [
-            Race::Dragonborn,
-            Race::Drow,
-            Race::Dwarf,
-            Race::Elf,
-            Race::Gnome,
-            Race::Halfling,
-            Race::HalfElf,
-            Race::HalfOrc,
-            Race::Human,
-            Race::Tiefling,
-            Race::Warforged,
-            Race::WoodElf,
-            Race::Aasimar,
-            Race::Shifter,
-            Race::Tabaxi,
-            Race::Bladeforged,
-            Race::DeepGnome,
-            Race::Morninglord,
-            Race::PurpleDragonKnight,
-            Race::Razorclaw,
-            Race::Scoundrel,
-            Race::Scourge,
-            Race::Shadarkai,
-            Race::Trailblazer,
-        ];
+        let races = Race::ALL;
 
         for race in races {
             assert!(race.get_bonuses(Decimal::ZERO).is_none());

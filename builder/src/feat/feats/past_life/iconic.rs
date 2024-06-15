@@ -3,7 +3,7 @@ use core::fmt::{self, Display};
 use rust_decimal::prelude::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -16,6 +16,7 @@ use crate::{
         race::Race,
         saving_throw::SavingThrow,
         sheltering::Sheltering,
+        spell_power::SpellPower,
         spell_school::SpellSchool,
         tactics::Tactics,
         toggle::{GetToggleGroup, ToToggle, Toggle},
@@ -32,7 +33,7 @@ pub struct IconicPastLife(pub Race);
 
 impl IconicPastLife {
     /// Acceptable versions of this Iconic Past Life
-    pub const RACES: [Self; 9] = [
+    pub const RACES: [Self; 10] = [
         Self(Race::Scourge),
         Self(Race::Bladeforged),
         Self(Race::DeepGnome),
@@ -42,6 +43,7 @@ impl IconicPastLife {
         Self(Race::Morninglord),
         Self(Race::Trailblazer),
         Self(Race::Scoundrel),
+        Self(Race::Chaosmancer),
     ];
 }
 
@@ -52,8 +54,8 @@ impl Display for IconicPastLife {
     }
 }
 
-impl StaticOptions for IconicPastLife {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for IconicPastLife {
+    fn values() -> impl Iterator<Item = Self> {
         Self::RACES.into_iter()
     }
 }
@@ -205,6 +207,14 @@ impl GetBonuses for IconicPastLife {
                     value * dec!(10),
                 )
                 .with_condition(Condition::toggled(Self(Race::Morninglord))),
+            ]),
+            Race::Chaosmancer => Some(vec![
+                BonusTemplate::toggle(Self(Race::Chaosmancer)),
+                BonusTemplate::new(
+                    Attribute::spell_power(SpellPower::Universal),
+                    BonusType::Stacking,
+                    value * dec!(3),
+                ),
             ]),
             _ => None,
         }

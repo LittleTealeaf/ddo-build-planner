@@ -31,6 +31,8 @@ pub enum ToggleGroup {
     EpicPastLife(EpicSphere),
     /// Iconic Past Life
     IconicPastLife,
+    /// Seasonal Affinity
+    SeasonalAffinity,
 }
 
 impl Display for ToggleGroup {
@@ -43,6 +45,7 @@ impl Display for ToggleGroup {
             Self::WarlockPact => write!(f, "Warlock Pact"),
             Self::IconicPastLife => write!(f, "Iconic Past Life"),
             Self::EpicPastLife(sphere) => write!(f, "{sphere}"),
+            Self::SeasonalAffinity => write!(f, "Seasonal Affinity"),
         }
     }
 }

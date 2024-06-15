@@ -4,7 +4,7 @@ use fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -80,9 +80,9 @@ impl ToFeat for SpellFocusFeat {
     }
 }
 
-impl StaticOptions for SpellFocusFeat {
-    fn get_static() -> impl Iterator<Item = Self> {
-        SpellSchool::get_static()
+impl StaticValues for SpellFocusFeat {
+    fn values() -> impl Iterator<Item = Self> {
+        SpellSchool::values()
             .flat_map(|school| [Self::SpellFocus(school), Self::GreaterSpellFocus(school)])
     }
 }

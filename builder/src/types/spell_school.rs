@@ -2,7 +2,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// The different schools that a spell might belong to
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -62,8 +62,8 @@ impl Display for SpellSchool {
     }
 }
 
-impl StaticOptions for SpellSchool {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SpellSchool {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

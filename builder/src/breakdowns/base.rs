@@ -1,5 +1,5 @@
 use core::iter::once;
-use utils::{chain_tree, enums::StaticOptions, hashmap::IntoGroupedHashMap};
+use utils::{chain_tree, enums::StaticValues, hashmap::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,
@@ -12,6 +12,7 @@ use crate::{
         absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
         damage_type::DamageType,
+        dodge::Dodge,
         flag::{Flag, MainHandType, OffHandType},
         health::Health,
         item_type::{ArmorType, ShieldType, WeaponType},
@@ -48,12 +49,13 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         two_handed_fighting(),
         sneak_attack(),
         weapon_damage(),
+        dodge(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
 
 fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
-    Ability::ABILITIES
+    Ability::VALUES
         .into_iter()
         .map(|ability| {
             BonusTemplate::new(
@@ -150,7 +152,8 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                     Value::MAX,
                 ),
             ]),
-        ),
+        )
+        .with_display_source(Attribute::AbilityModifier(Ability::Dexterity)),
         // Total Armor Class Bonus
         BonusTemplate::new(
             ArmorClass::Total,
@@ -203,19 +206,20 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
 }
 
 fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
-    [
-        Attribute::SpellPower,
-        Attribute::SpellCriticalChance,
-        Attribute::SpellCriticalDamage,
-    ]
-    .into_iter()
-    .flat_map(|attribute| {
-        SpellPower::SPELL_POWERS.into_iter().map(move |sp| {
+    SpellPower::SPELL_POWERS.into_iter().flat_map(|sp| {
+        [
+            Attribute::SpellPower,
+            Attribute::SpellCriticalChance,
+            Attribute::SpellCriticalDamage,
+        ]
+        .into_iter()
+        .map(move |attribute| {
             BonusTemplate::new(
                 attribute(sp),
                 BonusType::Stacking,
                 attribute(SpellPower::Universal),
             )
+            .with_display_source(attribute(SpellPower::Universal))
         })
     })
 }
@@ -287,12 +291,12 @@ fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
 }
 
 fn absorption() -> impl Iterator<Item = BonusTemplate> {
-    DamageType::get_static().map(|damage_type| {
+    DamageType::values().map(|damage_type| {
         BonusTemplate::new(
             Absorption::Total(damage_type),
             BonusType::Stacking,
             Value::ONE
-                - Value::iter_product(AbsorptionSource::get_static().map(|bonus_type| {
+                - Value::iter_product(AbsorptionSource::values().map(|bonus_type| {
                     Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
                 })),
         )
@@ -303,7 +307,7 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
     [
         {
             // HEROIC COMPLETIONIST
-            let condition = PlayerClass::get_static()
+            let condition = PlayerClass::values()
                 .map(|class| (class.get_parent_class().unwrap_or(class), class))
                 .into_grouped_hash_map()
                 .into_values()
@@ -383,5 +387,16 @@ fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
                 .cond_any()
                 .expect("Expected Condition"),
         ),
+    )
+}
+
+fn dodge() -> impl Iterator<Item = BonusTemplate> {
+    once(
+        BonusTemplate::new(
+            Dodge::Total,
+            BonusType::Stacking,
+            Value::min(Dodge::Dodge.to_value(), Dodge::Cap.to_value()),
+        )
+        .with_display_source(Dodge::Dodge),
     )
 }
