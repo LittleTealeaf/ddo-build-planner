@@ -208,11 +208,14 @@ impl GetBonuses for IconicPastLife {
                 )
                 .with_condition(Condition::toggled(Self(Race::Morninglord))),
             ]),
-            Race::Chaosmancer => Some(vec![BonusTemplate::new(
-                Attribute::spell_power(SpellPower::Universal),
-                BonusType::Stacking,
-                value * dec!(3),
-            )]),
+            Race::Chaosmancer => Some(vec![
+                BonusTemplate::toggle(Self(Race::Chaosmancer)),
+                BonusTemplate::new(
+                    Attribute::spell_power(SpellPower::Universal),
+                    BonusType::Stacking,
+                    value * dec!(3),
+                ),
+            ]),
             _ => None,
         }
     }
