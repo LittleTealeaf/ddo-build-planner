@@ -304,7 +304,7 @@ impl GetBonuses for EpicPastLife {
                     BonusType::Stacking,
                     Decimal::TWO * value,
                 )
-                .with_condition(Condition::flag(Flag::IsTwoHandedFighting)),
+                .with_condition(Condition::flag(Flag::TwoHandedFighting)),
             ],
         }
         .into_iter()

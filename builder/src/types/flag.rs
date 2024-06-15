@@ -53,7 +53,17 @@ pub enum Flag {
     #[serde(rename = "at", alias = "ArmorType")]
     ArmorType(ArmorType),
     /// Whether the user is using a two handed fighting weapon
-    IsTwoHandedFighting,
+    #[serde(rename = "THF", alias = "TwoHandedFighting")]
+    TwoHandedFighting,
+    /// Whether the user is single-weapon-fighting
+    #[serde(rename = "SWF", alias = "SingleWeaponFighting")]
+    SingleWeaponFighting,
+    /// Whether the user is two-weapon fighting
+    #[serde(rename = "TWF", alias = "TwoWeaponFighting")]
+    TwoWeaponFighting,
+    /// Ability to use a buckler in SWF
+    /// TODO: change this to the enhancement
+    BucklerSingleWeaponFighting,
 }
 
 impl Display for Flag {
@@ -68,7 +78,10 @@ impl Display for Flag {
             Self::ArmorType(armor) => write!(f, "Wearing {armor} Armor"),
             Self::HasMainHand => write!(f, "Item in Main Hand"),
             Self::HasOffHand => write!(f, "Item in Off Hand"),
-            Self::IsTwoHandedFighting => write!(f, "Is Two Handed Fighting"),
+            Self::TwoHandedFighting => write!(f, "Two Handed Fighting"),
+            Self::SingleWeaponFighting => write!(f, "Single Weapon Fighting"),
+            Self::TwoWeaponFighting => write!(f, "Two Weapon Fighting"),
+            Self::BucklerSingleWeaponFighting => write!(f, "Buckler Single Weapon Fighting"),
         }
     }
 }
@@ -119,11 +132,7 @@ impl StaticValues for Flag {
             OffHandType::values().map(Self::OffHandType),
             MainHandType::values().map(Self::MainHandType),
             ArmorType::values().map(Self::ArmorType),
-            [
-                Self::IsTwoHandedFighting,
-                Self::HasOffHand,
-                Self::HasMainHand
-            ]
+            [Self::TwoHandedFighting, Self::HasOffHand, Self::HasMainHand]
         )
     }
 }
