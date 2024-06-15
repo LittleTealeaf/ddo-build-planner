@@ -1042,7 +1042,7 @@ mod feats {
 
             #[test]
             fn all_combinations_give_past_lives() {
-                let mut sets = PlayerClass::CLASSES
+                let mut sets = PlayerClass::ALL
                     .map(|class| (class.get_parent_class().unwrap_or(class), class))
                     .into_grouped_hash_map()
                     .into_values()
