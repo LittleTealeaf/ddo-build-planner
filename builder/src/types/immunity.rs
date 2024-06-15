@@ -21,6 +21,11 @@ pub enum Immunity {
     Knockdown,
 }
 
+impl Immunity {
+    /// All possible values
+    pub const VALUES: [Self; 3] = [Self::Sleep, Self::Fear, Self::Knockdown];
+}
+
 impl Display for Immunity {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -45,6 +50,6 @@ impl ToFlag for Immunity {
 
 impl StaticOptions for Immunity {
     fn get_static() -> impl Iterator<Item = Self> {
-        [Self::Sleep, Self::Fear, Self::Knockdown].into_iter()
+        Self::VALUES.into_iter()
     }
 }

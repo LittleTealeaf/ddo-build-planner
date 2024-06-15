@@ -26,6 +26,17 @@ pub enum Health {
     Total,
 }
 
+impl Health {
+    /// All possible values
+    pub const VALUES: [Self; 5] = [
+        Self::Base,
+        Self::BaseModifier,
+        Self::Bonus,
+        Self::Modifier,
+        Self::Total,
+    ];
+}
+
 impl Display for Health {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -46,13 +57,6 @@ impl ToAttribute for Health {
 
 impl StaticOptions for Health {
     fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Base,
-            Self::BaseModifier,
-            Self::Bonus,
-            Self::Modifier,
-            Self::Total,
-        ]
-        .into_iter()
+        Self::VALUES.into_iter()
     }
 }
