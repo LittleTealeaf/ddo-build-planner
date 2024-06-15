@@ -3,7 +3,6 @@ use core::{
     iter::once,
 };
 
-use itertools::chain;
 use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::{chain_tree, enums::StaticValues, public_modules};

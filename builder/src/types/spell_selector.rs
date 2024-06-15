@@ -1,7 +1,6 @@
 //! Spell Selector
 use core::fmt::{self, Display};
 
-use itertools::chain;
 use serde::{Deserialize, Serialize};
 use utils::{chain_tree, enums::StaticValues};
 

@@ -52,12 +52,16 @@ pub enum BonusType {
     #[serde(rename = "exc", alias = "Exceptional")]
     Exceptional,
     /// Feat bonus
+    #[serde(rename = "fea", alias = "Feat")]
     Feat,
     /// Festive bonus
+    #[serde(rename = "fst", alias = "Festive")]
     Festive,
     /// Fortune bonus
+    #[serde(rename = "for", alias = "Fortune")]
     Fortune,
     /// Guild
+    #[serde(rename = "gui", alias = "Guild")]
     Guild,
     /// Insightful bonus
     #[serde(rename = "ins", alias = "Insightful")]
@@ -66,12 +70,15 @@ pub enum BonusType {
     #[serde(rename = "leg", alias = "Legendary")]
     Legendary,
     /// Luck Bonus
+    #[serde(rename = "lck", alias = "Luck")]
     Luck,
     /// Morale bonus
+    #[serde(rename = "mor", alias = "Morale")]
     Morale,
     /// Music bonus
     Music,
     /// Primal bonus
+    #[serde(rename = "pri", alias = "Primal")]
     Primal,
     /// Profane bonus
     #[serde(rename = "pro", alias = "Profane")]
