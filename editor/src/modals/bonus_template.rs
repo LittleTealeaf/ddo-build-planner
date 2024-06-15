@@ -236,7 +236,7 @@ impl HandleView<App> for ModalBonus {
                 button(text("Cancel"))
                     .style(theme::Button::Secondary)
                     .on_press(ModalBonusMessage::Cancel.into()),
-                button(text("Submit")) // TODO: only when valid
+                button(text("Submit"))
                     .style(theme::Button::Primary)
                     .on_press(ModalBonusMessage::Submit.into()),
             ),
