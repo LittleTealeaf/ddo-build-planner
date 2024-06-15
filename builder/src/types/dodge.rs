@@ -1,3 +1,5 @@
+//! Dodge Types
+
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
