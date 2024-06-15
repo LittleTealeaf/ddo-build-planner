@@ -24,24 +24,24 @@ fn main() {
 
     breakdowns.insert_bonuses(
         chain_tree!(
-            once(BonusTemplate::new(
+            [
+BonusTemplate::new(
                 Attribute::GuildLevel,
                 BonusType::Stacking,
                 200
-            )),
-            IconicPastLife::values().map(BonusTemplate::feat),
-            once(BonusTemplate::new(
+            ),BonusTemplate::new(
                 Toggle::IconicPastLife(IconicPastLife(Race::Razorclaw)),
                 BonusType::Stacking,
                 1,
-            )),
-            HeroicPastLife::values().map(BonusTemplate::feat),
-            RacialPastLife::values().map(BonusTemplate::feat),
-            once(BonusTemplate::new(
+            ),BonusTemplate::new(
                 Attribute::GuildLevel,
                 BonusType::Stacking,
                 200
-            )),
+            )
+            ],
+            IconicPastLife::values().map(BonusTemplate::feat),
+            HeroicPastLife::values().map(BonusTemplate::feat),
+            RacialPastLife::values().map(BonusTemplate::feat),
             GuildAmenity::ALL
                 .into_iter()
                 .map(|ga| { BonusTemplate::new(Toggle::Guild(ga), BonusType::Standard, 1,) }),
