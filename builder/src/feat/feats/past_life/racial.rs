@@ -22,7 +22,7 @@ impl RacialPastLife {
     /// All racial past lives
     /// This does include races that are 'aliases' for other races, such as Wood Elf, which
     /// simply will just add bonuses to the base race
-    pub const RACES: [Self; 15] = [
+    pub const RACES: [Self; 16] = [
         Self(Race::Aasimar),
         Self(Race::Dragonborn),
         Self(Race::Drow),
@@ -38,6 +38,7 @@ impl RacialPastLife {
         Self(Race::Tabaxi),
         Self(Race::Tiefling),
         Self(Race::Warforged),
+        Self(Race::Eladrin),
     ];
 
     /// Converts back to the race
@@ -73,6 +74,7 @@ impl RacialPastLife {
             Race::Human => Some(Skill::Haggle),
             Race::Tabaxi => Some(Skill::Tumble),
             Race::Warforged => Some(Skill::Repair),
+            Race::Eladrin => Some(Skill::Listen),
             _ => None,
         }
     }
@@ -86,7 +88,9 @@ impl RacialPastLife {
             Race::Dragonborn | Race::HalfElf | Race::Tiefling => Some(Ability::Charisma),
             Race::Drow | Race::Gnome => Some(Ability::Intelligence),
             Race::Dwarf | Race::Warforged => Some(Ability::Constitution),
-            Race::Elf | Race::Halfling | Race::Shifter | Race::Tabaxi => Some(Ability::Dexterity),
+            Race::Elf | Race::Halfling | Race::Shifter | Race::Tabaxi | Race::Eladrin => {
+                Some(Ability::Dexterity)
+            }
             Race::HalfOrc => Some(Ability::Strength),
             _ => None,
         }
@@ -134,5 +138,33 @@ impl GetBonuses for RacialPastLife {
 impl ToFeat for RacialPastLife {
     fn to_feat(self) -> Feat {
         PastLifeFeat::Racial(self).to_feat()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn valid_races_have_skill() {
+        let races = RacialPastLife::RACES;
+        for race in races {
+            if race.get_base().is_some() {
+                continue;
+            }
+
+            assert!(race.get_skill().is_some(), "Race has no skill: {race}");
+        }
+    }
+
+    #[test]
+    fn valid_races_have_ability() {
+        let races = RacialPastLife::RACES;
+        for race in races {
+            if race.get_base().is_some() {
+                continue;
+            }
+            assert!(race.get_ability().is_some(), "Race has no ability: {race}");
+        }
     }
 }

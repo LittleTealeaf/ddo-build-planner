@@ -76,11 +76,14 @@ pub enum PlayerClass {
     /// Acolyte Of The Skin Class
     #[serde(rename = "Aco", alias = "AcolyteOfTheSkin")]
     AcolyteOfTheSkin,
+    /// Wild Mage
+    #[serde(rename = "WM", alias = "WildMage")]
+    WildMage,
 }
 
 impl PlayerClass {
     /// All valid classes currently in the game
-    pub const CLASSES: [Self; 21] = [
+    pub const ALL: [Self; 22] = [
         Self::Alchemist,
         Self::Artificer,
         Self::Barbarian,
@@ -102,6 +105,7 @@ impl PlayerClass {
         Self::DarkHunter,
         Self::Warlock,
         Self::AcolyteOfTheSkin,
+        Self::WildMage,
     ];
 
     /// Returns the parent player class, if any. That is, if the class is an archetype of another
@@ -115,6 +119,7 @@ impl PlayerClass {
             Self::BlightCaster => Some(Self::Druid),
             Self::Stormsinger => Some(Self::Bard),
             Self::DarkApostate => Some(Self::Cleric),
+            Self::WildMage => Some(Self::Sorcerer),
             _ => None,
         }
     }
@@ -144,6 +149,7 @@ impl Display for PlayerClass {
             Self::AcolyteOfTheSkin => write!(f, "Acolyte Of The Skin"),
             Self::Druid => write!(f, "Druid"),
             Self::BlightCaster => write!(f, "Blight Caster"),
+            Self::WildMage => write!(f, "Wild Mage"),
         }
     }
 }
@@ -156,29 +162,6 @@ impl ToAttribute for PlayerClass {
 
 impl StaticOptions for PlayerClass {
     fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Alchemist,
-            Self::Artificer,
-            Self::Barbarian,
-            Self::Fighter,
-            Self::Monk,
-            Self::Rogue,
-            Self::Sorcerer,
-            Self::Wizard,
-            Self::FavoredSoul,
-            Self::Bard,
-            Self::Stormsinger,
-            Self::Cleric,
-            Self::DarkApostate,
-            Self::Druid,
-            Self::BlightCaster,
-            Self::Paladin,
-            Self::SacredFist,
-            Self::Ranger,
-            Self::DarkHunter,
-            Self::Warlock,
-            Self::AcolyteOfTheSkin,
-        ]
-        .into_iter()
+        Self::ALL.into_iter()
     }
 }

@@ -61,6 +61,42 @@ pub enum Race {
     Shadarkai,
     /// Trailblazer Race
     Trailblazer,
+    /// Eladrin
+    Eladrin,
+    /// Eladrin Chaosmancer
+    Chaosmancer,
+}
+
+impl Race {
+    /// All Races
+    pub const ALL: [Self; 26] = [
+        Self::Dragonborn,
+        Self::Drow,
+        Self::Dwarf,
+        Self::Elf,
+        Self::Gnome,
+        Self::Halfling,
+        Self::HalfElf,
+        Self::HalfOrc,
+        Self::Human,
+        Self::Tiefling,
+        Self::Warforged,
+        Self::WoodElf,
+        Self::Aasimar,
+        Self::Shifter,
+        Self::Tabaxi,
+        Self::Bladeforged,
+        Self::DeepGnome,
+        Self::Morninglord,
+        Self::PurpleDragonKnight,
+        Self::Razorclaw,
+        Self::Scoundrel,
+        Self::Scourge,
+        Self::Shadarkai,
+        Self::Trailblazer,
+        Self::Eladrin,
+        Self::Chaosmancer,
+    ];
 }
 
 impl Display for Race {
@@ -90,6 +126,8 @@ impl Display for Race {
             Self::Scourge => write!(f, "Aasimar Scourge"),
             Self::Shadarkai => write!(f, "Shadar-kai"),
             Self::Trailblazer => write!(f, "Tabaxi Trailblazer"),
+            Self::Eladrin => write!(f, "Eladrin"),
+            Self::Chaosmancer => write!(f, "Chaosmancer"),
         }
     }
 }
@@ -108,32 +146,6 @@ impl ToFlag for Race {
 
 impl StaticOptions for Race {
     fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Dragonborn,
-            Self::Drow,
-            Self::Dwarf,
-            Self::Elf,
-            Self::Gnome,
-            Self::Halfling,
-            Self::HalfElf,
-            Self::HalfOrc,
-            Self::Human,
-            Self::Tiefling,
-            Self::Warforged,
-            Self::WoodElf,
-            Self::Aasimar,
-            Self::Shifter,
-            Self::Tabaxi,
-            Self::Bladeforged,
-            Self::DeepGnome,
-            Self::Morninglord,
-            Self::PurpleDragonKnight,
-            Self::Razorclaw,
-            Self::Scoundrel,
-            Self::Scourge,
-            Self::Shadarkai,
-            Self::Trailblazer,
-        ]
-        .into_iter()
+        Self::ALL.into_iter()
     }
 }
