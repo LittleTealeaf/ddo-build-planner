@@ -5,7 +5,7 @@ use core::fmt::{self, Debug};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{chain_tree, enums::StaticOptions, public_modules};
+use utils::{chain_tree, enums::StaticValues, public_modules};
 
 use fmt::Display;
 
@@ -101,14 +101,14 @@ where
     }
 }
 
-impl StaticOptions for Feat {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Feat {
+    fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
-            RacialFeat::get_static().map(Self::RacialFeat),
-            Proficiency::get_static().map(Self::Proficiency),
-            SkillFocus::get_static().map(Self::SkillFocus),
-            SpellcastingFeat::get_static().map(Self::Spellcasting),
-            PastLifeFeat::get_static().map(Self::PastLife),
+            RacialFeat::values().map(Self::RacialFeat),
+            Proficiency::values().map(Self::Proficiency),
+            SkillFocus::values().map(Self::SkillFocus),
+            SpellcastingFeat::values().map(Self::Spellcasting),
+            PastLifeFeat::values().map(Self::PastLife),
         )
     }
 }

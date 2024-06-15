@@ -1,7 +1,7 @@
 use builder::attribute::Attribute;
 use data::{load_item_sets, ParseError};
 use itertools::chain;
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Returns an iterator of all valid attributes
 ///
@@ -9,7 +9,7 @@ use utils::enums::StaticOptions;
 /// Returns an error if there is a parsing error
 pub fn valid_attributes() -> Result<impl Iterator<Item = Attribute>, ParseError> {
     Ok(chain!(
-        Attribute::get_static(),
+        Attribute::values(),
         load_item_sets()?
             .into_iter()
             .map(|set_bonus| { Attribute::ItemSet(set_bonus.name().clone()) })

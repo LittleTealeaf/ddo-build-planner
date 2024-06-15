@@ -2,7 +2,7 @@ use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::types::{alignment::Alignment, monster_type::MonsterType};
 
@@ -38,12 +38,12 @@ impl ToToggle for AttackingTarget {
     }
 }
 
-impl StaticOptions for AttackingTarget {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for AttackingTarget {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
             [Self::Tripped],
-            MonsterType::get_static().map(Self::MonsterType),
-            Alignment::get_static().map(Self::Alignment)
+            MonsterType::values().map(Self::MonsterType),
+            Alignment::values().map(Self::Alignment)
         )
     }
 }

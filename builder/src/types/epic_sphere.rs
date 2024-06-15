@@ -2,7 +2,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Epic Past Life Sphere.
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -33,8 +33,8 @@ impl Display for EpicSphere {
     }
 }
 
-impl StaticOptions for EpicSphere {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for EpicSphere {
+    fn values() -> impl Iterator<Item = Self> {
         Self::VALUES.into_iter()
     }
 }

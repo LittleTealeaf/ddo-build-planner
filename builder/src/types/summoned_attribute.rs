@@ -3,7 +3,7 @@ use core::fmt::{self, Display};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{chain_tree, enums::StaticOptions};
+use utils::{chain_tree, enums::StaticValues};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -62,11 +62,11 @@ impl ToAttribute for SummonedAttribute {
     }
 }
 
-impl StaticOptions for SummonedAttribute {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SummonedAttribute {
+    fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
-            Ability::get_static().map(Self::AbilityScore),
-            Sheltering::get_static().map(Self::Sheltering)
+            Ability::values().map(Self::AbilityScore),
+            Sheltering::values().map(Self::Sheltering)
         )
     }
 }

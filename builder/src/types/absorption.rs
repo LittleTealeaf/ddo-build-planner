@@ -7,7 +7,7 @@ use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -33,12 +33,12 @@ impl Display for Absorption {
     }
 }
 
-impl StaticOptions for Absorption {
-    fn get_static() -> impl Iterator<Item = Self> {
-        DamageType::get_static().flat_map(|damage_type| {
+impl StaticValues for Absorption {
+    fn values() -> impl Iterator<Item = Self> {
+        DamageType::values().flat_map(|damage_type| {
             chain!(
                 once(Self::Total(damage_type)),
-                AbsorptionSource::get_static()
+                AbsorptionSource::values()
                     .map(move |bonus_type| { Self::Bonus(damage_type, bonus_type) })
             )
         })
@@ -88,8 +88,8 @@ impl Display for AbsorptionSource {
     }
 }
 
-impl StaticOptions for AbsorptionSource {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for AbsorptionSource {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::Enhancement,
             Self::EnergySheathe,

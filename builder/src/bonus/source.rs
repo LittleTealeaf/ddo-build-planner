@@ -3,7 +3,7 @@ use fmt::Display;
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -76,8 +76,8 @@ where
     }
 }
 
-impl StaticOptions for BonusSource {
-    fn get_static() -> impl Iterator<Item = Self> {
-        chain!([Self::Base], Attribute::get_static().map(Self::Attribute),)
+impl StaticValues for BonusSource {
+    fn values() -> impl Iterator<Item = Self> {
+        chain!([Self::Base], Attribute::values().map(Self::Attribute),)
     }
 }

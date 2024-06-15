@@ -4,7 +4,7 @@ use builder::{attribute::Attribute, equipment::set_bonus::ItemSet};
 use iced::{Application, Command};
 use itertools::chain;
 use ui::HandleMessage;
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{App, Message};
 
@@ -41,7 +41,7 @@ impl Data {
             .into_iter()
             .flatten();
 
-        chain!(set_bonuses, Attribute::get_static())
+        chain!(set_bonuses, Attribute::values())
     }
 }
 

@@ -3,7 +3,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::types::item_type::ShieldType;
 
@@ -39,8 +39,8 @@ impl From<ShieldType> for ShieldProficiency {
     }
 }
 
-impl StaticOptions for ShieldProficiency {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for ShieldProficiency {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::Orb,
             Self::Shield,

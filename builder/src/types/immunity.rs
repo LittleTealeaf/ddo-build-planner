@@ -4,7 +4,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -48,8 +48,8 @@ impl ToFlag for Immunity {
     }
 }
 
-impl StaticOptions for Immunity {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Immunity {
+    fn values() -> impl Iterator<Item = Self> {
         Self::VALUES.into_iter()
     }
 }

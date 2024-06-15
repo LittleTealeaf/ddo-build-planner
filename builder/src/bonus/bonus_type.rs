@@ -3,7 +3,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Describes the stacking-type of a bonus.
 ///
@@ -172,8 +172,8 @@ impl BonusType {
     }
 }
 
-impl StaticOptions for BonusType {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for BonusType {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::AbilityModifier,
             Self::ActionBoost,

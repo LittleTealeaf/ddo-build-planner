@@ -3,7 +3,7 @@ public_modules!(bonuses);
 
 use core::fmt::{self, Display};
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::{enums::StaticValues, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -144,8 +144,8 @@ impl ToFlag for Race {
     }
 }
 
-impl StaticOptions for Race {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Race {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

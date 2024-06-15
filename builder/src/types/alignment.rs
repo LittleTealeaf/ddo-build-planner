@@ -4,7 +4,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Determines alignment. To create a complete alignment, two of these attributes are required.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -44,8 +44,8 @@ impl Display for Alignment {
     }
 }
 
-impl StaticOptions for Alignment {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Alignment {
+    fn values() -> impl Iterator<Item = Self> {
         Self::VALUES.into_iter()
     }
 }

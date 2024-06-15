@@ -1,5 +1,5 @@
 use core::iter::once;
-use utils::{chain_tree, enums::StaticOptions, hashmap::IntoGroupedHashMap};
+use utils::{chain_tree, enums::StaticValues, hashmap::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,
@@ -287,12 +287,12 @@ fn armor_check_penalties() -> impl Iterator<Item = BonusTemplate> {
 }
 
 fn absorption() -> impl Iterator<Item = BonusTemplate> {
-    DamageType::get_static().map(|damage_type| {
+    DamageType::values().map(|damage_type| {
         BonusTemplate::new(
             Absorption::Total(damage_type),
             BonusType::Stacking,
             Value::ONE
-                - Value::iter_product(AbsorptionSource::get_static().map(|bonus_type| {
+                - Value::iter_product(AbsorptionSource::values().map(|bonus_type| {
                     Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
                 })),
         )
@@ -303,7 +303,7 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
     [
         {
             // HEROIC COMPLETIONIST
-            let condition = PlayerClass::get_static()
+            let condition = PlayerClass::values()
                 .map(|class| (class.get_parent_class().unwrap_or(class), class))
                 .into_grouped_hash_map()
                 .into_values()

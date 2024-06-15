@@ -3,7 +3,7 @@ use core::fmt::{self, Display};
 use rust_decimal::prelude::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -43,9 +43,9 @@ impl Display for HeroicPastLife {
     }
 }
 
-impl StaticOptions for HeroicPastLife {
-    fn get_static() -> impl Iterator<Item = Self> {
-        PlayerClass::get_static().map(Self)
+impl StaticValues for HeroicPastLife {
+    fn values() -> impl Iterator<Item = Self> {
+        PlayerClass::values().map(Self)
     }
 }
 

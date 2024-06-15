@@ -10,7 +10,7 @@ pub use to_attribute::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
-use utils::{chain_tree, enums::StaticOptions};
+use utils::{chain_tree, enums::StaticValues};
 
 use crate::{
     bonus::{Bonus, BonusTemplate, CloneBonus},
@@ -254,12 +254,12 @@ impl CloneBonus for Attribute {
 
 macro_rules! toattr {
     ($class:ident) => {
-        $class::get_static().map(ToAttribute::to_attribute)
+        $class::values().map(ToAttribute::to_attribute)
     };
 }
 
-impl StaticOptions for Attribute {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Attribute {
+    fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
             [
                 Self::Dummy,
@@ -274,16 +274,16 @@ impl StaticOptions for Attribute {
                 Self::Doublestrike,
                 Self::Doubleshot,
             ],
-            Ability::get_static()
+            Ability::values()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
-            SpellPower::get_static().flat_map(|sp| {
+            SpellPower::values().flat_map(|sp| {
                 [
                     Self::SpellPower(sp),
                     Self::SpellCriticalChance(sp),
                     Self::SpellCriticalDamage(sp),
                 ]
             }),
-            SpellSelector::get_static().flat_map(|selector| {
+            SpellSelector::values().flat_map(|selector| {
                 [
                     Self::CasterLevel(selector),
                     Self::MaxCasterLevel(selector),

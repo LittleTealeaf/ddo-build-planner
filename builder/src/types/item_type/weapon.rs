@@ -3,7 +3,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Weapon Types
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -267,8 +267,8 @@ impl Display for WeaponType {
     }
 }
 
-impl StaticOptions for WeaponType {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for WeaponType {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

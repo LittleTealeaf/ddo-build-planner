@@ -13,12 +13,12 @@ use builder::{
     },
 };
 use ron::ser::{to_string_pretty, PrettyConfig};
-use utils::{chain_tree, enums::StaticOptions};
+use utils::{chain_tree, enums::StaticValues};
 
 fn main() {
     let mut breakdowns = Breakdowns::new();
 
-    for attribute in Attribute::get_static() {
+    for attribute in Attribute::values() {
         breakdowns.track_breakdown(attribute);
     }
 
@@ -29,14 +29,14 @@ fn main() {
                 BonusType::Stacking,
                 200
             )),
-            IconicPastLife::get_static().map(BonusTemplate::feat),
+            IconicPastLife::values().map(BonusTemplate::feat),
             once(BonusTemplate::new(
                 Toggle::IconicPastLife(IconicPastLife(Race::Razorclaw)),
                 BonusType::Stacking,
                 1,
             )),
-            HeroicPastLife::get_static().map(BonusTemplate::feat),
-            RacialPastLife::get_static().map(BonusTemplate::feat),
+            HeroicPastLife::values().map(BonusTemplate::feat),
+            RacialPastLife::values().map(BonusTemplate::feat),
             once(BonusTemplate::new(
                 Attribute::GuildLevel,
                 BonusType::Stacking,

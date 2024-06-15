@@ -2,7 +2,7 @@
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -47,8 +47,8 @@ impl Tactics {
     ];
 }
 
-impl StaticOptions for Tactics {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Tactics {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

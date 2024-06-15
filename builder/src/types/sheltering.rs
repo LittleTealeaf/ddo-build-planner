@@ -2,7 +2,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -81,8 +81,8 @@ impl CloneBonus for Sheltering {
     }
 }
 
-impl StaticOptions for Sheltering {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Sheltering {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::Both,
             Self::Physical,

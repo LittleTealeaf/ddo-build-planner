@@ -3,7 +3,7 @@ use core::fmt::{self, Display};
 use rust_decimal::prelude::Decimal;
 use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::GetBonuses,
@@ -104,8 +104,8 @@ impl Display for RacialPastLife {
     }
 }
 
-impl StaticOptions for RacialPastLife {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for RacialPastLife {
+    fn values() -> impl Iterator<Item = Self> {
         Self::RACES.into_iter()
     }
 }

@@ -10,7 +10,7 @@ pub use main_hand::*;
 pub use off_hand::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{chain_tree, enums::StaticOptions};
+use utils::{chain_tree, enums::StaticValues};
 
 use fmt::Display;
 
@@ -106,16 +106,16 @@ where
     }
 }
 
-impl StaticOptions for Flag {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Flag {
+    fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
-            Toggle::get_static().map(Self::HasToggle),
-            Race::get_static().map(Self::Race),
-            Immunity::get_static().map(Self::Immunity),
-            Alignment::get_static().map(Self::Alignment),
-            OffHandType::get_static().map(Self::OffHandType),
-            MainHandType::get_static().map(Self::MainHandType),
-            ArmorType::get_static().map(Self::ArmorType),
+            Toggle::values().map(Self::HasToggle),
+            Race::values().map(Self::Race),
+            Immunity::values().map(Self::Immunity),
+            Alignment::values().map(Self::Alignment),
+            OffHandType::values().map(Self::OffHandType),
+            MainHandType::values().map(Self::MainHandType),
+            ArmorType::values().map(Self::ArmorType),
             [
                 Self::IsTwoHandedFighting,
                 Self::HasOffHand,

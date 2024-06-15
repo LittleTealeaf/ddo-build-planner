@@ -5,7 +5,7 @@ use fmt::Display;
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::{enums::StaticValues, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -186,8 +186,8 @@ impl ToFeat for SpellcastingFeat {
     }
 }
 
-impl StaticOptions for SpellcastingFeat {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SpellcastingFeat {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::AugmentSummoning,
@@ -199,7 +199,7 @@ impl StaticOptions for SpellcastingFeat {
                 Self::CombatCasting,
                 Self::MobileSpellcasting
             ],
-            SpellFocusFeat::get_static().map(Self::SpellFocus)
+            SpellFocusFeat::values().map(Self::SpellFocus)
         )
     }
 }
