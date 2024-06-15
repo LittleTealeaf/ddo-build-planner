@@ -19,7 +19,7 @@ pub enum EpicSphere {
 
 impl EpicSphere {
     /// All of the epic spheres
-    pub const ALL: [Self; 4] = [Self::Arcane, Self::Primal, Self::Divine, Self::Martial];
+    pub const VALUES: [Self; 4] = [Self::Arcane, Self::Primal, Self::Divine, Self::Martial];
 }
 
 impl Display for EpicSphere {
@@ -35,6 +35,6 @@ impl Display for EpicSphere {
 
 impl StaticOptions for EpicSphere {
     fn get_static() -> impl Iterator<Item = Self> {
-        Self::ALL.into_iter()
+        Self::VALUES.into_iter()
     }
 }
