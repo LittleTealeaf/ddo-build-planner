@@ -30,7 +30,7 @@ impl CloneBonus for SummonedAttribute {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         match self {
             Self::AbilityScore(ability) => matches!(ability, Ability::All).then(|| {
-                Ability::ABILITIES
+                Ability::VALUES
                     .map(|ability| {
                         bonus.clone_with_attribute(Attribute::SummonedAttribute(
                             Self::AbilityScore(ability),

@@ -44,7 +44,7 @@ impl Ability {
     /// Does not include [`All`]
     ///
     /// [`All`]: Ability::All
-    pub const ABILITIES: [Self; 6] = [
+    pub const VALUES: [Self; 6] = [
         Self::Strength,
         Self::Dexterity,
         Self::Constitution,
@@ -77,7 +77,7 @@ impl ToAttribute for Ability {
 impl CloneBonus for Ability {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
-            Self::ABILITIES
+            Self::VALUES
                 .map(|ability| bonus.clone_with_attribute(ability))
                 .to_vec()
         })
@@ -86,7 +86,7 @@ impl CloneBonus for Ability {
 
 impl StaticOptions for Ability {
     fn get_static() -> impl Iterator<Item = Self> {
-        chain!([Self::All], Self::ABILITIES)
+        chain!([Self::All], Self::VALUES)
     }
 }
 
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn clone_bonus_return_none_for_ability() {
-        for ability in Ability::ABILITIES {
+        for ability in Ability::VALUES {
             let bonus = ability.clone_bonus(&Bonus::new(
                 Attribute::Ability(Ability::Wisdom),
                 BonusType::Stacking,
@@ -126,7 +126,7 @@ mod tests {
             .map(|bonus| bonus.attribute().clone())
             .collect::<Vec<_>>();
 
-        for ability in Ability::ABILITIES {
+        for ability in Ability::VALUES {
             assert!(attributes.contains(&Attribute::Ability(ability)));
         }
     }

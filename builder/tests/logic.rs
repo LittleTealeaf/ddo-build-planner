@@ -34,7 +34,7 @@ mod ability {
 
     #[test]
     fn base_score_is_8() {
-        for ability in Ability::ABILITIES {
+        for ability in Ability::VALUES {
             assert_eq!(
                 Breakdowns::new().evaluate_attribute(&ability.into()),
                 8.into()
@@ -61,7 +61,7 @@ mod ability {
             (19.into(), 4.into()),
             (20.into(), 5.into()),
         ];
-        for ability in Ability::ABILITIES {
+        for ability in Ability::VALUES {
             for (score, modifier) in &values {
                 let mut compiler = Breakdowns::new();
                 compiler.insert_bonus(Bonus::new(
@@ -80,7 +80,7 @@ mod ability {
 
     #[test]
     fn all_increases_ability_score() {
-        for ability in Ability::ABILITIES {
+        for ability in Ability::VALUES {
             let mut breakdowns = Breakdowns::new();
             breakdowns.insert_bonus(Bonus::new(
                 Attribute::Ability(Ability::All),

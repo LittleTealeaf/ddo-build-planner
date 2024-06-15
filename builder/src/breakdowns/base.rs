@@ -53,7 +53,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
 }
 
 fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
-    Ability::ABILITIES
+    Ability::VALUES
         .into_iter()
         .map(|ability| {
             BonusTemplate::new(
