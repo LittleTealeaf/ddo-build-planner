@@ -6,7 +6,7 @@ use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::{enums::StaticValues, public_modules};
 
 use super::damage_type::DamageType;
 
@@ -59,11 +59,11 @@ impl Display for SpellPower {
     }
 }
 
-impl StaticOptions for SpellPower {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SpellPower {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
             [Self::Universal, Self::Potency,],
-            DamageType::get_static().map(Self::Damage)
+            DamageType::values().map(Self::Damage)
         )
     }
 }

@@ -5,7 +5,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -54,6 +54,22 @@ pub enum ArmorClass {
     TotalScalar,
 }
 
+impl ArmorClass {
+    /// All possible values
+    pub const VALUES: [Self; 10] = [
+        Self::TotalScalar,
+        Self::Total,
+        Self::Bonus,
+        Self::ArmorBonus,
+        Self::ShieldBonus,
+        Self::ArmorScalar,
+        Self::ShieldScalar,
+        Self::ArmorMaxDex,
+        Self::ShieldMaxDex,
+        Self::NaturalArmor,
+    ];
+}
+
 impl Display for ArmorClass {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -77,20 +93,8 @@ impl ToAttribute for ArmorClass {
     }
 }
 
-impl StaticOptions for ArmorClass {
-    fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::TotalScalar,
-            Self::Total,
-            Self::Bonus,
-            Self::ArmorBonus,
-            Self::ShieldBonus,
-            Self::ArmorScalar,
-            Self::ShieldScalar,
-            Self::ArmorMaxDex,
-            Self::ShieldMaxDex,
-            Self::NaturalArmor,
-        ]
-        .into_iter()
+impl StaticValues for ArmorClass {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }

@@ -3,7 +3,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Describes the stacking-type of a bonus.
 ///
@@ -52,12 +52,16 @@ pub enum BonusType {
     #[serde(rename = "exc", alias = "Exceptional")]
     Exceptional,
     /// Feat bonus
+    #[serde(rename = "fea", alias = "Feat")]
     Feat,
     /// Festive bonus
+    #[serde(rename = "fst", alias = "Festive")]
     Festive,
     /// Fortune bonus
+    #[serde(rename = "for", alias = "Fortune")]
     Fortune,
     /// Guild
+    #[serde(rename = "gui", alias = "Guild")]
     Guild,
     /// Insightful bonus
     #[serde(rename = "ins", alias = "Insightful")]
@@ -66,12 +70,15 @@ pub enum BonusType {
     #[serde(rename = "leg", alias = "Legendary")]
     Legendary,
     /// Luck Bonus
+    #[serde(rename = "lck", alias = "Luck")]
     Luck,
     /// Morale bonus
+    #[serde(rename = "mor", alias = "Morale")]
     Morale,
     /// Music bonus
     Music,
     /// Primal bonus
+    #[serde(rename = "pri", alias = "Primal")]
     Primal,
     /// Profane bonus
     #[serde(rename = "pro", alias = "Profane")]
@@ -146,6 +153,41 @@ impl Display for BonusType {
     }
 }
 
+impl BonusType {
+    /// All different values
+    pub const VALUES: [Self; 29] = [
+        Self::AbilityModifier,
+        Self::ActionBoost,
+        Self::Alchemical,
+        Self::Artifact,
+        Self::Competence,
+        Self::Deflection,
+        Self::Enhancement,
+        Self::Epic,
+        Self::Exceptional,
+        Self::Feat,
+        Self::Festive,
+        Self::Fortune,
+        Self::Insightful,
+        Self::Legendary,
+        Self::Morale,
+        Self::Music,
+        Self::Primal,
+        Self::Guild,
+        Self::Profane,
+        Self::Quality,
+        Self::Sacred,
+        Self::Shield,
+        Self::Size,
+        Self::Stacking,
+        Self::Spooky,
+        Self::Standard,
+        Self::Racial,
+        Self::Dodge,
+        Self::Luck,
+    ];
+}
+
 impl Default for BonusType {
     fn default() -> Self {
         Self::Stacking
@@ -172,39 +214,8 @@ impl BonusType {
     }
 }
 
-impl StaticOptions for BonusType {
-    fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::AbilityModifier,
-            Self::ActionBoost,
-            Self::Alchemical,
-            Self::Artifact,
-            Self::Competence,
-            Self::Deflection,
-            Self::Enhancement,
-            Self::Epic,
-            Self::Exceptional,
-            Self::Feat,
-            Self::Festive,
-            Self::Fortune,
-            Self::Insightful,
-            Self::Legendary,
-            Self::Morale,
-            Self::Music,
-            Self::Primal,
-            Self::Guild,
-            Self::Profane,
-            Self::Quality,
-            Self::Sacred,
-            Self::Shield,
-            Self::Size,
-            Self::Stacking,
-            Self::Spooky,
-            Self::Standard,
-            Self::Racial,
-            Self::Dodge,
-            Self::Luck,
-        ]
-        .into_iter()
+impl StaticValues for BonusType {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }

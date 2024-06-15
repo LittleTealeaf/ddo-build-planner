@@ -5,7 +5,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -31,7 +31,7 @@ pub enum HealingAmplification {
 
 impl HealingAmplification {
     /// All three channels of healing amplification
-    pub const ALL: [Self; 3] = [Self::Positive, Self::Negative, Self::Repair];
+    pub const VALUES: [Self; 3] = [Self::Positive, Self::Negative, Self::Repair];
 }
 
 impl Display for HealingAmplification {
@@ -54,15 +54,15 @@ impl ToAttribute for HealingAmplification {
 impl CloneBonus for HealingAmplification {
     fn clone_bonus(&self, bonus: &Bonus) -> Option<Vec<Bonus>> {
         matches!(self, Self::All).then(|| {
-            Self::ALL
+            Self::VALUES
                 .map(|amp| bonus.clone_with_attribute(amp))
                 .to_vec()
         })
     }
 }
 
-impl StaticOptions for HealingAmplification {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for HealingAmplification {
+    fn values() -> impl Iterator<Item = Self> {
         [Self::Positive, Self::Negative, Self::Repair, Self::All].into_iter()
     }
 }

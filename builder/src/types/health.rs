@@ -4,7 +4,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -26,6 +26,17 @@ pub enum Health {
     Total,
 }
 
+impl Health {
+    /// All possible values
+    pub const VALUES: [Self; 5] = [
+        Self::Base,
+        Self::BaseModifier,
+        Self::Bonus,
+        Self::Modifier,
+        Self::Total,
+    ];
+}
+
 impl Display for Health {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -44,15 +55,8 @@ impl ToAttribute for Health {
     }
 }
 
-impl StaticOptions for Health {
-    fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Base,
-            Self::BaseModifier,
-            Self::Bonus,
-            Self::Modifier,
-            Self::Total,
-        ]
-        .into_iter()
+impl StaticValues for Health {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }

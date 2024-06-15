@@ -1,13 +1,13 @@
 use builder::attribute::Attribute;
 use ron::{from_str, to_string};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 mod serialization {
 
     use super::*;
     #[test]
     fn static_attributes_serialize() {
-        for attribute in Attribute::get_static() {
+        for attribute in Attribute::values() {
             let serialized = to_string(&attribute).expect("Could not serialize attribute");
             let deserialized: Attribute =
                 from_str(&serialized).expect("Could not deserialize attribute");

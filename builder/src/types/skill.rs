@@ -4,7 +4,7 @@ use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -183,8 +183,8 @@ impl CloneBonus for Skill {
     }
 }
 
-impl StaticOptions for Skill {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Skill {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(Self::SKILLS, [Self::All])
     }
 }

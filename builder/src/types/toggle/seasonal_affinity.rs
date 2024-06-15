@@ -1,7 +1,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::types::toggle_group::ToggleGroup;
 
@@ -51,8 +51,8 @@ impl GetToggleGroup for SeasonalAffinity {
     }
 }
 
-impl StaticOptions for SeasonalAffinity {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SeasonalAffinity {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

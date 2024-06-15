@@ -6,7 +6,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticOptions, public_modules};
+use utils::{enums::StaticValues, public_modules};
 
 use crate::attribute::{Attribute, ToAttribute};
 
@@ -160,8 +160,8 @@ impl ToAttribute for PlayerClass {
     }
 }
 
-impl StaticOptions for PlayerClass {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for PlayerClass {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

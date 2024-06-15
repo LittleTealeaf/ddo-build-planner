@@ -1,7 +1,7 @@
 use core::fmt::{self, Display};
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// The hand used for a Weapon Attribute
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -29,8 +29,8 @@ impl Display for WeaponHand {
     }
 }
 
-impl StaticOptions for WeaponHand {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for WeaponHand {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::Both,
             Self::Main,

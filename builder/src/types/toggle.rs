@@ -6,7 +6,7 @@ use core::fmt::{self, Display};
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{chain_tree, enums::StaticOptions, public_modules};
+use utils::{chain_tree, enums::StaticValues, public_modules};
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
@@ -132,14 +132,14 @@ where
     }
 }
 
-impl StaticOptions for Toggle {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Toggle {
+    fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
             [Self::Blocking, Self::InReaper],
-            AttackingTarget::get_static().map(Self::Attacking),
-            IconicPastLife::get_static().map(Self::IconicPastLife),
-            EpicPastLife::get_static().map(Self::EpicPastLife),
-            SeasonalAffinity::get_static().map(Self::SeasonalAffinity),
+            AttackingTarget::values().map(Self::Attacking),
+            IconicPastLife::values().map(Self::IconicPastLife),
+            EpicPastLife::values().map(Self::EpicPastLife),
+            SeasonalAffinity::values().map(Self::SeasonalAffinity),
         )
     }
 }

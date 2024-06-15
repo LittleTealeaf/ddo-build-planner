@@ -2,7 +2,7 @@ use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::types::damage_type::DamageType;
 
@@ -68,8 +68,8 @@ impl From<DamageType> for WeaponStat {
     }
 }
 
-impl StaticOptions for WeaponStat {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for WeaponStat {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::Attack,
@@ -83,7 +83,7 @@ impl StaticOptions for WeaponStat {
                 Self::DiceMultiplier,
                 Self::TotalDamage
             ],
-            DamageType::get_static().map(Self::DamageType)
+            DamageType::values().map(Self::DamageType)
         )
     }
 }

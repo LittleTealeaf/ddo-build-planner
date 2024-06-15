@@ -1,7 +1,7 @@
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use super::{ToToggle, Toggle};
 
@@ -329,8 +329,8 @@ impl ToToggle for GuildAmenity {
     }
 }
 
-impl StaticOptions for GuildAmenity {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for GuildAmenity {
+    fn values() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
     }
 }

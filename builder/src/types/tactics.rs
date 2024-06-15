@@ -2,7 +2,7 @@
 use core::fmt;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
@@ -37,7 +37,7 @@ pub enum Tactics {
 
 impl Tactics {
     /// All tactics DCs
-    pub const ALL: [Self; 6] = [
+    pub const VALUES: [Self; 6] = [
         Self::Trip,
         Self::Sunder,
         Self::Assassinate,
@@ -47,9 +47,9 @@ impl Tactics {
     ];
 }
 
-impl StaticOptions for Tactics {
-    fn get_static() -> impl Iterator<Item = Self> {
-        Self::ALL.into_iter()
+impl StaticValues for Tactics {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }
 

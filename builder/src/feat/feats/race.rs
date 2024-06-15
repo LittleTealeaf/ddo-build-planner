@@ -4,7 +4,7 @@ use fmt::Display;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, GetBonuses},
@@ -231,8 +231,8 @@ impl ToFeat for RacialFeat {
     }
 }
 
-impl StaticOptions for RacialFeat {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for RacialFeat {
+    fn values() -> impl Iterator<Item = Self> {
         [
             Self::SmallSizeBonus,
             Self::GnomishProficiencies,

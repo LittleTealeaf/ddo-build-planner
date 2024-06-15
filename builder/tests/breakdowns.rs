@@ -6,7 +6,7 @@ use builder::{
 };
 use core::{ops::Neg, str::FromStr};
 use rust_decimal::Decimal;
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Pushes a list of bonuses into a breakdown object and expects [`Attribute::Debug(0)`] to have
 /// the specified value
@@ -485,7 +485,7 @@ mod breakdowns {
     #[test]
     fn dont_track_by_default() {
         let breakdowns = Breakdowns::new();
-        for attribute in Attribute::get_static() {
+        for attribute in Attribute::values() {
             assert!(breakdowns.get_breakdown(&attribute).is_none());
         }
     }

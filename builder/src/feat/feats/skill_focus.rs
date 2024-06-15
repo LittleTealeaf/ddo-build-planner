@@ -5,7 +5,7 @@ use fmt::Display;
 use itertools::chain;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 use crate::{
     attribute::GetBonuses,
@@ -141,8 +141,8 @@ impl ToFeat for SkillFocus {
     }
 }
 
-impl StaticOptions for SkillFocus {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for SkillFocus {
+    fn values() -> impl Iterator<Item = Self> {
         chain!(
             [
                 Self::Acrobatic,
@@ -157,7 +157,7 @@ impl StaticOptions for SkillFocus {
                 Self::Stealthy,
                 Self::Alertness
             ],
-            Skill::get_static().map(Self::Focus)
+            Skill::values().map(Self::Focus)
         )
     }
 }

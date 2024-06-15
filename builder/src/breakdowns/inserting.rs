@@ -187,24 +187,23 @@ impl Breakdowns {
     where
         I: IntoIterator<Item = &'a BonusSource> + 'a,
     {
-        sources
-            .into_iter()
-            .filter_map(|source| {
-                let children = self.children.remove(source)?;
+        let map = |source: &BonusSource| {
+            let children = self.children.remove(source)?;
 
-                let mut bonuses = Vec::new();
+            let mut bonuses = Vec::new();
 
-                for child in &children {
-                    let Some(set) = self.bonuses.get_mut(child) else {
-                        continue;
-                    };
+            for child in &children {
+                let Some(set) = self.bonuses.get_mut(child) else {
+                    continue;
+                };
 
-                    let filter = |item: &Bonus| item.source().eq(source);
-                    let items = set.filter_remove(filter);
-                    bonuses.extend(items);
-                }
-                Some(bonuses)
-            })
-            .flatten()
+                let filter = |item: &Bonus| item.source().eq(source);
+                let items = set.filter_remove(filter);
+                bonuses.extend(items);
+            }
+            Some(bonuses)
+        };
+
+        sources.into_iter().filter_map(map).flatten()
     }
 }

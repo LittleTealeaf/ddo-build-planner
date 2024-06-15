@@ -10,18 +10,19 @@ pub use to_attribute::*;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 pub use traits::*;
-use utils::{chain_tree, enums::StaticOptions};
+use utils::{chain_tree, enums::StaticValues};
 
 use crate::{
     bonus::{Bonus, BonusTemplate, CloneBonus},
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, guild_level::GuildLevel, heal_amp::HealingAmplification, health::Health,
-        player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill,
-        sneak_attack::SneakAttack, spell_points::SpellPoints, spell_power::SpellPower,
-        spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, tactics::Tactics,
-        toggle::Toggle, weapon_attribute::WeaponAttribute,
+        dodge::Dodge, flag::Flag, guild_level::GuildLevel, heal_amp::HealingAmplification,
+        health::Health, player_class::PlayerClass, saving_throw::SavingThrow,
+        sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack, spell_points::SpellPoints,
+        spell_power::SpellPower, spell_selector::SpellSelector,
+        summoned_attribute::SummonedAttribute, tactics::Tactics, toggle::Toggle,
+        weapon_attribute::WeaponAttribute,
     },
 };
 use fmt::Display;
@@ -127,7 +128,7 @@ pub enum Attribute {
     #[serde(rename = "tlvl", alias = "TotalCharacterLevel")]
     TotalCharacterLevel,
     /// Summoned Creature Bonuses
-    #[serde(rename = "summon", alias = "SummonedAttribute")]
+    #[serde(rename = "smn", alias = "summon", alias = "SummonedAttribute")]
     SummonedAttribute(SummonedAttribute),
     /// Armor Check Penalty
     #[serde(rename = "acp", alias = "ArmorCheckPenalty")]
@@ -162,6 +163,9 @@ pub enum Attribute {
     /// Doublestrike
     #[serde(rename = "dst", alias = "Doublestrike")]
     Doublestrike,
+    /// Dodge
+    #[serde(rename = "dg", alias = "Dodge")]
+    Dodge(Dodge),
 }
 
 impl Display for Attribute {
@@ -206,6 +210,7 @@ impl Display for Attribute {
             Self::GuildLevel => write!(f, "Guild Level"),
             Self::Doubleshot => write!(f, "Doubleshot"),
             Self::Doublestrike => write!(f, "Doublestrike"),
+            Self::Dodge(dodge) => write!(f, "{dodge}"),
         }
     }
 }
@@ -254,12 +259,12 @@ impl CloneBonus for Attribute {
 
 macro_rules! toattr {
     ($class:ident) => {
-        $class::get_static().map(ToAttribute::to_attribute)
+        $class::values().map(ToAttribute::to_attribute)
     };
 }
 
-impl StaticOptions for Attribute {
-    fn get_static() -> impl Iterator<Item = Self> {
+impl StaticValues for Attribute {
+    fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
             [
                 Self::Dummy,
@@ -274,16 +279,16 @@ impl StaticOptions for Attribute {
                 Self::Doublestrike,
                 Self::Doubleshot,
             ],
-            Ability::get_static()
+            Ability::values()
                 .flat_map(|ability| [Self::Ability(ability), Self::AbilityModifier(ability)]),
-            SpellPower::get_static().flat_map(|sp| {
+            SpellPower::values().flat_map(|sp| {
                 [
                     Self::SpellPower(sp),
                     Self::SpellCriticalChance(sp),
                     Self::SpellCriticalDamage(sp),
                 ]
             }),
-            SpellSelector::get_static().flat_map(|selector| {
+            SpellSelector::values().flat_map(|selector| {
                 [
                     Self::CasterLevel(selector),
                     Self::MaxCasterLevel(selector),
@@ -305,6 +310,7 @@ impl StaticOptions for Attribute {
             toattr!(SummonedAttribute),
             toattr!(HealingAmplification),
             toattr!(Tactics),
+            toattr!(Dodge),
         )
     }
 }

@@ -4,7 +4,7 @@ use core::fmt;
 use fmt::Display;
 
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticOptions;
+use utils::enums::StaticValues;
 
 /// Determines alignment. To create a complete alignment, two of these attributes are required.
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
@@ -21,6 +21,17 @@ pub enum Alignment {
     Chaotic,
 }
 
+impl Alignment {
+    /// All possible values
+    pub const VALUES: [Self; 5] = [
+        Self::Good,
+        Self::Evil,
+        Self::Neutral,
+        Self::Lawful,
+        Self::Chaotic,
+    ];
+}
+
 impl Display for Alignment {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -33,15 +44,8 @@ impl Display for Alignment {
     }
 }
 
-impl StaticOptions for Alignment {
-    fn get_static() -> impl Iterator<Item = Self> {
-        [
-            Self::Good,
-            Self::Evil,
-            Self::Neutral,
-            Self::Lawful,
-            Self::Chaotic,
-        ]
-        .into_iter()
+impl StaticValues for Alignment {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }
