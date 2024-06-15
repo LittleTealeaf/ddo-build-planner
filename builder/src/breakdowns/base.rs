@@ -12,6 +12,7 @@ use crate::{
         absorption::{Absorption, AbsorptionSource},
         armor_class::ArmorClass,
         damage_type::DamageType,
+        dodge::Dodge,
         flag::{Flag, MainHandType, OffHandType},
         health::Health,
         item_type::{ArmorType, ShieldType, WeaponType},
@@ -48,6 +49,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         two_handed_fighting(),
         sneak_attack(),
         weapon_damage(),
+        dodge(),
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
 }
@@ -385,5 +387,16 @@ fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
                 .cond_any()
                 .expect("Expected Condition"),
         ),
+    )
+}
+
+fn dodge() -> impl Iterator<Item = BonusTemplate> {
+    once(
+        BonusTemplate::new(
+            Dodge::Total,
+            BonusType::Stacking,
+            Value::min(Dodge::Dodge.to_value(), Dodge::Cap.to_value()),
+        )
+        .with_display_source(Dodge::Dodge),
     )
 }

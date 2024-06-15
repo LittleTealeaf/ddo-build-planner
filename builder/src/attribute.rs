@@ -17,11 +17,12 @@ use crate::{
     feat::Feat,
     types::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
-        flag::Flag, guild_level::GuildLevel, heal_amp::HealingAmplification, health::Health,
-        player_class::PlayerClass, saving_throw::SavingThrow, sheltering::Sheltering, skill::Skill,
-        sneak_attack::SneakAttack, spell_points::SpellPoints, spell_power::SpellPower,
-        spell_selector::SpellSelector, summoned_attribute::SummonedAttribute, tactics::Tactics,
-        toggle::Toggle, weapon_attribute::WeaponAttribute,
+        dodge::Dodge, flag::Flag, guild_level::GuildLevel, heal_amp::HealingAmplification,
+        health::Health, player_class::PlayerClass, saving_throw::SavingThrow,
+        sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack, spell_points::SpellPoints,
+        spell_power::SpellPower, spell_selector::SpellSelector,
+        summoned_attribute::SummonedAttribute, tactics::Tactics, toggle::Toggle,
+        weapon_attribute::WeaponAttribute,
     },
 };
 use fmt::Display;
@@ -162,6 +163,9 @@ pub enum Attribute {
     /// Doublestrike
     #[serde(rename = "dst", alias = "Doublestrike")]
     Doublestrike,
+    /// Dodge
+    #[serde(rename = "dg", alias = "Dodge")]
+    Dodge(Dodge),
 }
 
 impl Display for Attribute {
@@ -206,6 +210,7 @@ impl Display for Attribute {
             Self::GuildLevel => write!(f, "Guild Level"),
             Self::Doubleshot => write!(f, "Doubleshot"),
             Self::Doublestrike => write!(f, "Doublestrike"),
+            Self::Dodge(dodge) => write!(f, "{dodge}"),
         }
     }
 }
@@ -305,6 +310,7 @@ impl StaticValues for Attribute {
             toattr!(SummonedAttribute),
             toattr!(HealingAmplification),
             toattr!(Tactics),
+            toattr!(Dodge),
         )
     }
 }

@@ -30,3 +30,4 @@ pub mod tactics;
 pub mod toggle;
 pub mod toggle_group;
 pub mod weapon_attribute;
+pub mod dodge;
