@@ -1,7 +1,5 @@
 //! Application Starting Point
 
-use core::iter::once;
-
 use builder::{
     attribute::Attribute,
     bonus::{BonusSource, BonusTemplate, BonusType},
