@@ -86,10 +86,12 @@ where
                 self.data = None;
                 let err_path = self.path.to_str().unwrap().to_owned();
 
-                Command::perform(load_data(self.path.clone()), move |result| match result {
+                let handler = move |result: Result<T>| match result {
                     Ok(data) => Message::Data(DataContainerMessage::OnLoad(data).into()),
                     Err(err) => Message::Error(format!("Load: {err_path} {err:?}")),
-                })
+                };
+
+                Command::perform(load_data(self.path.clone()), handler)
             }
             DataContainerMessage::OnLoad(data) => {
                 self.modified = false;
@@ -102,12 +104,12 @@ where
                 self.saving = true;
                 let err_path = self.path.to_str().unwrap().to_owned();
 
-                Command::perform(save_data(self.path.clone(), data.clone()), move |result| {
-                    match result {
-                        Ok(()) => Message::Data(DataContainerMessage::OnSaved.into()),
-                        Err(err) => Message::Error(format!("Save: '{err_path}' {err:?}")),
-                    }
-                })
+                let handler = move |result: Result<()>| match result {
+                    Ok(()) => Message::Data(DataContainerMessage::<T>::OnSaved.into()),
+                    Err(err) => Message::Error(format!("Save: '{err_path}' {err:?}")),
+                };
+
+                Command::perform(save_data(self.path.clone(), data.clone()), handler)
             }),
             DataContainerMessage::OnSaved => {
                 self.saving = false;
