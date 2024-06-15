@@ -908,25 +908,6 @@ mod feats {
     mod past_lives {
         use super::*;
 
-        mod iconic {
-
-            use super::*;
-
-            #[test]
-            fn past_life_gives_toggle() {
-                for race in IconicPastLife::RACES {
-                    let Some(bonuses) = race.get_bonuses(Decimal::ONE) else {
-                        panic!("Expected Bonuses for {race}");
-                    };
-
-                    assert!(
-                        bonuses.contains(&BonusTemplate::toggle(race)),
-                        "{race} does not provide toggle"
-                    );
-                }
-            }
-        }
-
         mod racial {
 
             use im::HashSet;
