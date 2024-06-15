@@ -146,6 +146,41 @@ impl Display for BonusType {
     }
 }
 
+impl BonusType {
+    /// All different values
+    pub const VALUES: [Self; 29] = [
+        Self::AbilityModifier,
+        Self::ActionBoost,
+        Self::Alchemical,
+        Self::Artifact,
+        Self::Competence,
+        Self::Deflection,
+        Self::Enhancement,
+        Self::Epic,
+        Self::Exceptional,
+        Self::Feat,
+        Self::Festive,
+        Self::Fortune,
+        Self::Insightful,
+        Self::Legendary,
+        Self::Morale,
+        Self::Music,
+        Self::Primal,
+        Self::Guild,
+        Self::Profane,
+        Self::Quality,
+        Self::Sacred,
+        Self::Shield,
+        Self::Size,
+        Self::Stacking,
+        Self::Spooky,
+        Self::Standard,
+        Self::Racial,
+        Self::Dodge,
+        Self::Luck,
+    ];
+}
+
 impl Default for BonusType {
     fn default() -> Self {
         Self::Stacking
@@ -174,37 +209,6 @@ impl BonusType {
 
 impl StaticValues for BonusType {
     fn values() -> impl Iterator<Item = Self> {
-        [
-            Self::AbilityModifier,
-            Self::ActionBoost,
-            Self::Alchemical,
-            Self::Artifact,
-            Self::Competence,
-            Self::Deflection,
-            Self::Enhancement,
-            Self::Epic,
-            Self::Exceptional,
-            Self::Feat,
-            Self::Festive,
-            Self::Fortune,
-            Self::Insightful,
-            Self::Legendary,
-            Self::Morale,
-            Self::Music,
-            Self::Primal,
-            Self::Guild,
-            Self::Profane,
-            Self::Quality,
-            Self::Sacred,
-            Self::Shield,
-            Self::Size,
-            Self::Stacking,
-            Self::Spooky,
-            Self::Standard,
-            Self::Racial,
-            Self::Dodge,
-            Self::Luck,
-        ]
-        .into_iter()
+        Self::VALUES.into_iter()
     }
 }

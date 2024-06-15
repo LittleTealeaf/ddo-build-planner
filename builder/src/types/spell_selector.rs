@@ -3,7 +3,7 @@ use core::fmt::{self, Display};
 
 use itertools::chain;
 use serde::{Deserialize, Serialize};
-use utils::enums::StaticValues;
+use utils::{chain_tree, enums::StaticValues};
 
 use crate::types::spell_school::SpellSchool;
 
@@ -65,7 +65,7 @@ impl From<PlayerClass> for SpellSelector {
 
 impl StaticValues for SpellSelector {
     fn values() -> impl Iterator<Item = Self> {
-        chain!(
+        chain_tree!(
             [Self::All],
             SpellPower::values().map(Self::SpellPower),
             SpellSchool::values().map(Self::School),

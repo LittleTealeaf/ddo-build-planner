@@ -6,7 +6,7 @@ use core::{
 use itertools::chain;
 use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{enums::StaticValues, public_modules};
+use utils::{chain_tree, enums::StaticValues, public_modules};
 
 use crate::{
     attribute::GetBonuses,
@@ -74,7 +74,7 @@ impl GetBonuses for PastLifeFeat {
 
 impl StaticValues for PastLifeFeat {
     fn values() -> impl Iterator<Item = Self> {
-        chain!(
+        chain_tree!(
             once(Self::HeroicCompletionist),
             IconicPastLife::values().map(Self::Iconic),
             HeroicPastLife::values().map(Self::Heroic),
