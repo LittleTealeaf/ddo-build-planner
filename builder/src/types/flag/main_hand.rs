@@ -19,7 +19,7 @@ pub enum MainHandType {
     /// The character is wielding a wand in their main hand.
     Wand,
     /// The character is wielding some weapon in their main hand.
-    #[serde(rename="w", alias = "Weapon")]
+    #[serde(rename = "w", alias = "Weapon")]
     Weapon(WeaponType),
 }
 
