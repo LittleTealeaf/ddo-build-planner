@@ -127,7 +127,7 @@ pub enum Attribute {
     #[serde(rename = "tlvl", alias = "TotalCharacterLevel")]
     TotalCharacterLevel,
     /// Summoned Creature Bonuses
-    #[serde(rename = "summon", alias = "SummonedAttribute")]
+    #[serde(rename = "smt", alias = "summon", alias = "SummonedAttribute")]
     SummonedAttribute(SummonedAttribute),
     /// Armor Check Penalty
     #[serde(rename = "acp", alias = "ArmorCheckPenalty")]
