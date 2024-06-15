@@ -22,6 +22,7 @@ use crate::{
         skill::Skill,
         sneak_attack::SneakAttack,
         spell_points::SpellPoints,
+        spell_power::SpellPower,
         spell_school::SpellSchool,
         summoned_attribute::SummonedAttribute,
         tactics::Tactics,
@@ -223,6 +224,11 @@ impl GetBonuses for HeroicPastLife {
                         dec!(5) * value,
                     ),
                 ],
+                PlayerClass::WildMage => vec![BonusTemplate::new(
+                    Attribute::spell_power(SpellPower::Universal),
+                    BonusType::Stacking,
+                    dec!(3) * value,
+                )],
             }
         })
     }
