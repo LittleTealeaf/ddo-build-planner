@@ -2,7 +2,6 @@ use core::iter::once;
 
 use builder::equipment::set_bonus::ItemSet;
 use iced::{
-    advanced::Widget,
     alignment::Vertical,
     theme,
     widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
