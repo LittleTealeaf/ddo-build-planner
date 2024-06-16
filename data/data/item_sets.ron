@@ -250,12 +250,12 @@ v:v("3"),
 n:"Seasons of the Feywild",
 b:{
 2:[(
-a:hp(Bonus),
+a:hp(b),
 t:art,
 v:v("10"),
 )],
 3:[(
-a:sp(Base),
+a:sp(b),
 t:art,
 v:v("50"),
 )],
@@ -265,7 +265,7 @@ t:art,
 v:v("1"),
 )],
 5:[(
-a:dg(Dodge),
+a:dg(b),
 t:art,
 v:v("1"),
 )],
