@@ -1,3 +1,5 @@
+use std::iter::once;
+
 use builder::equipment::set_bonus::ItemSet;
 use iced::{
     advanced::Widget,
@@ -187,27 +189,44 @@ impl HandleView<App> for ItemSetEditor {
                             container(row!(
                                 text(tier.to_string()).size(26),
                                 horizontal_space().width(10),
-                                column(bonuses.iter().enumerate().map(|(index, bonus)| {
-                                    row!(
-                                        button(nf_icon("")).on_press(
-                                            ItemSetEditorMessage::OpenEditTierBonus(tier, index)
+                                column(
+                                    bonuses
+                                        .iter()
+                                        .enumerate()
+                                        .map(|(index, bonus)| {
+                                            row!(
+                                                button(nf_icon("")).on_press(
+                                                    ItemSetEditorMessage::OpenEditTierBonus(
+                                                        tier, index
+                                                    )
+                                                    .into()
+                                                ),
+                                                button(nf_icon("")).on_press(
+                                                    ItemSetEditorMessage::DeleteTierBonus(
+                                                        tier, index
+                                                    )
+                                                    .into()
+                                                ),
+                                                horizontal_space().width(10),
+                                                text(format!(
+                                                    "{} bonus to {}",
+                                                    bonus.bonus_type(),
+                                                    bonus.attribute()
+                                                ))
+                                                .vertical_alignment(Vertical::Center),
+                                            )
+                                            .padding(3)
+                                            .into()
+                                        })
+                                        .chain(once(
+                                            button(nf_icon(""))
+                                                .on_press(
+                                                    ItemSetEditorMessage::OpenAddTierBonus(tier)
+                                                        .into()
+                                                )
                                                 .into()
-                                        ),
-                                        button(nf_icon("")).on_press(
-                                            ItemSetEditorMessage::DeleteTierBonus(tier, index)
-                                                .into()
-                                        ),
-                                        horizontal_space().width(10),
-                                        text(format!(
-                                            "{} bonus to {}",
-                                            bonus.bonus_type(),
-                                            bonus.attribute()
                                         ))
-                                        .vertical_alignment(Vertical::Center),
-                                    )
-                                    .padding(3)
-                                    .into()
-                                }))
+                                )
                             ))
                             .style(theme::Container::Box)
                             .padding(10)

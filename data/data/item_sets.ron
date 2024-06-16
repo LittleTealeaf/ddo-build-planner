@@ -112,4 +112,13 @@ t:pro,
 v:v("30"),
 )],
 },
+),(
+n:"Anger\'s Wrath",
+b:{
+2:[(
+a:wep((Both,att)),
+t:stck,
+v:v("1"),
+)],
+},
 )]
