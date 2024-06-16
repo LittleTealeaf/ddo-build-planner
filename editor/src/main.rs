@@ -39,6 +39,7 @@ enum Message {
     IconsLoaded,
     Data(DataMessage),
     Error(String),
+    Warning(String),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
     ModalAttribute(ModalAttributeMessage),
@@ -176,7 +177,27 @@ impl HandleMessage<Message> for App {
 
                 Command::none()
             }
+            Message::Warning(string) => {
+                println!("Warning: {string}");
+                Command::none()
+            }
         }
+    }
+}
+
+impl App {
+    fn handle_error<S>(&mut self, error: S) -> Command<Message>
+    where
+        S: Into<String>,
+    {
+        self.handle_message(Message::Error(error.into()))
+    }
+
+    fn handle_warning<S>(&mut self, warning: S) -> Command<Message>
+    where
+        S: Into<String>,
+    {
+        self.handle_message(Message::Warning(warning.into()))
     }
 }
 

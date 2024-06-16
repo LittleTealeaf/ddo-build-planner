@@ -117,7 +117,7 @@ where
             }
             DataContainerMessage::Modified => {
                 self.modified = true;
-                Command::none()
+                self.handle_message(DataContainerMessage::<T>::Save)
             }
         }
     }
