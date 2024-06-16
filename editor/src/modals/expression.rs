@@ -255,7 +255,7 @@ pub enum ModalExpressionMessage {
 
 impl From<ModalExpressionMessage> for Message {
     fn from(value: ModalExpressionMessage) -> Self {
-        Self::ExpressionSelector(value)
+        Self::ModalExpression(value)
     }
 }
 

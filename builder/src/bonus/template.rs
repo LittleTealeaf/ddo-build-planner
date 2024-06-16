@@ -232,6 +232,18 @@ impl BonusTemplate {
         }
     }
 
+    /// Sets the displayed [`BonusSource`] if its provided, otherwise uses the current value
+    #[must_use]
+    pub fn with_display_source_maybe<S>(self, display_source: Option<S>) -> Self
+    where
+        S: Into<BonusSource>,
+    {
+        Self {
+            display_source: display_source.map(Into::into).or(self.display_source),
+            ..self
+        }
+    }
+
     /// Clears the displayed [`BonusSource`]
     #[must_use]
     pub fn without_display_source(self) -> Self {

@@ -21,12 +21,10 @@ pub struct Data {
 
 impl Data {
     pub fn new() -> Self {
-        fn base() -> PathBuf {
-            [".", "data", "data"].iter().collect()
-        }
+        let base = PathBuf::from(".").join("data").join("data");
 
         Self {
-            item_sets: DataContainer::new(base().join("item_sets.ron")),
+            item_sets: DataContainer::new(base.join("item_sets.ron")),
         }
     }
 

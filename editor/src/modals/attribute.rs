@@ -1,8 +1,10 @@
+use std::string::ToString;
+
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
 use iced::{
     theme,
-    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
+    widget::{button, column, container, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
 use ui::{HandleMessage, HandleView};
@@ -11,7 +13,7 @@ use utils::from_into::FromInto;
 use crate::{App, Message};
 
 #[derive(Clone, Debug)]
-pub struct AttributeSelector {
+pub struct ModalAttribute {
     attributes: Vec<Attribute>,
     selected: Option<usize>,
     title: Option<String>,
@@ -21,18 +23,21 @@ pub struct AttributeSelector {
 }
 
 impl App {
-    pub fn select_attribute(&self) -> AttributeSelector {
-        AttributeSelector::new(self.data.generate_attributes())
+    pub fn select_attribute(&self) -> ModalAttribute {
+        ModalAttribute::new(self.data.generate_attributes())
     }
 }
 
-impl AttributeSelector {
+impl ModalAttribute {
     fn new<I>(attributes: I) -> Self
     where
         I: IntoIterator<Item = Attribute>,
     {
+        let mut attributes = attributes.into_iter().collect::<Vec<_>>();
+        attributes.sort_by_cached_key(ToString::to_string);
+
         Self {
-            attributes: attributes.into_iter().collect(),
+            attributes,
             selected: None,
             title: None,
             filter: String::new(),
@@ -128,7 +133,7 @@ impl AttributeSelector {
 }
 
 #[derive(Debug, Clone)]
-pub enum AttributeSelectorMessage {
+pub enum ModalAttributeMessage {
     Filter(String),
     Select(usize),
     Clear,
@@ -136,31 +141,31 @@ pub enum AttributeSelectorMessage {
     Cancel,
 }
 
-impl From<AttributeSelectorMessage> for Message {
-    fn from(value: AttributeSelectorMessage) -> Self {
-        Self::AttributeSelector(value)
+impl From<ModalAttributeMessage> for Message {
+    fn from(value: ModalAttributeMessage) -> Self {
+        Self::ModalAttribute(value)
     }
 }
 
-impl HandleMessage<AttributeSelectorMessage> for App {
+impl HandleMessage<ModalAttributeMessage> for App {
     fn handle_message(
         &mut self,
-        message: AttributeSelectorMessage,
+        message: ModalAttributeMessage,
     ) -> Command<<Self as Application>::Message> {
         let Some(sel) = &mut self.modal_attribute else {
             return Command::none();
         };
 
         match message {
-            AttributeSelectorMessage::Filter(filter) => {
+            ModalAttributeMessage::Filter(filter) => {
                 sel.filter = filter;
                 Command::none()
             }
-            AttributeSelectorMessage::Select(index) => {
+            ModalAttributeMessage::Select(index) => {
                 sel.selected = Some(index);
                 Command::none()
             }
-            AttributeSelectorMessage::Submit => {
+            ModalAttributeMessage::Submit => {
                 let command = sel
                     .on_submit
                     .clone()
@@ -168,7 +173,7 @@ impl HandleMessage<AttributeSelectorMessage> for App {
                 self.modal_attribute = None;
                 command
             }
-            AttributeSelectorMessage::Cancel => {
+            ModalAttributeMessage::Cancel => {
                 let command = sel
                     .on_cancel
                     .clone()
@@ -176,7 +181,7 @@ impl HandleMessage<AttributeSelectorMessage> for App {
                 self.modal_attribute = None;
                 command
             }
-            AttributeSelectorMessage::Clear => {
+            ModalAttributeMessage::Clear => {
                 sel.selected = None;
                 Command::none()
             }
@@ -184,7 +189,7 @@ impl HandleMessage<AttributeSelectorMessage> for App {
     }
 }
 
-impl HandleView<App> for AttributeSelector {
+impl HandleView<App> for ModalAttribute {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
@@ -193,8 +198,21 @@ impl HandleView<App> for AttributeSelector {
         let selected = self.selected.unwrap_or(self.attributes.len());
 
         column!(
-            text_input("Filter...", &self.filter)
-                .on_input(|filter| { AttributeSelectorMessage::Filter(filter).into() }),
+            row!(
+                text_input("Filter...", &self.filter)
+                    .on_input(|filter| { ModalAttributeMessage::Filter(filter).into() })
+                    .width(Length::Fill),
+                button(text("Cancel"))
+                    .style(theme::Button::Secondary)
+                    .on_press(ModalAttributeMessage::Cancel.into()),
+                button(text("Submit"))
+                    .style(theme::Button::Primary)
+                    .on_press_maybe(
+                        self.selected
+                            .is_some()
+                            .then_some(ModalAttributeMessage::Submit.into())
+                    )
+            ),
             scrollable(column(
                 self.attributes
                     .iter()
@@ -204,7 +222,7 @@ impl HandleView<App> for AttributeSelector {
                     .map(|(index, attr)| {
                         container(
                             button(text(attr))
-                                .on_press(AttributeSelectorMessage::Select(index).into())
+                                .on_press(ModalAttributeMessage::Select(index).into())
                                 .style(if selected == index {
                                     theme::Button::Primary
                                 } else {
@@ -216,19 +234,6 @@ impl HandleView<App> for AttributeSelector {
                     })
             ))
             .height(Length::Fill),
-            row!(
-                horizontal_space().width(Length::Fill),
-                button(text("Cancel"))
-                    .style(theme::Button::Secondary)
-                    .on_press(AttributeSelectorMessage::Cancel.into()),
-                button(text("Submit"))
-                    .style(theme::Button::Primary)
-                    .on_press_maybe(
-                        self.selected
-                            .is_some()
-                            .then_some(AttributeSelectorMessage::Submit.into())
-                    )
-            )
         )
         .into()
     }

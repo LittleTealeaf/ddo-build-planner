@@ -195,6 +195,39 @@ impl Default for BonusType {
 }
 
 impl BonusType {
+    /// All valid bonus types
+    pub const ALL: [Self; 29] = [
+        Self::AbilityModifier,
+        Self::ActionBoost,
+        Self::Alchemical,
+        Self::Artifact,
+        Self::Competence,
+        Self::Deflection,
+        Self::Enhancement,
+        Self::Epic,
+        Self::Exceptional,
+        Self::Feat,
+        Self::Festive,
+        Self::Fortune,
+        Self::Insightful,
+        Self::Legendary,
+        Self::Morale,
+        Self::Music,
+        Self::Primal,
+        Self::Guild,
+        Self::Profane,
+        Self::Quality,
+        Self::Sacred,
+        Self::Shield,
+        Self::Size,
+        Self::Stacking,
+        Self::Spooky,
+        Self::Standard,
+        Self::Racial,
+        Self::Dodge,
+        Self::Luck,
+    ];
+
     /// Returns `true` if the bonus type is [`Stacking`]
     ///
     ///

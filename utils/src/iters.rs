@@ -11,6 +11,10 @@ macro_rules! chain_tree {
         core::iter::empty()
     };
 
+    (+$single:expr) => {
+        core::iter::IntoIterator::into_iter($single)
+    };
+
     (+$first:expr, $second:expr) => {
         core::iter::Iterator::chain(
             $first,
@@ -29,11 +33,7 @@ macro_rules! chain_tree {
         chain_tree!(+)
     };
 
-    ($first: expr, $second:expr) => {
-        chain_tree!(+ core::iter::IntoIterator::into_iter($first), core::iter::IntoIterator::into_iter($second))
-    };
-
-    ($first: expr, $second: expr $(, $rest:expr)+ $(,)?) => {
-        chain_tree!(+ core::iter::IntoIterator::into_iter($first), core::iter::IntoIterator::into_iter($second) $(, core::iter::IntoIterator::into_iter($rest))+)
-    };
+    ($first: expr $(, $item:expr)+ $(,)?) => {
+        chain_tree!(+ core::iter::IntoIterator::into_iter($first) $(, core::iter::IntoIterator::into_iter($item))+ )
+    }
 }

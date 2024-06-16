@@ -20,6 +20,7 @@ impl HandleView<App> for TabHome {
             button(text("Attribute")).on_press(Message::DebugOpenAttribute),
             button(text("Value")).on_press(Message::DebugOpenValue),
             button(text("Condition")).on_press(Message::DebugOpenCondition),
+            button(text("Bonus")).on_press(Message::DebugOpenBonus),
         )
         .into()
     }
