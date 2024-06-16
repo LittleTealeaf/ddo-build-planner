@@ -42,9 +42,12 @@ impl ItemSet {
 
     /// Creates a new bonus
     #[must_use]
-    pub fn new(name: String) -> Self {
+    pub fn new<S>(name: S) -> Self
+    where
+        S: Into<String>,
+    {
         Self {
-            name,
+            name: name.into(),
             bonuses: OrdMap::new(),
         }
     }
@@ -56,8 +59,11 @@ impl ItemSet {
     }
 
     /// Sets the name of this [`SetBonus`].
-    pub fn set_name(&mut self, name: String) {
-        self.name = name;
+    pub fn set_name<S>(&mut self, name: S)
+    where
+        S: Into<String>,
+    {
+        self.name = name.into();
     }
 
     /// Returns a reference to the bonuses of this [`SetBonus`].

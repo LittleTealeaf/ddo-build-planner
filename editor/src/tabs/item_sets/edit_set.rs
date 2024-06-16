@@ -1,5 +1,9 @@
 use builder::{equipment::set_bonus::ItemSet, types::item_type};
-use iced::{Application, Command, Element, Renderer};
+use iced::{
+    theme,
+    widget::{button, column, horizontal_space, row, scrollable, text, text_input},
+    Application, Command, Element, Length, Renderer,
+};
 use ui::{HandleMessage, HandleView};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
@@ -8,17 +12,19 @@ use super::TabSetBonusesMessage;
 
 #[derive(Debug, Clone)]
 pub struct ItemSetEditor {
-    item_set: ItemSet,
+    pub(super) item_set: ItemSet,
+    pub(super) index: Option<usize>
 }
 
 impl ItemSetEditor {
-    pub const fn new(item_set: ItemSet) -> Self {
-        Self { item_set }
+    pub const fn new(item_set: ItemSet, index: Option<usize>) -> Self {
+        Self { item_set, index }
     }
 }
 
 #[derive(Debug, Clone)]
 pub enum ItemSetEditorMessage {
+    SetName(String),
     CreateTier(i32),
     DeleteTier(i32),
     OpenAddTierBonus(i32),
@@ -44,6 +50,10 @@ impl HandleMessage<ItemSetEditorMessage> for App {
         };
 
         match message {
+            ItemSetEditorMessage::SetName(string) => {
+                editor.item_set.set_name(string);
+                Command::none()
+            }
             ItemSetEditorMessage::CreateTier(tier) => {
                 editor.item_set.bonuses_mut().insert(tier, Vec::new());
                 Command::none()
@@ -75,39 +85,49 @@ impl HandleMessage<ItemSetEditorMessage> for App {
                 Command::none()
             }
             ItemSetEditorMessage::OnAddTierBonus(tier) => {
-                let bonus = self.modal_bonus.as_ref().and_then(ModalBonus::get_bonus);
+                let Some(modal) = self.modal_bonus.as_ref() else {
+                    return self.handle_warning("Bonus Modal not open");
+                };
 
-                if let Some(bonus) = bonus {
-                    if let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) {
-                        tier.push(bonus);
-                    }
-                }
+                let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
+                    return self.handle_warning(format!("Tier {tier} does not exist"));
+                };
+
+                let Some(bonus) = modal.get_bonus() else {
+                    return self.handle_warning("Bonus Modal returns no bonus");
+                };
+
+                tier.push(bonus);
 
                 Command::none()
             }
             ItemSetEditorMessage::OnEditTierBonus(tier, index) => {
-                let Some(bonus) = self.modal_bonus.as_ref().and_then(ModalBonus::get_bonus) else {
-                    return Command::none();
+                let Some(modal) = self.modal_bonus.as_ref() else {
+                    return self.handle_warning("Bonus Modal not open");
                 };
 
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return Command::none();
+                    return self.handle_warning(format!("Tier {tier} does not exist"));
                 };
 
                 let Some(pointer) = tier.get_mut(index) else {
-                    return Command::none();
+                    return self.handle_warning(format!("Index {index} does not exist"));
+                };
+
+                let Some(bonus) = modal.get_bonus() else {
+                    return self.handle_warning("Bonus Modal returns no bonus");
                 };
 
                 *pointer = bonus;
 
                 Command::none()
             }
-            ItemSetEditorMessage::DeleteTierBonus(tier, usize) => {
+            ItemSetEditorMessage::DeleteTierBonus(tier, index) => {
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return Command::none();
+                    return self.handle_warning(format!("Tier {tier} does not exist"));
                 };
 
-                tier.remove(usize);
+                tier.remove(index);
 
                 Command::none()
             }
@@ -120,6 +140,24 @@ impl HandleView<App> for ItemSetEditor {
         &'a self,
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        todo!()
+        column!(
+            row!(
+                text("Editing: ").size(30),
+                text_input("Item Set Name", self.item_set.name())
+                    .on_input(|string| ItemSetEditorMessage::SetName(string).into())
+                    .size(25)
+            ),
+            scrollable(column!(text("hi"))).height(Length::Fill),
+            row!(
+                horizontal_space(),
+                button(text("Cancel").size(20))
+                    .on_press(TabSetBonusesMessage::CancelEdit.into())
+                    .style(theme::Button::Secondary),
+                button(text("Save").size(20))
+                    .on_press(TabSetBonusesMessage::SaveEdit.into())
+                    .style(theme::Button::Primary)
+            )
+        )
+        .into()
     }
 }
