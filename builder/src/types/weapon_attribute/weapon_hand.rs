@@ -7,10 +7,13 @@ use utils::enums::StaticValues;
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponHand {
     /// Both Hands
+    #[serde(rename = "b", alias = "Both")]
     Both,
     /// The Main Hand
+    #[serde(rename = "m", alias = "Main")]
     Main,
     /// The Off Hand
+    #[serde(rename = "o", alias = "Off")]
     Off,
 }
 
@@ -31,10 +34,6 @@ impl Display for WeaponHand {
 
 impl StaticValues for WeaponHand {
     fn values() -> impl Iterator<Item = Self> {
-        [
-            Self::Both,
-            Self::Main,
-            Self::Off
-        ].into_iter()
+        [Self::Both, Self::Main, Self::Off].into_iter()
     }
 }

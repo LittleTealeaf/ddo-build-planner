@@ -16,8 +16,10 @@ use super::{ability::Ability, sheltering::Sheltering};
 #[derive(Hash, Copy, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SummonedAttribute {
     /// Provides bonuses to ability scores for summoned creatures
+    #[serde(rename = "as", alias = "AbilityScore")]
     AbilityScore(Ability),
     /// Sheltering
+    #[serde(rename = "s", alias = "Sheltering")]
     Sheltering(Sheltering),
 }
 
