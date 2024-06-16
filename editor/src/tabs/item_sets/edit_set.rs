@@ -1,4 +1,4 @@
-use builder::{equipment::set_bonus::ItemSet, types::item_type};
+use builder::equipment::set_bonus::ItemSet;
 use iced::{
     theme,
     widget::{button, column, horizontal_space, row, scrollable, text, text_input},
@@ -13,7 +13,7 @@ use super::TabSetBonusesMessage;
 #[derive(Debug, Clone)]
 pub struct ItemSetEditor {
     pub(super) item_set: ItemSet,
-    pub(super) index: Option<usize>
+    pub(super) index: Option<usize>,
 }
 
 impl ItemSetEditor {

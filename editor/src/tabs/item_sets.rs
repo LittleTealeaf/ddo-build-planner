@@ -3,8 +3,7 @@ mod edit_set;
 use builder::equipment::set_bonus::ItemSet;
 use fuzzy_filter::matches;
 use iced::{
-    theme,
-    widget::{button, column, scrollable, text, text_input, Column, Row},
+    widget::{button, column, row, scrollable, text, text_input, Column, Row},
     Application, Command, Element, Renderer,
 };
 use ui::{font::nf_icon, HandleMessage, HandleView};
@@ -120,10 +119,12 @@ impl HandleView<App> for TabItemSets {
                             .enumerate()
                             .filter(|(_, set)| matches(&self.filter, set.name()))
                             .map(|(index, set)| {
-                                button(text(set.name()))
-                                    .style(theme::Button::Text)
-                                    .on_press(TabSetBonusesMessage::Edit(index).into())
-                                    .into()
+                                row!(
+                                    button(nf_icon(""))
+                                        .on_press(TabSetBonusesMessage::Edit(index).into()),
+                                    text(set.name())
+                                )
+                                .into()
                             }),
                     ))
                 }))
