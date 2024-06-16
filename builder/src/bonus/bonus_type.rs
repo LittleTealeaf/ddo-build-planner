@@ -48,6 +48,8 @@ pub enum BonusType {
     /// This bonus is typically used in epic destinies where different trees may provide bonuses to
     /// a particular attribute, but only the highest will count
     Epic,
+    /// Equipment Bonus
+    Equipment,
     /// Exceptional bonus
     #[serde(rename = "exc", alias = "Exceptional")]
     Exceptional,
@@ -119,6 +121,7 @@ pub enum BonusType {
 impl Display for BonusType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::Equipment => write!(f, "Equipment"),
             Self::Debug(channel) => write!(f, "Debug {channel}"),
             Self::AbilityModifier => write!(f, "Ability Modifier"),
             Self::ActionBoost => write!(f, "Action Boost"),
@@ -155,13 +158,14 @@ impl Display for BonusType {
 
 impl BonusType {
     /// All different values
-    pub const VALUES: [Self; 29] = [
+    pub const VALUES: [Self; 30] = [
         Self::AbilityModifier,
         Self::ActionBoost,
         Self::Alchemical,
         Self::Artifact,
         Self::Competence,
         Self::Deflection,
+        Self::Equipment,
         Self::Enhancement,
         Self::Epic,
         Self::Exceptional,
@@ -195,39 +199,6 @@ impl Default for BonusType {
 }
 
 impl BonusType {
-    /// All valid bonus types
-    pub const ALL: [Self; 29] = [
-        Self::AbilityModifier,
-        Self::ActionBoost,
-        Self::Alchemical,
-        Self::Artifact,
-        Self::Competence,
-        Self::Deflection,
-        Self::Enhancement,
-        Self::Epic,
-        Self::Exceptional,
-        Self::Feat,
-        Self::Festive,
-        Self::Fortune,
-        Self::Insightful,
-        Self::Legendary,
-        Self::Morale,
-        Self::Music,
-        Self::Primal,
-        Self::Guild,
-        Self::Profane,
-        Self::Quality,
-        Self::Sacred,
-        Self::Shield,
-        Self::Size,
-        Self::Stacking,
-        Self::Spooky,
-        Self::Standard,
-        Self::Racial,
-        Self::Dodge,
-        Self::Luck,
-    ];
-
     /// Returns `true` if the bonus type is [`Stacking`]
     ///
     ///

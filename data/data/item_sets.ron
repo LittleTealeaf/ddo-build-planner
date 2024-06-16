@@ -121,4 +121,22 @@ t:stck,
 v:v("1"),
 )],
 },
+),(
+n:"Arcane Mind",
+b:{
+2:[(
+a:spow(ptc),
+t:Equipment,
+v:v("24"),
+)],
+},
+),(
+n:"Devoted Heart",
+b:{
+2:[(
+a:spow(d(po)),
+t:Equipment,
+v:v("36"),
+)],
+},
 )]

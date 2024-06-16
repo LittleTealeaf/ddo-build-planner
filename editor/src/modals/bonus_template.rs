@@ -248,7 +248,7 @@ impl HandleView<App> for ModalBonus {
             )
             .on_press(ModalBonusMessage::OpenAttributeModal.into()),
             text("Bonus Type").size(20),
-            pick_list(BonusType::ALL, Some(self.bonus_type), |selected| {
+            pick_list(BonusType::VALUES, Some(self.bonus_type), |selected| {
                 ModalBonusMessage::SetBonusType(selected).into()
             }),
             text("Value").size(20),

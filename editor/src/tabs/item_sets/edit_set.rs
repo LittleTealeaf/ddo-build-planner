@@ -1,4 +1,4 @@
-use std::iter::once;
+use core::iter::once;
 
 use builder::equipment::set_bonus::ItemSet;
 use iced::{
