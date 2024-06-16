@@ -14,10 +14,12 @@ use utils::enums::StaticValues;
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum BonusType {
     /// Used in debugging bonus types
+    #[serde(rename = "d", alias = "Debug")]
     Debug(usize),
     /// Bonuses that come from [`Attribute::AbilityModifier`]
     ///
     /// [`Attribute::AbilityModifier`]: crate::attribute::Attribute::AbilityModifier
+    #[serde(rename = "am", alias = "AbilityModifier")]
     AbilityModifier,
     /// "Action Boost" bonuses
     ///
@@ -25,78 +27,84 @@ pub enum BonusType {
     #[serde(rename = "actbst", alias = "ActionBoost")]
     ActionBoost,
     /// Alchemical bonuses
-    #[serde(rename = "alc", alias = "Alchemical")]
+    #[serde(rename = "al", alias = "alc", alias = "Alchemical")]
     Alchemical,
     /// Artifact bonuses
     ///
     /// These are typically bonuses from named item sets
-    #[serde(rename = "art", alias = "Artifact")]
+    #[serde(rename = "ar", alias = "art", alias = "Artifact")]
     Artifact,
     /// Competence bonuses
-    #[serde(rename = "cmp", alias = "Competence")]
+    #[serde(rename = "cm", alias = "cmp", alias = "Competence")]
     Competence,
     /// Deflection bonus
     #[serde(rename = "dfl", alias = "Deflection")]
     Deflection,
     /// Dodge
+    #[serde(rename = "dge", alias = "Dodge")]
     Dodge,
     /// Enhancement bonus
-    #[serde(rename = "enh", alias = "Enhancement")]
+    #[serde(rename = "en", alias = "enh", alias = "Enhancement")]
     Enhancement,
     /// Epic bonus
     ///
     /// This bonus is typically used in epic destinies where different trees may provide bonuses to
     /// a particular attribute, but only the highest will count
+    #[serde(rename = "ep", alias = "epc", alias = "Epic")]
     Epic,
     /// Equipment Bonus
+    #[serde(rename = "eq", alias = "Equipment")]
     Equipment,
     /// Exceptional bonus
-    #[serde(rename = "exc", alias = "Exceptional")]
+    #[serde(rename = "ex", alias = "exc", alias = "Exceptional")]
     Exceptional,
     /// Feat bonus
-    #[serde(rename = "fea", alias = "Feat")]
+    #[serde(rename = "fe", alias = "fea", alias = "Feat")]
     Feat,
     /// Festive bonus
-    #[serde(rename = "fst", alias = "Festive")]
+    #[serde(rename = "fs", alias = "fst", alias = "Festive")]
     Festive,
     /// Fortune bonus
-    #[serde(rename = "for", alias = "Fortune")]
+    #[serde(rename = "fr", alias = "for", alias = "Fortune")]
     Fortune,
     /// Guild
-    #[serde(rename = "gui", alias = "Guild")]
+    #[serde(rename = "gu", alias = "gui", alias = "Guild")]
     Guild,
     /// Insightful bonus
-    #[serde(rename = "ins", alias = "Insightful")]
+    #[serde(rename = "in", alias = "ins", alias = "Insightful")]
     Insightful,
     /// Legendary bonus
-    #[serde(rename = "leg", alias = "Legendary")]
+    #[serde(rename = "lg", alias = "leg", alias = "Legendary")]
     Legendary,
     /// Luck Bonus
-    #[serde(rename = "lck", alias = "Luck")]
+    #[serde(rename = "lk", alias = "lck", alias = "Luck")]
     Luck,
     /// Morale bonus
-    #[serde(rename = "mor", alias = "Morale")]
+    #[serde(rename = "mr", alias = "mor", alias = "Morale")]
     Morale,
     /// Music bonus
+    #[serde(rename = "mu", alias = "Music")]
     Music,
     /// Primal bonus
-    #[serde(rename = "pri", alias = "Primal")]
+    #[serde(rename = "pr", alias = "pri", alias = "Primal")]
     Primal,
     /// Profane bonus
-    #[serde(rename = "pro", alias = "Profane")]
+    #[serde(rename = "pr", alias = "pro", alias = "Profane")]
     Profane,
     /// Quality bonus
-    #[serde(rename = "qual", alias = "Quality")]
+    #[serde(rename = "qu", alias = "qual", alias = "Quality")]
     Quality,
     /// Racial bonus
-    #[serde(rename = "race", alias = "Racial")]
+    #[serde(rename = "ra", alias = "race", alias = "Racial")]
     Racial,
     /// Sacred bonus
-    #[serde(rename = "sac", alias = "Sacred")]
+    #[serde(rename = "sc", alias = "sac", alias = "Sacred")]
     Sacred,
     /// Size bonus
+    #[serde(rename = "sz", alias = "sze", alias = "Size")]
     Size,
     /// Shield bonus
+    #[serde(rename = "shi", alias = "Shield")]
     Shield,
     /// Stacking bonus
     ///
@@ -109,12 +117,13 @@ pub enum BonusType {
     /// let bonus_type: BonusType = BonusType::default();
     /// assert_eq!(BonusType::Stacking, bonus_type);
     /// ```
-    #[serde(rename = "stck", alias = "Stacking")]
+    #[serde(rename = "s", alias = "stck", alias = "Stacking")]
     Stacking,
     /// Used when things don't stack, but they don't really have a bonus type.
-    #[serde(rename = "std", alias = "Standard")]
+    #[serde(rename = "st", alias = "std", alias = "Standard")]
     Standard,
     /// Spooky type
+    #[serde(rename = "spo", alias = "Spooky")]
     Spooky,
 }
 
