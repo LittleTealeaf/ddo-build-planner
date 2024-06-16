@@ -139,4 +139,31 @@ t:Equipment,
 v:v("36"),
 )],
 },
+),(
+n:"Deadly Diabolist",
+b:{
+2:[(
+a:smn(AbilityScore(a)),
+t:stck,
+v:v("4"),
+)],
+},
+),(
+n:"Epic Deadly Diabolist",
+b:{
+2:[(
+a:smn(AbilityScore(a)),
+t:stck,
+v:v("8"),
+)],
+},
+),(
+n:"Legendary Deadly Diabolist",
+b:{
+2:[(
+a:smn(AbilityScore(a)),
+t:stck,
+v:v("12"),
+)],
+},
 )]
