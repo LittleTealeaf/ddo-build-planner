@@ -14,15 +14,20 @@ use crate::attribute::{Attribute, ToAttribute};
 /// Indicates bonuses to hit points, or health
 pub enum Health {
     /// Base hit points, prior to any bonuses from combat style feats
+    #[serde(rename = "B", alias = "Base")]
     Base,
     /// Bonuses from combat style feats
+    #[serde(rename = "bm", alias = "BaseModifier")]
     BaseModifier,
     /// Bonus hit points, this is the standard one
+    #[serde(rename = "b", alias = "Bonus")]
     #[default]
     Bonus,
     /// Final modifier over all hit points
+    #[serde(rename = "m", alias = "Modifier")]
     Modifier,
     /// Total hit points
+    #[serde(rename = "t", alias = "Total")]
     Total,
 }
 

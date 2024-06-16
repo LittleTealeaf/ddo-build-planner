@@ -12,13 +12,17 @@ use crate::attribute::{Attribute, ToAttribute};
 /// Different types of bonuses to spell points
 pub enum SpellPoints {
     /// Bonuses that can be scaled based on the number of Favored Soul or Sorcerer levels you have
+    #[serde(rename = "s", alias = "Scaled")]
     Scaled,
     /// Regular bonuses to spell points
     #[default]
+    #[serde(rename = "b", alias = "Base")]
     Base,
     /// Additive modifier to total spell points
+    #[serde(rename = "m", alias = "Modifier")]
     Modifier,
     /// Total spell points
+    #[serde(rename = "t", alias = "Total")]
     Total,
 }
 

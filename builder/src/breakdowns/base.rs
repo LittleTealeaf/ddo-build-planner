@@ -425,8 +425,8 @@ fn dodge() -> impl Iterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Dodge::Total,
             BonusType::Stacking,
-            Value::min(Dodge::Dodge.to_value(), Dodge::Cap.to_value()),
+            Value::min(Dodge::Bonus.to_value(), Dodge::Cap.to_value()),
         )
-        .with_display_source(Dodge::Dodge),
+        .with_display_source(Dodge::Bonus),
     )
 }

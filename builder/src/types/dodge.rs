@@ -11,22 +11,25 @@ use crate::attribute::{Attribute, ToAttribute};
 #[derive(Hash, Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Dodge {
     /// Dodge Bonuses
-    Dodge,
+    #[serde(rename = "b", alias = "Dodge", alias = "Bonus")]
+    Bonus,
     /// Dodge Cap
+    #[serde(rename = "c", alias = "Cap")]
     Cap,
     /// Effective Final Dodge
+    #[serde(rename = "t", alias = "Total")]
     Total,
 }
 
 impl Dodge {
     /// All values
-    pub const ALL: [Self; 3] = [Self::Dodge, Self::Cap, Self::Total];
+    pub const ALL: [Self; 3] = [Self::Bonus, Self::Cap, Self::Total];
 }
 
 impl Display for Dodge {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Dodge => write!(f, "Dodge"),
+            Self::Bonus => write!(f, "Dodge Bonus"),
             Self::Cap => write!(f, "Dodge Cap"),
             Self::Total => write!(f, "Total Dodge"),
         }
