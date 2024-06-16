@@ -4,7 +4,10 @@ use builder::equipment::set_bonus::ItemSet;
 use iced::{
     alignment::Vertical,
     theme,
-    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
+    widget::{
+        button, column, container, horizontal_space, row, scrollable, text, text_input,
+        vertical_space,
+    },
     Application, Command, Element, Length, Renderer,
 };
 use itertools::Itertools;
@@ -186,7 +189,12 @@ impl HandleView<App> for ItemSetEditor {
 
                         Some(
                             container(row!(
-                                text(tier.to_string()).size(26),
+                                column!(
+                                    text(tier.to_string()).size(26),
+                                    vertical_space().height(20),
+                                    button(nf_icon(""))
+                                        .on_press(ItemSetEditorMessage::DeleteTier(tier).into())
+                                ),
                                 horizontal_space().width(10),
                                 column(
                                     bonuses
