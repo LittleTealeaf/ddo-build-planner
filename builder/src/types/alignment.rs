@@ -10,14 +10,19 @@ use utils::enums::StaticValues;
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Alignment {
     /// Good
+    #[serde(rename = "g", alias = "Good")]
     Good,
     /// Evil
+    #[serde(rename = "e", alias = "Evil")]
     Evil,
     /// Neutral
+    #[serde(rename = "n", alias = "Neutral")]
     Neutral,
     /// Lawful
+    #[serde(rename = "l", alias = "Lawful")]
     Lawful,
     /// Chaotic
+    #[serde(rename = "c", alias = "Chaotic")]
     Chaotic,
 }
 
