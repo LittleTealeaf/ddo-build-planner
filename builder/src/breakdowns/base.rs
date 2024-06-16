@@ -1,4 +1,5 @@
 use core::iter::once;
+use itertools::chain;
 use utils::{chain_tree, enums::StaticValues, hashmap::IntoGroupedHashMap};
 
 use crate::{
@@ -46,7 +47,7 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         armor_check_penalties(),
         absorption(),
         completionist_feats(),
-        two_handed_fighting(),
+        melee_fighting_styles(),
         sneak_attack(),
         weapon_damage(),
         dodge(),
@@ -378,16 +379,45 @@ fn weapon_damage() -> impl Iterator<Item = BonusTemplate> {
         })
 }
 
-// TODO: convert this to the other method (flag to flag)
-fn two_handed_fighting() -> impl Iterator<Item = BonusTemplate> {
-    once(
-        BonusTemplate::flag(Flag::IsTwoHandedFighting).with_condition(
+fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
+    let one_hand_main_hand = WeaponType::ONE_HANDED_MELEE_WEAPONS
+        .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+        .cond_any()
+        .expect("Expected Condition");
+
+    let one_hand_off_hand = WeaponType::ONE_HANDED_MELEE_WEAPONS
+        .map(|weapon| Condition::has(OffHandType::Weapon(weapon)))
+        .cond_any()
+        .expect("Expected Condition");
+
+    [
+        BonusTemplate::flag(Flag::TwoHandedFighting).with_condition(
             WeaponType::TWO_HANDED_MELEE_WEAPONS
                 .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
                 .cond_any()
                 .expect("Expected Condition"),
         ),
-    )
+        BonusTemplate::flag(Flag::SingleWeaponFighting).with_condition(
+            one_hand_main_hand.clone()
+                & chain!(
+                    [
+                        one_hand_off_hand.clone(),
+                        Condition::has(OffHandType::Shield(ShieldType::Buckler))
+                            & !Condition::has(Flag::BucklerSingleWeaponFighting)
+                    ],
+                    [
+                        ShieldType::LargeShield,
+                        ShieldType::TowerShield,
+                        ShieldType::SmallShield
+                    ]
+                    .map(|st| Condition::has(OffHandType::Shield(st))),
+                )
+                .cond_none()
+                .expect("Expected Condition"),
+        ),
+        BonusTemplate::flag(Flag::TwoWeaponFighting)
+            .with_condition(one_hand_main_hand & one_hand_off_hand),
+    ]
 }
 
 fn dodge() -> impl Iterator<Item = BonusTemplate> {

@@ -8,86 +8,126 @@ use utils::enums::StaticValues;
 /// Weapon Types
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WeaponType {
-    /// Club
-    Club,
-    /// Quarterstaff
-    Quarterstaff,
-    /// Dagger
-    Dagger,
-    /// Sickle
-    Sickle,
-    /// Light Mace
-    LightMace,
-    /// Heavy Mace
-    HeavyMace,
-    /// Morningstar
-    Morningstar,
-    /// Heavy Crossbow
-    HeavyCrossbow,
-    /// Light Crossbow
-    LightCrossbow,
-    /// Handaxe
-    Handaxe,
-    /// Battle Axe
-    BattleAxe,
-    /// Great Axe
-    GreatAxe,
-    /// Kukri
-    Kukri,
-    /// Long Sword
-    LongSword,
-    /// Great Sword
-    GreatSword,
-    /// Scimitar
-    Scimitar,
-    /// Falchion
-    Falchion,
-    /// Long Bow
-    LongBow,
-    /// Short Sword
-    ShortSword,
-    /// Rapier
-    Rapier,
-    /// Heavy Pick
-    HeavyPick,
-    /// Light Pick
-    LightPick,
-    /// Light Hammer
-    LightHammer,
-    /// War Hammer
-    WarHammer,
-    /// Maul
-    Maul,
-    /// Great Club
-    GreatClub,
-    /// Short Bow
-    ShortBow,
     /// Bastard Sword
+    #[serde(rename = "bs", alias = "BastardSword")]
     BastardSword,
+    /// Battle Axe
+    #[serde(rename = "ba", alias = "BattleAxe")]
+    BattleAxe,
+    /// Club
+    #[serde(rename = "c", alias = "Club")]
+    Club,
+    /// Dagger
+    #[serde(rename = "d", alias = "Dagger")]
+    Dagger,
+    /// Dart
+    #[serde(rename = "da", alias = "Dart")]
+    Dart,
     /// Dwarven War Axe
+    #[serde(rename = "dwa", alias = "DwarvenWarAxe")]
     DwarvenWarAxe,
+    /// Falchion
+    #[serde(rename = "f", alias = "Flachion")]
+    Falchion,
+    /// Great Axe
+    #[serde(rename = "ga", alias = "GreatAxe")]
+    GreatAxe,
+    /// Great Club
+    #[serde(rename = "gc", alias = "GreatClub")]
+    GreatClub,
+    /// Great Crossbow
+    #[serde(rename = "gx", alias = "GreatCrossbow")]
+    GreatCrossbow,
+    /// Great Sword
+    #[serde(rename = "gs", alias = "GreatSword")]
+    GreatSword,
+    /// Handaxe
+    #[serde(rename = "ha", alias = "Handaxe")]
+    Handaxe,
+    /// Handwraps
+    #[serde(rename = "h", alias = "Handwraps")]
+    Handwraps,
+    /// Heavy Crossbow
+    #[serde(rename = "hc", alias = "HeavyCrossbow")]
+    HeavyCrossbow,
+    /// Heavy Mace
+    #[serde(rename = "hm", alias = "HeavyMace")]
+    HeavyMace,
+    /// Heavy Pick
+    #[serde(rename = "hp", alias = "HeavyPick")]
+    HeavyPick,
     /// Kama
+    #[serde(rename = "ka", alias = "Kama")]
     Kama,
     /// Khopesh
+    #[serde(rename = "kh", alias = "Khopesh")]
     Khopesh,
-    /// Handwraps
-    Handwraps,
-    /// Great Crossbow
-    GreatCrossbow,
+    /// Kukri
+    #[serde(rename = "ku", alias = "Kukri")]
+    Kukri,
+    /// Light Crossbow
+    #[serde(rename = "lc", alias = "LightCrossbow")]
+    LightCrossbow,
+    /// Light Hammer
+    #[serde(rename = "lh", alias = "LightHammer")]
+    LightHammer,
+    /// Light Mace
+    #[serde(rename = "lm", alias = "LightMace")]
+    LightMace,
+    /// Light Pick
+    #[serde(rename = "lp", alias = "LightPick")]
+    LightPick,
+    /// Long Bow
+    #[serde(rename = "lb", alias = "LongBow")]
+    LongBow,
+    /// Long Sword
+    #[serde(rename = "ls", alias = "LongSword")]
+    LongSword,
+    /// Maul
+    #[serde(rename = "m", alias = "Maul")]
+    Maul,
+    /// Morningstar
+    #[serde(rename = "ms", alias = "Morningstar")]
+    Morningstar,
+    /// Quarterstaff
+    #[serde(rename = "q", alias = "Quarterstaff")]
+    Quarterstaff,
+    /// Rapier
+    #[serde(rename = "r", alias = "Rapier")]
+    Rapier,
     /// Repeating Heavy Crossbow
+    #[serde(rename = "rh", alias = "RepeatingHeavyCrossbow")]
     RepeatingHeavyCrossbow,
     /// Repeating Light Crossbow
+    #[serde(rename = "rl", alias = "RepeatingLightCrossbow")]
     RepeatingLightCrossbow,
+    /// Scimitar
+    #[serde(rename = "sc", alias = "Scimitar")]
+    Scimitar,
+    /// Sickle
+    #[serde(rename = "si", alias = "Sickle")]
+    Sickle,
+    /// Short Sword
+    #[serde(rename = "ss", alias = "ShortSword")]
+    ShortSword,
+    /// Short Bow
+    #[serde(rename = "sb", alias = "ShortBow")]
+    ShortBow,
+    /// Shuriken
+    #[serde(rename = "s", alias = "Shuriken")]
+    Shuriken,
     /// Throwing Axe
+    #[serde(rename = "ta", alias = "ThrowingAxe")]
     ThrowingAxe,
     /// Throwing Dagger
+    #[serde(rename = "td", alias = "ThrowingDagger")]
     ThrowingDagger,
     /// Throwing Hammer
+    #[serde(rename = "th", alias = "ThrowingHammer")]
     ThrowingHammer,
-    /// Dart
-    Dart,
-    /// Shuriken
-    Shuriken,
+    /// War Hammer
+    #[serde(rename = "w", alias = "WarHammer")]
+    WarHammer,
 }
 
 impl WeaponType {

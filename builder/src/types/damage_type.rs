@@ -13,44 +13,64 @@ use super::alignment::Alignment;
 #[derive(Hash, PartialEq, Eq, Clone, Copy, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum DamageType {
     /// Physical Damage Type
+    #[serde(rename = "p", alias = "Physical")]
     Physical,
     /// Magical Damage Type
+    #[serde(rename = "m", alias = "Magical")]
     Magical,
     /// Force damage type, such as spells
+    #[serde(rename = "fo", alias = "Force")]
     Force,
     /// Slash damage
+    #[serde(rename = "sl", alias = "Slash")]
     Slash,
     /// Pierce damage
+    #[serde(rename = "pi", alias = "Pierce")]
     Pierce,
     /// Bludgeoning damage
+    #[serde(rename = "bl", alias = "Bludgeon")]
     Bludgeon,
     /// Acid Damage
+    #[serde(rename = "ac", alias = "Acid")]
     Acid,
     /// Fire Damage
+    #[serde(rename = "fi", alias = "Fire")]
     Fire,
     /// Cold Damage
+    #[serde(rename = "co", alias = "Cold")]
     Cold,
     /// Electric Damage
+    #[serde(rename = "el", alias = "Electric")]
     Electric,
     /// Sonic Damage
+    #[serde(rename = "so", alias = "Sonic")]
     Sonic,
     /// Positive Damage / Healing
+    #[serde(rename = "po", alias = "Positive")]
     Positive,
     /// Negative Damage / Healing
+    #[serde(rename = "ne", alias = "Negative")]
     Negative,
     /// Poison Damage
+    #[serde(rename = "ps", alias = "Poison")]
     Poison,
     /// Repair Damage/Healing
+    #[serde(rename = "re", alias = "Repair")]
     Repair,
     /// Rust Damage
+    #[serde(rename = "ru", alias = "Rust")]
     Rust,
     /// Alignment Damage
+    #[serde(rename = "ali", alias = "Alignment")]
     Alignment,
     /// Light Damage
+    #[serde(rename = "l", alias = "Light")]
     Light,
     /// Specific Alignment Damage
+    #[serde(rename = "al", alias = "Aligned")]
     Aligned(Alignment),
     /// Untyped Damage
+    #[serde(rename = "u", alias = "Untyped")]
     Untyped,
 }
 

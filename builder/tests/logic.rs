@@ -11,7 +11,7 @@ use builder::{
         ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
-        flag::{Flag, OffHandType},
+        flag::{Flag, MainHandType, OffHandType, ToFlag},
         item_type::{ArmorType, ShieldType, WeaponType},
         player_class::PlayerClass,
         race::Race,
@@ -25,8 +25,10 @@ use builder::{
     },
     val,
 };
-use itertools::Itertools;
+use core::iter::once;
+use itertools::{chain, Itertools};
 use rust_decimal::Decimal;
+use utils::enums::StaticValues;
 use utils::hashmap::IntoGroupedHashMap;
 
 mod ability {
@@ -454,6 +456,153 @@ mod spells {
 
 mod weapons {
     use super::*;
+
+    mod styles {
+        use builder::bonus::Condition;
+
+        use super::*;
+
+        fn build_thf() -> impl Iterator<Item = Vec<Flag>> {
+            WeaponType::TWO_HANDED_MELEE_WEAPONS
+                .into_iter()
+                .map(|weapon| vec![MainHandType::Weapon(weapon).to_flag()])
+        }
+
+        /// Tests setups of:
+        /// - Single weapon
+        /// - Single weapon and orb
+        /// - Single weapon and runearm
+        /// - Single weapon and buckler with the config flag
+        fn build_swf() -> impl Iterator<Item = Vec<Flag>> {
+            WeaponType::ONE_HANDED_MELEE_WEAPONS
+                .into_iter()
+                .flat_map(|weapon| {
+                    let flag = MainHandType::Weapon(weapon).to_flag();
+
+                    [
+                        vec![flag],
+                        vec![flag, OffHandType::Shield(ShieldType::Orb).to_flag()],
+                        vec![flag, OffHandType::RuneArm.to_flag()],
+                        vec![
+                            flag,
+                            OffHandType::Shield(ShieldType::Buckler).to_flag(),
+                            Flag::BucklerSingleWeaponFighting,
+                        ],
+                    ]
+                })
+        }
+
+        /// Tests single weapon with any shield in the off-hand (no orb)
+        fn build_no_swf() -> impl Iterator<Item = Vec<Flag>> {
+            WeaponType::ONE_HANDED_MELEE_WEAPONS
+                .into_iter()
+                .flat_map(|weapon| {
+                    let flag = MainHandType::Weapon(weapon).to_flag();
+
+                    [
+                        OffHandType::Shield(ShieldType::SmallShield),
+                        OffHandType::Shield(ShieldType::LargeShield),
+                        OffHandType::Shield(ShieldType::TowerShield),
+                        OffHandType::Shield(ShieldType::Buckler),
+                    ]
+                    .map(move |weapon| vec![flag, weapon.to_flag()])
+                })
+        }
+
+        /// Tests every two weapon fighting setup
+        fn build_twf() -> impl Iterator<Item = Vec<Flag>> {
+            WeaponType::ONE_HANDED_MELEE_WEAPONS
+                .into_iter()
+                .flat_map(|main_hand| {
+                    WeaponType::ONE_HANDED_MELEE_WEAPONS
+                        .into_iter()
+                        .map(move |off_hand| {
+                            vec![
+                                MainHandType::Weapon(main_hand).to_flag(),
+                                OffHandType::Weapon(off_hand).to_flag(),
+                            ]
+                        })
+                })
+        }
+
+        /// Tests weapon in main hand and any shield / runearm in offhad
+        fn build_no_twf() -> impl Iterator<Item = Vec<Flag>> {
+            WeaponType::ONE_HANDED_MELEE_WEAPONS
+                .into_iter()
+                .flat_map(|weapon| {
+                    ShieldType::values()
+                        .map(move |shield| {
+                            vec![
+                                MainHandType::Weapon(weapon).to_flag(),
+                                OffHandType::Shield(shield).to_flag(),
+                            ]
+                        })
+                        .chain(once(vec![
+                            MainHandType::Weapon(weapon).to_flag(),
+                            OffHandType::RuneArm.to_flag(),
+                        ]))
+                })
+        }
+
+        fn test_setups<I>(tests: I, check: Flag)
+        where
+            I: IntoIterator<Item = (Vec<Flag>, bool)>,
+        {
+            let mut breakdowns = Breakdowns::new();
+
+            for (flags, expected) in tests {
+                breakdowns.insert_bonuses(
+                    flags
+                        .iter()
+                        .map(|flag| Bonus::flag(*flag, BonusSource::Debug(0))),
+                );
+
+                assert_eq!(
+                    breakdowns.evaluate_condition(&Condition::has(check)),
+                    expected,
+                    "Flags {flags:?} returned incorrectly"
+                );
+            }
+        }
+
+        #[test]
+        fn single_weapon_fighting() {
+            test_setups(
+                chain!(
+                    build_swf().map(|tc| (tc, true)),
+                    build_no_swf().map(|tc| (tc, false)),
+                    build_thf().map(|tc| (tc, false)),
+                    build_twf().map(|tc| (tc, false))
+                ),
+                Flag::SingleWeaponFighting,
+            );
+        }
+
+        #[test]
+        fn two_weapon_fighting() {
+            test_setups(
+                chain!(
+                    build_twf().map(|tc| (tc, true)),
+                    build_thf().map(|tc| (tc, false)),
+                    build_no_twf().map(|tc| (tc, false)),
+                    build_swf().map(|tc| (tc, false))
+                ),
+                Flag::TwoWeaponFighting,
+            );
+        }
+
+        #[test]
+        fn two_handed_fighting() {
+            test_setups(
+                chain!(
+                    build_thf().map(|tc| (tc, true)),
+                    build_twf().map(|tc| (tc, false)),
+                    build_swf().map(|tc| (tc, false))
+                ),
+                Flag::TwoHandedFighting,
+            );
+        }
+    }
 
     mod sneak_attack {
 
