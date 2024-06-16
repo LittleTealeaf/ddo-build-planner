@@ -1,10 +1,13 @@
 use builder::equipment::set_bonus::ItemSet;
 use iced::{
+    advanced::Widget,
+    alignment::Vertical,
     theme,
-    widget::{button, column, horizontal_space, row, scrollable, text, text_input},
+    widget::{button, column, container, horizontal_space, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
-use ui::{HandleMessage, HandleView};
+use itertools::Itertools;
+use ui::{font::nf_icon, HandleMessage, HandleView};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
 
@@ -14,11 +17,18 @@ use super::TabSetBonusesMessage;
 pub struct ItemSetEditor {
     pub(super) item_set: ItemSet,
     pub(super) index: Option<usize>,
+    row_create_input: String,
+    row_create_index: Option<i32>,
 }
 
 impl ItemSetEditor {
     pub const fn new(item_set: ItemSet, index: Option<usize>) -> Self {
-        Self { item_set, index }
+        Self {
+            item_set,
+            index,
+            row_create_input: String::new(),
+            row_create_index: None,
+        }
     }
 }
 
@@ -32,6 +42,7 @@ pub enum ItemSetEditorMessage {
     OnAddTierBonus(i32),
     OnEditTierBonus(i32, usize),
     DeleteTierBonus(i32, usize),
+    RowCreateInput(String),
 }
 
 impl From<ItemSetEditorMessage> for Message {
@@ -50,6 +61,11 @@ impl HandleMessage<ItemSetEditorMessage> for App {
         };
 
         match message {
+            ItemSetEditorMessage::RowCreateInput(string) => {
+                editor.row_create_index = string.parse().ok();
+                editor.row_create_input = string;
+                Command::none()
+            }
             ItemSetEditorMessage::SetName(string) => {
                 editor.item_set.set_name(string);
                 Command::none()
@@ -147,7 +163,59 @@ impl HandleView<App> for ItemSetEditor {
                     .on_input(|string| ItemSetEditorMessage::SetName(string).into())
                     .size(25)
             ),
-            scrollable(column!(text("hi"))).height(Length::Fill),
+            row!(
+                horizontal_space(),
+                text("Add Row"),
+                text_input("level", &self.row_create_input)
+                    .on_input(|string| ItemSetEditorMessage::RowCreateInput(string).into())
+                    .width(100),
+                button(nf_icon("")).on_press_maybe(
+                    self.row_create_index
+                        .map(|index| ItemSetEditorMessage::CreateTier(index).into())
+                )
+            ),
+            scrollable(column(
+                self.item_set
+                    .bonuses()
+                    .keys()
+                    .copied()
+                    .sorted()
+                    .filter_map(|tier| {
+                        let bonuses = self.item_set.bonuses().get(&tier)?;
+
+                        Some(
+                            container(row!(
+                                text(tier.to_string()).size(26),
+                                horizontal_space().width(10),
+                                column(bonuses.iter().enumerate().map(|(index, bonus)| {
+                                    row!(
+                                        button(nf_icon("")).on_press(
+                                            ItemSetEditorMessage::OpenEditTierBonus(tier, index)
+                                                .into()
+                                        ),
+                                        button(nf_icon("")).on_press(
+                                            ItemSetEditorMessage::DeleteTierBonus(tier, index)
+                                                .into()
+                                        ),
+                                        horizontal_space().width(10),
+                                        text(format!(
+                                            "{} bonus to {}",
+                                            bonus.bonus_type(),
+                                            bonus.attribute()
+                                        ))
+                                        .vertical_alignment(Vertical::Center),
+                                    )
+                                    .padding(3)
+                                    .into()
+                                }))
+                            ))
+                            .style(theme::Container::Box)
+                            .padding(10)
+                            .into(),
+                        )
+                    })
+            ))
+            .height(Length::Fill),
             row!(
                 horizontal_space(),
                 button(text("Cancel").size(20))
