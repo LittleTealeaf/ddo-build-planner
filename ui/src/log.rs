@@ -15,6 +15,16 @@ pub struct Log {
     pub severity: Severity,
 }
 
+impl Display for Log {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}: {}:{} > {}",
+            self.severity, self.file, self.line, self.message
+        )
+    }
+}
+
 /// The severity of the warning
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Severity {

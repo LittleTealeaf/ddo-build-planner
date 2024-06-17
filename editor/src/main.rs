@@ -193,10 +193,7 @@ impl From<Log> for Message {
 
 impl HandleMessage<Log> for App {
     fn handle_message(&mut self, message: Log) -> Command<<Self as Application>::Message> {
-        println!(
-            "{}: {}:{}\n> {}",
-            message.severity, message.file, message.line, message.message
-        );
+        println!("{message}");
 
         if matches!(message.severity, Severity::Crash) {
             panic!();
