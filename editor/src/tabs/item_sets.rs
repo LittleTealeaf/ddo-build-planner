@@ -6,7 +6,7 @@ use iced::{
     widget::{button, column, row, scrollable, text, text_input, Column, Row},
     Application, Command, Element, Renderer,
 };
-use ui::{font::nf_icon, HandleMessage, HandleView};
+use ui::{error, font::nf_icon, HandleMessage, HandleView};
 
 use crate::{
     data::{container::DataContainerMessage, DataMessage},
@@ -67,16 +67,16 @@ impl HandleMessage<TabSetBonusesMessage> for App {
             TabSetBonusesMessage::Editing(message) => self.handle_message(message),
             TabSetBonusesMessage::SaveEdit => {
                 let Some(item_sets) = self.data.item_sets.get_mut() else {
-                    return self.handle_warning("Item Sets Not Loaded");
+                    return self.handle_message(error!("Item Sets Not Loaded"));
                 };
 
                 let Some(editor) = &self.tab_item_sets.editing else {
-                    return self.handle_warning("No Item Set Editing Open");
+                    return self.handle_message(error!("No Editing Item Sets Open"));
                 };
 
                 if let Some(index) = editor.index {
                     let Some(pointer) = item_sets.get_mut(index) else {
-                        return self.handle_warning("Invalid Item Set Index");
+                        return self.handle_message(error!("Invalid Index"));
                     };
 
                     *pointer = editor.item_set.clone();
