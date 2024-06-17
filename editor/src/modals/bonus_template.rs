@@ -7,7 +7,7 @@ use iced::{
     widget::{button, column, horizontal_space, pick_list, row, text},
     Application, Command,
 };
-use ui::{error, warning, HandleMessage, HandleView};
+use ui::{error, HandleMessage, HandleView};
 
 use crate::{App, Message};
 

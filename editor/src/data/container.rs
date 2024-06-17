@@ -9,7 +9,7 @@ use tokio::{
     fs::File,
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
-use ui::{error, HandleMessage};
+use ui::{error, ExecuteMessage, HandleMessage};
 use utils::ron::pretty_config::compact_pretty_config;
 
 use crate::{App, Message};
@@ -101,8 +101,7 @@ where
             }
             DataContainerMessage::Save => {
                 let Some(data) = &self.data else {
-                    error!("Data is not loaded").log();
-                    return Command::none();
+                    return Command::message(error!("Data is not loaded"));
                 };
 
                 self.modified = false;
