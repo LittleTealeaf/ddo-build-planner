@@ -99,9 +99,15 @@ where
 
                 Command::none()
             }
-            DataContainerMessage::Save => self.data.as_ref().map_or_else(Command::none, |data| {
+            DataContainerMessage::Save => {
+                let Some(data) = &self.data else {
+                    error!("Data is not loaded").log();
+                    return Command::none();
+                };
+
                 self.modified = false;
                 self.saving = true;
+
                 let err_path = self.path.to_str().unwrap().to_owned();
 
                 let handler = move |result: Result<()>| match result {
@@ -110,7 +116,7 @@ where
                 };
 
                 Command::perform(save_data(self.path.clone(), data.clone()), handler)
-            }),
+            }
             DataContainerMessage::OnSaved => {
                 self.saving = false;
                 Command::none()

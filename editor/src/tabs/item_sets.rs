@@ -55,9 +55,16 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                 Command::none()
             }
             TabSetBonusesMessage::Edit(index) => {
-                if let Some(set) = self.data.item_sets.get().and_then(|sets| sets.get(index)) {
-                    self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone(), Some(index)));
-                }
+                let Some(item_sets) = self.data.item_sets.get() else {
+                    return self.handle_message(error!("Item Sets Not Loaded"));
+                };
+
+                let Some(set) = item_sets.get(index) else {
+                    return self.handle_message(error!(format!("Invalid Index: {index}")));
+                };
+
+                self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone(), Some(index)));
+
                 Command::none()
             }
             TabSetBonusesMessage::CancelEdit => {
@@ -76,7 +83,7 @@ impl HandleMessage<TabSetBonusesMessage> for App {
 
                 if let Some(index) = editor.index {
                     let Some(pointer) = item_sets.get_mut(index) else {
-                        return self.handle_message(error!("Invalid Index"));
+                        return self.handle_message(error!(format!("Invalid Index: {index}")));
                     };
 
                     *pointer = editor.item_set.clone();

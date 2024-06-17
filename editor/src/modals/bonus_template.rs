@@ -7,7 +7,7 @@ use iced::{
     widget::{button, column, horizontal_space, pick_list, row, text},
     Application, Command,
 };
-use ui::{HandleMessage, HandleView};
+use ui::{error, warning, HandleMessage, HandleView};
 
 use crate::{App, Message};
 
@@ -139,7 +139,7 @@ impl HandleMessage<ModalBonusMessage> for App {
         message: ModalBonusMessage,
     ) -> Command<<Self as Application>::Message> {
         let Some(modal) = &mut self.modal_bonus else {
-            return Command::none();
+            return self.handle_message(error!("Modal does not exist"));
         };
 
         match message {
@@ -170,9 +170,12 @@ impl HandleMessage<ModalBonusMessage> for App {
                 Command::none()
             }
             ModalBonusMessage::OnAttributeSelected => {
-                if let Some(modal_attribute) = &self.modal_attribute {
-                    modal.attribute = modal_attribute.get_attribute();
-                }
+                let Some(modal_attribute) = &self.modal_attribute else {
+                    return self.handle_message(error!("Attribute Modal not open"));
+                };
+
+                modal.attribute = modal_attribute.get_attribute();
+
                 Command::none()
             }
             ModalBonusMessage::SetBonusType(bonus_type) => {
@@ -188,9 +191,12 @@ impl HandleMessage<ModalBonusMessage> for App {
                 Command::none()
             }
             ModalBonusMessage::OnValueSelected => {
-                if let Some(modal_expression) = &self.modal_expression {
-                    modal.value = modal_expression.get_value();
-                }
+                let Some(modal_expression) = &self.modal_expression else {
+                    return self.handle_message(error!("Expression Modal not open"));
+                };
+
+                modal.value = modal_expression.get_value();
+
                 Command::none()
             }
             ModalBonusMessage::OpenConditionModal => {
@@ -202,9 +208,17 @@ impl HandleMessage<ModalBonusMessage> for App {
                 Command::none()
             }
             ModalBonusMessage::OnConditionSelected => {
-                if let Some(modal_expression) = &self.modal_expression {
-                    modal.condition = modal_expression.get_condition();
-                }
+                let Some(modal_expression) = &self.modal_expression else {
+                    return self.handle_message(error!("Expression Modal not open"));
+                };
+
+                let Some(condition) = modal_expression.get_condition() else {
+                    return self
+                        .handle_message(error!("Expression Modal did not return condition"));
+                };
+
+                modal.condition = Some(condition);
+
                 Command::none()
             }
             ModalBonusMessage::ClearCondition => {

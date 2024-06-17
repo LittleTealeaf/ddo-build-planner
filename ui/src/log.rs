@@ -38,6 +38,13 @@ pub enum Severity {
     Info,
 }
 
+impl Log {
+    /// Formats and prints to the log
+    pub fn log(&self) {
+        println!("{self}");
+    }
+}
+
 impl Display for Severity {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {

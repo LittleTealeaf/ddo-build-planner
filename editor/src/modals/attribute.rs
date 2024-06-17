@@ -7,7 +7,7 @@ use iced::{
     widget::{button, column, container, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
-use ui::{HandleMessage, HandleView};
+use ui::{error, HandleMessage, HandleView};
 use utils::from_into::FromInto;
 
 use crate::{App, Message};
@@ -153,7 +153,7 @@ impl HandleMessage<ModalAttributeMessage> for App {
         message: ModalAttributeMessage,
     ) -> Command<<Self as Application>::Message> {
         let Some(sel) = &mut self.modal_attribute else {
-            return Command::none();
+            return self.handle_message(error!("Modal does not exist"));
         };
 
         match message {
