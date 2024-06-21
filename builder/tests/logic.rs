@@ -861,7 +861,7 @@ mod armor_class {
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::ArmorScalar,
                 DebugValue(0),
-                1,
+                100,
                 DebugValue(0),
             ));
             let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -881,7 +881,7 @@ mod armor_class {
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::ShieldScalar,
                 DebugValue(0),
-                1,
+                100,
                 DebugValue(0),
             ));
             let initial = breakdowns.evaluate_attribute_from(ArmorClass::Total);
@@ -908,7 +908,7 @@ mod armor_class {
             breakdowns.insert_bonus(Bonus::new(
                 ArmorClass::TotalScalar,
                 DebugValue(0),
-                1,
+                100,
                 DebugValue(1),
             ));
             let result = breakdowns.evaluate_attribute_from(ArmorClass::Total);

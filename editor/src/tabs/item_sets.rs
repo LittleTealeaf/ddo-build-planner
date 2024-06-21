@@ -4,7 +4,7 @@ use builder::equipment::set_bonus::ItemSet;
 use fuzzy_filter::matches;
 use iced::{
     widget::{button, column, row, scrollable, text, text_input, Column, Row},
-    Application, Command, Element, Renderer,
+    Application, Command, Element, Length, Renderer,
 };
 use ui::{error, font::nf_icon, HandleMessage, HandleView};
 
@@ -134,6 +134,7 @@ impl HandleView<App> for TabItemSets {
                                 .into()
                             }),
                     ))
+                    .width(Length::Fill)
                 }))
                 .into()
         };

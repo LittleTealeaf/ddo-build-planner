@@ -86,10 +86,10 @@ pub enum BonusType {
     #[serde(rename = "mu", alias = "Music")]
     Music,
     /// Primal bonus
-    #[serde(rename = "pr", alias = "pri", alias = "Primal")]
+    #[serde(rename = "pm", alias = "pri", alias = "Primal")]
     Primal,
     /// Profane bonus
-    #[serde(rename = "pr", alias = "pro", alias = "Profane")]
+    #[serde(rename = "pf", alias = "pr", alias = "pro", alias = "Profane")]
     Profane,
     /// Quality bonus
     #[serde(rename = "qu", alias = "qual", alias = "Quality")]

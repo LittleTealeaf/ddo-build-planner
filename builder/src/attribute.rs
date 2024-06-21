@@ -178,7 +178,7 @@ impl Display for Attribute {
             Self::Skill(skill) => write!(f, "Skill: {skill}"),
             Self::Toggle(toggle) => write!(f, "Toggle: {toggle}"),
             Self::SpellPower(sp) => write!(f, "Spell Power: {sp}"),
-            Self::SpellCriticalChance(sp) => write!(f, "Spell Critical Chancel: {sp}"),
+            Self::SpellCriticalChance(sp) => write!(f, "Spell Critical Chance: {sp}"),
             Self::SpellCriticalDamage(sp) => write!(f, "Spell Critical Damage: {sp}"),
             Self::SavingThrow(saving_throw) => write!(f, "Saving Throw: {saving_throw}"),
             Self::CasterLevel(selector) => write!(f, "Caster Level: {selector}"),

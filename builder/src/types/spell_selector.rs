@@ -33,7 +33,7 @@ impl Display for SpellSelector {
             Self::SpellPower(sp) => sp.fmt(f),
             Self::School(school) => school.fmt(f),
             Self::Class(cl) => cl.fmt(f),
-            Self::All => write!(f, "Spells"),
+            Self::All => write!(f, "All Spells"),
         }
     }
 }

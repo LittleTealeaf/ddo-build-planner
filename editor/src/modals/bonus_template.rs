@@ -186,7 +186,14 @@ impl HandleMessage<ModalBonusMessage> for App {
                 self.modal_expression = Some(
                     ModalExpression::value(modal.value.clone())
                         .on_submit(ModalBonusMessage::OnValueSelected)
-                        .title("Bonus Value"),
+                        .title(format!(
+                            "{} Bonus Value to {}",
+                            modal.bonus_type,
+                            modal
+                                .attribute
+                                .as_ref()
+                                .map_or_else(|| "???".to_owned(), ToString::to_string)
+                        )),
                 );
                 Command::none()
             }

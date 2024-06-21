@@ -163,11 +163,11 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                 ArmorClass::Bonus.to_value(),
                 ArmorClass::NaturalArmor.to_value(),
                 ArmorClass::ShieldBonus.to_value()
-                    * (Value::ONE + ArmorClass::ShieldScalar.to_value()),
+                    * (Value::ONE + (ArmorClass::ShieldScalar.to_value()) / Value::ONE_HUNDRED),
                 ArmorClass::ArmorBonus.to_value()
-                    * (Value::ONE + ArmorClass::ArmorScalar.to_value()),
+                    * (Value::ONE + (ArmorClass::ArmorScalar.to_value() / Value::ONE_HUNDRED)),
                 Value::TEN,
-            ]) * (Value::ONE + ArmorClass::TotalScalar.to_value()),
+            ]) * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
         ),
     ]
 }
@@ -177,12 +177,14 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Health::Bonus,
             BonusType::Stacking,
-            Health::Base.to_value() * (Health::BaseModifier.to_value() + Value::ONE),
+            Health::Base.to_value() * (Health::BaseModifier.to_value() + Value::ONE_HUNDRED)
+                / Value::ONE_HUNDRED,
         ),
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
-            Health::Bonus.to_value() * (Health::Modifier.to_value() + Value::ONE),
+            Health::Bonus.to_value() * (Health::Modifier.to_value() + Value::ONE_HUNDRED)
+                / Value::ONE_HUNDRED,
         ),
     ]
 }
@@ -201,7 +203,8 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             SpellPoints::Total,
             BonusType::Stacking,
-            SpellPoints::Base.to_value() * (Value::ONE + SpellPoints::Modifier.to_value()),
+            SpellPoints::Base.to_value()
+                * (Value::ONE + (SpellPoints::Modifier.to_value() / Value::ONE_HUNDRED)),
         ),
     ]
 }
@@ -318,9 +321,10 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                         .sum::<Value>()
                         .greater_than(Value::ZERO)
                 })
-                .cond_all();
-            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist)
-                .with_condition(condition.expect("Expected Condition"))
+                .cond_all()
+                .expect("Expected Condition");
+
+            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist).with_condition(condition)
         },
         {
             // RACIAL COMPLETIONIST
@@ -334,10 +338,10 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                         .sum::<Value>()
                         .greater_or_equal_to(val!(3))
                 })
-                .cond_all();
+                .cond_all()
+                .expect("Expected Condition");
 
-            BonusTemplate::feat(PastLifeFeat::RacialCompletionist)
-                .with_condition(condition.expect("Expected Condition"))
+            BonusTemplate::feat(PastLifeFeat::RacialCompletionist).with_condition(condition)
         },
     ]
 }
