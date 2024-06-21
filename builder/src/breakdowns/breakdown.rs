@@ -19,18 +19,22 @@ pub struct AttributeBreakdown {
 }
 
 impl AttributeBreakdown {
+    #[must_use]
     pub const fn stacking(&self) -> &Vec<BonusEntry> {
         &self.stacking
     }
 
+    #[must_use]
     pub const fn disabled_stacking(&self) -> &Vec<BonusEntry> {
         &self.disabled_stacking
     }
 
+    #[must_use]
     pub const fn bonuses(&self) -> &Vec<BonusTypeEntry> {
         &self.bonuses
     }
 
+    #[must_use]
     pub const fn value(&self) -> &Decimal {
         &self.value
     }
@@ -46,18 +50,22 @@ pub struct BonusTypeEntry {
 }
 
 impl BonusTypeEntry {
+    #[must_use]
     pub const fn bonus_type(&self) -> BonusType {
         self.bonus_type
     }
 
+    #[must_use]
     pub const fn applied(&self) -> &Option<BonusEntry> {
         &self.applied
     }
 
+    #[must_use]
     pub const fn overwritten(&self) -> &Vec<BonusEntry> {
         &self.overwritten
     }
 
+    #[must_use]
     pub const fn disabled(&self) -> &Vec<BonusEntry> {
         &self.disabled
     }
@@ -72,14 +80,17 @@ pub struct BonusEntry {
 }
 
 impl BonusEntry {
+    #[must_use]
     pub const fn bonus(&self) -> &Bonus {
         &self.bonus
     }
 
+    #[must_use]
     pub const fn condition(&self) -> bool {
         self.condition
     }
 
+    #[must_use]
     pub const fn value(&self) -> &Decimal {
         &self.value
     }
