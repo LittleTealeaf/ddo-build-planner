@@ -36,6 +36,7 @@ struct App {
     modal_attribute: Option<ModalAttribute>,
     modal_expression: Option<ModalExpression>,
     modal_bonus: Option<ModalBonus>,
+    theme: Theme,
 }
 
 #[derive(Clone, Debug)]
@@ -49,6 +50,7 @@ enum Message {
     ModalAttribute(ModalAttributeMessage),
     ModalExpression(ModalExpressionMessage),
     ModalBonus(ModalBonusMessage),
+    SetTheme(Theme),
     DebugOpenAttribute,
     DebugOpenCondition,
     DebugOpenValue,
@@ -75,6 +77,7 @@ impl Application for App {
             modal_attribute: None,
             modal_expression: None,
             modal_bonus: None,
+            theme: Theme::CatppuccinMocha,
         };
 
         let command = Command::batch([
@@ -105,12 +108,19 @@ impl Application for App {
             _ => self.selected_tab.handle_view(self),
         }
     }
+    fn theme(&self) -> Self::Theme {
+        self.theme.clone()
+    }
 }
 
 impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
             Message::None => Command::none(),
+            Message::SetTheme(theme) => {
+                self.theme = theme;
+                Command::none()
+            }
             Message::IconsLoaded => {
                 self.icons_loaded = true;
                 Command::none()

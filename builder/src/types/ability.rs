@@ -19,22 +19,22 @@ pub enum Ability {
     #[serde(rename = "a", alias = "All")]
     All,
     /// Represents how strong the character is
-    #[serde(rename = "str", alias = "Strength")]
+    #[serde(rename = "s", alias = "str", alias = "Strength")]
     Strength,
     /// Represents how flexible the character is
-    #[serde(rename = "dex", alias = "Dexterity")]
+    #[serde(rename = "d", alias = "dex", alias = "Dexterity")]
     Dexterity,
     /// Determines the character's health
-    #[serde(rename = "con", alias = "Constitution")]
+    #[serde(rename = "o", alias = "con", alias = "Constitution")]
     Constitution,
     /// Represents how smart the character is
-    #[serde(rename = "int", alias = "Intelligence")]
+    #[serde(rename = "i", alias = "int", alias = "Intelligence")]
     Intelligence,
     /// Represents how wise the character is.
-    #[serde(rename = "wis", alias = "Wisdom")]
+    #[serde(rename = "w", alias = "wis", alias = "Wisdom")]
     Wisdom,
     /// Represents how charismatic the character is.
-    #[serde(rename = "cha", alias = "Charisma")]
+    #[serde(rename = "c", alias = "cha", alias = "Charisma")]
     Charisma,
 }
 

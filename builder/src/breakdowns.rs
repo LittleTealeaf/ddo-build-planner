@@ -76,7 +76,6 @@ impl Breakdowns {
         };
 
         breakdowns.insert_bonuses(get_base_bonuses());
-        breakdowns.children.remove(&BonusSource::Base);
 
         breakdowns
     }
