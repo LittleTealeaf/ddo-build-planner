@@ -163,9 +163,9 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                 ArmorClass::Bonus.to_value(),
                 ArmorClass::NaturalArmor.to_value(),
                 ArmorClass::ShieldBonus.to_value()
-                    * (Value::ONE + ArmorClass::ShieldScalar.to_value()),
+                    * (Value::ONE + (ArmorClass::ShieldScalar.to_value()) / val!(100)),
                 ArmorClass::ArmorBonus.to_value()
-                    * (Value::ONE + ArmorClass::ArmorScalar.to_value()),
+                    * (Value::ONE + (ArmorClass::ArmorScalar.to_value() / val!(100))),
                 Value::TEN,
             ]) * (Value::ONE + ArmorClass::TotalScalar.to_value()),
         ),
