@@ -6,7 +6,7 @@ use iced::{
     widget::{button, column, row, scrollable, text, text_input, Column, Row},
     Application, Command, Element, Length, Renderer,
 };
-use ui::{font::nf_icon, HandleMessage, HandleView};
+use ui::{error, font::nf_icon, HandleMessage, HandleView};
 
 use crate::{
     data::{container::DataContainerMessage, DataMessage},
@@ -55,9 +55,16 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                 Command::none()
             }
             TabSetBonusesMessage::Edit(index) => {
-                if let Some(set) = self.data.item_sets.get().and_then(|sets| sets.get(index)) {
-                    self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone(), Some(index)));
-                }
+                let Some(item_sets) = self.data.item_sets.get() else {
+                    return self.handle_message(error!("Item Sets Not Loaded"));
+                };
+
+                let Some(set) = item_sets.get(index) else {
+                    return self.handle_message(error!(format!("Invalid Index: {index}")));
+                };
+
+                self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone(), Some(index)));
+
                 Command::none()
             }
             TabSetBonusesMessage::CancelEdit => {
@@ -67,16 +74,16 @@ impl HandleMessage<TabSetBonusesMessage> for App {
             TabSetBonusesMessage::Editing(message) => self.handle_message(message),
             TabSetBonusesMessage::SaveEdit => {
                 let Some(item_sets) = self.data.item_sets.get_mut() else {
-                    return self.handle_warning("Item Sets Not Loaded");
+                    return self.handle_message(error!("Item Sets Not Loaded"));
                 };
 
                 let Some(editor) = &self.tab_item_sets.editing else {
-                    return self.handle_warning("No Item Set Editing Open");
+                    return self.handle_message(error!("No Editing Item Sets Open"));
                 };
 
                 if let Some(index) = editor.index {
                     let Some(pointer) = item_sets.get_mut(index) else {
-                        return self.handle_warning("Invalid Item Set Index");
+                        return self.handle_message(error!(format!("Invalid Index: {index}")));
                     };
 
                     *pointer = editor.item_set.clone();

@@ -9,7 +9,7 @@ use tokio::{
     fs::File,
     io::{AsyncReadExt, AsyncWriteExt, BufWriter},
 };
-use ui::HandleMessage;
+use ui::{error, ExecuteMessage, HandleMessage};
 use utils::ron::pretty_config::compact_pretty_config;
 
 use crate::{App, Message};
@@ -88,7 +88,7 @@ where
 
                 let handler = move |result: Result<T>| match result {
                     Ok(data) => Message::Data(DataContainerMessage::OnLoad(data).into()),
-                    Err(err) => Message::Error(format!("Load: {err_path} {err:?}")),
+                    Err(err) => Message::Log(error!(format!("Load: {err_path} {err:?}"))),
                 };
 
                 Command::perform(load_data(self.path.clone()), handler)
@@ -99,18 +99,23 @@ where
 
                 Command::none()
             }
-            DataContainerMessage::Save => self.data.as_ref().map_or_else(Command::none, |data| {
+            DataContainerMessage::Save => {
+                let Some(data) = &self.data else {
+                    return Command::message(error!("Data is not loaded"));
+                };
+
                 self.modified = false;
                 self.saving = true;
+
                 let err_path = self.path.to_str().unwrap().to_owned();
 
                 let handler = move |result: Result<()>| match result {
                     Ok(()) => Message::Data(DataContainerMessage::<T>::OnSaved.into()),
-                    Err(err) => Message::Error(format!("Save: '{err_path}' {err:?}")),
+                    Err(err) => Message::Log(error!(format!("Save: '{err_path}' {err:?}"))),
                 };
 
                 Command::perform(save_data(self.path.clone(), data.clone()), handler)
-            }),
+            }
             DataContainerMessage::OnSaved => {
                 self.saving = false;
                 Command::none()
