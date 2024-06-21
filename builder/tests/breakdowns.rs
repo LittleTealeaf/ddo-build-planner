@@ -479,7 +479,103 @@ mod stacking {
 }
 
 mod breakdowns {
-    // TODO: tests
+    use super::*;
+
+    #[test]
+    fn dont_track_by_default() {
+        let breakdowns = Breakdowns::new();
+        for attribute in Attribute::values() {
+            assert!(breakdowns.get_breakdown(&attribute).is_none());
+        }
+    }
+
+    #[test]
+    fn track_added_breakdowns() {
+        let mut breakdown = Breakdowns::new();
+        breakdown.track_breakdown(Attribute::Debug(0));
+        assert!(breakdown.get_breakdown(&Attribute::Debug(0)).is_some());
+    }
+
+    #[test]
+    fn track_multiple_breakdowns() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.track_breakdown(Attribute::Debug(0));
+        breakdowns.track_breakdown(Attribute::Debug(1));
+        assert!(breakdowns.get_breakdown(&Attribute::Debug(0)).is_some());
+        assert!(breakdowns.get_breakdown(&Attribute::Debug(1)).is_some());
+    }
+
+    #[test]
+    fn value_correct_when_added() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            10,
+            BonusSource::Debug(0),
+        ));
+        breakdowns.track_breakdown(Attribute::Debug(0));
+        assert_eq!(
+            breakdowns
+                .get_breakdown(&Attribute::Debug(0))
+                .expect("Expected Breakdown")
+                .value(),
+            &Decimal::from(10)
+        );
+    }
+
+    #[test]
+    fn value_updates_when_changed() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.track_breakdown(Attribute::Debug(0));
+        assert_eq!(
+            breakdowns
+                .get_breakdown(&Attribute::Debug(0))
+                .expect("Expected Breakdown")
+                .value(),
+            &Decimal::from(0)
+        );
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            10,
+            BonusSource::Debug(0),
+        ));
+        assert_eq!(
+            breakdowns
+                .get_breakdown(&Attribute::Debug(0))
+                .expect("Expected Breakdown")
+                .value(),
+            &Decimal::from(10)
+        );
+    }
+
+    #[test]
+    fn total_value_is_correct() {
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.track_breakdown(Attribute::Debug(0));
+
+        assert_eq!(
+            breakdowns
+                .get_breakdown(&Attribute::Debug(0))
+                .expect("Expected Breakdown")
+                .value(),
+            &Decimal::ZERO
+        );
+
+        breakdowns.insert_bonuses([
+            Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0)),
+            Bonus::new(DebugValue(0), DebugValue(1), 4, DebugValue(0)),
+        ]);
+
+        assert_eq!(
+            breakdowns
+                .get_breakdown(&Attribute::Debug(0))
+                .expect("Expected Breakdown")
+                .value(),
+            &Decimal::TEN
+        );
+    }
 }
 
 mod dice_strategy {
