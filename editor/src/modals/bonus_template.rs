@@ -189,10 +189,10 @@ impl HandleMessage<ModalBonusMessage> for App {
                         .title(format!(
                             "{} Bonus Value to {}",
                             modal.bonus_type,
-                            match &modal.attribute {
-                                Some(attribute) => attribute.to_string(),
-                                None => "???".to_string(),
-                            }
+                            modal
+                                .attribute
+                                .as_ref()
+                                .map_or_else(|| "???".to_owned(), ToString::to_string)
                         )),
                 );
                 Command::none()
