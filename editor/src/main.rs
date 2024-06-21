@@ -15,7 +15,12 @@ use tabs::{
     item_sets::{TabItemSets, TabSetBonusesMessage},
     Tab,
 };
-use ui::{font::NERD_FONT_BYTES, HandleMessage, HandleView};
+use ui::{
+    error,
+    font::NERD_FONT_BYTES,
+    log::{Log, Severity},
+    HandleMessage, HandleView,
+};
 
 fn main() -> iced::Result {
     App::run(Settings::default())
@@ -38,8 +43,7 @@ enum Message {
     None,
     IconsLoaded,
     Data(DataMessage),
-    Error(String),
-    Warning(String),
+    Log(Log),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
     ModalAttribute(ModalAttributeMessage),
@@ -112,7 +116,6 @@ impl HandleMessage<Message> for App {
                 Command::none()
             }
             Message::Data(message) => self.handle_message(message),
-            Message::Error(err) => panic!("{err}"),
             Message::ChangeTab(tab) => {
                 self.selected_tab = tab;
                 Command::none()
@@ -177,34 +180,33 @@ impl HandleMessage<Message> for App {
 
                 Command::none()
             }
-            Message::Warning(string) => {
-                println!("Warning: {string}");
-                Command::none()
-            }
+            Message::Log(log) => self.handle_message(log),
         }
     }
 }
 
-impl App {
-    fn handle_error<S>(&mut self, error: S) -> Command<Message>
-    where
-        S: Into<String>,
-    {
-        self.handle_message(Message::Error(error.into()))
+impl From<Log> for Message {
+    fn from(value: Log) -> Self {
+        Self::Log(value)
     }
+}
 
-    fn handle_warning<S>(&mut self, warning: S) -> Command<Message>
-    where
-        S: Into<String>,
-    {
-        self.handle_message(Message::Warning(warning.into()))
+impl HandleMessage<Log> for App {
+    fn handle_message(&mut self, message: Log) -> Command<<Self as Application>::Message> {
+        println!("{message}");
+
+        if matches!(message.severity, Severity::Crash) {
+            panic!();
+        }
+
+        Command::none()
     }
 }
 
 fn load_font() -> Command<Message> {
     font::load(NERD_FONT_BYTES).map(|res| {
         res.map_or_else(
-            |e| Message::Error(format!("Font: {e:?}")),
+            |e| error!("Font Load: {e:?}").into(),
             |()| Message::IconsLoaded,
         )
     })
