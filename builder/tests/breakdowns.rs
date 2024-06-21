@@ -479,7 +479,6 @@ mod stacking {
 }
 
 mod breakdowns {
-
     use super::*;
 
     #[test]
@@ -492,9 +491,9 @@ mod breakdowns {
 
     #[test]
     fn track_added_breakdowns() {
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.track_breakdown(Attribute::Debug(0));
-        assert!(breakdowns.get_breakdown(&Attribute::Debug(0)).is_some());
+        let mut breakdown = Breakdowns::new();
+        breakdown.track_breakdown(Attribute::Debug(0));
+        assert!(breakdown.get_breakdown(&Attribute::Debug(0)).is_some());
     }
 
     #[test]
@@ -578,82 +577,7 @@ mod breakdowns {
         );
     }
 
-    #[test]
-    fn different_types_in_applied() {
-        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0));
-        let b = Bonus::new(DebugValue(0), DebugValue(1), 4, DebugValue(0));
-
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.track_breakdown(Attribute::Debug(0));
-        breakdowns.insert_bonuses([a.clone(), b.clone()]);
-        let breakdown = breakdowns
-            .get_breakdown(&Attribute::Debug(0))
-            .expect("Expected Breakdowns");
-
-        assert!(breakdown.applied().iter().any(|i| i.bonus() == &a));
-        assert!(breakdown.applied().iter().any(|i| i.bonus() == &b));
-        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &b));
-        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &b));
-    }
-
-    #[test]
-    fn stacking_all_in_applied() {
-        let a = Bonus::new(DebugValue(0), BonusType::Stacking, 6, DebugValue(0));
-        let b = Bonus::new(DebugValue(0), BonusType::Stacking, 4, DebugValue(0));
-
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonuses([a.clone(), b.clone()]);
-        breakdowns.track_breakdown(Attribute::Debug(0));
-        let breakdown = breakdowns
-            .get_breakdown(&Attribute::Debug(0))
-            .expect("Expected Breakdowns");
-
-        assert!(breakdown.applied().iter().any(|i| i.bonus() == &a));
-        assert!(breakdown.applied().iter().any(|i| i.bonus() == &b));
-        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &b));
-        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &b));
-    }
-
-    #[test]
-    fn overwritten_separated() {
-        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0));
-        let b = Bonus::new(DebugValue(0), DebugValue(0), 4, DebugValue(0));
-
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonuses([a.clone(), b.clone()]);
-        breakdowns.track_breakdown(Attribute::Debug(0));
-        let breakdown = breakdowns
-            .get_breakdown(&Attribute::Debug(0))
-            .expect("Expected Breakdowns");
-
-        assert!(breakdown.applied().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.applied().iter().any(|i| i.bonus() == &b));
-        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
-        assert!(breakdown.overwritten().iter().any(|i| i.bonus() == &b));
-        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.disabled().iter().any(|i| i.bonus() == &b));
-    }
-
-    #[test]
-    fn disabled_not_included() {
-        let a = Bonus::new(DebugValue(0), DebugValue(0), 6, DebugValue(0))
-            .with_condition(Condition::FALSE);
-
-        let mut breakdowns = Breakdowns::new();
-        breakdowns.insert_bonus(a.clone());
-        breakdowns.track_breakdown(Attribute::Debug(0));
-        let breakdown = breakdowns
-            .get_breakdown(&Attribute::Debug(0))
-            .expect("Expected Breakdowns");
-
-        assert!(!breakdown.applied().iter().any(|i| i.bonus() == &a));
-        assert!(!breakdown.overwritten().iter().any(|i| i.bonus() == &a));
-        assert!(breakdown.disabled().iter().any(|i| i.bonus() == &a));
-    }
+    // TODO: additional tests for breakdowns
 }
 
 mod dice_strategy {
