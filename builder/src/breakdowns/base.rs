@@ -323,7 +323,7 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                 })
                 .cond_all()
                 .expect("Expected Condition");
-            
+
             BonusTemplate::feat(PastLifeFeat::HeroicCompletionist).with_condition(condition)
         },
         {
