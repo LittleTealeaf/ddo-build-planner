@@ -206,7 +206,7 @@ impl HandleMessage<Log> for App {
 fn load_font() -> Command<Message> {
     font::load(NERD_FONT_BYTES).map(|res| {
         res.map_or_else(
-            |e| error!(format!("Font Load: {e:?}")).into(),
+            |e| error!("Font Load: {e:?}").into(),
             |()| Message::IconsLoaded,
         )
     })

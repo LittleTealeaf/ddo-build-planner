@@ -60,7 +60,7 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                 };
 
                 let Some(set) = item_sets.get(index) else {
-                    return self.handle_message(error!(format!("Invalid Index: {index}")));
+                    return self.handle_message(error!("Invalid Index: {index}"));
                 };
 
                 self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone(), Some(index)));
@@ -83,7 +83,7 @@ impl HandleMessage<TabSetBonusesMessage> for App {
 
                 if let Some(index) = editor.index {
                     let Some(pointer) = item_sets.get_mut(index) else {
-                        return self.handle_message(error!(format!("Invalid Index: {index}")));
+                        return self.handle_message(error!("Invalid Index: {index}"));
                     };
 
                     *pointer = editor.item_set.clone();

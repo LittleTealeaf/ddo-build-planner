@@ -59,11 +59,11 @@ impl Display for Severity {
 /// Creates a log message that causes the application to crash
 #[macro_export]
 macro_rules! crash {
-    ($msg: expr) => {
+    ($($arg:tt)*) => {
         $crate::log::Log {
             file: file!().to_owned(),
             line: line!(),
-            message: $msg.into(),
+            message: format!($($arg)*),
             severity: $crate::log::Severity::Crash,
         }
     };
@@ -72,11 +72,11 @@ macro_rules! crash {
 /// Creates a log message that provides info
 #[macro_export]
 macro_rules! info {
-    ($msg: expr) => {
+    ($($arg:tt)*) => {
         $crate::log::Log {
             file: file!().to_owned(),
             line: line!(),
-            message: $msg.into(),
+            message: format!($($arg)*),
             severity: $crate::log::Severity::Info,
         }
     };
@@ -85,11 +85,11 @@ macro_rules! info {
 /// Creates a log message that provides a warning
 #[macro_export]
 macro_rules! warning {
-    ($msg: expr) => {
+    ($($arg:tt)*) => {
         $crate::log::Log {
             file: file!().to_owned(),
             line: line!(),
-            message: $msg.into(),
+            message: format!($($arg)*),
             severity: $crate::log::Severity::Warning,
         }
     };
@@ -98,11 +98,11 @@ macro_rules! warning {
 /// Creates a log message that indicates an error, but not enough to crash
 #[macro_export]
 macro_rules! error {
-    ($msg: expr) => {
+    ($($arg:tt)*) => {
         $crate::log::Log {
             file: file!().to_owned(),
             line: line!(),
-            message: $msg.into(),
+            message: format!($($arg)*),
             severity: $crate::log::Severity::Error,
         }
     };

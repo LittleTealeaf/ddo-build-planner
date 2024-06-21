@@ -110,7 +110,7 @@ impl HandleMessage<ItemSetEditorMessage> for App {
                 };
 
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return self.handle_message(error!(format!("Tier {tier} does not exist")));
+                    return self.handle_message(error!("Tier {tier} does not exist"));
                 };
 
                 let Some(bonus) = modal.get_bonus() else {
@@ -127,11 +127,11 @@ impl HandleMessage<ItemSetEditorMessage> for App {
                 };
 
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return self.handle_message(error!(format!("Tier {tier} does not exist")));
+                    return self.handle_message(error!("Tier {tier} does not exist"));
                 };
 
                 let Some(pointer) = tier.get_mut(index) else {
-                    return self.handle_message(error!(format!("Index {index} does not exist")));
+                    return self.handle_message(error!("Index {index} does not exist"));
                 };
 
                 let Some(bonus) = modal.get_bonus() else {
@@ -144,7 +144,7 @@ impl HandleMessage<ItemSetEditorMessage> for App {
             }
             ItemSetEditorMessage::DeleteTierBonus(tier, index) => {
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return self.handle_message(error!(format!("Tier {tier} does not exist")));
+                    return self.handle_message(error!("Tier {tier} does not exist"));
                 };
 
                 tier.remove(index);
