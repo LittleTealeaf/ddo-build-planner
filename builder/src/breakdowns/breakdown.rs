@@ -158,13 +158,13 @@ impl Breakdowns {
             .remove(&BonusType::Stacking)
             .unwrap_or_default()
             .into_iter()
-            .partition(|bonus| bonus.condition);
+            .partition(BonusEntry::condition);
 
         let bonuses = attribute_bonuses
             .into_iter()
             .map(|(bonus_type, bonuses)| {
                 let (mut bonuses, disabled): (Vec<_>, Vec<_>) =
-                    bonuses.into_iter().partition(|bonus| bonus.condition);
+                    bonuses.into_iter().partition(BonusEntry::condition);
 
                 let max = bonuses
                     .iter()
