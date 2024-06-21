@@ -19,21 +19,26 @@ pub struct AttributeBreakdown {
 }
 
 impl AttributeBreakdown {
+    /// List of stacking bonuses that are always applied to the attribute
     #[must_use]
     pub const fn stacking(&self) -> &Vec<BonusEntry> {
         &self.stacking
     }
 
+    /// List of stacking bonuses that are always applied to the attribute, but are currently
+    /// disabled, meaning that their conditions return false
     #[must_use]
     pub const fn disabled_stacking(&self) -> &Vec<BonusEntry> {
         &self.disabled_stacking
     }
 
+    /// List of bonus entries. Each item indicates a particular bonus type
     #[must_use]
     pub const fn bonuses(&self) -> &Vec<BonusTypeEntry> {
         &self.bonuses
     }
 
+    /// The final reuslitng value of the attribute
     #[must_use]
     pub const fn value(&self) -> &Decimal {
         &self.value
@@ -50,21 +55,25 @@ pub struct BonusTypeEntry {
 }
 
 impl BonusTypeEntry {
+    /// The bonus type tracked in this entry
     #[must_use]
     pub const fn bonus_type(&self) -> BonusType {
         self.bonus_type
     }
 
+    /// The final applied bonus for this bonus type. This is the highest value of this bonus type
     #[must_use]
     pub const fn applied(&self) -> &Option<BonusEntry> {
         &self.applied
     }
 
+    /// Bonsues that do not provide the highest value
     #[must_use]
     pub const fn overwritten(&self) -> &Vec<BonusEntry> {
         &self.overwritten
     }
 
+    /// Bonuses whose condition returns false
     #[must_use]
     pub const fn disabled(&self) -> &Vec<BonusEntry> {
         &self.disabled
@@ -80,16 +89,19 @@ pub struct BonusEntry {
 }
 
 impl BonusEntry {
+    /// The bonus object itself
     #[must_use]
     pub const fn bonus(&self) -> &Bonus {
         &self.bonus
     }
 
+    /// What the condition evaluates to
     #[must_use]
     pub const fn condition(&self) -> bool {
         self.condition
     }
 
+    /// What the value evaluates to
     #[must_use]
     pub const fn value(&self) -> &Decimal {
         &self.value
