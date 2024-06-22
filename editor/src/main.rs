@@ -80,7 +80,7 @@ impl Application for App {
             modal_attribute: None,
             modal_expression: None,
             modal_bonus: None,
-            theme: Theme::CatppuccinMocha,
+            theme: Theme::Dark,
             tab_sandbox: TabSandbox::new(),
         };
 

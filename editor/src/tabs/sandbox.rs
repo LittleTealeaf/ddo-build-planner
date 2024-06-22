@@ -3,17 +3,17 @@ use std::collections::HashSet;
 
 use builder::{
     attribute::Attribute,
-    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    bonus::{BonusSource, BonusTemplate},
     breakdowns::Breakdowns,
     equipment::set_bonus::ItemSet,
     types::toggle::Toggle,
 };
 use iced::{
-    widget::{button, column, row, text},
-    Application, Command, Element, Renderer,
+    widget::{button, checkbox, column, container, row, scrollable, text},
+    Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
-use ui::{error, ExecuteMessage, HandleMessage, HandleView};
+use ui::{error, font::nf_icon, info, ExecuteMessage, HandleMessage, HandleView};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
 
@@ -21,7 +21,7 @@ use crate::{modals::bonus_template::ModalBonus, App, Message};
 pub struct TabSandbox {
     breakdowns: Breakdowns,
     bonuses: Vec<BonusTemplate>,
-    toggles: HashSet<Toggle>,
+    toggles: Vec<Toggle>,
     tab: TabSandboxTab,
 }
 
@@ -47,7 +47,7 @@ impl TabSandbox {
         Self {
             breakdowns: Breakdowns::new(),
             bonuses: Vec::new(),
-            toggles: HashSet::new(),
+            toggles: Vec::new(),
             tab: TabSandboxTab::Bonuses,
         }
     }
@@ -93,6 +93,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::batch([
                     Command::message(TabSandboxMessage::RefreshItemSets),
                     Command::message(TabSandboxMessage::UpdateBonuses),
+                    Command::message(TabSandboxMessage::RefreshToggles),
                 ])
             }
             TabSandboxMessage::RefreshItemSets => {
@@ -180,26 +181,11 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::none()
             }
             TabSandboxMessage::SetToggle(toggle, value) => {
-                if value {
-                    tab.toggles.insert(toggle);
-                } else {
-                    tab.toggles.remove(&toggle);
-                }
-
                 tab.breakdowns.insert_bonus(toggle.toggle_bonus(value));
-
-                Command::none()
+                self.handle_message(TabSandboxMessage::RefreshToggles)
             }
             TabSandboxMessage::RefreshToggles => {
-                let toggles = tab
-                    .breakdowns
-                    .get_current_toggles()
-                    .iter()
-                    .map(|toggle| toggle.toggle_bonus(tab.toggles.contains(toggle)))
-                    .collect::<Vec<_>>();
-
-                tab.breakdowns.insert_bonuses(toggles);
-
+                tab.toggles = tab.breakdowns.get_active_toggles().collect();
                 Command::none()
             }
         }
@@ -227,6 +213,46 @@ impl HandleView<App> for TabSandbox {
                 }
             )
             .set_active_tab(&self.tab),
+            container(match self.tab {
+                TabSandboxTab::Bonuses => {
+                    Element::from(column!(
+                        row!(button("Create").on_press(TabSandboxMessage::AddBonus.into())),
+                        scrollable(column(self.bonuses.iter().enumerate().map(
+                            |(index, bonus)| {
+                                row!(
+                                    button(nf_icon(""))
+                                        .on_press(TabSandboxMessage::EditBonus(index).into()),
+                                    button(nf_icon(""))
+                                        .on_press(TabSandboxMessage::DeleteBonus(index).into()),
+                                    text(format!(
+                                        "{} {} bonus to {} if {}",
+                                        bonus.value(),
+                                        bonus.bonus_type(),
+                                        bonus.attribute(),
+                                        bonus.condition().map_or_else(
+                                            || "N/A".to_owned(),
+                                            |condition| format!("{condition}")
+                                        )
+                                    ))
+                                )
+                                .into()
+                            }
+                        )))
+                    ))
+                }
+                TabSandboxTab::Toggles => Element::from(scrollable(column(
+                    self.breakdowns
+                        .get_displayed_toggles()
+                        .iter()
+                        .map(|toggle| {
+                            checkbox(format!("{toggle}"), self.toggles.contains(toggle))
+                                .on_toggle(|val| TabSandboxMessage::SetToggle(*toggle, val).into())
+                                .into()
+                        })
+                ))),
+                TabSandboxTab::Breakdowns => Element::from(scrollable(row!())),
+            })
+            .height(Length::Fill)
         )
         .into()
     }

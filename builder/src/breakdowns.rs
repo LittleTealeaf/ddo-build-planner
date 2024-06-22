@@ -98,8 +98,17 @@ impl Breakdowns {
 
     /// Returns all toggles that should be displayed
     #[must_use]
-    pub const fn get_current_toggles(&self) -> &HashSet<Toggle> {
+    pub const fn get_displayed_toggles(&self) -> &HashSet<Toggle> {
         &self.cache.toggles
+    }
+
+    /// Returns the list of toggles that are turned on
+    pub fn get_active_toggles(&mut self) -> impl Iterator<Item = Toggle> + '_ {
+        let toggles = self.get_displayed_toggles().clone();
+
+        toggles
+            .into_iter()
+            .filter(|toggle| self.evaluate_attribute(&Attribute::Toggle(*toggle)) > Decimal::ZERO)
     }
 
     /// Returns the current dice strategy being used
