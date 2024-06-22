@@ -8,6 +8,7 @@ use utils::{hashmap::MapGetOrDefault, vecs::FilterRemove};
 use crate::{
     attribute::{Attribute, AttributeDependencies},
     bonus::{Bonus, BonusSource},
+    types::flag::Flag,
 };
 
 use super::{buffer::Buffer, Breakdowns};
@@ -135,6 +136,14 @@ impl Breakdowns {
                 continue;
             }
 
+            if let Attribute::Flag(Flag::HasToggle(toggle)) = &attribute {
+                if current_value > Decimal::ZERO {
+                    self.cache.toggles.insert(*toggle);
+                } else {
+                    self.cache.toggles.remove(toggle);
+                }
+            }
+
             self.cache.value.retain(filter_cache(&attribute));
             self.cache.condition.retain(filter_cache(&attribute));
 
@@ -174,7 +183,7 @@ impl Breakdowns {
         }
 
         for attribute in breakdowns {
-            self.track_breakdown(attribute);
+            self.track_attribute(attribute);
         }
     }
 

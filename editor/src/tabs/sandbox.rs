@@ -1,18 +1,54 @@
-use builder::{attribute::Attribute, breakdowns::Breakdowns, equipment::set_bonus::ItemSet};
-use iced::{widget::text, Application, Command, Element, Renderer};
+use core::fmt::{self, Display};
+use std::collections::HashSet;
+
+use builder::{
+    attribute::Attribute,
+    bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
+    breakdowns::Breakdowns,
+    equipment::set_bonus::ItemSet,
+    types::toggle::Toggle,
+};
+use iced::{
+    widget::{button, column, row, text},
+    Application, Command, Element, Renderer,
+};
+use iced_aw::{TabBar, TabLabel};
 use ui::{error, ExecuteMessage, HandleMessage, HandleView};
 
-use crate::{App, Message};
+use crate::{modals::bonus_template::ModalBonus, App, Message};
 
 #[derive(Debug, Clone)]
 pub struct TabSandbox {
     breakdowns: Breakdowns,
+    bonuses: Vec<BonusTemplate>,
+    toggles: HashSet<Toggle>,
+    tab: TabSandboxTab,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TabSandboxTab {
+    Bonuses,
+    Toggles,
+    Breakdowns,
+}
+
+impl Display for TabSandboxTab {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Bonuses => write!(f, "Bonuses"),
+            Self::Toggles => write!(f, "Toggles"),
+            Self::Breakdowns => write!(f, "Breakdowns"),
+        }
+    }
 }
 
 impl TabSandbox {
     pub fn new() -> Self {
         Self {
             breakdowns: Breakdowns::new(),
+            bonuses: Vec::new(),
+            toggles: HashSet::new(),
+            tab: TabSandboxTab::Bonuses,
         }
     }
 }
@@ -23,6 +59,15 @@ pub enum TabSandboxMessage {
     RefreshItemSets,
     TrackAttribute(Attribute),
     UntrackAttribute(Attribute),
+    AddBonus,
+    OnBonusAdded,
+    EditBonus(usize),
+    OnBonusEdited(usize),
+    DeleteBonus(usize),
+    UpdateBonuses,
+    SetToggle(Toggle, bool),
+    RefreshToggles,
+    SetTab(TabSandboxTab),
 }
 
 impl From<TabSandboxMessage> for Message {
@@ -39,13 +84,20 @@ impl HandleMessage<TabSandboxMessage> for App {
         let tab = &mut self.tab_sandbox;
 
         match message {
+            TabSandboxMessage::SetTab(t) => {
+                tab.tab = t;
+                Command::none()
+            }
             TabSandboxMessage::NewBreakdowns => {
                 tab.breakdowns = Breakdowns::new();
-                self.handle_message(TabSandboxMessage::RefreshItemSets)
+                Command::batch([
+                    Command::message(TabSandboxMessage::RefreshItemSets),
+                    Command::message(TabSandboxMessage::UpdateBonuses),
+                ])
             }
             TabSandboxMessage::RefreshItemSets => {
                 let Some(item_sets) = self.data.item_sets.get() else {
-                    return Command::message(error!("Item Sets Not Loaded"));
+                    return self.handle_message(error!("Item sets not loaded"));
                 };
 
                 let dynamic_bonuses = item_sets.iter().cloned().map(ItemSet::to_dynamic_bonus);
@@ -53,8 +105,103 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 Command::none()
             }
-            TabSandboxMessage::TrackAttribute(_) => todo!(),
-            TabSandboxMessage::UntrackAttribute(_) => todo!(),
+            TabSandboxMessage::TrackAttribute(attribute) => {
+                tab.breakdowns.track_attribute(attribute);
+                Command::none()
+            }
+            TabSandboxMessage::UntrackAttribute(attribute) => {
+                let _ = tab.breakdowns.untrack_attribute(&attribute);
+                Command::none()
+            }
+            TabSandboxMessage::AddBonus => {
+                self.modal_bonus = Some(
+                    ModalBonus::new(None)
+                        .title("Add Bonus")
+                        .on_submit(TabSandboxMessage::OnBonusAdded),
+                );
+                Command::none()
+            }
+            TabSandboxMessage::OnBonusAdded => {
+                let Some(modal) = &self.modal_bonus else {
+                    return self.handle_message(error!("Bonus Modal is not open"));
+                };
+
+                let Some(bonus) = modal.get_bonus() else {
+                    return self.handle_message(error!("Modal does not have valid bonus"));
+                };
+
+                tab.bonuses.push(bonus);
+
+                self.handle_message(TabSandboxMessage::UpdateBonuses)
+            }
+            TabSandboxMessage::EditBonus(index) => {
+                let Some(bonus) = tab.bonuses.get(index) else {
+                    return Command::message(error!("Invalid Bonus Index {index}"));
+                };
+
+                self.modal_bonus = Some(
+                    ModalBonus::new(Some(bonus))
+                        .on_submit(TabSandboxMessage::OnBonusEdited(index))
+                        .title("Edit Bonus"),
+                );
+                Command::none()
+            }
+            TabSandboxMessage::OnBonusEdited(index) => {
+                let Some(pointer) = tab.bonuses.get_mut(index) else {
+                    return self.handle_message(error!("Invalid Bonus Index {index}"));
+                };
+
+                let Some(modal) = &self.modal_bonus else {
+                    return self.handle_message(error!("Bonus Modal is not open"));
+                };
+
+                let Some(bonus) = modal.get_bonus() else {
+                    return self.handle_message(error!("Modal does not have valid bonus"));
+                };
+
+                *pointer = bonus;
+
+                self.handle_message(TabSandboxMessage::UpdateBonuses)
+            }
+            TabSandboxMessage::DeleteBonus(index) => {
+                tab.bonuses.remove(index);
+
+                Command::none()
+            }
+            TabSandboxMessage::UpdateBonuses => {
+                let bonuses = tab
+                    .bonuses
+                    .iter()
+                    .cloned()
+                    .map(|bonus| bonus.to_bonus(BonusSource::Debug(0)));
+
+                tab.breakdowns.insert_bonuses(bonuses);
+
+                Command::none()
+            }
+            TabSandboxMessage::SetToggle(toggle, value) => {
+                if value {
+                    tab.toggles.insert(toggle);
+                } else {
+                    tab.toggles.remove(&toggle);
+                }
+
+                tab.breakdowns.insert_bonus(toggle.toggle_bonus(value));
+
+                Command::none()
+            }
+            TabSandboxMessage::RefreshToggles => {
+                let toggles = tab
+                    .breakdowns
+                    .get_current_toggles()
+                    .iter()
+                    .map(|toggle| toggle.toggle_bonus(tab.toggles.contains(toggle)))
+                    .collect::<Vec<_>>();
+
+                tab.breakdowns.insert_bonuses(toggles);
+
+                Command::none()
+            }
         }
     }
 }
@@ -64,6 +211,23 @@ impl HandleView<App> for TabSandbox {
         &'a self,
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
-        text("Hi").into()
+        column!(
+            row!(button(text("Reload")).on_press(TabSandboxMessage::NewBreakdowns.into())),
+            [
+                TabSandboxTab::Bonuses,
+                TabSandboxTab::Toggles,
+                TabSandboxTab::Breakdowns
+            ]
+            .into_iter()
+            .fold(
+                TabBar::new(|tab| Message::TabSandbox(TabSandboxMessage::SetTab(tab))),
+                |bar, tab| {
+                    let label = format!("{tab}");
+                    bar.push(tab, TabLabel::Text(label))
+                }
+            )
+            .set_active_tab(&self.tab),
+        )
+        .into()
     }
 }
