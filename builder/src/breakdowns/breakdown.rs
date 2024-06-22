@@ -128,6 +128,11 @@ impl Breakdowns {
         self.cache.breakdowns.keys()
     }
 
+    /// Returns an iterator of both the breakdowns and attributes
+    pub fn tracked_breakdowns(&self) -> impl Iterator<Item = (&Attribute, &AttributeBreakdown)> {
+        self.cache.breakdowns.iter()
+    }
+
     /// Returns a reference to the breakdown if it exists for the given attribute.
     #[must_use]
     pub fn get_breakdown(&self, attribute: &Attribute) -> Option<&AttributeBreakdown> {
