@@ -22,6 +22,8 @@ pub struct ModalAttribute {
     on_cancel: Option<Message>,
 }
 
+// TODO: Filter Strings on Back-End
+
 impl App {
     pub fn select_attribute(&self) -> ModalAttribute {
         ModalAttribute::new(self.data.generate_attributes())
