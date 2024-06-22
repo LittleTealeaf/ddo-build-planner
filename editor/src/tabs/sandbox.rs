@@ -1,5 +1,4 @@
 use core::fmt::{self, Display};
-use std::collections::HashSet;
 
 use builder::{
     attribute::Attribute,
@@ -13,7 +12,7 @@ use iced::{
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
-use ui::{error, font::nf_icon, info, ExecuteMessage, HandleMessage, HandleView};
+use ui::{error, font::nf_icon, ExecuteMessage, HandleMessage, HandleView};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
 
