@@ -74,6 +74,8 @@ pub enum TabSandboxMessage {
     SetTab(TabSandboxTab),
 }
 
+type Msg = TabSandboxMessage;
+
 impl From<TabSandboxMessage> for Message {
     fn from(value: TabSandboxMessage) -> Self {
         Self::TabSandbox(value)
@@ -106,9 +108,9 @@ impl HandleMessage<TabSandboxMessage> for App {
                 }
 
                 Command::batch([
-                    Command::message(TabSandboxMessage::RefreshItemSets),
-                    Command::message(TabSandboxMessage::UpdateBonuses),
-                    Command::message(TabSandboxMessage::RefreshToggles),
+                    Command::message(Msg::RefreshItemSets),
+                    Command::message(Msg::UpdateBonuses),
+                    Command::message(Msg::RefreshToggles),
                 ])
             }
             TabSandboxMessage::RefreshItemSets => {
@@ -122,10 +124,8 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::none()
             }
             TabSandboxMessage::OpenTrackAttributePrompt => {
-                self.modal_attribute = Some(
-                    self.select_attribute()
-                        .on_submit(TabSandboxMessage::OnTrackAttribute),
-                );
+                self.modal_attribute =
+                    Some(self.select_attribute().on_submit(Msg::OnTrackAttribute));
                 Command::none()
             }
             TabSandboxMessage::OnTrackAttribute => {
@@ -149,7 +149,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                 self.modal_bonus = Some(
                     ModalBonus::new(None)
                         .title("Add Bonus")
-                        .on_submit(TabSandboxMessage::OnBonusAdded),
+                        .on_submit(Msg::OnBonusAdded),
                 );
                 Command::none()
             }
@@ -164,7 +164,7 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 tab.bonuses.push(bonus);
 
-                self.handle_message(TabSandboxMessage::UpdateBonuses)
+                self.handle_message(Msg::UpdateBonuses)
             }
             TabSandboxMessage::EditBonus(index) => {
                 let Some(bonus) = tab.bonuses.get(index) else {
@@ -173,7 +173,7 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 self.modal_bonus = Some(
                     ModalBonus::new(Some(bonus))
-                        .on_submit(TabSandboxMessage::OnBonusEdited(index))
+                        .on_submit(Msg::OnBonusEdited(index))
                         .title("Edit Bonus"),
                 );
                 Command::none()
@@ -193,7 +193,7 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 *pointer = bonus;
 
-                self.handle_message(TabSandboxMessage::UpdateBonuses)
+                self.handle_message(Msg::UpdateBonuses)
             }
             TabSandboxMessage::DeleteBonus(index) => {
                 tab.bonuses.remove(index);
@@ -213,7 +213,7 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::SetToggle(toggle, value) => {
                 tab.breakdowns.insert_bonus(toggle.toggle_bonus(value));
-                self.handle_message(TabSandboxMessage::RefreshToggles)
+                self.handle_message(Msg::RefreshToggles)
             }
             TabSandboxMessage::RefreshToggles => {
                 tab.toggles = tab.breakdowns.get_active_toggles().collect();
@@ -229,7 +229,7 @@ impl HandleView<App> for TabSandbox {
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         column!(
-            row!(button(text("Reload")).on_press(TabSandboxMessage::NewBreakdowns.into())),
+            row!(button(text("Reload")).on_press(Msg::NewBreakdowns.into())),
             [
                 TabSandboxTab::Bonuses,
                 TabSandboxTab::Toggles,
@@ -237,7 +237,7 @@ impl HandleView<App> for TabSandbox {
             ]
             .into_iter()
             .fold(
-                TabBar::new(|tab| Message::TabSandbox(TabSandboxMessage::SetTab(tab))),
+                TabBar::new(|tab| Message::TabSandbox(Msg::SetTab(tab))),
                 |bar, tab| {
                     let label = format!("{tab}");
                     bar.push(tab, TabLabel::Text(label))
@@ -247,14 +247,12 @@ impl HandleView<App> for TabSandbox {
             container(match self.tab {
                 TabSandboxTab::Bonuses => {
                     Element::from(column!(
-                        row!(button("Create").on_press(TabSandboxMessage::AddBonus.into())),
+                        row!(button("Create").on_press(Msg::AddBonus.into())),
                         scrollable(column(self.bonuses.iter().enumerate().map(
                             |(index, bonus)| {
                                 row!(
-                                    button(nf_icon(""))
-                                        .on_press(TabSandboxMessage::EditBonus(index).into()),
-                                    button(nf_icon(""))
-                                        .on_press(TabSandboxMessage::DeleteBonus(index).into()),
+                                    button(nf_icon("")).on_press(Msg::EditBonus(index).into()),
+                                    button(nf_icon("")).on_press(Msg::DeleteBonus(index).into()),
                                     text(format!(
                                         "{} {} bonus to {} if {}",
                                         bonus.value(),
@@ -277,22 +275,20 @@ impl HandleView<App> for TabSandbox {
                         .iter()
                         .map(|toggle| {
                             checkbox(format!("{toggle}"), self.toggles.contains(toggle))
-                                .on_toggle(|val| TabSandboxMessage::SetToggle(*toggle, val).into())
+                                .on_toggle(|val| Msg::SetToggle(*toggle, val).into())
                                 .into()
                         })
                 ))),
                 TabSandboxTab::Breakdowns => Element::from(column!(
                     row!(button("Track New Attribute")
-                        .on_press(TabSandboxMessage::OpenTrackAttributePrompt.into())),
+                        .on_press(Msg::OpenTrackAttributePrompt.into())),
                     scrollable(
                         self.breakdowns
                             .tracked_breakdowns()
                             .map(|(attribute, breakdown)| {
                                 row!(
-                                    button(nf_icon("󰜺")).on_press(
-                                        TabSandboxMessage::UntrackAttribute(attribute.clone())
-                                            .into()
-                                    ),
+                                    button(nf_icon("󰜺"))
+                                        .on_press(Msg::UntrackAttribute(attribute.clone()).into()),
                                     column!(
                                         text(attribute),
                                         text(format!("Total: {}", breakdown.value()))
