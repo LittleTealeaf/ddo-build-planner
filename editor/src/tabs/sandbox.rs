@@ -8,11 +8,14 @@ use builder::{
     types::toggle::Toggle,
 };
 use iced::{
+    futures::SinkExt,
+    theme,
     widget::{button, checkbox, column, container, row, scrollable, text},
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
-use ui::{error, font::nf_icon, ExecuteMessage, HandleMessage, HandleView};
+use itertools::chain;
+use ui::{error, font::nf_icon, ExecuteMessage, HandleMessage, HandleView, ToColumn};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
 
@@ -56,7 +59,8 @@ impl TabSandbox {
 pub enum TabSandboxMessage {
     NewBreakdowns,
     RefreshItemSets,
-    TrackAttribute(Attribute),
+    OpenTrackAttributePrompt,
+    OnTrackAttribute,
     UntrackAttribute(Attribute),
     AddBonus,
     OnBonusAdded,
@@ -105,8 +109,24 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 Command::none()
             }
-            TabSandboxMessage::TrackAttribute(attribute) => {
+            TabSandboxMessage::OpenTrackAttributePrompt => {
+                self.modal_attribute = Some(
+                    self.select_attribute()
+                        .on_submit(TabSandboxMessage::OnTrackAttribute),
+                );
+                Command::none()
+            }
+            TabSandboxMessage::OnTrackAttribute => {
+                let Some(modal) = &self.modal_attribute else {
+                    return self.handle_message(error!("Attribute modal not open"));
+                };
+
+                let Some(attribute) = modal.get_attribute() else {
+                    return self.handle_message(error!("Attribute Modal has no selection"));
+                };
+
                 tab.breakdowns.track_attribute(attribute);
+
                 Command::none()
             }
             TabSandboxMessage::UntrackAttribute(attribute) => {
@@ -249,7 +269,60 @@ impl HandleView<App> for TabSandbox {
                                 .into()
                         })
                 ))),
-                TabSandboxTab::Breakdowns => Element::from(scrollable(row!())),
+                TabSandboxTab::Breakdowns => Element::from(column!(
+                    row!(button("Track New Attribute")
+                        .on_press(TabSandboxMessage::OpenTrackAttributePrompt.into())),
+                    scrollable(
+                        self.breakdowns
+                            .tracked_breakdowns()
+                            .map(|(attribute, breakdown)| {
+                                row!(
+                                    button(nf_icon("󰜺")).on_press(
+                                        TabSandboxMessage::UntrackAttribute(attribute.clone())
+                                            .into()
+                                    ),
+                                    column!(
+                                        text(attribute),
+                                        text(format!("Total: {}", breakdown.value()))
+                                    ),
+                                    breakdown
+                                        .bonuses()
+                                        .iter()
+                                        .map(|bt| {
+                                            row!(
+                                                text(bt.bonus_type()),
+                                                chain!(
+                                                    bt.applied().as_ref().map(|entry| text(
+                                                        format!(
+                                                            "Applied: {} {}",
+                                                            entry.value(),
+                                                            entry.bonus()
+                                                        )
+                                                    ),),
+                                                    bt.overwritten().iter().map(|entry| text(
+                                                        format!(
+                                                            "Overwritten: {} {}",
+                                                            entry.value(),
+                                                            entry.bonus()
+                                                        )
+                                                    )),
+                                                    bt.disabled().iter().map(|entry| text(
+                                                        format!(
+                                                            "Disabled: {} {}",
+                                                            entry.value(),
+                                                            entry.bonus()
+                                                        )
+                                                    ))
+                                                )
+                                                .to_column()
+                                            )
+                                        })
+                                        .to_column()
+                                )
+                            })
+                            .to_column()
+                    )
+                )),
             })
             .height(Length::Fill)
         )
