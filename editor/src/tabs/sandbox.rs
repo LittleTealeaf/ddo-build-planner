@@ -1,4 +1,5 @@
 use core::fmt::{self, Display};
+use std::iter::once;
 
 use builder::{
     attribute::Attribute,
@@ -8,8 +9,6 @@ use builder::{
     types::toggle::Toggle,
 };
 use iced::{
-    futures::SinkExt,
-    theme,
     widget::{button, checkbox, column, container, row, scrollable, text},
     Application, Command, Element, Length, Renderer,
 };
@@ -92,7 +91,18 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::none()
             }
             TabSandboxMessage::NewBreakdowns => {
+                let tracked = tab
+                    .breakdowns
+                    .tracked_attributes()
+                    .cloned()
+                    .collect::<Vec<_>>();
+
                 tab.breakdowns = Breakdowns::new();
+
+                for attribute in tracked {
+                    tab.breakdowns.track_attribute(attribute);
+                }
+
                 Command::batch([
                     Command::message(TabSandboxMessage::RefreshItemSets),
                     Command::message(TabSandboxMessage::UpdateBonuses),
@@ -285,39 +295,66 @@ impl HandleView<App> for TabSandbox {
                                         text(attribute),
                                         text(format!("Total: {}", breakdown.value()))
                                     ),
-                                    breakdown
-                                        .bonuses()
-                                        .iter()
-                                        .map(|bt| {
-                                            row!(
-                                                text(bt.bonus_type()),
-                                                chain!(
-                                                    bt.applied().as_ref().map(|entry| text(
-                                                        format!(
-                                                            "Applied: {} {}",
-                                                            entry.value(),
-                                                            entry.bonus()
-                                                        )
-                                                    ),),
-                                                    bt.overwritten().iter().map(|entry| text(
-                                                        format!(
-                                                            "Overwritten: {} {}",
-                                                            entry.value(),
-                                                            entry.bonus()
-                                                        )
-                                                    )),
-                                                    bt.disabled().iter().map(|entry| text(
-                                                        format!(
-                                                            "Disabled: {} {}",
-                                                            entry.value(),
-                                                            entry.bonus()
-                                                        )
-                                                    ))
+                                    column(
+                                        breakdown
+                                            .bonuses()
+                                            .iter()
+                                            .map(|bt| {
+                                                row!(
+                                                    text(bt.bonus_type()),
+                                                    chain!(
+                                                        bt.applied().as_ref().map(|entry| text(
+                                                            format!(
+                                                                "Applied: {} {}",
+                                                                entry.value(),
+                                                                entry.bonus()
+                                                            )
+                                                        ),),
+                                                        bt.overwritten().iter().map(|entry| text(
+                                                            format!(
+                                                                "Overwritten: {} {}",
+                                                                entry.value(),
+                                                                entry.bonus()
+                                                            )
+                                                        )),
+                                                        bt.disabled().iter().map(|entry| text(
+                                                            format!(
+                                                                "Disabled: {} {}",
+                                                                entry.value(),
+                                                                entry.bonus()
+                                                            )
+                                                        ))
+                                                    )
+                                                    .to_column()
                                                 )
-                                                .to_column()
-                                            )
-                                        })
-                                        .to_column()
+                                                .into()
+                                            })
+                                            .chain(once(
+                                                row!(
+                                                    text("Stacking"),
+                                                    chain!(
+                                                        breakdown.stacking().iter().map(|entry| {
+                                                            text(format!(
+                                                                "{} {}",
+                                                                entry.value(),
+                                                                entry.bonus()
+                                                            ))
+                                                        }),
+                                                        breakdown.disabled_stacking().iter().map(
+                                                            |entry| {
+                                                                text(format!(
+                                                                    "Disabled: {} {}",
+                                                                    entry.value(),
+                                                                    entry.bonus()
+                                                                ))
+                                                            }
+                                                        )
+                                                    )
+                                                    .to_column()
+                                                )
+                                                .into()
+                                            ))
+                                    )
                                 )
                             })
                             .to_column()
