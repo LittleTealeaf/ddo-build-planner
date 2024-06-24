@@ -100,7 +100,7 @@ impl RacialPastLife {
 impl Display for RacialPastLife {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let Self(race) = self;
-        write!(f, "{race}")
+        write!(f, "{race} Past Life")
     }
 }
 
