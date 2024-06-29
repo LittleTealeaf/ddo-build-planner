@@ -15,7 +15,7 @@ use iced::{
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
-use itertools::{chain, kmerge, Itertools};
+use itertools::chain;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use ui::{error, font::nf_icon, ExecuteMessage, HandleMessage, HandleView, ToColumn};
 
