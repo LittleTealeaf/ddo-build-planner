@@ -7,7 +7,7 @@ mod dynamic;
 mod evaluation;
 mod inserting;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use im::OrdSet;
 use rust_decimal::Decimal;
@@ -54,7 +54,7 @@ struct BreakdownCache {
     condition: HashMap<Condition, bool>,
     attribute: HashMap<Attribute, Decimal>,
     breakdowns: HashMap<Attribute, AttributeBreakdown>,
-    toggles: HashSet<Toggle>,
+    toggles: OrdSet<Toggle>,
     sliders: OrdSet<Slider>,
 }
 
@@ -100,7 +100,7 @@ impl Breakdowns {
 
     /// Returns all toggles that should be displayed
     #[must_use]
-    pub const fn get_displayed_toggles(&self) -> &HashSet<Toggle> {
+    pub const fn get_displayed_toggles(&self) -> &OrdSet<Toggle> {
         &self.cache.toggles
     }
 
