@@ -4,7 +4,7 @@ use utils::from_into::FromInto;
 use crate::{
     attribute::Attribute,
     feat::Feat,
-    types::{flag::Flag, toggle::Toggle},
+    types::{flag::Flag, slider::Slider, toggle::Toggle},
 };
 
 use super::{Bonus, BonusSource, BonusType, Condition, Value};
@@ -102,6 +102,14 @@ impl BonusTemplate {
         T: Into<Toggle>,
     {
         Self::flag(Toggle::from_into(toggle))
+    }
+
+    /// Creates a new [`BonusTemplate`] that provides the user with the ability to use a [`Slider`]
+    pub fn slider<T>(slider: T) -> Self
+    where
+        T: Into<Slider>,
+    {
+        Self::flag(Slider::from_into(slider))
     }
 
     /// Creates a new [`BonusTemplate`] that provides the user with a feat.

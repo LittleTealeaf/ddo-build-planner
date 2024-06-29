@@ -10,8 +10,10 @@ use std::collections::HashSet;
 use itertools::Itertools;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use utils::from_into::FromInto;
 
 use crate::attribute::{Attribute, AttributeDependencies, ToAttribute};
+use crate::types::slider::Slider;
 
 use super::{Condition, Depth, HasDice};
 
@@ -113,6 +115,20 @@ impl Value {
 
 /// Operations to simplify writing formulas
 impl Value {
+    /// Shortcut for getting a value from a slider. This will ensure that the value is maxed out at
+    /// the proper max value
+    pub fn slider<S>(slider: S) -> Self
+    where
+        S: Into<Slider>,
+    {
+        let slider = Slider::from_into(slider);
+
+        slider
+            .to_attribute()
+            .to_value()
+            .min(Attribute::SliderMax(slider).to_value())
+    }
+
     #[must_use]
     /// Shortcut for [`Value::Dice`]
     ///
