@@ -8,23 +8,28 @@ use builder::{
     bonus::{BonusSource, BonusTemplate},
     breakdowns::Breakdowns,
     equipment::set_bonus::ItemSet,
-    types::toggle::Toggle,
+    types::{self, toggle::Toggle},
 };
 use iced::{
-    widget::{button, checkbox, column, container, row, scrollable, text},
+    widget::{button, checkbox, column, container, row, scrollable, slider, text},
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
-use itertools::chain;
+use itertools::{chain, kmerge, Itertools};
+use rust_decimal::{prelude::FromPrimitive, Decimal};
 use ui::{error, font::nf_icon, ExecuteMessage, HandleMessage, HandleView, ToColumn};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
+
+type SliderAttribute = types::slider::Slider;
 
 #[derive(Debug, Clone)]
 pub struct TabSandbox {
     breakdowns: Breakdowns,
     bonuses: Vec<BonusTemplate>,
     toggles: Vec<Toggle>,
+    /// (Current, Max)
+    slider: Vec<(SliderAttribute, f32, f32)>,
     tab: TabSandboxTab,
 }
 
@@ -32,6 +37,7 @@ pub struct TabSandbox {
 pub enum TabSandboxTab {
     Bonuses,
     Toggles,
+    Sliders,
     Breakdowns,
 }
 
@@ -40,6 +46,7 @@ impl Display for TabSandboxTab {
         match self {
             Self::Bonuses => write!(f, "Bonuses"),
             Self::Toggles => write!(f, "Toggles"),
+            Self::Sliders => write!(f, "Sliders"),
             Self::Breakdowns => write!(f, "Breakdowns"),
         }
     }
@@ -51,6 +58,7 @@ impl TabSandbox {
             breakdowns: Breakdowns::new(),
             bonuses: Vec::new(),
             toggles: Vec::new(),
+            slider: Vec::new(),
             tab: TabSandboxTab::Bonuses,
         }
     }
@@ -72,6 +80,8 @@ pub enum TabSandboxMessage {
     SetToggle(Toggle, bool),
     RefreshToggles,
     SetTab(TabSandboxTab),
+    SetSider(SliderAttribute, f32),
+    RefreshSliders,
 }
 
 type Msg = TabSandboxMessage;
@@ -107,10 +117,16 @@ impl HandleMessage<TabSandboxMessage> for App {
                     tab.breakdowns.track_attribute(attribute);
                 }
 
+                tab.breakdowns.insert_bonuses(chain!(
+                    tab.toggles.iter().map(|toggle| toggle.toggle_bonus(true)),
+                    tab.slider.iter().filter_map(|(slider, value, _)| Some(
+                        slider.slider_bonus(Decimal::from_f32(*value)?)
+                    ))
+                ));
+
                 Command::batch([
                     Command::message(Msg::RefreshItemSets),
                     Command::message(Msg::UpdateBonuses),
-                    Command::message(Msg::RefreshToggles),
                 ])
             }
             TabSandboxMessage::RefreshItemSets => {
@@ -209,7 +225,7 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 tab.breakdowns.insert_bonuses(bonuses);
 
-                Command::none()
+                self.handle_message(Msg::RefreshSliders)
             }
             TabSandboxMessage::SetToggle(toggle, value) => {
                 tab.breakdowns.insert_bonus(toggle.toggle_bonus(value));
@@ -217,6 +233,41 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::RefreshToggles => {
                 tab.toggles = tab.breakdowns.get_active_toggles().collect();
+                Command::none()
+            }
+            TabSandboxMessage::SetSider(slider, value) => {
+                let Some(value) = Decimal::from_f32(value) else {
+                    return self.handle_message(error!("Could not parse value {value}"));
+                };
+                tab.breakdowns.insert_bonus(slider.slider_bonus(value));
+                self.handle_message(TabSandboxMessage::RefreshSliders)
+            }
+            TabSandboxMessage::RefreshSliders => {
+                let values = tab.breakdowns.get_active_sliders().collect::<Vec<_>>();
+
+                let result = values
+                    .into_iter()
+                    .map(|(slider, value)| {
+                        Ok((
+                            slider,
+                            f32::try_from(value)?,
+                            f32::try_from(
+                                tab.breakdowns
+                                    .evaluate_attribute(&Attribute::SliderMax(slider)),
+                            )?,
+                        ))
+                    })
+                    .collect::<Result<Vec<_>, rust_decimal::Error>>();
+
+                let values = match result {
+                    Ok(values) => values,
+                    Err(error) => {
+                        return self.handle_message(error!("Error in converting values: {error}"))
+                    }
+                };
+
+                tab.slider = values.into_iter().collect();
+
                 Command::none()
             }
         }
@@ -233,6 +284,7 @@ impl HandleView<App> for TabSandbox {
             [
                 TabSandboxTab::Bonuses,
                 TabSandboxTab::Toggles,
+                TabSandboxTab::Sliders,
                 TabSandboxTab::Breakdowns
             ]
             .into_iter()
@@ -278,6 +330,18 @@ impl HandleView<App> for TabSandbox {
                                 .on_toggle(|val| Msg::SetToggle(*toggle, val).into())
                                 .into()
                         })
+                ))),
+                TabSandboxTab::Sliders => Element::from(scrollable(column(
+                    self.slider.iter().map(|(slder, value, max)| {
+                        row!(
+                            text(format!("{slder}")),
+                            slider(0f32..=*max, *value, |value| {
+                                Msg::SetSider(*slder, value).into()
+                            }),
+                            text(format!("{value}"))
+                        )
+                        .into()
+                    })
                 ))),
                 TabSandboxTab::Breakdowns => Element::from(column!(
                     row!(button("Track New Attribute")

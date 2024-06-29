@@ -7,7 +7,10 @@ use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use utils::enums::StaticValues;
 
-use crate::attribute::{Attribute, ToAttribute};
+use crate::{
+    attribute::{Attribute, ToAttribute},
+    bonus::{Bonus, BonusSource, BonusType, Value},
+};
 
 use super::flag::{Flag, ToFlag};
 
@@ -33,6 +36,20 @@ impl Slider {
             Self::DeificWarding => dec!(10),
             Self::ArchersFocus | Self::Ascendency => dec!(15),
         }
+    }
+
+    /// Creates a new bonus that sets the value of the slider
+    #[must_use]
+    pub fn slider_bonus<V>(&self, value: V) -> Bonus
+    where
+        V: Into<Value>,
+    {
+        Bonus::new(
+            self.to_attribute(),
+            BonusType::Stacking,
+            value,
+            BonusSource::Slider(*self),
+        )
     }
 }
 

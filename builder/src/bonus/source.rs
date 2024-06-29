@@ -7,7 +7,7 @@ use utils::enums::StaticValues;
 
 use crate::{
     attribute::{Attribute, ToAttribute},
-    types::toggle_group::ToggleGroup,
+    types::{slider::Slider, toggle_group::ToggleGroup},
 };
 
 /// Dictates the source that a bonus comes from.
@@ -19,6 +19,8 @@ pub enum BonusSource {
     Attribute(Attribute),
     /// Toggle Group Specific
     ToggleGroup(ToggleGroup),
+    /// Individual sliders
+    Slider(Slider),
     /// Dictates any custom bonuses for general uses. When possible, do not use this source
     Custom(String),
     /// Used for debugging purposes.
@@ -30,6 +32,7 @@ pub enum BonusSource {
 impl Display for BonusSource {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::Slider(slider) => write!(f, "Slider: {slider}"),
             Self::Attribute(attr) => write!(f, "Attribute: {attr}"),
             Self::Custom(string) => write!(f, "{string}"),
             Self::Debug(num) => write!(f, "Debug: {num}"),
@@ -78,6 +81,10 @@ where
 
 impl StaticValues for BonusSource {
     fn values() -> impl Iterator<Item = Self> {
-        chain!([Self::Base], Attribute::values().map(Self::Attribute),)
+        chain!(
+            [Self::Base],
+            Attribute::values().map(Self::Attribute),
+            Slider::values().map(Self::Slider)
+        )
     }
 }

@@ -143,6 +143,7 @@ impl StaticValues for Flag {
             OffHandType::values().map(Self::OffHandType),
             MainHandType::values().map(Self::MainHandType),
             ArmorType::values().map(Self::ArmorType),
+            Slider::values().map(Self::HasSlider),
             [Self::TwoHandedFighting, Self::HasOffHand, Self::HasMainHand]
         )
     }

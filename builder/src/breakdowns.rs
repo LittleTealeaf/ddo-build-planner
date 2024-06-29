@@ -9,6 +9,7 @@ mod inserting;
 
 use std::collections::{HashMap, HashSet};
 
+use im::OrdSet;
 use rust_decimal::Decimal;
 
 pub use breakdown::*;
@@ -17,7 +18,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusTemplate, Condition, HasDice, Value},
-    types::toggle::Toggle,
+    types::{slider::Slider, toggle::Toggle},
 };
 
 use self::base::get_base_bonuses;
@@ -54,6 +55,7 @@ struct BreakdownCache {
     attribute: HashMap<Attribute, Decimal>,
     breakdowns: HashMap<Attribute, AttributeBreakdown>,
     toggles: HashSet<Toggle>,
+    sliders: OrdSet<Slider>,
 }
 
 /// Simple methods for creating new instances, and obtaining a list of bonuses or attributes
@@ -109,6 +111,21 @@ impl Breakdowns {
         toggles
             .into_iter()
             .filter(|toggle| self.evaluate_attribute(&Attribute::Toggle(*toggle)) > Decimal::ZERO)
+    }
+
+    /// Returns all sliders that should be displayed
+    #[must_use]
+    pub const fn get_displayed_sliders(&self) -> &OrdSet<Slider> {
+        &self.cache.sliders
+    }
+
+    /// Returns a list of sliders and their current values
+    pub fn get_active_sliders(&mut self) -> impl Iterator<Item = (Slider, Decimal)> + '_ {
+        let sliders = self.get_displayed_sliders().clone();
+
+        sliders
+            .into_iter()
+            .map(|slider| (slider, self.evaluate_attribute_from(slider)))
     }
 
     /// Returns the current dice strategy being used

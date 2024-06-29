@@ -136,12 +136,22 @@ impl Breakdowns {
                 continue;
             }
 
-            if let Attribute::Flag(Flag::HasToggle(toggle)) = &attribute {
-                if current_value > Decimal::ZERO {
-                    self.cache.toggles.insert(*toggle);
-                } else {
-                    self.cache.toggles.remove(toggle);
+            match &attribute {
+                Attribute::Flag(Flag::HasToggle(toggle)) => {
+                    if current_value > Decimal::ZERO {
+                        self.cache.toggles.insert(*toggle);
+                    } else {
+                        self.cache.toggles.remove(toggle);
+                    }
                 }
+                Attribute::Flag(Flag::HasSlider(slider)) => {
+                    if current_value > Decimal::ZERO {
+                        self.cache.sliders.insert(*slider);
+                    } else {
+                        self.cache.sliders.remove(slider);
+                    }
+                }
+                _ => {}
             }
 
             self.cache.value.retain(filter_cache(&attribute));
