@@ -121,9 +121,7 @@ impl Breakdowns {
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            let current_value = self
-                .calculate_attribute(&attribute)
-                .unwrap_or(Decimal::ZERO);
+            let current_value = self.calculate_attribute(&attribute).unwrap_or_default();
 
             if !forced && initial_value == current_value {
                 continue;
