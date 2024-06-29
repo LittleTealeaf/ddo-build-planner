@@ -21,7 +21,7 @@ pub struct Data {
 
 impl Data {
     pub fn new() -> Self {
-        let root: PathBuf = PathBuf::from_iter([".", "data", "daata"]);
+        let root: PathBuf = PathBuf::from_iter([".", "data", "data"]);
 
         Self {
             item_sets: DataContainer::new(root.join("item_sets.ron")),
