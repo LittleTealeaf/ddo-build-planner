@@ -12,7 +12,7 @@ macro_rules! chain_tree {
     };
 
     (+$single:expr) => {
-        core::iter::IntoIterator::into_iter($single)
+        $single
     };
 
     (+$first:expr, $second:expr) => {
