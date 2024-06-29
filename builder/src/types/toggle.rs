@@ -123,15 +123,6 @@ where
     }
 }
 
-impl<T> ToFlag for T
-where
-    T: ToToggle,
-{
-    fn to_flag(self) -> Flag {
-        self.to_toggle().to_flag()
-    }
-}
-
 impl StaticValues for Toggle {
     fn values() -> impl Iterator<Item = Self> {
         chain_tree!(

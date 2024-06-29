@@ -19,8 +19,8 @@ use crate::{
         ability::Ability, absorption::Absorption, armor_class::ArmorClass, damage_type::DamageType,
         dodge::Dodge, flag::Flag, guild_level::GuildLevel, heal_amp::HealingAmplification,
         health::Health, player_class::PlayerClass, saving_throw::SavingThrow,
-        sheltering::Sheltering, skill::Skill, sneak_attack::SneakAttack, spell_points::SpellPoints,
-        spell_power::SpellPower, spell_selector::SpellSelector,
+        sheltering::Sheltering, skill::Skill, slider::Slider, sneak_attack::SneakAttack,
+        spell_points::SpellPoints, spell_power::SpellPower, spell_selector::SpellSelector,
         summoned_attribute::SummonedAttribute, tactics::Tactics, toggle::Toggle,
         weapon_attribute::WeaponAttribute,
     },
@@ -46,12 +46,20 @@ pub enum Attribute {
     /// Indicates that the user has some flag
     #[serde(rename = "f", alias = "flg", alias = "Flag")]
     Flag(Flag),
-    /// Results from the user interacting with toggles / sliders.
+    /// Results from the user interacting with toggles.
     ///
-    /// When a user toggles a toggle, or changes a slider, these attributes are updated so that
+    /// When a user toggles a toggle these attributes are updated so that
     /// associated bonuses can react.
     #[serde(rename = "t", alias = "tgl", alias = "Toggle")]
     Toggle(Toggle),
+    /// Results from the user interacting with sliders
+    ///
+    /// When a user changes a slider value, these attributes are updated
+    #[serde(rename = "s", alias = "Slider")]
+    Slider(Slider),
+    /// Indicates the max value of a slider
+    #[serde(rename = "sm", alias = "SliderMax")]
+    SliderMax(Slider),
     /// Does the user have the feat.
     #[serde(rename = "fe", alias = "Feat")]
     Feat(Feat),
@@ -211,6 +219,8 @@ impl Display for Attribute {
             Self::Doubleshot => write!(f, "Doubleshot"),
             Self::Doublestrike => write!(f, "Doublestrike"),
             Self::Dodge(dodge) => write!(f, "{dodge}"),
+            Self::Slider(slider) => write!(f, "{slider}"),
+            Self::SliderMax(slider) => write!(f, "{slider} Max Stacks"),
         }
     }
 }
@@ -295,6 +305,7 @@ impl StaticValues for Attribute {
                     Self::SpellDC(selector),
                 ]
             }),
+            Slider::values().flat_map(|slider| [Self::Slider(slider), Self::SliderMax(slider)]),
             toattr!(Skill),
             toattr!(SavingThrow),
             toattr!(Toggle),
