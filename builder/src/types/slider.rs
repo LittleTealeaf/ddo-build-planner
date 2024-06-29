@@ -15,10 +15,13 @@ use super::flag::{Flag, ToFlag};
 #[derive(Hash, Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Slider {
     /// Deific Warding Stacks
+    #[serde(rename = "dw", alias = "DeificWarding")]
     DeificWarding,
     /// Ascendency
+    #[serde(rename = "as", alias = "Ascendency")]
     Ascendency,
     /// Archer's Focus
+    #[serde(rename = "af", alias = "ArchersFocus")]
     ArchersFocus,
 }
 
