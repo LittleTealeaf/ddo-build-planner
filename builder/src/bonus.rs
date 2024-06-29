@@ -16,6 +16,7 @@ use crate::{
     feat::Feat,
     types::{
         flag::{Flag, ToFlag},
+        slider::Slider,
         toggle::Toggle,
     },
 };
@@ -116,6 +117,15 @@ impl Bonus {
             Value::ONE,
             source,
         )
+    }
+
+    /// Creates a new [`Bonus`] that provides the user with the ability to use a [`Slider`]
+    pub fn slider<T, S>(slider: T, source: S) -> Self
+    where
+        T: Into<Slider>,
+        S: Into<BonusSource>,
+    {
+        Self::flag(Slider::from_into(slider), source)
     }
 }
 

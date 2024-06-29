@@ -16,11 +16,11 @@ use fmt::Display;
 
 use crate::{
     attribute::{Attribute, GetBonuses, ToAttribute},
-    bonus::BonusTemplate,
+    bonus::{BonusTemplate, BonusType},
     types::{alignment::Alignment, immunity::Immunity, race::Race},
 };
 
-use super::{item_type::ArmorType, toggle::Toggle};
+use super::{item_type::ArmorType, slider::Slider, toggle::Toggle};
 
 /// Indicates that the character possesses some flag.
 ///
@@ -30,6 +30,9 @@ pub enum Flag {
     /// Indicates that the user has access to a given toggle.
     #[serde(rename = "t", alias = "HasToggle")]
     HasToggle(Toggle),
+    /// Indiates that the user should have access to said slider
+    #[serde(rename = "s", alias = "HasSlider")]
+    HasSlider(Slider),
     /// Indicates that the user is a given race
     #[serde(rename = "r", alias = "Race")]
     Race(Race),
@@ -69,6 +72,7 @@ pub enum Flag {
 impl Display for Flag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::HasSlider(slider) => write!(f, "Has {slider} Slider"),
             Self::HasToggle(toggle) => write!(f, "Has {toggle} Toggle"),
             Self::Race(race) => write!(f, "{race} Race"),
             Self::Immunity(immunity) => write!(f, "{immunity} Immunity"),
@@ -89,12 +93,19 @@ impl Display for Flag {
 impl GetBonuses for Flag {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         match self {
+            Self::HasSlider(slider) => (value > Decimal::ZERO).then(|| {
+                vec![BonusTemplate::new(
+                    Attribute::SliderMax(*slider),
+                    BonusType::Stacking,
+                    slider.base_stack_max(),
+                )]
+            }),
             Self::Race(race) => race.get_bonuses(value),
             Self::MainHandType(_) => {
-                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasMainHand)])
+                (value > Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasMainHand)])
             }
             Self::OffHandType(_) => {
-                (value >= Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasOffHand)])
+                (value > Decimal::ZERO).then(|| vec![BonusTemplate::flag(Self::HasOffHand)])
             }
             _ => None,
         }
