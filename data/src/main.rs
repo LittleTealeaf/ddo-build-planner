@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use utils::ron::pretty_config::compact_pretty_config;
 
 fn main() -> Result<()> {
-    let root: PathBuf = PathBuf::from_iter([".", "data", "daata"]);
+    let root: PathBuf = PathBuf::from_iter([".", "data", "data"]);
     process_file::<Vec<ItemSet>>(root.join("item_sets.ron"))?;
 
     Ok(())

@@ -405,13 +405,13 @@ impl Bonus {
         }
     }
 }
-//
+
 impl HasDice for Bonus {
     fn has_dice(&self) -> bool {
         self.value.has_dice() || self.condition.as_ref().is_some_and(HasDice::has_dice)
     }
 }
-//
+
 impl AttributeDependencies for Bonus {
     fn has_attr_dependency(&self, attribute: &Attribute) -> bool {
         self.value.has_attr_dependency(attribute)
@@ -428,7 +428,7 @@ impl AttributeDependencies for Bonus {
         }
     }
 }
-//
+
 impl Display for Bonus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(condition) = &self.condition {
@@ -459,27 +459,26 @@ impl From<Bonus> for Attribute {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use crate::types::ability::Ability;
-//
-//     use super::*;
-//
-//     #[test]
-//     fn serializes_and_deserializes_correct() {
-//         let bonus = Bonus::new(
-//             Attribute::Ability(Ability::Strength),
-//             BonusType::Profane,
-//             Value::Const(10.into()),
-//             None,
-//             BonusSource::Debug(3),
-//         );
-//
-//         let serialized = ron::to_string(&bonus).unwrap();
-//         let deserialized: Bonus = ron::from_str(&serialized).unwrap();
-//
-//         assert_eq!(bonus.attribute(), deserialized.attribute());
-//         assert!(deserialized.condition.is_none());
-//         assert_eq!(bonus.bonus_type, deserialized.bonus_type);
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use crate::{types::ability::Ability, val};
+
+    use super::*;
+
+    #[test]
+    fn serializes_and_deserializes_correct() {
+        let bonus = Bonus::new(
+            Ability::Strength,
+            BonusType::Profane,
+            val!(10),
+            BonusSource::Debug(3),
+        );
+
+        let serialized = ron::to_string(&bonus).unwrap();
+        let deserialized: Bonus = ron::from_str(&serialized).unwrap();
+
+        assert_eq!(bonus.attribute(), deserialized.attribute());
+        assert!(deserialized.condition.is_none());
+        assert_eq!(bonus.bonus_type, deserialized.bonus_type);
+    }
+}
