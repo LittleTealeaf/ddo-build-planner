@@ -1,5 +1,6 @@
 pub mod home;
 pub mod item_sets;
+pub mod sandbox;
 
 use core::fmt::{Display, Formatter, Result};
 
@@ -13,6 +14,7 @@ use crate::{App, Message};
 pub enum Tab {
     Home,
     ItemSets,
+    Sandbox,
 }
 
 impl Display for Tab {
@@ -20,6 +22,7 @@ impl Display for Tab {
         match self {
             Self::Home => write!(f, "Home"),
             Self::ItemSets => write!(f, "Item Sets"),
+            Self::Sandbox => write!(f, "Sandbox"),
         }
     }
 }
@@ -31,7 +34,7 @@ impl HandleView<App> for Tab {
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         Column::new()
             .push(
-                [Self::Home, Self::ItemSets]
+                [Self::Home, Self::ItemSets, Self::Sandbox]
                     .into_iter()
                     .fold(TabBar::new(Message::ChangeTab), |bar, tab| {
                         let label = format!("{tab}");
@@ -42,6 +45,7 @@ impl HandleView<App> for Tab {
             .push(match self {
                 Self::Home => app.tab_home.handle_view(app),
                 Self::ItemSets => app.tab_item_sets.handle_view(app),
+                Self::Sandbox => app.tab_sandbox.handle_view(app),
             })
             .into()
     }

@@ -1,8 +1,10 @@
+use std::collections::HashSet;
+
 use serde::{Deserialize, Serialize};
 use utils::from_into::FromInto;
 
 use crate::{
-    attribute::Attribute,
+    attribute::{Attribute, AttributeDependencies},
     feat::Feat,
     types::{flag::Flag, slider::Slider, toggle::Toggle},
 };
@@ -294,5 +296,21 @@ impl From<Bonus> for BonusTemplate {
 impl From<(BonusTemplate, BonusSource)> for Bonus {
     fn from((template, source): (BonusTemplate, BonusSource)) -> Self {
         template.to_bonus(source)
+    }
+}
+
+impl AttributeDependencies for BonusTemplate {
+    fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {
+        self.value.include_attr_dependency(set);
+        if let Some(condition) = &self.condition {
+            condition.include_attr_dependency(set);
+        }
+    }
+    fn has_attr_dependency(&self, attribute: &Attribute) -> bool {
+        self.value.has_attr_dependency(attribute)
+            || self
+                .condition
+                .as_ref()
+                .map_or(false, |cond| cond.has_attr_dependency(attribute))
     }
 }

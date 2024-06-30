@@ -21,23 +21,18 @@ pub struct Data {
 
 impl Data {
     pub fn new() -> Self {
-        let base = PathBuf::from(".").join("data").join("data");
+        let root: PathBuf = PathBuf::from_iter([".", "data", "data"]);
 
         Self {
-            item_sets: DataContainer::new(base.join("item_sets.ron")),
+            item_sets: DataContainer::new(root.join("item_sets.ron")),
         }
     }
 
     pub fn generate_attributes(&self) -> impl Iterator<Item = Attribute> + '_ {
-        let item_sets = self.item_sets.get();
-
-        let set_bonuses = item_sets
-            .map(|sets| {
-                sets.iter()
-                    .map(|set| Attribute::ItemSet(set.name().clone()))
-            })
-            .into_iter()
-            .flatten();
+        let set_bonuses = self.item_sets.get().into_iter().flat_map(|sets| {
+            sets.iter()
+                .map(|set| Attribute::ItemSet(set.name().clone()))
+        });
 
         chain!(set_bonuses, Attribute::values())
     }

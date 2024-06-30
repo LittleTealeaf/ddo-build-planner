@@ -492,15 +492,15 @@ mod breakdowns {
     #[test]
     fn track_added_breakdowns() {
         let mut breakdown = Breakdowns::new();
-        breakdown.track_breakdown(Attribute::Debug(0));
+        breakdown.track_attribute(Attribute::Debug(0));
         assert!(breakdown.get_breakdown(&Attribute::Debug(0)).is_some());
     }
 
     #[test]
     fn track_multiple_breakdowns() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.track_breakdown(Attribute::Debug(0));
-        breakdowns.track_breakdown(Attribute::Debug(1));
+        breakdowns.track_attribute(Attribute::Debug(0));
+        breakdowns.track_attribute(Attribute::Debug(1));
         assert!(breakdowns.get_breakdown(&Attribute::Debug(0)).is_some());
         assert!(breakdowns.get_breakdown(&Attribute::Debug(1)).is_some());
     }
@@ -514,7 +514,7 @@ mod breakdowns {
             10,
             BonusSource::Debug(0),
         ));
-        breakdowns.track_breakdown(Attribute::Debug(0));
+        breakdowns.track_attribute(Attribute::Debug(0));
         assert_eq!(
             breakdowns
                 .get_breakdown(&Attribute::Debug(0))
@@ -527,7 +527,7 @@ mod breakdowns {
     #[test]
     fn value_updates_when_changed() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.track_breakdown(Attribute::Debug(0));
+        breakdowns.track_attribute(Attribute::Debug(0));
         assert_eq!(
             breakdowns
                 .get_breakdown(&Attribute::Debug(0))
@@ -553,7 +553,7 @@ mod breakdowns {
     #[test]
     fn total_value_is_correct() {
         let mut breakdowns = Breakdowns::new();
-        breakdowns.track_breakdown(Attribute::Debug(0));
+        breakdowns.track_attribute(Attribute::Debug(0));
 
         assert_eq!(
             breakdowns

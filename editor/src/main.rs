@@ -13,6 +13,7 @@ use modals::{
 use tabs::{
     home::TabHome,
     item_sets::{TabItemSets, TabSetBonusesMessage},
+    sandbox::{TabSandbox, TabSandboxMessage},
     Tab,
 };
 use ui::{
@@ -31,6 +32,7 @@ struct App {
     data: Data,
     tab_home: TabHome,
     tab_item_sets: TabItemSets,
+    tab_sandbox: TabSandbox,
     icons_loaded: bool,
     selected_tab: Tab,
     modal_attribute: Option<ModalAttribute>,
@@ -47,6 +49,7 @@ enum Message {
     Log(Log),
     ChangeTab(Tab),
     TabSetBonuses(TabSetBonusesMessage),
+    TabSandbox(TabSandboxMessage),
     ModalAttribute(ModalAttributeMessage),
     ModalExpression(ModalExpressionMessage),
     ModalBonus(ModalBonusMessage),
@@ -77,7 +80,8 @@ impl Application for App {
             modal_attribute: None,
             modal_expression: None,
             modal_bonus: None,
-            theme: Theme::CatppuccinMocha,
+            theme: Theme::Dark,
+            tab_sandbox: TabSandbox::new(),
         };
 
         let command = Command::batch([
@@ -117,6 +121,7 @@ impl HandleMessage<Message> for App {
     fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
             Message::None => Command::none(),
+            Message::TabSandbox(message) => self.handle_message(message),
             Message::SetTheme(theme) => {
                 self.theme = theme;
                 Command::none()

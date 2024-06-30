@@ -1,4 +1,8 @@
-use iced::{Application, Command, Element, Renderer};
+use iced::{
+    advanced,
+    widget::{column, row, Column, Row},
+    Application, Command, Element, Renderer,
+};
 
 /// Provide a new `handle_view` function
 pub trait HandleView<App>
@@ -41,5 +45,39 @@ where
 {
     fn run_message(message: M) -> Self {
         Self::perform(async {}, |()| message)
+    }
+}
+
+/// Provides a ``to_column`` for any iterator of elements
+pub trait ToColumn<'a, M, T, R> {
+    /// Converts to a column
+    fn to_column(self) -> Column<'a, M, T, R>;
+}
+
+impl<'a, M, T, R, I, IT> ToColumn<'a, M, T, R> for I
+where
+    I: IntoIterator<Item = IT>,
+    IT: Into<Element<'a, M, T, R>>,
+    R: advanced::Renderer,
+{
+    fn to_column(self) -> Column<'a, M, T, R> {
+        column(self.into_iter().map(Into::into))
+    }
+}
+
+/// Provides a ``to_column`` for any iterator of elements
+pub trait ToRow<'a, M, T, R> {
+    /// Converts to a column
+    fn to_row(self) -> Row<'a, M, T, R>;
+}
+
+impl<'a, M, T, R, I, IT> ToRow<'a, M, T, R> for I
+where
+    I: IntoIterator<Item = IT>,
+    IT: Into<Element<'a, M, T, R>>,
+    R: advanced::Renderer,
+{
+    fn to_row(self) -> Row<'a, M, T, R> {
+        row(self.into_iter().map(Into::into))
     }
 }

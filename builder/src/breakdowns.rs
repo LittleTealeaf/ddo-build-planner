@@ -9,6 +9,7 @@ mod inserting;
 
 use std::collections::HashMap;
 
+use im::OrdSet;
 use rust_decimal::Decimal;
 
 pub use breakdown::*;
@@ -17,6 +18,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusTemplate, Condition, HasDice, Value},
+    types::{slider::Slider, toggle::Toggle},
 };
 
 use self::base::get_base_bonuses;
@@ -52,6 +54,8 @@ struct BreakdownCache {
     condition: HashMap<Condition, bool>,
     attribute: HashMap<Attribute, Decimal>,
     breakdowns: HashMap<Attribute, AttributeBreakdown>,
+    toggles: OrdSet<Toggle>,
+    sliders: OrdSet<Slider>,
 }
 
 /// Simple methods for creating new instances, and obtaining a list of bonuses or attributes
@@ -92,6 +96,36 @@ impl Breakdowns {
         attributes
             .into_iter()
             .map(|attribute| (attribute.clone(), self.evaluate_value(&attribute.into())))
+    }
+
+    /// Returns all toggles that should be displayed
+    #[must_use]
+    pub const fn get_displayed_toggles(&self) -> &OrdSet<Toggle> {
+        &self.cache.toggles
+    }
+
+    /// Returns the list of toggles that are turned on
+    pub fn get_active_toggles(&mut self) -> impl Iterator<Item = Toggle> + '_ {
+        let toggles = self.get_displayed_toggles().clone();
+
+        toggles
+            .into_iter()
+            .filter(|toggle| self.evaluate_attribute(&Attribute::Toggle(*toggle)) > Decimal::ZERO)
+    }
+
+    /// Returns all sliders that should be displayed
+    #[must_use]
+    pub const fn get_displayed_sliders(&self) -> &OrdSet<Slider> {
+        &self.cache.sliders
+    }
+
+    /// Returns a list of sliders and their current values
+    pub fn get_active_sliders(&mut self) -> impl Iterator<Item = (Slider, Decimal)> + '_ {
+        let sliders = self.get_displayed_sliders().clone();
+
+        sliders
+            .into_iter()
+            .map(|slider| (slider, self.evaluate_attribute_from(slider)))
     }
 
     /// Returns the current dice strategy being used

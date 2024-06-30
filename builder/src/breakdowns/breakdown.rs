@@ -114,13 +114,23 @@ impl Breakdowns {
     /// [`get_breakdown()`]. This cached version is updated whenever a change is made.
     ///
     /// [`get_breakdown()`]: crate::breakdowns::Breakdowns::get_breakdown
-    pub fn track_breakdown<A>(&mut self, attribute: A)
+    pub fn track_attribute<A>(&mut self, attribute: A)
     where
         A: Into<Attribute>,
     {
         let attribute = Attribute::from_into(attribute);
         let breakdown = self.build_breakdown(&attribute);
         self.cache.breakdowns.insert(attribute, breakdown);
+    }
+
+    /// Lists the tracked attributes
+    pub fn tracked_attributes(&self) -> impl Iterator<Item = &Attribute> {
+        self.cache.breakdowns.keys()
+    }
+
+    /// Returns an iterator of both the breakdowns and attributes
+    pub fn tracked_breakdowns(&self) -> impl Iterator<Item = (&Attribute, &AttributeBreakdown)> {
+        self.cache.breakdowns.iter()
     }
 
     /// Returns a reference to the breakdown if it exists for the given attribute.
@@ -136,12 +146,12 @@ impl Breakdowns {
     }
 
     /// Removes and clears all attributes from being cached in breakdowns
-    pub fn clear_breakdown(&mut self) {
+    pub fn clear_breakdowns(&mut self) {
         self.cache.breakdowns.clear();
     }
 
     /// Removes an attribute's breakdown from being cached
-    pub fn untrack_breakdown(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+    pub fn untrack_attribute(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
         self.cache.breakdowns.remove(attribute)
     }
 

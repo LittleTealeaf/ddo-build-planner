@@ -8,6 +8,7 @@ use utils::{hashmap::MapGetOrDefault, vecs::FilterRemove};
 use crate::{
     attribute::{Attribute, AttributeDependencies},
     bonus::{Bonus, BonusSource},
+    types::flag::Flag,
 };
 
 use super::{buffer::Buffer, Breakdowns};
@@ -102,13 +103,6 @@ impl Breakdowns {
 
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
-        fn filter_cache<K, V>(attribute: &Attribute) -> impl Fn(&K, &mut V) -> bool + '_
-        where
-            K: AttributeDependencies,
-        {
-            |key, _| !key.has_attr_dependency(attribute)
-        }
-
         // List of attributes to recalculate
         let mut breakdowns = HashSet::new();
 
@@ -127,16 +121,13 @@ impl Breakdowns {
 
             self.bonuses.get_mut_or_default(&attribute).extend(bonuses);
 
-            let current_value = self
-                .calculate_attribute(&attribute)
-                .unwrap_or(Decimal::ZERO);
+            let current_value = self.calculate_attribute(&attribute).unwrap_or_default();
 
             if !forced && initial_value == current_value {
                 continue;
             }
 
-            self.cache.value.retain(filter_cache(&attribute));
-            self.cache.condition.retain(filter_cache(&attribute));
+            self.update_caches(&attribute, &current_value);
 
             let source = BonusSource::Attribute(attribute.clone());
 
@@ -174,7 +165,7 @@ impl Breakdowns {
         }
 
         for attribute in breakdowns {
-            self.track_breakdown(attribute);
+            self.track_attribute(attribute);
         }
     }
 
@@ -205,5 +196,35 @@ impl Breakdowns {
         };
 
         sources.into_iter().filter_map(map).flatten()
+    }
+
+    fn update_caches(&mut self, attribute: &Attribute, value: &Decimal) {
+        fn filter_cache<K, V>(attribute: &Attribute) -> impl Fn(&K, &mut V) -> bool + '_
+        where
+            K: AttributeDependencies,
+        {
+            |key, _| !key.has_attr_dependency(attribute)
+        }
+
+        self.cache.value.retain(filter_cache(attribute));
+        self.cache.condition.retain(filter_cache(attribute));
+
+        match &attribute {
+            Attribute::Flag(Flag::HasToggle(toggle)) => {
+                if value > &Decimal::ZERO {
+                    self.cache.toggles.insert(*toggle);
+                } else {
+                    self.cache.toggles.remove(toggle);
+                }
+            }
+            Attribute::Flag(Flag::HasSlider(slider)) => {
+                if value > &Decimal::ZERO {
+                    self.cache.sliders.insert(*slider);
+                } else {
+                    self.cache.sliders.remove(slider);
+                }
+            }
+            _ => {}
+        }
     }
 }

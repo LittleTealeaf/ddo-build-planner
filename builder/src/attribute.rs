@@ -219,8 +219,8 @@ impl Display for Attribute {
             Self::Doubleshot => write!(f, "Doubleshot"),
             Self::Doublestrike => write!(f, "Doublestrike"),
             Self::Dodge(dodge) => write!(f, "{dodge}"),
-            Self::Slider(slider) => write!(f, "{slider}"),
-            Self::SliderMax(slider) => write!(f, "{slider} Max Stacks"),
+            Self::Slider(slider) => write!(f, "Slider: {slider}"),
+            Self::SliderMax(slider) => write!(f, "Slider Max: {slider}"),
         }
     }
 }

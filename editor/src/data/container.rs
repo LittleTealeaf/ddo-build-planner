@@ -97,7 +97,7 @@ where
                 self.modified = false;
                 self.data = Some(data);
 
-                Command::none()
+                self.handle_message(DataContainerMessage::Modified)
             }
             DataContainerMessage::Save => {
                 let Some(data) = &self.data else {
