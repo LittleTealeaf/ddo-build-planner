@@ -17,7 +17,7 @@ use iced::{
 use iced_aw::{TabBar, TabLabel};
 use itertools::chain;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
-use ui::{error, font::nf_icon, ExecuteMessage, HandleMessage, HandleView, ToColumn};
+use ui::{error, font::nf_icon, warning, ExecuteMessage, HandleMessage, HandleView, ToColumn};
 
 use crate::{modals::bonus_template::ModalBonus, App, Message};
 
@@ -117,12 +117,13 @@ impl HandleMessage<TabSandboxMessage> for App {
                     tab.breakdowns.track_attribute(attribute);
                 }
 
-                tab.breakdowns.insert_bonuses(chain!(
-                    tab.toggles.iter().map(|toggle| toggle.toggle_bonus(true)),
-                    tab.slider.iter().filter_map(|(slider, value, _)| Some(
-                        slider.slider_bonus(Decimal::from_f32(*value)?)
-                    ))
-                ));
+                let toggles = tab.toggles.iter().map(|toggle| toggle.toggle_bonus(true));
+                let sliders = tab.slider.iter().filter_map(|(slider, value, _)| {
+                    Some(slider.slider_bonus(Decimal::from_f32(*value)?))
+                });
+
+                let bonuses = toggles.chain(sliders);
+                tab.breakdowns.insert_bonuses(bonuses);
 
                 Command::batch([
                     Command::message(Msg::RefreshItemSets),
@@ -158,8 +159,11 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::none()
             }
             TabSandboxMessage::UntrackAttribute(attribute) => {
-                let _ = tab.breakdowns.untrack_attribute(&attribute);
-                Command::none()
+                if tab.breakdowns.untrack_attribute(&attribute).is_none() {
+                    Command::message(warning!("Attribute [{attribute}] was not tracked"))
+                } else {
+                    Command::none()
+                }
             }
             TabSandboxMessage::AddBonus => {
                 self.modal_bonus = Some(
