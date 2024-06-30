@@ -15,7 +15,9 @@ use crate::{App, Message};
 #[derive(Clone, Debug)]
 pub struct ModalAttribute {
     attributes: Vec<Attribute>,
-    selected: Option<usize>,
+// TODO: change the Vec to an OrdSet
+    selected: Vec<usize>,
+    multiselect: bool,
     title: Option<String>,
     filter: String,
     on_submit: Option<Message>,
@@ -40,26 +42,30 @@ impl ModalAttribute {
 
         Self {
             attributes,
-            selected: None,
+            selected: Vec::new(),
             title: None,
+            multiselect: false,
             filter: String::new(),
             on_submit: None,
             on_cancel: None,
         }
     }
 
-    pub fn select<A>(self, attribute: A) -> Self
+    pub fn select<A>(mut self, attribute: A) -> Self
     where
         A: Into<Attribute>,
     {
         let attribute = Attribute::from_into(attribute);
-        Self {
-            selected: self
-                .attributes
-                .iter()
-                .enumerate()
-                .find_map(|(index, a)| a.eq(&attribute).then_some(index)),
-            ..self
+        if self.multiselect {
+            if let Some(index) = self.lookup(&attribute) {
+                self.selected.push(index);
+            }
+            self
+        } else {
+            Self {
+                selected: self.lookup(&attribute).into_iter().collect(),
+                ..self
+            }
         }
     }
 
@@ -67,16 +73,37 @@ impl ModalAttribute {
     where
         A: Into<Attribute>,
     {
-        let attribute = attribute.map(|attribute| Attribute::from_into(attribute));
+        if let Some(attribute) = attribute {
+            self.select(attribute)
+        } else {
+            self
+        }
+    }
+
+    pub fn multiselect(self, enabled: bool) -> Self {
         Self {
-            selected: attribute.and_then(|attr| {
-                self.attributes
-                    .iter()
-                    .enumerate()
-                    .find_map(|(index, a)| a.eq(&attr).then_some(index))
-            }),
+            multiselect: enabled,
             ..self
         }
+    }
+
+    pub fn select_all<I, A>(mut self, attributes: I) -> Self
+    where
+        I: IntoIterator<Item = A>,
+        A: Into<Attribute>,
+    {
+
+        let indexes = 
+            attributes
+                .into_iter()
+                .map(Into::into)
+                .filter_map(|a| self.lookup(&a)).collect::<Vec<_>>();
+
+        self.selected.extend(
+            indexes
+        );
+
+        self
     }
 
     pub fn title<S>(self, title: S) -> Self
@@ -130,7 +157,16 @@ impl ModalAttribute {
     }
 
     pub fn get_attribute(&self) -> Option<Attribute> {
-        self.attributes.get(self.selected?).cloned()
+        self.attributes.get(*self.selected.get(0)?).cloned()
+    }
+}
+
+impl ModalAttribute {
+    fn lookup(&self, attribute: &Attribute) -> Option<usize> {
+        self.attributes
+            .iter()
+            .enumerate()
+            .find_map(|(index, a)| a.eq(&attribute).then_some(index))
     }
 }
 
