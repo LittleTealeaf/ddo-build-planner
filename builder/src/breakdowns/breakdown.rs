@@ -1,6 +1,6 @@
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use utils::{from_into::FromInto, hashmap::IntoGroupedHashMap};
+use utils::{from_into::FromInto, maps::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,

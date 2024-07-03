@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use rust_decimal::Decimal;
-use utils::{from_into::FromInto, hashmap::MapGetOr};
+use utils::{from_into::FromInto, maps::MapGetOr};
 
 use crate::{
     attribute::Attribute,

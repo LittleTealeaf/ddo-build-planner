@@ -1,6 +1,6 @@
 use core::iter::once;
 use itertools::chain;
-use utils::{chain_tree, enums::StaticValues, hashmap::IntoGroupedHashMap};
+use utils::{chain_tree, enums::StaticValues, maps::IntoGroupedHashMap};
 
 use crate::{
     attribute::Attribute,

@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use itertools::{chain, Itertools};
 use rust_decimal::Decimal;
-use utils::{hashmap::MapGetOrDefault, vecs::FilterRemove};
+use utils::{maps::MapGetOrDefault, vecs::FilterRemove};
 
 use crate::{
     attribute::{Attribute, AttributeDependencies},

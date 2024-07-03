@@ -28,8 +28,7 @@ use builder::{
 use core::iter::once;
 use itertools::{chain, Itertools};
 use rust_decimal::Decimal;
-use utils::enums::StaticValues;
-use utils::hashmap::IntoGroupedHashMap;
+use utils::{enums::StaticValues, maps::IntoGroupedHashMap};
 
 mod ability {
     use super::*;
