@@ -15,7 +15,7 @@ use iced::{
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
-use itertools::chain;
+use itertools::{chain, Itertools};
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use ui::{error, font::nf_icon, warning, ExecuteMessage, HandleMessage, HandleView, ToColumn};
 
@@ -105,11 +105,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::none()
             }
             TabSandboxMessage::NewBreakdowns => {
-                let tracked = tab
-                    .breakdowns
-                    .tracked_attributes()
-                    .cloned()
-                    .collect::<Vec<_>>();
+                let tracked = tab.breakdowns.tracked_attributes().cloned().collect_vec();
 
                 tab.breakdowns = Breakdowns::new();
 
@@ -247,7 +243,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                 self.handle_message(TabSandboxMessage::RefreshSliders)
             }
             TabSandboxMessage::RefreshSliders => {
-                let values = tab.breakdowns.get_active_sliders().collect::<Vec<_>>();
+                let values = tab.breakdowns.get_active_sliders().collect_vec();
 
                 let result = values
                     .into_iter()

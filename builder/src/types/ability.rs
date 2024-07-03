@@ -93,6 +93,8 @@ impl StaticValues for Ability {
 #[cfg(test)]
 mod tests {
 
+    use itertools::Itertools;
+
     use crate::{
         attribute::Attribute,
         bonus::{BonusSource, BonusType},
@@ -124,7 +126,7 @@ mod tests {
         let attributes = bonuses
             .into_iter()
             .map(|bonus| bonus.attribute().clone())
-            .collect::<Vec<_>>();
+            .collect_vec();
 
         for ability in Ability::VALUES {
             assert!(attributes.contains(&Attribute::Ability(ability)));

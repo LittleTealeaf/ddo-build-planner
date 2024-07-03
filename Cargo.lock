@@ -2808,6 +2808,7 @@ dependencies = [
  "builder",
  "iced",
  "iced_aw",
+ "itertools",
  "utils",
 ]
 

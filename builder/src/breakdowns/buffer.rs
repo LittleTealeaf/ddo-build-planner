@@ -1,6 +1,7 @@
 use core::{cmp::Reverse, iter::once};
 use std::collections::{BinaryHeap, HashSet};
 
+use itertools::Itertools;
 use utils::{from_into::FromInto, vecs::FilterRemove};
 
 use crate::{
@@ -45,10 +46,7 @@ impl Buffer {
                 .chain(once(bonus))
         }
 
-        let bonuses = bonuses
-            .into_iter()
-            .flat_map(expand_bonus)
-            .collect::<Vec<_>>();
+        let bonuses = bonuses.into_iter().flat_map(expand_bonus).collect_vec();
 
         let sources: HashSet<BonusSource> = bonuses.iter().map(Bonus::source).cloned().collect();
 

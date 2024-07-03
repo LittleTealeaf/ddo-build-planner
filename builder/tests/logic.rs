@@ -1099,7 +1099,7 @@ mod feats {
                 let races = RacialPastLife::RACES
                     .into_iter()
                     .filter(|race| race.get_base().is_none())
-                    .collect::<Vec<_>>();
+                    .collect_vec();
 
                 breakdowns.insert_bonuses(
                     races.iter().map(|race| {
@@ -1120,7 +1120,7 @@ mod feats {
                 let races = RacialPastLife::RACES
                     .into_iter()
                     .filter(|race| race.get_base().is_none())
-                    .collect::<Vec<_>>();
+                    .collect_vec();
 
                 breakdowns.insert_bonuses(
                     races.iter().map(|race| {
@@ -1141,7 +1141,7 @@ mod feats {
                 let races = RacialPastLife::RACES
                     .into_iter()
                     .filter(|race| race.get_base().is_none())
-                    .collect::<Vec<_>>();
+                    .collect_vec();
 
                 breakdowns.insert_bonuses(
                     races.iter().map(|race| {

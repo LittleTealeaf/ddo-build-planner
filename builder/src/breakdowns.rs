@@ -10,6 +10,7 @@ mod inserting;
 use std::collections::HashMap;
 
 use im::OrdSet;
+use itertools::Itertools;
 use rust_decimal::Decimal;
 
 pub use breakdown::*;
@@ -91,7 +92,7 @@ impl Breakdowns {
 
     /// Returns an iterator of attributes and their values
     pub fn iter_attributes(&mut self) -> impl Iterator<Item = (Attribute, Decimal)> + '_ {
-        let attributes = self.bonuses.keys().cloned().collect::<Vec<_>>();
+        let attributes = self.bonuses.keys().cloned().collect_vec();
 
         attributes
             .into_iter()
@@ -146,7 +147,7 @@ impl Breakdowns {
             .filter(|&bonus| bonus.has_dice())
             .map(Bonus::attribute)
             .cloned()
-            .collect::<Vec<_>>();
+            .collect_vec();
 
         self.recalculate_attributes(attributes);
     }

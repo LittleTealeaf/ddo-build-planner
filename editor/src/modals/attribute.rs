@@ -7,6 +7,7 @@ use iced::{
     widget::{button, column, container, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
+use itertools::Itertools;
 use ui::{error, HandleMessage, HandleView};
 use utils::from_into::FromInto;
 
@@ -35,7 +36,7 @@ impl ModalAttribute {
     where
         I: IntoIterator<Item = Attribute>,
     {
-        let mut attributes = attributes.into_iter().collect::<Vec<_>>();
+        let mut attributes = attributes.into_iter().collect_vec();
         attributes.sort_by_cached_key(ToString::to_string);
 
         Self {
