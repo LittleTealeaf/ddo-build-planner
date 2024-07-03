@@ -3,7 +3,6 @@ use iced::{
     widget::{column, row, Column, Row},
     Application, Command, Element, Renderer,
 };
-use itertools::Itertools;
 
 /// Provide a new `handle_view` function
 pub trait HandleView<App>
@@ -62,7 +61,7 @@ where
     R: advanced::Renderer,
 {
     fn to_column(self) -> Column<'a, M, T, R> {
-        column(self.into_iter().map_into())
+        column(self.into_iter().map(Into::into))
     }
 }
 
@@ -79,6 +78,6 @@ where
     R: advanced::Renderer,
 {
     fn to_row(self) -> Row<'a, M, T, R> {
-        row(self.into_iter().map_into())
+        row(self.into_iter().map(Into::into))
     }
 }

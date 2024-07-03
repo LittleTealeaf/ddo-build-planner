@@ -19,4 +19,3 @@ iced = { version = "0.12.1", features = ["tokio"] }
 utils = { path = "../utils/" }
 builder = { path = "../builder/" }
 iced_aw = { version = "0.9.3", default-features = false, features = ["icons"] }
-itertools = "0.13.0"

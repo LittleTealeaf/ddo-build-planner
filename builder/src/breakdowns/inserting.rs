@@ -1,7 +1,7 @@
 use core::iter::once;
 use std::collections::HashSet;
 
-use itertools::{chain, Itertools};
+use itertools::chain;
 use rust_decimal::Decimal;
 use utils::{hashmap::MapGetOrDefault, vecs::FilterRemove};
 
@@ -24,7 +24,7 @@ impl Breakdowns {
     {
         let mut buffer = Buffer::new();
 
-        let sources = sources.into_iter().map_into().collect_vec();
+        let sources = sources.into_iter().map(Into::into).collect::<Vec<_>>();
 
         buffer.insert_attributes(self.remove_bonuses_by_source(&sources));
 
