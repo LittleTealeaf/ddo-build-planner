@@ -5,7 +5,7 @@ use im::OrdMap;
 
 /// Defines some type as being map-like. This allows for each of the methods to work for any types
 /// that implement this trait
-pub trait MapLike<K, V> {
+pub trait MapLike<K, V>: IntoIterator<Item = (K, V)> {
     /// Returns `true` if the key has an associated value in the map, `false` otherwise
     fn contains_key(&self, key: &K) -> bool;
     /// Inserts the key and value pair. Returns the overwritten value if there is one
@@ -14,6 +14,16 @@ pub trait MapLike<K, V> {
     fn get(&self, key: &K) -> Option<&V>;
     /// Gets a mutable reference to the value for a given key
     fn get_mut(&mut self, key: &K) -> Option<&mut V>;
+
+    /// Returns an iterator of keys in the map
+    fn keys<'a>(&'a self) -> impl Iterator<Item = &'a K> + 'a
+    where
+        K: 'a;
+
+    /// Returns an iterator of values in the map
+    fn values<'a>(&'a self) -> impl Iterator<Item = &'a V> + 'a
+    where
+        V: 'a;
 }
 
 impl<K, V, S> MapLike<K, V> for collections::HashMap<K, V, S>
@@ -35,6 +45,20 @@ where
 
     fn get_mut(&mut self, key: &K) -> Option<&mut V> {
         self.get_mut(key)
+    }
+
+    fn keys<'a>(&'a self) -> impl Iterator<Item = &'a K> + 'a
+    where
+        K: 'a,
+    {
+        self.keys()
+    }
+
+    fn values<'a>(&'a self) -> impl Iterator<Item = &'a V> + 'a
+    where
+        V: 'a,
+    {
+        self.values()
     }
 }
 
@@ -59,6 +83,20 @@ where
     fn get_mut(&mut self, key: &K) -> Option<&mut V> {
         self.get_mut(key)
     }
+
+    fn keys<'a>(&'a self) -> impl Iterator<Item = &'a K> + 'a
+    where
+        K: 'a,
+    {
+        self.keys()
+    }
+
+    fn values<'a>(&'a self) -> impl Iterator<Item = &'a V> + 'a
+    where
+        V: 'a,
+    {
+        self.values()
+    }
 }
 
 impl<K, V> MapLike<K, V> for OrdMap<K, V>
@@ -80,5 +118,19 @@ where
 
     fn get_mut(&mut self, key: &K) -> Option<&mut V> {
         self.get_mut(key)
+    }
+
+    fn keys<'a>(&'a self) -> impl Iterator<Item = &'a K> + 'a
+    where
+        K: 'a,
+    {
+        self.keys()
+    }
+
+    fn values<'a>(&'a self) -> impl Iterator<Item = &'a V> + 'a
+    where
+        V: 'a,
+    {
+        self.values()
     }
 }
