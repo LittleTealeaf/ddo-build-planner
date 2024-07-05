@@ -134,12 +134,9 @@ impl From<ModalBonusMessage> for Message {
 }
 
 impl HandleMessage<ModalBonusMessage> for App {
-    fn handle_message(
-        &mut self,
-        message: ModalBonusMessage,
-    ) -> Command<<Self as Application>::Message> {
+    fn handle(&mut self, message: ModalBonusMessage) -> Command<<Self as Application>::Message> {
         let Some(modal) = &mut self.modal_bonus else {
-            return self.handle_message(error!("Modal does not exist"));
+            return self.handle(error!("Modal does not exist"));
         };
 
         match message {
@@ -147,7 +144,7 @@ impl HandleMessage<ModalBonusMessage> for App {
                 let command = modal
                     .on_submit
                     .clone()
-                    .map_or_else(Command::none, |message| self.handle_message(message));
+                    .map_or_else(Command::none, |message| self.handle(message));
                 self.modal_bonus = None;
                 command
             }
@@ -155,7 +152,7 @@ impl HandleMessage<ModalBonusMessage> for App {
                 let command = modal
                     .on_cancel
                     .clone()
-                    .map_or_else(Command::none, |message| self.handle_message(message));
+                    .map_or_else(Command::none, |message| self.handle(message));
                 self.modal_bonus = None;
                 command
             }
@@ -171,7 +168,7 @@ impl HandleMessage<ModalBonusMessage> for App {
             }
             ModalBonusMessage::OnAttributeSelected => {
                 let Some(modal_attribute) = &self.modal_attribute else {
-                    return self.handle_message(error!("Attribute Modal not open"));
+                    return self.handle(error!("Attribute Modal not open"));
                 };
 
                 modal.attribute = modal_attribute.get_attribute();
@@ -199,7 +196,7 @@ impl HandleMessage<ModalBonusMessage> for App {
             }
             ModalBonusMessage::OnValueSelected => {
                 let Some(modal_expression) = &self.modal_expression else {
-                    return self.handle_message(error!("Expression Modal not open"));
+                    return self.handle(error!("Expression Modal not open"));
                 };
 
                 modal.value = modal_expression.get_value();
@@ -216,12 +213,11 @@ impl HandleMessage<ModalBonusMessage> for App {
             }
             ModalBonusMessage::OnConditionSelected => {
                 let Some(modal_expression) = &self.modal_expression else {
-                    return self.handle_message(error!("Expression Modal not open"));
+                    return self.handle(error!("Expression Modal not open"));
                 };
 
                 let Some(condition) = modal_expression.get_condition() else {
-                    return self
-                        .handle_message(error!("Expression Modal did not return condition"));
+                    return self.handle(error!("Expression Modal did not return condition"));
                 };
 
                 modal.condition = Some(condition);

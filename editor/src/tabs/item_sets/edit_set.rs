@@ -56,7 +56,7 @@ impl From<ItemSetEditorMessage> for Message {
 }
 
 impl HandleMessage<ItemSetEditorMessage> for App {
-    fn handle_message(
+    fn handle(
         &mut self,
         message: ItemSetEditorMessage,
     ) -> Command<<Self as Application>::Message> {
@@ -106,15 +106,15 @@ impl HandleMessage<ItemSetEditorMessage> for App {
             }
             ItemSetEditorMessage::OnAddTierBonus(tier) => {
                 let Some(modal) = self.modal_bonus.as_ref() else {
-                    return self.handle_message(error!("Bonus Modal not open"));
+                    return self.handle(error!("Bonus Modal not open"));
                 };
 
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return self.handle_message(error!("Tier {tier} does not exist"));
+                    return self.handle(error!("Tier {tier} does not exist"));
                 };
 
                 let Some(bonus) = modal.get_bonus() else {
-                    return self.handle_message(error!("Bonus Modal returns no bonus"));
+                    return self.handle(error!("Bonus Modal returns no bonus"));
                 };
 
                 tier.push(bonus);
@@ -123,19 +123,19 @@ impl HandleMessage<ItemSetEditorMessage> for App {
             }
             ItemSetEditorMessage::OnEditTierBonus(tier, index) => {
                 let Some(modal) = self.modal_bonus.as_ref() else {
-                    return self.handle_message(error!("Bonus Modal not open"));
+                    return self.handle(error!("Bonus Modal not open"));
                 };
 
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return self.handle_message(error!("Tier {tier} does not exist"));
+                    return self.handle(error!("Tier {tier} does not exist"));
                 };
 
                 let Some(pointer) = tier.get_mut(index) else {
-                    return self.handle_message(error!("Index {index} does not exist"));
+                    return self.handle(error!("Index {index} does not exist"));
                 };
 
                 let Some(bonus) = modal.get_bonus() else {
-                    return self.handle_message(error!("Bonus Modal returns no bonus"));
+                    return self.handle(error!("Bonus Modal returns no bonus"));
                 };
 
                 *pointer = bonus;
@@ -144,7 +144,7 @@ impl HandleMessage<ItemSetEditorMessage> for App {
             }
             ItemSetEditorMessage::DeleteTierBonus(tier, index) => {
                 let Some(tier) = editor.item_set.bonuses_mut().get_mut(&tier) else {
-                    return self.handle_message(error!("Tier {tier} does not exist"));
+                    return self.handle(error!("Tier {tier} does not exist"));
                 };
 
                 tier.remove(index);

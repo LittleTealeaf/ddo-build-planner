@@ -52,11 +52,12 @@ impl Breakdowns {
         I: IntoIterator<Item = Bonus>,
     {
         let mut sources = HashSet::new();
-
-        let bonuses = bonuses.into_iter().map(|bonus| {
+        let add_to_sources = |bonus: Bonus| {
             sources.insert(bonus.source().clone());
             bonus
-        });
+        };
+
+        let bonuses = bonuses.into_iter().map(add_to_sources);
 
         let mut buffer = Buffer::new();
         buffer.insert_bonuses(bonuses);
@@ -143,10 +144,13 @@ impl Breakdowns {
 
             let attribute_bonuses = attribute.get_bonuses(value);
 
-            let dynamic_bonuses = (value > Decimal::ZERO)
-                .then(|| self.dynamic_bonuses.get(&attribute))
-                .unwrap_or_default()
-                .cloned();
+            let dynamic_bonuses = {
+                if value > Decimal::ZERO {
+                    self.dynamic_bonuses.get(&attribute).cloned()
+                } else {
+                    None
+                }
+            };
 
             let mut children = HashSet::new();
 

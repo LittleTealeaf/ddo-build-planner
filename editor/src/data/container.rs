@@ -76,7 +76,7 @@ where
     T: Debug + Clone + Sync + Send + Serialize + for<'de> Deserialize<'de> + 'static,
     DataContainerMessage<T>: Into<DataMessage>,
 {
-    fn handle_message(
+    fn handle(
         &mut self,
         message: DataContainerMessage<T>,
     ) -> Command<<App as Application>::Message> {
@@ -97,7 +97,7 @@ where
                 self.modified = false;
                 self.data = Some(data);
 
-                self.handle_message(DataContainerMessage::Modified)
+                self.handle(DataContainerMessage::Modified)
             }
             DataContainerMessage::Save => {
                 let Some(data) = &self.data else {
@@ -122,7 +122,7 @@ where
             }
             DataContainerMessage::Modified => {
                 self.modified = true;
-                self.handle_message(DataContainerMessage::<T>::Save)
+                self.handle(DataContainerMessage::<T>::Save)
             }
         }
     }

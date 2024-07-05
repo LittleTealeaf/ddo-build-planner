@@ -50,15 +50,15 @@ pub enum DataMessage {
 }
 
 impl HandleMessage<DataMessage> for App {
-    fn handle_message(&mut self, message: DataMessage) -> Command<<Self as Application>::Message> {
-        self.data.handle_message(message)
+    fn handle(&mut self, message: DataMessage) -> Command<<Self as Application>::Message> {
+        self.data.handle(message)
     }
 }
 
 impl HandleMessage<DataMessage, App> for Data {
-    fn handle_message(&mut self, message: DataMessage) -> Command<<App as Application>::Message> {
+    fn handle(&mut self, message: DataMessage) -> Command<<App as Application>::Message> {
         match message {
-            DataMessage::SetBonuses(message) => self.item_sets.handle_message(message),
+            DataMessage::SetBonuses(message) => self.item_sets.handle(message),
         }
     }
 }

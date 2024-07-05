@@ -51,8 +51,20 @@ pub fn get_base_bonuses() -> impl Iterator<Item = Bonus> {
         sneak_attack(),
         weapon_damage(),
         dodge(),
+        class_levels_to_total()
     )
     .map(|bonus| bonus.to_bonus(BonusSource::Base))
+}
+
+fn class_levels_to_total() -> impl Iterator<Item = BonusTemplate> {
+    PlayerClass::values().map(|player_class| {
+        BonusTemplate::new(
+            Attribute::TotalCharacterLevel,
+            BonusType::Stacking,
+            player_class,
+        )
+        .with_display_source(player_class)
+    })
 }
 
 fn ability_bonuses() -> impl IntoIterator<Item = BonusTemplate> {
@@ -197,8 +209,12 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
             SpellPoints::Scaled.to_value()
                 * (PlayerClass::FavoredSoul.to_value()
                     + PlayerClass::Sorcerer.to_value()
-                    + val!(20))
-                / val!(20),
+                    + (val!(20)
+                        .min(Attribute::TotalCharacterLevel.to_value())
+                        .max(Value::ONE)))
+                / val!(20)
+                    .min(Attribute::TotalCharacterLevel.to_value())
+                    .max(Value::ONE),
         ),
         BonusTemplate::new(
             SpellPoints::Total,

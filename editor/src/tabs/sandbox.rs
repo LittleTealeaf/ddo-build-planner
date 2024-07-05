@@ -93,7 +93,7 @@ impl From<TabSandboxMessage> for Message {
 }
 
 impl HandleMessage<TabSandboxMessage> for App {
-    fn handle_message(
+    fn handle(
         &mut self,
         message: TabSandboxMessage,
     ) -> Command<<Self as Application>::Message> {
@@ -128,7 +128,7 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::RefreshItemSets => {
                 let Some(item_sets) = self.data.item_sets.get() else {
-                    return self.handle_message(error!("Item sets not loaded"));
+                    return self.handle(error!("Item sets not loaded"));
                 };
 
                 let dynamic_bonuses = item_sets.iter().cloned().map(ItemSet::to_dynamic_bonus);
@@ -143,11 +143,11 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::OnTrackAttribute => {
                 let Some(modal) = &self.modal_attribute else {
-                    return self.handle_message(error!("Attribute modal not open"));
+                    return self.handle(error!("Attribute modal not open"));
                 };
 
                 let Some(attribute) = modal.get_attribute() else {
-                    return self.handle_message(error!("Attribute Modal has no selection"));
+                    return self.handle(error!("Attribute Modal has no selection"));
                 };
 
                 tab.breakdowns.track_attribute(attribute);
@@ -171,16 +171,16 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::OnBonusAdded => {
                 let Some(modal) = &self.modal_bonus else {
-                    return self.handle_message(error!("Bonus Modal is not open"));
+                    return self.handle(error!("Bonus Modal is not open"));
                 };
 
                 let Some(bonus) = modal.get_bonus() else {
-                    return self.handle_message(error!("Modal does not have valid bonus"));
+                    return self.handle(error!("Modal does not have valid bonus"));
                 };
 
                 tab.bonuses.push(bonus);
 
-                self.handle_message(Msg::UpdateBonuses)
+                self.handle(Msg::UpdateBonuses)
             }
             TabSandboxMessage::EditBonus(index) => {
                 let Some(bonus) = tab.bonuses.get(index) else {
@@ -196,20 +196,20 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::OnBonusEdited(index) => {
                 let Some(pointer) = tab.bonuses.get_mut(index) else {
-                    return self.handle_message(error!("Invalid Bonus Index {index}"));
+                    return self.handle(error!("Invalid Bonus Index {index}"));
                 };
 
                 let Some(modal) = &self.modal_bonus else {
-                    return self.handle_message(error!("Bonus Modal is not open"));
+                    return self.handle(error!("Bonus Modal is not open"));
                 };
 
                 let Some(bonus) = modal.get_bonus() else {
-                    return self.handle_message(error!("Modal does not have valid bonus"));
+                    return self.handle(error!("Modal does not have valid bonus"));
                 };
 
                 *pointer = bonus;
 
-                self.handle_message(Msg::UpdateBonuses)
+                self.handle(Msg::UpdateBonuses)
             }
             TabSandboxMessage::DeleteBonus(index) => {
                 tab.bonuses.remove(index);
@@ -225,11 +225,11 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 tab.breakdowns.insert_bonuses(bonuses);
 
-                self.handle_message(Msg::RefreshSliders)
+                self.handle(Msg::RefreshSliders)
             }
             TabSandboxMessage::SetToggle(toggle, value) => {
                 tab.breakdowns.insert_bonus(toggle.toggle_bonus(value));
-                self.handle_message(Msg::RefreshToggles)
+                self.handle(Msg::RefreshToggles)
             }
             TabSandboxMessage::RefreshToggles => {
                 tab.toggles = tab.breakdowns.get_active_toggles().collect();
@@ -237,10 +237,10 @@ impl HandleMessage<TabSandboxMessage> for App {
             }
             TabSandboxMessage::SetSider(slider, value) => {
                 let Some(value) = Decimal::from_f32(value) else {
-                    return self.handle_message(error!("Could not parse value {value}"));
+                    return self.handle(error!("Could not parse value {value}"));
                 };
                 tab.breakdowns.insert_bonus(slider.slider_bonus(value));
-                self.handle_message(TabSandboxMessage::RefreshSliders)
+                self.handle(TabSandboxMessage::RefreshSliders)
             }
             TabSandboxMessage::RefreshSliders => {
                 let values = tab.breakdowns.get_active_sliders().collect_vec();
@@ -262,7 +262,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                 let values = match result {
                     Ok(values) => values,
                     Err(error) => {
-                        return self.handle_message(error!("Error in converting values: {error}"))
+                        return self.handle(error!("Error in converting values: {error}"))
                     }
                 };
 

@@ -151,12 +151,12 @@ impl From<ModalAttributeMessage> for Message {
 }
 
 impl HandleMessage<ModalAttributeMessage> for App {
-    fn handle_message(
+    fn handle(
         &mut self,
         message: ModalAttributeMessage,
     ) -> Command<<Self as Application>::Message> {
         let Some(sel) = &mut self.modal_attribute else {
-            return self.handle_message(error!("Modal does not exist"));
+            return self.handle(error!("Modal does not exist"));
         };
 
         match message {
@@ -172,7 +172,7 @@ impl HandleMessage<ModalAttributeMessage> for App {
                 let command = sel
                     .on_submit
                     .clone()
-                    .map_or_else(Command::none, |message| self.handle_message(message));
+                    .map_or_else(Command::none, |message| self.handle(message));
                 self.modal_attribute = None;
                 command
             }
@@ -180,7 +180,7 @@ impl HandleMessage<ModalAttributeMessage> for App {
                 let command = sel
                     .on_cancel
                     .clone()
-                    .map_or_else(Command::none, |message| self.handle_message(message));
+                    .map_or_else(Command::none, |message| self.handle(message));
                 self.modal_attribute = None;
                 command
             }

@@ -85,7 +85,7 @@ impl Application for App {
         };
 
         let command = Command::batch([
-            editor.handle_message(DataMessage::SetBonuses(DataContainerMessage::Load)),
+            editor.handle(DataMessage::SetBonuses(DataContainerMessage::Load)),
             load_font(),
         ]);
 
@@ -97,7 +97,7 @@ impl Application for App {
     }
 
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
-        self.handle_message(message)
+        self.handle(message)
     }
 
     fn view(&self) -> Element<'_, Self::Message, Self::Theme, Renderer> {
@@ -118,10 +118,10 @@ impl Application for App {
 }
 
 impl HandleMessage<Message> for App {
-    fn handle_message(&mut self, message: Message) -> Command<<Self as Application>::Message> {
+    fn handle(&mut self, message: Message) -> Command<<Self as Application>::Message> {
         match message {
             Message::None => Command::none(),
-            Message::TabSandbox(message) => self.handle_message(message),
+            Message::TabSandbox(message) => self.handle(message),
             Message::SetTheme(theme) => {
                 self.theme = theme;
                 Command::none()
@@ -130,15 +130,15 @@ impl HandleMessage<Message> for App {
                 self.icons_loaded = true;
                 Command::none()
             }
-            Message::Data(message) => self.handle_message(message),
+            Message::Data(message) => self.handle(message),
             Message::ChangeTab(tab) => {
                 self.selected_tab = tab;
                 Command::none()
             }
-            Message::TabSetBonuses(message) => self.handle_message(message),
-            Message::ModalAttribute(message) => self.handle_message(message),
-            Message::ModalExpression(message) => self.handle_message(message),
-            Message::ModalBonus(message) => self.handle_message(message),
+            Message::TabSetBonuses(message) => self.handle(message),
+            Message::ModalAttribute(message) => self.handle(message),
+            Message::ModalExpression(message) => self.handle(message),
+            Message::ModalBonus(message) => self.handle(message),
             Message::DebugOpenAttribute => {
                 self.modal_attribute = Some(
                     self.select_attribute()
@@ -195,7 +195,7 @@ impl HandleMessage<Message> for App {
 
                 Command::none()
             }
-            Message::Log(log) => self.handle_message(log),
+            Message::Log(log) => self.handle(log),
         }
     }
 }
@@ -207,7 +207,7 @@ impl From<Log> for Message {
 }
 
 impl HandleMessage<Log> for App {
-    fn handle_message(&mut self, message: Log) -> Command<<Self as Application>::Message> {
+    fn handle(&mut self, message: Log) -> Command<<Self as Application>::Message> {
         println!("{message}");
 
         if matches!(message.severity, Severity::Crash) {

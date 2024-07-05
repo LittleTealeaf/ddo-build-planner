@@ -158,12 +158,10 @@ impl Breakdowns {
     pub(super) fn build_breakdown(&mut self, attribute: &Attribute) -> AttributeBreakdown {
         let value = self.evaluate_attribute(attribute);
 
-        let mut attribute_bonuses = self
-            .bonuses
-            .get(attribute)
-            .cloned()
+        let bonuses = self.bonuses.get(attribute).cloned().unwrap_or_default();
+
+        let mut bonus_map = bonuses
             .into_iter()
-            .flatten()
             .map(|bonus| {
                 (
                     *bonus.bonus_type(),
@@ -176,34 +174,10 @@ impl Breakdowns {
             })
             .into_grouped_hash_map();
 
-        let (stacking, disabled_stacking) = attribute_bonuses
-            .remove(&BonusType::Stacking)
-            .unwrap_or_default()
-            .into_iter()
-            .partition(BonusEntry::condition);
+        let stacking_bonuses = bonus_map.remove(&BonusType::Stacking).into_iter().flatten();
+        let (stacking, disabled_stacking) = stacking_bonuses.partition(BonusEntry::condition);
 
-        let bonuses = attribute_bonuses
-            .into_iter()
-            .map(|(bonus_type, bonuses)| {
-                let (mut bonuses, disabled): (Vec<_>, Vec<_>) =
-                    bonuses.into_iter().partition(BonusEntry::condition);
-
-                let max = bonuses
-                    .iter()
-                    .enumerate()
-                    .max_by_key(|(_, bonus)| bonus.value)
-                    .map(|(index, _)| index);
-
-                let applied = max.map(|index| bonuses.swap_remove(index));
-
-                BonusTypeEntry {
-                    overwritten: bonuses,
-                    bonus_type,
-                    applied,
-                    disabled,
-                }
-            })
-            .collect();
+        let bonuses = bonus_map.into_iter().map(map_bonus_type_entries).collect();
 
         AttributeBreakdown {
             stacking,
@@ -211,5 +185,25 @@ impl Breakdowns {
             bonuses,
             value,
         }
+    }
+}
+
+fn map_bonus_type_entries((bonus_type, bonuses): (BonusType, Vec<BonusEntry>)) -> BonusTypeEntry {
+    let (mut bonuses, disabled): (Vec<_>, Vec<_>) =
+        bonuses.into_iter().partition(BonusEntry::condition);
+
+    let max = bonuses
+        .iter()
+        .enumerate()
+        .max_by_key(|(_, bonus)| bonus.value)
+        .map(|(index, _)| index);
+
+    let applied = max.map(|index| bonuses.swap_remove(index));
+
+    BonusTypeEntry {
+        overwritten: bonuses,
+        bonus_type,
+        applied,
+        disabled,
     }
 }

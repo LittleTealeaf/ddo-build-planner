@@ -292,7 +292,7 @@ impl From<(usize, ModalExpressionInternalMessage)> for Message {
 }
 
 impl HandleMessage<ModalExpressionMessage> for App {
-    fn handle_message(
+    fn handle(
         &mut self,
         message: ModalExpressionMessage,
     ) -> Command<<Self as Application>::Message> {
@@ -305,7 +305,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                 let command = modal
                     .on_submit
                     .clone()
-                    .map_or_else(Command::none, |message| self.handle_message(message));
+                    .map_or_else(Command::none, |message| self.handle(message));
                 self.modal_expression = None;
                 command
             }
@@ -313,7 +313,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                 let command = modal
                     .on_cancel
                     .clone()
-                    .map_or_else(Command::none, |message| self.handle_message(message));
+                    .map_or_else(Command::none, |message| self.handle(message));
                 self.modal_expression = None;
                 command
             }

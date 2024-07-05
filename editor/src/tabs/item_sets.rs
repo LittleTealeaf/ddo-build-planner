@@ -38,7 +38,7 @@ impl From<TabSetBonusesMessage> for Message {
 }
 
 impl HandleMessage<TabSetBonusesMessage> for App {
-    fn handle_message(
+    fn handle(
         &mut self,
         message: TabSetBonusesMessage,
     ) -> Command<<Self as Application>::Message> {
@@ -56,11 +56,11 @@ impl HandleMessage<TabSetBonusesMessage> for App {
             }
             TabSetBonusesMessage::Edit(index) => {
                 let Some(item_sets) = self.data.item_sets.get() else {
-                    return self.handle_message(error!("Item Sets Not Loaded"));
+                    return self.handle(error!("Item Sets Not Loaded"));
                 };
 
                 let Some(set) = item_sets.get(index) else {
-                    return self.handle_message(error!("Invalid Index: {index}"));
+                    return self.handle(error!("Invalid Index: {index}"));
                 };
 
                 self.tab_item_sets.editing = Some(ItemSetEditor::new(set.clone(), Some(index)));
@@ -71,19 +71,19 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                 self.tab_item_sets.editing = None;
                 Command::none()
             }
-            TabSetBonusesMessage::Editing(message) => self.handle_message(message),
+            TabSetBonusesMessage::Editing(message) => self.handle(message),
             TabSetBonusesMessage::SaveEdit => {
                 let Some(item_sets) = self.data.item_sets.get_mut() else {
-                    return self.handle_message(error!("Item Sets Not Loaded"));
+                    return self.handle(error!("Item Sets Not Loaded"));
                 };
 
                 let Some(editor) = &self.tab_item_sets.editing else {
-                    return self.handle_message(error!("No Editing Item Sets Open"));
+                    return self.handle(error!("No Editing Item Sets Open"));
                 };
 
                 if let Some(index) = editor.index {
                     let Some(pointer) = item_sets.get_mut(index) else {
-                        return self.handle_message(error!("Invalid Index: {index}"));
+                        return self.handle(error!("Invalid Index: {index}"));
                     };
 
                     *pointer = editor.item_set.clone();
@@ -92,8 +92,8 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                 }
 
                 Command::batch([
-                    self.handle_message(DataMessage::SetBonuses(DataContainerMessage::Modified)),
-                    self.handle_message(TabSetBonusesMessage::CancelEdit),
+                    self.handle(DataMessage::SetBonuses(DataContainerMessage::Modified)),
+                    self.handle(TabSetBonusesMessage::CancelEdit),
                 ])
             }
         }

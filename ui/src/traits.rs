@@ -20,7 +20,7 @@ where
     A: Application + Sized,
 {
     /// Handles the incoming message
-    fn handle_message(&mut self, message: T) -> Command<A::Message>;
+    fn handle(&mut self, message: T) -> Command<A::Message>;
 }
 
 /// Adds the `message` method to be used to execute a command that immediately returns some message
