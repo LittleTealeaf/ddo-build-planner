@@ -170,6 +170,9 @@ impl<'a> Snapshot<'a> {
         }
 
         let result = match condition {
+            Condition::GreaterEqualTo(a, b)  => {
+                self.evaluate_value(a) >= self.evaluate_value(b)
+            }
             Condition::Constant(value) => return *value,
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
