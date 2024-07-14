@@ -1,4 +1,5 @@
-use std::{ops::Not, string::ToString};
+use core::ops::Not;
+use std::string::ToString;
 
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
@@ -176,7 +177,7 @@ impl ModalAttribute {
         self.attributes
             .iter()
             .enumerate()
-            .find_map(|(index, a)| a.eq(&attribute).then_some(index))
+            .find_map(|(index, a)| a.eq(attribute).then_some(index))
     }
 }
 
@@ -214,10 +215,10 @@ impl HandleMessage<ModalAttributeMessage> for App {
                     sel.selected.clear();
                 }
 
-                if !sel.selected.contains(&index) {
-                    sel.selected.insert(index);
-                } else {
+                if sel.selected.contains(&index) {
                     sel.selected.remove(&index);
+                } else {
+                    sel.selected.insert(index);
                 }
 
                 Command::none()
