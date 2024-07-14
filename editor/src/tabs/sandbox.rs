@@ -160,8 +160,9 @@ impl HandleMessage<TabSandboxMessage> for App {
                     return self.handle_message(error!("Attribute modal not open"));
                 };
 
-                let Some(attributes) = modal.get_attributes() else {
-                    return self.handle_message(error!("Attribute Modal has no selection"));
+                let attributes = match modal.get_attributes() {
+                    Ok(attributes) => attributes,
+                    Err(err) => return Command::message(error!("{err}")),
                 };
 
                 tab.breakdowns.clear_breakdowns();

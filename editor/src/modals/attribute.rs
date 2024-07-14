@@ -1,4 +1,5 @@
-use std::string::ToString;
+use core::fmt;
+use std::{error::Error, string::ToString};
 
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
@@ -31,6 +32,27 @@ impl App {
         ModalAttribute::new(self.data.generate_attributes())
     }
 }
+
+#[derive(Clone, Debug)]
+pub enum ModalAttributeError {
+    InvalidIndex(usize),
+    NotMultiselected,
+    NotSingle,
+    NoSelection,
+}
+
+impl fmt::Display for ModalAttributeError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::InvalidIndex(index) => write!(f, "Invalid Attribute Index: {index}"),
+            Self::NotMultiselected => write!(f, "Selector is not multiselector"),
+            Self::NotSingle => write!(f, "Selector is not single selector"),
+            Self::NoSelection => write!(f, "No Attribute Selected"),
+        }
+    }
+}
+
+impl Error for ModalAttributeError {}
 
 impl ModalAttribute {
     fn new<I>(attributes: I) -> Self
@@ -171,21 +193,34 @@ impl ModalAttribute {
         }
     }
 
-    pub fn get_attribute(&self) -> Option<Attribute> {
-        (!self.multiselect).then(|| {
-            let index = self.selected.get_min()?;
-            self.attributes.get(*index).cloned()
-        })?
+    pub fn get_attribute(&self) -> Result<Attribute, ModalAttributeError> {
+        if self.multiselect {
+            return Err(ModalAttributeError::NotSingle);
+        }
+
+        let Some(index) = self.selected.get_min() else {
+            return Err(ModalAttributeError::NoSelection);
+        };
+
+        let Some(attribute) = self.attributes.get(*index) else {
+            return Err(ModalAttributeError::InvalidIndex(*index));
+        };
+
+        Ok(attribute.clone())
     }
 
-    pub fn get_attributes(&self) -> Option<Vec<Attribute>> {
-        (self.multiselect).then(|| {
-            self.selected
-                .iter()
-                .filter_map(|index| self.attributes.get(*index))
-                .cloned()
-                .collect()
-        })
+    pub fn get_attributes(
+        &self,
+    ) -> Result<impl Iterator<Item = Attribute> + '_, ModalAttributeError> {
+        if !self.multiselect {
+            return Err(ModalAttributeError::NotMultiselected);
+        };
+
+        Ok(self
+            .selected
+            .iter()
+            .filter_map(|index| self.attributes.get(*index))
+            .cloned())
     }
 }
 

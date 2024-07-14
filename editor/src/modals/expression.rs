@@ -346,7 +346,7 @@ impl HandleMessage<ModalExpressionMessage> for App {
                     if let (Some(selector), Some(attribute_selector)) =
                         (modal.selectors.get_mut(&id), &self.modal_attribute)
                     {
-                        selector.attribute = attribute_selector.get_attribute();
+                        selector.attribute = attribute_selector.get_attribute().ok();
                         modal.update_cached();
                     }
 

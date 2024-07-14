@@ -174,7 +174,7 @@ impl HandleMessage<ModalBonusMessage> for App {
                     return self.handle_message(error!("Attribute Modal not open"));
                 };
 
-                modal.attribute = modal_attribute.get_attribute();
+                modal.attribute = modal_attribute.get_attribute().ok();
 
                 Command::none()
             }

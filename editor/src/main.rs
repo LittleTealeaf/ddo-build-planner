@@ -173,7 +173,7 @@ impl HandleMessage<Message> for App {
             }
             Message::DebugSubmit => {
                 if let Some(attr) = &self.modal_attribute {
-                    if let Some(attr) = attr.get_attribute() {
+                    if let Ok(attr) = attr.get_attribute() {
                         println!("{attr}");
                     }
                 }
