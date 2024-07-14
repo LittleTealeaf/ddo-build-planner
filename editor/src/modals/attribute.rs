@@ -73,7 +73,11 @@ impl ModalAttribute {
     where
         A: Into<Attribute>,
     {
-        self.select_all(attribute)
+        if let Some(attribute) = attribute {
+            self.select(attribute)
+        } else {
+            self
+        }
     }
 
     pub fn multiselect(self, enabled: bool) -> Self {
@@ -113,6 +117,17 @@ impl ModalAttribute {
         Self {
             title: Some(title.into()),
             ..self
+        }
+    }
+
+    pub fn title_maybe<S>(self, title: Option<S>) -> Self
+    where
+        S: Into<String>,
+    {
+        if let Some(title) = title {
+            self.title(title)
+        } else {
+            self
         }
     }
 
