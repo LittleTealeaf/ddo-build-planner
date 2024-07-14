@@ -1,4 +1,3 @@
-use core::ops::Not;
 use std::string::ToString;
 
 use builder::attribute::Attribute;
@@ -265,9 +264,7 @@ impl HandleView<App> for ModalAttribute {
                 button(text("Submit"))
                     .style(theme::Button::Primary)
                     .on_press_maybe(
-                        self.selected
-                            .is_empty()
-                            .not()
+                        (!self.selected.is_empty() || self.multiselect)
                             .then_some(ModalAttributeMessage::Submit.into())
                     )
             ),
