@@ -141,8 +141,18 @@ impl HandleMessage<TabSandboxMessage> for App {
                 Command::none()
             }
             TabSandboxMessage::OpenTrackAttributePrompt => {
-                self.modal_attribute =
-                    Some(self.select_attribute().on_submit(Msg::OnTrackAttribute));
+                let tracked = tab
+                    .breakdowns
+                    .tracked_attributes()
+                    .cloned()
+                    .collect::<Vec<_>>();
+
+                self.modal_attribute = Some(
+                    self.select_attribute()
+                        .on_submit(Msg::OnTrackAttribute)
+                        .multiselect(true)
+                        .select_all(tracked),
+                );
                 Command::none()
             }
             TabSandboxMessage::OnTrackAttribute => {
@@ -150,11 +160,15 @@ impl HandleMessage<TabSandboxMessage> for App {
                     return self.handle_message(error!("Attribute modal not open"));
                 };
 
-                let Some(attribute) = modal.get_attribute() else {
+                let Some(attributes) = modal.get_attributes() else {
                     return self.handle_message(error!("Attribute Modal has no selection"));
                 };
 
-                tab.breakdowns.track_attribute(attribute);
+                tab.breakdowns.clear_breakdowns();
+
+                for attribute in attributes {
+                    tab.breakdowns.track_attribute(attribute);
+                }
 
                 Command::none()
             }
