@@ -73,11 +73,7 @@ impl ModalAttribute {
     where
         A: Into<Attribute>,
     {
-        if let Some(attribute) = attribute {
-            self.select(attribute)
-        } else {
-            self
-        }
+        self.select_all(attribute)
     }
 
     pub fn multiselect(self, enabled: bool) -> Self {
@@ -101,6 +97,13 @@ impl ModalAttribute {
         self.selected.extend(indexes);
 
         self
+    }
+
+    pub fn clear_selected(self) -> Self {
+        Self {
+            selected: OrdSet::new(),
+            ..self
+        }
     }
 
     pub fn title<S>(self, title: S) -> Self
