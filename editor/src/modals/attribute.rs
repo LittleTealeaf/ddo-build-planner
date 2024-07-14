@@ -1,4 +1,4 @@
-use std::string::ToString;
+use std::{ops::Not, string::ToString};
 
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;
@@ -7,6 +7,7 @@ use iced::{
     widget::{button, column, container, row, scrollable, text, text_input},
     Application, Command, Element, Length, Renderer,
 };
+use im::OrdSet;
 use ui::{error, HandleMessage, HandleView};
 use utils::from_into::FromInto;
 
@@ -15,8 +16,7 @@ use crate::{App, Message};
 #[derive(Clone, Debug)]
 pub struct ModalAttribute {
     attributes: Vec<Attribute>,
-// TODO: change the Vec to an OrdSet
-    selected: Vec<usize>,
+    selected: OrdSet<usize>,
     multiselect: bool,
     title: Option<String>,
     filter: String,
@@ -42,7 +42,7 @@ impl ModalAttribute {
 
         Self {
             attributes,
-            selected: Vec::new(),
+            selected: OrdSet::new(),
             title: None,
             multiselect: false,
             filter: String::new(),
@@ -58,7 +58,7 @@ impl ModalAttribute {
         let attribute = Attribute::from_into(attribute);
         if self.multiselect {
             if let Some(index) = self.lookup(&attribute) {
-                self.selected.push(index);
+                self.selected.insert(index);
             }
             self
         } else {
@@ -92,16 +92,13 @@ impl ModalAttribute {
         I: IntoIterator<Item = A>,
         A: Into<Attribute>,
     {
+        let indexes = attributes
+            .into_iter()
+            .map(Into::into)
+            .filter_map(|a| self.lookup(&a))
+            .collect::<Vec<_>>();
 
-        let indexes = 
-            attributes
-                .into_iter()
-                .map(Into::into)
-                .filter_map(|a| self.lookup(&a)).collect::<Vec<_>>();
-
-        self.selected.extend(
-            indexes
-        );
+        self.selected.extend(indexes);
 
         self
     }
@@ -157,7 +154,20 @@ impl ModalAttribute {
     }
 
     pub fn get_attribute(&self) -> Option<Attribute> {
-        self.attributes.get(*self.selected.get(0)?).cloned()
+        (!self.multiselect).then(|| {
+            let index = self.selected.get_min()?;
+            self.attributes.get(*index).cloned()
+        })?
+    }
+
+    pub fn get_attributes(&self) -> Option<Vec<Attribute>> {
+        (self.multiselect).then(|| {
+            self.selected
+                .iter()
+                .filter_map(|index| self.attributes.get(*index))
+                .cloned()
+                .collect()
+        })
     }
 }
 
@@ -200,7 +210,16 @@ impl HandleMessage<ModalAttributeMessage> for App {
                 Command::none()
             }
             ModalAttributeMessage::Select(index) => {
-                sel.selected = Some(index);
+                if !sel.multiselect {
+                    sel.selected.clear();
+                }
+
+                if !sel.selected.contains(&index) {
+                    sel.selected.insert(index);
+                } else {
+                    sel.selected.remove(&index);
+                }
+
                 Command::none()
             }
             ModalAttributeMessage::Submit => {
@@ -220,7 +239,7 @@ impl HandleMessage<ModalAttributeMessage> for App {
                 command
             }
             ModalAttributeMessage::Clear => {
-                sel.selected = None;
+                sel.selected.clear();
                 Command::none()
             }
         }
@@ -233,7 +252,6 @@ impl HandleView<App> for ModalAttribute {
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         let filter = self.filter.to_lowercase();
-        let selected = self.selected.unwrap_or(self.attributes.len());
 
         column!(
             row!(
@@ -247,7 +265,8 @@ impl HandleView<App> for ModalAttribute {
                     .style(theme::Button::Primary)
                     .on_press_maybe(
                         self.selected
-                            .is_some()
+                            .is_empty()
+                            .not()
                             .then_some(ModalAttributeMessage::Submit.into())
                     )
             ),
@@ -261,7 +280,7 @@ impl HandleView<App> for ModalAttribute {
                         container(
                             button(text(attr))
                                 .on_press(ModalAttributeMessage::Select(index).into())
-                                .style(if selected == index {
+                                .style(if self.selected.contains(&index) {
                                     theme::Button::Primary
                                 } else {
                                     theme::Button::Text
