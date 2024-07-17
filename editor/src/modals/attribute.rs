@@ -52,6 +52,7 @@ impl fmt::Display for ModalAttributeError {
 
 impl Error for ModalAttributeError {}
 
+/// Constructor Methods
 impl ModalAttribute {
     fn new<I>(attributes: I) -> Self
     where
@@ -151,6 +152,13 @@ impl ModalAttribute {
         }
     }
 
+    pub fn clear_title(self) -> Self {
+        Self {
+            title: None,
+            ..self
+        }
+    }
+
     pub fn on_submit<M>(self, message: M) -> Self
     where
         M: Into<Message>,
@@ -165,8 +173,16 @@ impl ModalAttribute {
     where
         M: Into<Message>,
     {
+        if let Some(message) = message {
+            self.on_submit(message)
+        } else {
+            self
+        }
+    }
+
+    pub fn clear_on_submit(self) -> Self {
         Self {
-            on_submit: message.map(Into::into),
+            on_submit: None,
             ..self
         }
     }
@@ -185,12 +201,23 @@ impl ModalAttribute {
     where
         M: Into<Message>,
     {
-        Self {
-            on_cancel: message.map(Into::into),
-            ..self
+        if let Some(message) = message {
+            self.on_cancel(message)
+        } else {
+            self
         }
     }
 
+    pub fn clear_on_cancel(self) -> Self {
+        Self {
+            on_cancel: None,
+            ..self
+        }
+    }
+}
+
+/// Methods for Accessing Information
+impl ModalAttribute {
     pub fn get_attribute(&self) -> Result<Attribute, ModalAttributeError> {
         if self.multiselect {
             return Err(ModalAttributeError::NotSingle);
