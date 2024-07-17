@@ -322,8 +322,8 @@ impl HandleView<App> for ModalAttribute {
             scrollable(column(
                 self.attributes
                     .iter()
+                    .map(ToString::to_string)
                     .enumerate()
-                    .map(|(index, attribute)| (index, attribute.to_string()))
                     .filter(|(_, str)| matches(&filter, str.to_lowercase().as_ref()))
                     .map(|(index, attr)| {
                         container(
