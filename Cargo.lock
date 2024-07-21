@@ -737,6 +737,7 @@ dependencies = [
  "fuzzy-filter",
  "iced",
  "iced_aw",
+ "im",
  "itertools",
  "roc",
  "ron",
