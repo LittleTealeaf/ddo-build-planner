@@ -92,6 +92,6 @@ where
 
 impl StaticValues for Slider {
     fn values() -> impl Iterator<Item = Self> {
-        [Self::DeificWarding].into_iter()
+        [Self::DeificWarding, Self::Ascendency, Self::ArchersFocus].into_iter()
     }
 }
