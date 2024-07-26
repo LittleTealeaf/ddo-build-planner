@@ -26,6 +26,27 @@ pub enum Slider {
     /// Archer's Focus
     #[serde(rename = "af", alias = "ArchersFocus")]
     ArchersFocus,
+    /// Source from the Angel of Vengeance tree
+    #[serde(rename = "avs", alias = "Scourge")]
+    Scourge,
+    /// Optimism from the Beacon of Hope tree
+    #[serde(rename = "bho", alias = "Optimism")]
+    Optimism,
+    /// Erosion from the Earth Savant tree
+    #[serde(rename = "ese", alias = "Erosion")]
+    Erosion,
+    /// Conflagration from the Fire Savant tree
+    #[serde(rename = "fsc", alias = "Conflagration")]
+    Conflagration,
+    /// Hoarfrost from the Water Savant tree
+    #[serde(rename = "wsh", alias = "Hoarfrost")]
+    Hoarfrost,
+    /// Alternating Current from the Air Savant tree
+    #[serde(rename = "asa", alias = "AlternatingCurrent")]
+    AlternatingCurrent,
+    /// Weapon Bond from the Occult Slayer tree
+    #[serde(rename = "osw", alias = "WeaponBond")]
+    WeaponBond,
 }
 
 impl Slider {
@@ -33,8 +54,13 @@ impl Slider {
     #[must_use]
     pub const fn base_stack_max(&self) -> Decimal {
         match self {
-            Self::DeificWarding => dec!(10),
+            Self::Erosion | Self::Conflagration | Self::Hoarfrost | Self::AlternatingCurrent => {
+                dec!(1)
+            }
+            Self::Scourge => dec!(3),
+            Self::DeificWarding | Self::Optimism => dec!(10),
             Self::ArchersFocus | Self::Ascendency => dec!(15),
+            Self::WeaponBond => dec!(200),
         }
     }
 
@@ -59,6 +85,13 @@ impl fmt::Display for Slider {
             Self::DeificWarding => write!(f, "Deific Warding"),
             Self::Ascendency => write!(f, "Ascendency"),
             Self::ArchersFocus => write!(f, "Archer's Focus"),
+            Self::Scourge => write!(f, "Scourge"),
+            Self::Optimism => write!(f, "Optimism"),
+            Self::Erosion => write!(f, "Erosion"),
+            Self::Conflagration => write!(f, "Conflagration"),
+            Self::Hoarfrost => write!(f, "Hoarfrost"),
+            Self::AlternatingCurrent => write!(f, "Alternating Current"),
+            Self::WeaponBond => write!(f, "Weapon Bond"),
         }
     }
 }
@@ -92,6 +125,18 @@ where
 
 impl StaticValues for Slider {
     fn values() -> impl Iterator<Item = Self> {
-        [Self::DeificWarding, Self::Ascendency, Self::ArchersFocus].into_iter()
+        [
+            Self::DeificWarding,
+            Self::Ascendency,
+            Self::ArchersFocus,
+            Self::Scourge,
+            Self::Optimism,
+            Self::Conflagration,
+            Self::Erosion,
+            Self::Hoarfrost,
+            Self::AlternatingCurrent,
+            Self::WeaponBond,
+        ]
+        .into_iter()
     }
 }
