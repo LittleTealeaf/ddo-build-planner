@@ -19,11 +19,10 @@ dead_code = "allow"
 missing_docs = "warn"
 
 [workspace.lints.clippy]
-pedantic = "warn"
-complexity = "warn"
-nursery = "warn"
+pedantic = {level = "warn", priority = -1}
+complexity = {level = "warn", priority = -1}
+nursery = {level = "warn", priority = -1}
 
-absolute_paths = "warn"
 assertions_on_result_states = "warn"
 clone_on_ref_ptr = "warn"
 dbg_macro = "warn"
@@ -49,6 +48,7 @@ unneeded_field_pattern = "warn"
 unwrap_in_result = "warn"
 wildcard_dependencies = "warn"
 redundant_feature_names = "warn"
+renamed_function_params = "warn"
 
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
