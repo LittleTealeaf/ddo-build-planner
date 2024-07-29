@@ -6,12 +6,12 @@ use core::{
 use builder::{
     attribute::Attribute,
     bonus::{BonusSource, BonusTemplate},
-    breakdowns::Breakdowns,
+    breakdowns::{Breakdowns, DiceStrategy},
     equipment::set_bonus::ItemSet,
     types::{self, toggle::Toggle},
 };
 use iced::{
-    widget::{button, checkbox, column, container, row, scrollable, slider, text},
+    widget::{button, checkbox, column, container, pick_list, row, scrollable, slider, text},
     Application, Command, Element, Length, Renderer,
 };
 use iced_aw::{TabBar, TabLabel};
@@ -82,6 +82,7 @@ pub enum TabSandboxMessage {
     SetTab(TabSandboxTab),
     SetSider(SliderAttribute, f32),
     RefreshSliders,
+    SetDiceStrategy(DiceStrategy),
 }
 
 type Msg = TabSandboxMessage;
@@ -100,6 +101,10 @@ impl HandleMessage<TabSandboxMessage> for App {
         let tab = &mut self.tab_sandbox;
 
         match message {
+            TabSandboxMessage::SetDiceStrategy(strategy) => {
+                tab.breakdowns.set_dice_strategy(strategy);
+                Command::none()
+            }
             TabSandboxMessage::SetTab(t) => {
                 tab.tab = t;
                 Command::none()
@@ -299,7 +304,15 @@ impl HandleView<App> for TabSandbox {
         _app: &'a App,
     ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         column!(
-            row!(button(text("Reload")).on_press(Msg::NewBreakdowns.into())),
+            row!(
+                button(text("Reload")).on_press(Msg::NewBreakdowns.into()),
+                text("   Dice Strategy: "),
+                pick_list(
+                    DiceStrategy::VALUES,
+                    Some(self.breakdowns.dice_strategy()),
+                    |strategy| TabSandboxMessage::SetDiceStrategy(strategy).into()
+                )
+            ),
             [
                 TabSandboxTab::Bonuses,
                 TabSandboxTab::Toggles,

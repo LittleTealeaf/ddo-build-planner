@@ -7,6 +7,7 @@ mod dynamic;
 mod evaluation;
 mod inserting;
 
+use core::fmt::{self, Display};
 use std::collections::HashMap;
 
 use im::OrdSet;
@@ -46,6 +47,21 @@ pub enum DiceStrategy {
     Average,
     /// Dice will always roll the highest value possible
     Maximum,
+}
+
+impl DiceStrategy {
+    /// All of the possible dice strategies
+    pub const VALUES: [Self; 3] = [Self::Minimum, Self::Average, Self::Maximum];
+}
+
+impl Display for DiceStrategy {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Minimum => write!(f, "Minimum"),
+            Self::Average => write!(f, "Average"),
+            Self::Maximum => write!(f, "Maximum"),
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
