@@ -1,7 +1,7 @@
 use core::fmt;
 use core::{
     fmt::Display,
-    ops::{BitAnd, BitOr, BitXor, Not},
+    ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not},
 };
 use std::collections::HashSet;
 
@@ -263,6 +263,12 @@ impl BitAnd for Condition {
     }
 }
 
+impl BitAndAssign for Condition {
+    fn bitand_assign(&mut self, rhs: Self) {
+        *self = self.clone().bitand(rhs);
+    }
+}
+
 impl BitOr for Condition {
     type Output = Self;
 
@@ -271,10 +277,22 @@ impl BitOr for Condition {
     }
 }
 
+impl BitOrAssign for Condition {
+    fn bitor_assign(&mut self, rhs: Self) {
+        *self = self.clone().bitor(rhs);
+    }
+}
+
 impl BitXor for Condition {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self::Output {
         self.xor(rhs)
+    }
+}
+
+impl BitXorAssign for Condition {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        *self = self.clone().bitxor(rhs);
     }
 }
 

@@ -2,7 +2,7 @@ use core::fmt;
 use core::{
     fmt::Display,
     iter::{Product, Sum},
-    ops::{Add, Div, Mul, Neg, Rem, Sub},
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign},
 };
 
 use std::collections::HashSet;
@@ -505,11 +505,23 @@ impl Add for Value {
     }
 }
 
+impl AddAssign for Value {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = self.clone().add(rhs);
+    }
+}
+
 impl Sub for Value {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         Self::Sub(Box::new(self), Box::new(rhs))
+    }
+}
+
+impl SubAssign for Value {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = self.clone().sub(rhs);
     }
 }
 
@@ -521,6 +533,12 @@ impl Mul for Value {
     }
 }
 
+impl MulAssign for Value {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = self.clone().mul(rhs);
+    }
+}
+
 impl Div for Value {
     type Output = Self;
 
@@ -529,11 +547,23 @@ impl Div for Value {
     }
 }
 
+impl DivAssign for Value {
+    fn div_assign(&mut self, rhs: Self) {
+        *self = self.clone().div(rhs);
+    }
+}
+
 impl Rem for Value {
     type Output = Self;
 
     fn rem(self, rhs: Self) -> Self::Output {
         Self::Rem(Box::new(self), Box::new(rhs))
+    }
+}
+
+impl RemAssign for Value {
+    fn rem_assign(&mut self, rhs: Self) {
+        *self = self.clone().rem(rhs);
     }
 }
 
