@@ -6,6 +6,7 @@ use core::{
 };
 
 use std::collections::HashSet;
+use std::ops::AddAssign;
 
 use itertools::Itertools;
 use rust_decimal::Decimal;
