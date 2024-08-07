@@ -28,4 +28,4 @@ rust_decimal_macros = "1.35.0"
 
 [dev-dependencies]
 builder = { path = ".", features = ["debug"] }
-serde_test = "1.0.176"
+serde_test = "1.0.177"
