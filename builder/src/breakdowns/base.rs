@@ -300,9 +300,11 @@ fn absorption() -> impl Iterator<Item = BonusTemplate> {
             Absorption::Total(damage_type),
             BonusType::Stacking,
             Value::ONE
-                - Value::iter_product(AbsorptionSource::values().map(|bonus_type| {
-                    Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
-                })),
+                - AbsorptionSource::values()
+                    .map(|bonus_type| {
+                        Value::ONE - Absorption::Bonus(damage_type, bonus_type).to_value()
+                    })
+                    .product(),
         )
     })
 }
