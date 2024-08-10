@@ -447,7 +447,7 @@ impl AttributeDependencies for Value {
     }
 }
 
-macro_rules! from_primative {
+macro_rules! from_primitive {
     ($($type:ty), +) => {
         $(
             impl From<$type> for Value {
@@ -459,9 +459,9 @@ macro_rules! from_primative {
     };
 }
 
-from_primative!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
+from_primitive!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
 
-macro_rules! try_from_primative {
+macro_rules! try_from_primitive {
     ($($type:ty), +) => {
         $(
             impl TryFrom<$type> for Value {
@@ -474,7 +474,7 @@ macro_rules! try_from_primative {
     }
 }
 
-try_from_primative!(f32, f64);
+try_from_primitive!(f32, f64);
 
 impl From<Decimal> for Value {
     fn from(value: Decimal) -> Self {
