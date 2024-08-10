@@ -112,14 +112,15 @@ impl HandleMessage<TabSandboxMessage> for App {
             TabSandboxMessage::NewBreakdowns => {
                 let tracked = tab
                     .breakdowns
-                    .tracked_attributes()
+                    .breakdowns()
+                    .keys()
                     .cloned()
                     .collect::<Vec<_>>();
 
                 tab.breakdowns = Breakdowns::new();
 
                 for attribute in tracked {
-                    tab.breakdowns.track_attribute(attribute);
+                    tab.breakdowns.add_breakdown(attribute);
                 }
 
                 let toggles = tab.toggles.iter().map(|toggle| toggle.toggle_bonus(true));
@@ -148,7 +149,8 @@ impl HandleMessage<TabSandboxMessage> for App {
             TabSandboxMessage::OpenTrackAttributePrompt => {
                 let tracked = tab
                     .breakdowns
-                    .tracked_attributes()
+                    .breakdowns()
+                    .keys()
                     .cloned()
                     .collect::<Vec<_>>();
 
@@ -173,13 +175,13 @@ impl HandleMessage<TabSandboxMessage> for App {
                 tab.breakdowns.clear_breakdowns();
 
                 for attribute in attributes {
-                    tab.breakdowns.track_attribute(attribute);
+                    tab.breakdowns.add_breakdown(attribute);
                 }
 
                 Command::none()
             }
             TabSandboxMessage::UntrackAttribute(attribute) => {
-                if tab.breakdowns.untrack_attribute(&attribute).is_none() {
+                if tab.breakdowns.remove_breakdown(&attribute).is_none() {
                     Command::message(warning!("Attribute [{attribute}] was not tracked"))
                 } else {
                     Command::none()
@@ -380,7 +382,8 @@ impl HandleView<App> for TabSandbox {
                         .on_press(Msg::OpenTrackAttributePrompt.into())),
                     scrollable(
                         self.breakdowns
-                            .tracked_breakdowns()
+                            .breakdowns()
+                            .iter()
                             .map(|(attribute, breakdown)| {
                                 row!(
                                     button(nf_icon("󰜺"))

@@ -17,7 +17,7 @@ fn main() {
     let mut breakdowns = Breakdowns::new();
 
     for attribute in Attribute::values() {
-        breakdowns.track_attribute(attribute);
+        breakdowns.add_breakdown(attribute);
     }
 
     breakdowns.insert_bonuses(

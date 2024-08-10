@@ -63,8 +63,8 @@ impl Buffer {
         self.bonuses.extend(bonuses);
     }
 
-    pub fn get_bonuses(&self) -> impl Iterator<Item = &Bonus> {
-        self.bonuses.iter()
+    pub const fn get_bonuses(&self) -> &Vec<Bonus> {
+        &self.bonuses
     }
 
     pub fn pop(&mut self) -> Option<(Attribute, Vec<Bonus>, bool)> {

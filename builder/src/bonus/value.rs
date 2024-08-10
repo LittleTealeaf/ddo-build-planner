@@ -2,7 +2,7 @@ use core::fmt;
 use core::{
     fmt::Display,
     iter::{Product, Sum},
-    ops::{Add, Div, Mul, Neg, Rem, Sub},
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign},
 };
 
 use std::collections::HashSet;
@@ -447,7 +447,7 @@ impl AttributeDependencies for Value {
     }
 }
 
-macro_rules! from_primative {
+macro_rules! from_primitive {
     ($($type:ty), +) => {
         $(
             impl From<$type> for Value {
@@ -459,9 +459,9 @@ macro_rules! from_primative {
     };
 }
 
-from_primative!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
+from_primitive!(u8, u16, u32, u64, i8, i16, i32, i64, usize, isize, u128, i128);
 
-macro_rules! try_from_primative {
+macro_rules! try_from_primitive {
     ($($type:ty), +) => {
         $(
             impl TryFrom<$type> for Value {
@@ -474,7 +474,7 @@ macro_rules! try_from_primative {
     }
 }
 
-try_from_primative!(f32, f64);
+try_from_primitive!(f32, f64);
 
 impl From<Decimal> for Value {
     fn from(value: Decimal) -> Self {
@@ -505,11 +505,23 @@ impl Add for Value {
     }
 }
 
+impl AddAssign for Value {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = self.clone().add(rhs);
+    }
+}
+
 impl Sub for Value {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         Self::Sub(Box::new(self), Box::new(rhs))
+    }
+}
+
+impl SubAssign for Value {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = self.clone().sub(rhs);
     }
 }
 
@@ -521,6 +533,12 @@ impl Mul for Value {
     }
 }
 
+impl MulAssign for Value {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = self.clone().mul(rhs);
+    }
+}
+
 impl Div for Value {
     type Output = Self;
 
@@ -529,11 +547,23 @@ impl Div for Value {
     }
 }
 
+impl DivAssign for Value {
+    fn div_assign(&mut self, rhs: Self) {
+        *self = self.clone().div(rhs);
+    }
+}
+
 impl Rem for Value {
     type Output = Self;
 
     fn rem(self, rhs: Self) -> Self::Output {
         Self::Rem(Box::new(self), Box::new(rhs))
+    }
+}
+
+impl RemAssign for Value {
+    fn rem_assign(&mut self, rhs: Self) {
+        *self = self.clone().rem(rhs);
     }
 }
 
