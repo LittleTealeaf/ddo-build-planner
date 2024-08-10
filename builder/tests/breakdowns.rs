@@ -485,7 +485,7 @@ mod breakdowns {
     fn dont_track_by_default() {
         let breakdowns = Breakdowns::new();
         for attribute in Attribute::values() {
-            assert!(breakdowns.get_breakdown(&attribute).is_none());
+            assert!(!breakdowns.breakdowns().contains_key(&attribute));
         }
     }
 
@@ -493,7 +493,7 @@ mod breakdowns {
     fn track_added_breakdowns() {
         let mut breakdown = Breakdowns::new();
         breakdown.track_attribute(Attribute::Debug(0));
-        assert!(breakdown.get_breakdown(&Attribute::Debug(0)).is_some());
+        assert!(breakdown.breakdowns().contains_key(&Attribute::Debug(0)));
     }
 
     #[test]
@@ -501,8 +501,8 @@ mod breakdowns {
         let mut breakdowns = Breakdowns::new();
         breakdowns.track_attribute(Attribute::Debug(0));
         breakdowns.track_attribute(Attribute::Debug(1));
-        assert!(breakdowns.get_breakdown(&Attribute::Debug(0)).is_some());
-        assert!(breakdowns.get_breakdown(&Attribute::Debug(1)).is_some());
+        assert!(breakdowns.breakdowns().contains_key(&Attribute::Debug(0)));
+        assert!(breakdowns.breakdowns().contains_key(&Attribute::Debug(1)));
     }
 
     #[test]
@@ -517,7 +517,8 @@ mod breakdowns {
         breakdowns.track_attribute(Attribute::Debug(0));
         assert_eq!(
             breakdowns
-                .get_breakdown(&Attribute::Debug(0))
+                .breakdowns()
+                .get(&Attribute::Debug(0))
                 .expect("Expected Breakdown")
                 .value(),
             &Decimal::from(10)
@@ -530,7 +531,8 @@ mod breakdowns {
         breakdowns.track_attribute(Attribute::Debug(0));
         assert_eq!(
             breakdowns
-                .get_breakdown(&Attribute::Debug(0))
+                .breakdowns()
+                .get(&Attribute::Debug(0))
                 .expect("Expected Breakdown")
                 .value(),
             &Decimal::from(0)
@@ -543,7 +545,8 @@ mod breakdowns {
         ));
         assert_eq!(
             breakdowns
-                .get_breakdown(&Attribute::Debug(0))
+                .breakdowns()
+                .get(&Attribute::Debug(0))
                 .expect("Expected Breakdown")
                 .value(),
             &Decimal::from(10)
@@ -557,7 +560,8 @@ mod breakdowns {
 
         assert_eq!(
             breakdowns
-                .get_breakdown(&Attribute::Debug(0))
+                .breakdowns()
+                .get(&Attribute::Debug(0))
                 .expect("Expected Breakdown")
                 .value(),
             &Decimal::ZERO
@@ -570,7 +574,8 @@ mod breakdowns {
 
         assert_eq!(
             breakdowns
-                .get_breakdown(&Attribute::Debug(0))
+                .breakdowns()
+                .get(&Attribute::Debug(0))
                 .expect("Expected Breakdown")
                 .value(),
             &Decimal::TEN

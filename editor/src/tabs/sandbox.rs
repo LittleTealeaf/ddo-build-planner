@@ -112,7 +112,8 @@ impl HandleMessage<TabSandboxMessage> for App {
             TabSandboxMessage::NewBreakdowns => {
                 let tracked = tab
                     .breakdowns
-                    .tracked_attributes()
+                    .breakdowns()
+                    .keys()
                     .cloned()
                     .collect::<Vec<_>>();
 
@@ -148,7 +149,8 @@ impl HandleMessage<TabSandboxMessage> for App {
             TabSandboxMessage::OpenTrackAttributePrompt => {
                 let tracked = tab
                     .breakdowns
-                    .tracked_attributes()
+                    .breakdowns()
+                    .keys()
                     .cloned()
                     .collect::<Vec<_>>();
 
@@ -380,7 +382,8 @@ impl HandleView<App> for TabSandbox {
                         .on_press(Msg::OpenTrackAttributePrompt.into())),
                     scrollable(
                         self.breakdowns
-                            .tracked_breakdowns()
+                            .breakdowns()
+                            .iter()
                             .map(|(attribute, breakdown)| {
                                 row!(
                                     button(nf_icon("󰜺"))

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use utils::{from_into::FromInto, hashmap::IntoGroupedHashMap};
@@ -123,26 +125,10 @@ impl Breakdowns {
         self.cache.breakdowns.insert(attribute, breakdown);
     }
 
-    /// Lists the tracked attributes
-    pub fn tracked_attributes(&self) -> impl Iterator<Item = &Attribute> {
-        self.cache.breakdowns.keys()
-    }
-
-    /// Returns an iterator of both the breakdowns and attributes
-    pub fn tracked_breakdowns(&self) -> impl Iterator<Item = (&Attribute, &AttributeBreakdown)> {
-        self.cache.breakdowns.iter()
-    }
-
-    /// Returns a reference to the breakdown if it exists for the given attribute.
+    /// Returns a reference to the map of tracked breakdowns
     #[must_use]
-    pub fn get_breakdown(&self, attribute: &Attribute) -> Option<&AttributeBreakdown> {
-        self.cache.breakdowns.get(attribute)
-    }
-
-    /// Returns whether or not the given attribute is currently tracked
-    #[must_use]
-    pub fn is_tracked(&self, attribute: &Attribute) -> bool {
-        self.cache.breakdowns.contains_key(attribute)
+    pub const fn breakdowns(&self) -> &HashMap<Attribute, AttributeBreakdown> {
+        &self.cache.breakdowns
     }
 
     /// Removes and clears all attributes from being cached in breakdowns
