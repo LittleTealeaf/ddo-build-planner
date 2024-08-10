@@ -113,10 +113,10 @@ impl BonusEntry {
 impl Breakdowns {
     /// Adds a specific attribute to be tracked. Attributes that are tracked will always have a
     /// cached version of their breakdown (accessible by immutable references) via
-    /// [`get_breakdown()`]. This cached version is updated whenever a change is made.
+    /// [`get_breakdowns()`]. This cached version is updated whenever a change is made.
     ///
-    /// [`get_breakdown()`]: crate::breakdowns::Breakdowns::get_breakdown
-    pub fn track_attribute<A>(&mut self, attribute: A)
+    /// [`get_breakdowns()`]: crate::breakdowns::Breakdowns::get_breakdowns
+    pub fn add_breakdown<A>(&mut self, attribute: A)
     where
         A: Into<Attribute>,
     {
@@ -137,7 +137,7 @@ impl Breakdowns {
     }
 
     /// Removes an attribute's breakdown from being cached
-    pub fn untrack_attribute(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+    pub fn remove_breakdown(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
         self.cache.breakdowns.remove(attribute)
     }
 
