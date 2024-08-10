@@ -2,7 +2,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::{crafting_slot::CraftingSlot, gear_slot::GearSlot};
+use crate::{
+    equipment::enchantment::Enchantment,
+    types::{crafting_slot::CraftingSlot, gear_slot::GearSlot},
+};
 
 /// A template for creating [`Item`] instances. This is stored in the data crate to include in the
 /// binary
@@ -16,6 +19,7 @@ pub struct ItemTemplate {
     slots: Vec<GearSlot>,
     prevent_slots: Vec<GearSlot>,
     crafting_slots: Vec<CraftingSlot>,
+    enchantments: Vec<Enchantment>,
 }
 
 impl ItemTemplate {
@@ -55,6 +59,12 @@ impl ItemTemplate {
         &self.crafting_slots
     }
 
+    /// Returns a reference to the enchantments of the [`ItemTemplate`]
+    #[must_use]
+    pub const fn enchantments(&self) -> &Vec<Enchantment> {
+        &self.enchantments
+    }
+
     /// Returns a mutable reference to the mut slots of this [`ItemTemplate`].
     pub fn slots_mut(&mut self) -> &mut Vec<GearSlot> {
         &mut self.slots
@@ -68,6 +78,11 @@ impl ItemTemplate {
     /// Returns a mutable reference to the crafting slots of this [`ItemTemplate`]
     pub fn crafting_slots_mut(&mut self) -> &mut Vec<CraftingSlot> {
         &mut self.crafting_slots
+    }
+
+    /// Returns a mutable reference to the enchantments of this [`ItemTemplate`]
+    pub fn enchantments_mut(&mut self) -> &mut Vec<Enchantment> {
+        &mut self.enchantments
     }
 
     /// Sets the name of this [`ItemTemplate`].
@@ -98,5 +113,10 @@ impl ItemTemplate {
     /// Sets the crafting slots of this [`ItemTemplate`].
     pub fn set_crafting_slots(&mut self, crafting_slots: Vec<CraftingSlot>) {
         self.crafting_slots = crafting_slots;
+    }
+
+    /// Sets the enchantments of this [`ItemTemplate`]
+    pub fn set_enchantments(&mut self, enchantments: Vec<Enchantment>) {
+        self.enchantments = enchantments;
     }
 }

@@ -4,3 +4,4 @@ pub mod crafting;
 pub mod gearset;
 pub mod item;
 pub mod set_bonus;
+pub mod enchantment;
