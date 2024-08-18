@@ -89,7 +89,7 @@ impl GetBonuses for IconicPastLife {
                     dec!(5) * value,
                 ),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Repair.into()),
+                    Attribute::spell_power(DamageType::Repair),
                     BonusType::Stacking,
                     value * dec!(10),
                 )
@@ -99,13 +99,13 @@ impl GetBonuses for IconicPastLife {
                 BonusTemplate::toggle(Self(Race::DeepGnome)),
                 BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, value * dec!(3)),
                 BonusTemplate::new(
-                    Attribute::SpellDC(SpellSchool::Illusion.into()),
+                    Attribute::spell_dc(SpellSchool::Illusion),
                     BonusType::Stacking,
                     value,
                 )
                 .with_condition(Condition::toggled(Self(Race::DeepGnome))),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Acid.into()),
+                    Attribute::spell_power(DamageType::Acid),
                     BonusType::Stacking,
                     value * dec!(5),
                 )
@@ -175,18 +175,18 @@ impl GetBonuses for IconicPastLife {
             Race::Morninglord => Some(vec![
                 BonusTemplate::toggle(Self(Race::Morninglord)),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Positive.into()),
+                    Attribute::spell_power(DamageType::Positive),
                     BonusType::Stacking,
                     value * dec!(3),
                 ),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Light.into()),
+                    Attribute::spell_power(DamageType::Light),
                     BonusType::Stacking,
                     value * Decimal::TEN,
                 )
                 .with_condition(Condition::toggled(Self(Race::Morninglord))),
                 BonusTemplate::new(
-                    Attribute::SpellPower(DamageType::Alignment.into()),
+                    Attribute::spell_power(DamageType::Alignment),
                     BonusType::Stacking,
                     value * Decimal::TEN,
                 )

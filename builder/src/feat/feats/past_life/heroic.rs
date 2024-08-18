@@ -57,7 +57,7 @@ impl GetBonuses for HeroicPastLife {
             match class {
                 PlayerClass::Alchemist => vec![
                     BonusTemplate::new(
-                        Attribute::SpellDC(SpellSchool::Transmutation.into()),
+                        Attribute::spell_dc(SpellSchool::Transmutation),
                         BonusType::Stacking,
                         value,
                     ),
@@ -100,7 +100,7 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::Sorcerer => vec![
                     BonusTemplate::new(
-                        Attribute::SpellDC(SpellSchool::Evocation.into()),
+                        Attribute::spell_dc(SpellSchool::Evocation),
                         BonusType::Stacking,
                         value,
                     ),
@@ -132,19 +132,19 @@ impl GetBonuses for HeroicPastLife {
                 ],
                 PlayerClass::Stormsinger => vec![
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Electric.into()),
+                        Attribute::spell_power(DamageType::Electric),
                         BonusType::Stacking,
                         dec!(5) * value,
                     ),
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Sonic.into()),
+                        Attribute::spell_power(DamageType::Sonic),
                         BonusType::Stacking,
                         dec!(5) * value,
                     ),
                 ],
                 PlayerClass::Cleric => vec![
                     BonusTemplate::new(
-                        Attribute::SpellDC(SpellSchool::Conjuration.into()),
+                        Attribute::spell_dc(SpellSchool::Conjuration),
                         BonusType::Stacking,
                         value,
                     ),
@@ -219,7 +219,7 @@ impl GetBonuses for HeroicPastLife {
                 PlayerClass::AcolyteOfTheSkin => vec![
                     BonusTemplate::new(Sheltering::Magical, BonusType::Stacking, value),
                     BonusTemplate::new(
-                        Attribute::SpellPower(DamageType::Fire.into()),
+                        Attribute::spell_power(DamageType::Fire),
                         BonusType::Stacking,
                         dec!(5) * value,
                     ),

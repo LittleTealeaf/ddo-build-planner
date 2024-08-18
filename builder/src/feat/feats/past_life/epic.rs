@@ -209,7 +209,7 @@ impl GetBonuses for EpicPastLife {
             ]
             .map(|damage| {
                 BonusTemplate::new(
-                    Attribute::SpellCriticalChance(damage.into()),
+                    Attribute::spell_critical_chance(damage),
                     BonusType::Stacking,
                     dec!(3) * value,
                 )
@@ -240,7 +240,7 @@ impl GetBonuses for EpicPastLife {
             Self::PowerOverLifeAndDeath => [DamageType::Positive, DamageType::Negative]
                 .map(|damage| {
                     BonusTemplate::new(
-                        Attribute::SpellPower(damage.into()),
+                        Attribute::spell_power(damage),
                         BonusType::Stacking,
                         dec!(10) * value,
                     )

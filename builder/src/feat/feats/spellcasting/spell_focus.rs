@@ -10,7 +10,7 @@ use crate::{
     attribute::{Attribute, GetBonuses},
     bonus::{BonusTemplate, BonusType},
     feat::{Feat, FeatRequirement, GetFeatRequirement, ToFeat},
-    types::{player_class::PlayerClass, spell_school::SpellSchool, spell_selector::SpellSelector},
+    types::{player_class::PlayerClass, spell_school::SpellSchool},
 };
 
 use super::SpellcastingFeat;
@@ -28,7 +28,7 @@ impl GetBonuses for SpellFocusFeat {
     fn get_bonuses(&self, value: Decimal) -> Option<Vec<BonusTemplate>> {
         (value > Decimal::ZERO).then(|| match self {
             Self::SpellFocus(school) | Self::GreaterSpellFocus(school) => vec![BonusTemplate::new(
-                Attribute::SpellDC(SpellSelector::School(*school)),
+                Attribute::spell_dc(*school),
                 BonusType::Stacking,
                 1,
             )],
