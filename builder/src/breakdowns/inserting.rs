@@ -104,11 +104,11 @@ impl Breakdowns {
 impl Breakdowns {
     fn consume_buffer(&mut self, mut buffer: Buffer) {
         // List of attributes to recalculate
-        let mut breakdowns = HashSet::new();
+        let mut breakdowns = Vec::new();
 
         while let Some((attribute, bonuses, forced)) = buffer.pop() {
-            if self.cache.breakdowns.remove(&attribute).is_some() {
-                breakdowns.insert(attribute.clone());
+            if self.remove_breakdown(&attribute).is_some() {
+                breakdowns.push(attribute.clone());
             }
 
             let initial_value = self

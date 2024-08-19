@@ -121,6 +121,11 @@ impl Breakdowns {
         A: Into<Attribute>,
     {
         let attribute = Attribute::from_into(attribute);
+
+        if self.breakdowns().contains_key(&attribute) {
+            return;
+        }
+
         let breakdown = self.build_breakdown(&attribute);
         self.cache.breakdowns.insert(attribute, breakdown);
     }
