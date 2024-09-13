@@ -112,7 +112,6 @@ dependencies = [
  "builder",
  "data",
  "iced",
- "roc",
  "ron",
  "rust_decimal",
  "utils",
@@ -739,7 +738,6 @@ dependencies = [
  "iced_aw",
  "im",
  "itertools",
- "roc",
  "ron",
  "rust_decimal",
  "serde",
@@ -2218,12 +2216,6 @@ dependencies = [
  "quote",
  "syn 1.0.109",
 ]
-
-[[package]]
-name = "roc"
-version = "0.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb24a7723d3121c9f228d98c00aad387260f65f5bc8466585f4b275ea4858ac6"
 
 [[package]]
 name = "ron"
