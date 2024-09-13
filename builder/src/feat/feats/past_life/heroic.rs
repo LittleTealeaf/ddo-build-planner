@@ -204,8 +204,7 @@ impl GetBonuses for HeroicPastLife {
                 .with_condition(
                     WeaponType::RANGED_WEAPONS
                         .map(|wt| Condition::has(MainHandType::from(wt)))
-                        .cond_any()
-                        .expect("Expected Condition"),
+                        .cond_any(),
                 )],
                 PlayerClass::DarkHunter => vec![
                     BonusTemplate::new(SneakAttack::Attack, BonusType::Stacking, 1),
