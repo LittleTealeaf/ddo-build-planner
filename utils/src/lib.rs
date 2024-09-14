@@ -10,3 +10,4 @@ pub mod modules;
 pub mod ord;
 pub mod ron;
 pub mod vecs;
+pub mod macros;

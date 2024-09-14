@@ -1,5 +1,4 @@
 use core::iter::once;
-use itertools::chain;
 use utils::{chain_tree, enums::StaticValues, hashmap::IntoGroupedHashMap};
 
 use crate::{
@@ -7,6 +6,7 @@ use crate::{
     bonus::{
         Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
     },
+    cond_none,
     feat::{HeroicPastLife, PastLifeFeat, RacialPastLife},
     types::{
         ability::Ability,
@@ -27,7 +27,7 @@ use crate::{
         toggle::Toggle,
         weapon_attribute::{WeaponHand, WeaponStat},
     },
-    val,
+    val, val_min, val_sum,
 };
 
 /// Returns all base bonuses that are to be included by default.
@@ -137,37 +137,37 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             ArmorClass::Bonus,
             BonusType::AbilityModifier,
-            Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
-                .min(Value::condition(
+            val_min!(
+                Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
+                Value::condition(
+                    Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
+                    ArmorClass::ShieldMaxDex,
+                    Value::MAX,
+                ),
+                Value::condition(
                     [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
                         .map(Condition::has)
                         .cond_any()
                         .expect("Expected Condition List for Light/Medium/Heavy Armors"),
                     ArmorClass::ArmorMaxDex,
                     Value::MAX,
-                ))
-                .min(Value::condition(
-                    Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
-                    ArmorClass::ShieldMaxDex,
-                    Value::MAX,
-                )),
+                )
+            ),
         )
         .with_display_source(Attribute::AbilityModifier(Ability::Dexterity)),
         // Total Armor Class Bonus
         BonusTemplate::new(
             ArmorClass::Total,
             BonusType::Standard,
-            Value::iter_sum([
+            val_sum!(
                 ArmorClass::Bonus.to_value(),
                 ArmorClass::NaturalArmor.to_value(),
                 ArmorClass::ShieldBonus.to_value()
                     * (Value::ONE + (ArmorClass::ShieldScalar.to_value()) / Value::ONE_HUNDRED),
                 ArmorClass::ArmorBonus.to_value()
                     * (Value::ONE + (ArmorClass::ArmorScalar.to_value() / Value::ONE_HUNDRED)),
-                Value::TEN,
-            ])
-            .unwrap()
-                * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
+                Value::TEN
+            ) * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
         ),
     ]
 }
@@ -405,21 +405,14 @@ fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
         ),
         BonusTemplate::flag(Flag::SingleWeaponFighting).with_condition(
             one_hand_main_hand.clone()
-                & chain!(
-                    [
-                        one_hand_off_hand.clone(),
-                        Condition::has(OffHandType::Shield(ShieldType::Buckler))
-                            & !Condition::has(Flag::BucklerSingleWeaponFighting)
-                    ],
-                    [
-                        ShieldType::LargeShield,
-                        ShieldType::TowerShield,
-                        ShieldType::SmallShield
-                    ]
-                    .map(|st| Condition::has(OffHandType::Shield(st))),
-                )
-                .cond_none()
-                .expect("Expected Condition"),
+                & cond_none!(
+                    one_hand_off_hand.clone(),
+                    Condition::has(OffHandType::Shield(ShieldType::Buckler))
+                        & !Condition::has(Flag::BucklerSingleWeaponFighting),
+                    Condition::has(OffHandType::Shield(ShieldType::LargeShield)),
+                    Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
+                    Condition::has(OffHandType::Shield(ShieldType::SmallShield)),
+                ),
         ),
         BonusTemplate::flag(Flag::TwoWeaponFighting)
             .with_condition(one_hand_main_hand & one_hand_off_hand),

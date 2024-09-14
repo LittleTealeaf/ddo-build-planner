@@ -329,9 +329,93 @@ where
     }
 }
 
+/// Value that returns true if any of the conditions are true
+#[macro_export]
+macro_rules! cond_any {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        utils::tree_repeat!(core::ops::BitOr::bitor, $first, $($rest),+)
+    };
+}
+
+/// Value that returns true if all of the conditions are true
+#[macro_export]
+macro_rules! cond_all {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        utils::tree_repeat!(core::ops::BitAnd::bitand, $first, $($rest),+)
+    };
+}
+
+/// Value that returns true if all of the conditions are false
+#[macro_export]
+macro_rules! cond_none {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        core::ops::Not::not($crate::cond_any!($first, $($rest),+))
+    };
+}
+
+/// Value that returns true if some of the conditions are true, and some are false
+#[macro_export]
+macro_rules! cond_some {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        core::ops::Not::not($crate::cond_all!($first, $($rest),+))
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    mod macros {
+        use super::*;
+
+        #[test]
+        fn test_compile_any() {
+            let _: Condition = cond_any!(Condition::TRUE, Condition::FALSE);
+            let _: Condition = cond_any!(Condition::TRUE, Condition::FALSE, Condition::TRUE);
+            let _: Condition = cond_any!(
+                Condition::TRUE,
+                Condition::FALSE,
+                Condition::FALSE,
+                Condition::TRUE
+            );
+        }
+
+        #[test]
+        fn test_compile_all() {
+            let _: Condition = cond_all!(Condition::TRUE, Condition::FALSE);
+            let _: Condition = cond_all!(Condition::TRUE, Condition::FALSE, Condition::TRUE);
+            let _: Condition = cond_all!(
+                Condition::TRUE,
+                Condition::FALSE,
+                Condition::FALSE,
+                Condition::TRUE
+            );
+        }
+
+        #[test]
+        fn test_compile_none() {
+            let _: Condition = cond_none!(Condition::TRUE, Condition::FALSE);
+            let _: Condition = cond_none!(Condition::TRUE, Condition::FALSE, Condition::TRUE);
+            let _: Condition = cond_none!(
+                Condition::TRUE,
+                Condition::FALSE,
+                Condition::FALSE,
+                Condition::TRUE
+            );
+        }
+
+        #[test]
+        fn test_compile_some() {
+            let _: Condition = cond_some!(Condition::TRUE, Condition::FALSE);
+            let _: Condition = cond_some!(Condition::TRUE, Condition::FALSE, Condition::TRUE);
+            let _: Condition = cond_some!(
+                Condition::TRUE,
+                Condition::FALSE,
+                Condition::FALSE,
+                Condition::TRUE
+            );
+        }
+    }
 
     mod from {
         use super::*;

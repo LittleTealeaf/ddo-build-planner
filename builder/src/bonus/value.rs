@@ -580,6 +580,38 @@ macro_rules! val {
     };
 }
 
+/// Minimum of the given values
+#[macro_export]
+macro_rules! val_min {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        utils::tree_repeat!($crate::bonus::Value::min, $first $(, $rest)+)
+    }
+}
+
+/// Maximum of the given values
+#[macro_export]
+macro_rules! val_max {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        utils::tree_repeat!($crate::bonus::Value::max, $first $(, $rest)+)
+    };
+}
+
+/// Sum of the given values
+#[macro_export]
+macro_rules! val_sum {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        utils::tree_repeat!(core::ops::Add::add, $first $(, $rest)+)
+    };
+}
+
+/// Product of the given values
+#[macro_export]
+macro_rules! val_product {
+    ($first: expr, $($rest: expr),+ $(,)?) => {
+        utils::tree_repeat!(core::ops::Mul::mul, $first $(, $rest)+)
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
