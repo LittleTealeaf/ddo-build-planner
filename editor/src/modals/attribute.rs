@@ -1,5 +1,5 @@
-use core::fmt;
-use std::{error::Error, string::ToString};
+use core::{error::Error, fmt};
+use std::string::ToString;
 
 use builder::attribute::Attribute;
 use fuzzy_filter::matches;

@@ -53,9 +53,8 @@ impl Breakdowns {
     {
         let mut sources = HashSet::new();
 
-        let bonuses = bonuses.into_iter().map(|bonus| {
+        let bonuses = bonuses.into_iter().inspect(|bonus| {
             sources.insert(bonus.source().clone());
-            bonus
         });
 
         let mut buffer = Buffer::new();

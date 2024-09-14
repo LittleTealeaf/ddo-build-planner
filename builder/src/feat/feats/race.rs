@@ -217,8 +217,7 @@ impl GetBonuses for RacialFeat {
                 .with_condition(
                     WeaponType::THROWING_WEAPONS
                         .map(|wt| Condition::has(MainHandType::Weapon(wt)))
-                        .cond_any()
-                        .expect("Expected Condition"),
+                        .cond_any(),
                 )]
             }
         })

@@ -170,10 +170,7 @@ impl Value {
     {
         let mut count = 0;
 
-        let value = Self::iter_sum(iter.into_iter().map(|c| {
-            count += 1;
-            c
-        }));
+        let value: Self = iter.into_iter().inspect(|_| count += 1).sum();
 
         value / count.to_value()
     }
