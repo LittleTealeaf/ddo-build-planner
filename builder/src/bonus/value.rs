@@ -177,54 +177,42 @@ impl Value {
 
     /// Returns the minimum of all of the values
     ///
-    /// # Panics
-    /// Panics if an iterator with no items is passed in
-    pub fn iter_min<I>(iter: I) -> Self
+    /// Returns [`None`] if the iterator has no items
+    pub fn iter_min<I>(iter: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        iter.into_iter()
-            .tree_reduce(Self::min)
-            .expect("Expected at least one value")
+        iter.into_iter().tree_reduce(Self::min)
     }
 
     /// Returns the maximum of all of the values
     ///
-    /// # Panics
-    /// Panics if an iterator with no items is passed in
-    pub fn iter_max<I>(iter: I) -> Self
+    /// Returns [`None`] if the iterator has no items
+    pub fn iter_max<I>(iter: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        iter.into_iter()
-            .tree_reduce(Self::max)
-            .expect("Expected at least one value")
+        iter.into_iter().tree_reduce(Self::max)
     }
 
     /// Returns the sum of the values within the iterator
     ///
-    /// # Panics
-    /// Panics if an iterator with no items is passed in
-    pub fn iter_sum<I>(iter: I) -> Self
+    /// Returns [`None`] if the iterator has no items
+    pub fn iter_sum<I>(iter: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        iter.into_iter()
-            .tree_reduce(Self::add)
-            .expect("Expected at least one value")
+        iter.into_iter().tree_reduce(Self::add)
     }
 
     /// Returns the sum of the values within the iterator
     ///
-    /// # Panics
-    /// Panics if an iterator with no items is passed in
-    pub fn iter_product<I>(iter: I) -> Self
+    /// Returns [`None`] if the iterator has no items
+    pub fn iter_product<I>(iter: I) -> Option<Self>
     where
         I: IntoIterator<Item = Self>,
     {
-        iter.into_iter()
-            .tree_reduce(Self::mul)
-            .expect("Expected at least one value")
+        iter.into_iter().tree_reduce(Self::mul)
     }
 
     /// Shortcut for [`Condition::Floor`]
@@ -574,13 +562,13 @@ impl Neg for Value {
 
 impl Sum for Value {
     fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
-        Self::iter_sum(iter)
+        Self::iter_sum(iter).unwrap_or(Self::ZERO)
     }
 }
 
 impl Product for Value {
     fn product<I: Iterator<Item = Self>>(iter: I) -> Self {
-        Self::iter_product(iter)
+        Self::iter_product(iter).unwrap_or(Self::ONE)
     }
 }
 

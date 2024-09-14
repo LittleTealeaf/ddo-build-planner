@@ -137,22 +137,20 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             ArmorClass::Bonus,
             BonusType::AbilityModifier,
-            Value::iter_min([
-                Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
-                Value::condition(
+            Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
+                .min(Value::condition(
                     [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
                         .map(Condition::has)
                         .cond_any()
-                        .unwrap(),
+                        .expect("Expected Condition List for Light/Medium/Heavy Armors"),
                     ArmorClass::ArmorMaxDex,
                     Value::MAX,
-                ),
-                Value::condition(
+                ))
+                .min(Value::condition(
                     Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
                     ArmorClass::ShieldMaxDex,
                     Value::MAX,
-                ),
-            ]),
+                )),
         )
         .with_display_source(Attribute::AbilityModifier(Ability::Dexterity)),
         // Total Armor Class Bonus
@@ -167,7 +165,9 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                 ArmorClass::ArmorBonus.to_value()
                     * (Value::ONE + (ArmorClass::ArmorScalar.to_value() / Value::ONE_HUNDRED)),
                 Value::TEN,
-            ]) * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
+            ])
+            .unwrap()
+                * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
         ),
     ]
 }
