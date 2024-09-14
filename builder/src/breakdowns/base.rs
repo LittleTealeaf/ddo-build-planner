@@ -6,7 +6,7 @@ use crate::{
     bonus::{
         Bonus, BonusSource, BonusTemplate, BonusType, Condition, ConditionFold, ToValue, Value,
     },
-    cond_none,
+    cond_any, cond_none,
     feat::{HeroicPastLife, PastLifeFeat, RacialPastLife},
     types::{
         ability::Ability,
@@ -145,10 +145,11 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
                     Value::MAX,
                 ),
                 Value::condition(
-                    [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                        .map(Condition::has)
-                        .cond_any()
-                        .expect("Expected Condition List for Light/Medium/Heavy Armors"),
+                    cond_any!(
+                        Condition::has(ArmorType::Light),
+                        Condition::has(ArmorType::Medium),
+                        Condition::has(ArmorType::Heavy)
+                    ),
                     ArmorClass::ArmorMaxDex,
                     Value::MAX,
                 )
