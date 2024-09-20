@@ -24,6 +24,9 @@ where
 
 mod value {
 
+    use builder::val;
+    use rust_decimal_macros::dec;
+
     use super::*;
 
     fn dbg_bonus(attribute: usize, value: Value) -> Bonus {
@@ -53,78 +56,75 @@ mod value {
 
     #[test]
     fn add() {
-        expect_value([dbg_bonus(0, Value::from(1) + Value::from(2))], 3);
+        expect_value([dbg_bonus(0, val!(1) + val!(2))], 3);
     }
 
     #[test]
     fn sub() {
-        expect_value([dbg_bonus(0, Value::from(5) - Value::from(2))], 3);
+        expect_value([dbg_bonus(0, val!(5) - val!(2))], 3);
     }
 
     #[test]
     fn mul() {
-        expect_value([dbg_bonus(0, Value::from(3) * Value::from(2))], 6);
+        expect_value([dbg_bonus(0, val!(3) * val!(2))], 6);
     }
 
     #[test]
     fn div() {
-        expect_value([dbg_bonus(0, Value::from(6) / Value::from(2))], 3);
+        expect_value([dbg_bonus(0, val!(6) / val!(2))], 3);
     }
 
     #[test]
     fn rem() {
-        expect_value([dbg_bonus(0, Value::from(5) % Value::from(2))], 1);
+        expect_value([dbg_bonus(0, val!(5) % val!(2))], 1);
     }
 
     #[test]
     fn min() {
-        expect_value([dbg_bonus(0, Value::from(5).min(Value::from(6)))], 5);
-        expect_value([dbg_bonus(0, Value::from(6).min(Value::from(5)))], 5);
+        expect_value([dbg_bonus(0, val!(5).min(val!(6)))], 5);
+        expect_value([dbg_bonus(0, val!(6).min(val!(5)))], 5);
     }
 
     #[test]
     fn max() {
-        expect_value([dbg_bonus(0, Value::from(5).max(Value::from(6)))], 6);
-        expect_value([dbg_bonus(0, Value::from(6).max(Value::from(5)))], 6);
+        expect_value([dbg_bonus(0, val!(5).max(val!(6)))], 6);
+        expect_value([dbg_bonus(0, val!(6).max(val!(5)))], 6);
     }
 
     #[test]
     fn recip() {
-        expect_value(
-            [dbg_bonus(0, Value::from(2).recip())],
-            Decimal::try_from(0.5).unwrap(),
-        );
+        expect_value([dbg_bonus(0, val!(2).recip())], dec!(0.5));
     }
 
     #[test]
     fn floor() {
-        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().floor())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().floor())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().floor())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().floor())], 10);
+        expect_value([dbg_bonus(0, val!(10.5).floor())], 10);
+        expect_value([dbg_bonus(0, val!(10.0).floor())], 10);
+        expect_value([dbg_bonus(0, val!(10.01).floor())], 10);
+        expect_value([dbg_bonus(0, val!(10.99).floor())], 10);
     }
 
     #[test]
     fn ceil() {
-        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().ceil())], 11);
-        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().ceil())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().ceil())], 11);
-        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().ceil())], 11);
+        expect_value([dbg_bonus(0, val!(10.5).ceil())], 11);
+        expect_value([dbg_bonus(0, val!(10.0).ceil())], 10);
+        expect_value([dbg_bonus(0, val!(10.01).ceil())], 11);
+        expect_value([dbg_bonus(0, val!(10.99).ceil())], 11);
     }
 
     #[test]
     fn round() {
-        expect_value([dbg_bonus(0, Value::try_from(10.5).unwrap().round())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.0).unwrap().round())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.01).unwrap().round())], 10);
-        expect_value([dbg_bonus(0, Value::try_from(10.99).unwrap().round())], 11);
+        expect_value([dbg_bonus(0, val!(10.5).round())], 10);
+        expect_value([dbg_bonus(0, val!(10.0).round())], 10);
+        expect_value([dbg_bonus(0, val!(10.01).round())], 10);
+        expect_value([dbg_bonus(0, val!(10.99).round())], 11);
     }
 
     #[test]
     fn abs() {
-        expect_value([dbg_bonus(0, Value::from(2).abs())], 2);
-        expect_value([dbg_bonus(0, Value::from(-3).abs())], 3);
-        expect_value([dbg_bonus(0, Value::from(0).abs())], 0);
+        expect_value([dbg_bonus(0, val!(2).abs())], 2);
+        expect_value([dbg_bonus(0, val!(-3).abs())], 3);
+        expect_value([dbg_bonus(0, val!(0).abs())], 0);
     }
 
     #[test]
@@ -136,8 +136,8 @@ mod value {
                 0,
                 Value::If {
                     condition: Condition::TRUE.into(),
-                    if_true: Value::from(10).into(),
-                    if_false: Value::from(20).into(),
+                    if_true: val!(10).into(),
+                    if_false: val!(20).into(),
                 },
             )],
             10,
@@ -147,8 +147,8 @@ mod value {
                 0,
                 Value::If {
                     condition: Condition::FALSE.into(),
-                    if_true: Value::from(10).into(),
-                    if_false: Value::from(20).into(),
+                    if_true: val!(10).into(),
+                    if_false: val!(20).into(),
                 },
             )],
             20,
@@ -157,7 +157,7 @@ mod value {
 
     #[test]
     fn negative() {
-        expect_value([dbg_bonus(0, Value::from(1).neg())], -1);
+        expect_value([dbg_bonus(0, val!(1).neg())], -1);
     }
 
     #[test]
@@ -165,13 +165,7 @@ mod value {
         expect_value(
             [dbg_bonus(
                 0,
-                Value::mean([
-                    Value::Const(1.into()),
-                    Value::Const(2.into()),
-                    Value::Const(3.into()),
-                    Value::Const(4.into()),
-                    Value::Const(5.into()),
-                ]),
+                Value::mean([val!(1), val!(2), val!(3), val!(4), val!(5)]),
             )],
             3,
         );
@@ -181,7 +175,7 @@ mod value {
     fn dice_average() {
         {
             let bonuses = [dbg_bonus(0, Value::dice(1, 6))];
-            let expected = Decimal::from_str("3.5").unwrap();
+            let expected = dec!(3.5);
             let mut breakdowns = Breakdowns::new();
             breakdowns.set_dice_strategy(DiceStrategy::Average);
             breakdowns.insert_bonuses(bonuses);
@@ -194,7 +188,7 @@ mod value {
     fn dice_minimum() {
         {
             let bonuses = [dbg_bonus(0, Value::dice(1, 6))];
-            let expected = Decimal::from_str("1").unwrap();
+            let expected = dec!(1);
             let mut breakdowns = Breakdowns::new();
             breakdowns.set_dice_strategy(DiceStrategy::Minimum);
             breakdowns.insert_bonuses(bonuses);
@@ -207,7 +201,7 @@ mod value {
     fn dice_maximum() {
         {
             let bonuses = [dbg_bonus(0, Value::dice(1, 6))];
-            let expected = Decimal::from_str("6").unwrap();
+            let expected = dec!(6);
             let mut breakdowns = Breakdowns::new();
             breakdowns.set_dice_strategy(DiceStrategy::Maximum);
             breakdowns.insert_bonuses(bonuses);
