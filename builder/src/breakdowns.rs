@@ -188,4 +188,10 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn default_dice_strategy_is_average() {
+        let breakdowns = Breakdowns::new();
+        assert_eq!(DiceStrategy::Average, breakdowns.dice_strategy());
+    }
 }
