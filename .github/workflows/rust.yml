@@ -45,8 +45,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
-    env:
-      TARGET_FILE: ${{matrix.os == 'windows-latest' && 'ddo-build-planner.exe' || 'ddo-build-planner'}}
     steps:
       - uses: actions/checkout@v4
         name: Checkout Repository
@@ -63,8 +61,8 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.os}}-${{env.TARGET_FILE}}
-          path: ./target/release/${{env.TARGET_FILE}}
+          name: build-release-${{matrix.os}}
+          path: ./target/release/${{matrix.os == 'windows-latest' && 'ddo-build-planner.exe' || 'ddo-build-planner'}}
   format:
     name: Format
     runs-on: ubuntu-latest
@@ -169,4 +167,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Finish Checks
-        run: echo "Checks Finnished"
+        run: echo "Checks Finished"
