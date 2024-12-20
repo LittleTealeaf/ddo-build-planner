@@ -190,9 +190,11 @@ impl ModalExpression {
             },
             ModalExpressionType::Condition(c) => match c {
                 ConditionType::Not => (false, false, true, false),
-                ConditionType::GreaterThan | ConditionType::LessThan | ConditionType::EqualTo => {
-                    (true, true, false, false)
-                }
+                ConditionType::GreaterThan
+                | ConditionType::LessThan
+                | ConditionType::EqualTo
+                | ConditionType::LessEqualTo
+                | ConditionType::GreaterEqualTo => (true, true, false, false),
                 ConditionType::True | ConditionType::False => (false, false, false, false),
                 ConditionType::And | ConditionType::Or | ConditionType::Xor => {
                     (false, false, true, true)
@@ -487,6 +489,10 @@ impl ModalExpression {
                                 container(column!(val_a?, text("Greater Than"), val_b?)),
                             ConditionType::LessThan =>
                                 container(column!(val_a?, text("Less Than"), val_b?)),
+                            ConditionType::GreaterEqualTo =>
+                                container(column!(val_a?, text("Greater/Equal To"), val_b?)),
+                            ConditionType::LessEqualTo =>
+                                container(column!(val_a?, text("Less/Equal To"), val_b?)),
                             ConditionType::EqualTo =>
                                 container(column!(val_a?, text("Equal To"), val_b?)),
                             ConditionType::True => container(text("True")),

@@ -24,9 +24,15 @@ pub enum Condition {
     /// Requires that one value is greater than the next value
     #[serde(rename = "g", alias = "GreaterThan")]
     GreaterThan(Value, Value),
+    /// Requires that one value is greater than or equal to the next value
+    #[serde(rename = "ge", alias = "GreaterEqualTo")]
+    GreaterEqualTo(Value, Value),
     /// Requires that one value is less than the next value
     #[serde(rename = "l", alias = "LessThan")]
     LessThan(Value, Value),
+    /// Requires that one value is greater than or equal to the next value
+    #[serde(rename = "le", alias = "LessEqualTo")]
+    LessEqualTo(Value, Value),
     /// Requires that one value is equal to another value
     #[serde(rename = "e", alias = "EqualTo")]
     EqualTo(Value, Value),
@@ -165,14 +171,14 @@ impl Value {
 
     /// Returns a condition that this value is greater than or equal to the other value
     #[must_use]
-    pub fn greater_or_equal_to(self, other: Self) -> Condition {
-        self.clone().greater_than(other.clone()) | self.equal_to(other)
+    pub const fn greater_or_equal_to(self, other: Self) -> Condition {
+        Condition::GreaterEqualTo(self, other)
     }
 
     /// Returns a condition that this value is equal to or less than the other value
     #[must_use]
-    pub fn less_or_equal_to(self, other: Self) -> Condition {
-        self.clone().less_than(other.clone()) | self.equal_to(other)
+    pub const fn less_or_equal_to(self, other: Self) -> Condition {
+        Condition::LessEqualTo(self, other)
     }
 }
 
@@ -183,7 +189,11 @@ impl AttributeDependencies for Condition {
             Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
-            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::GreaterEqualTo(a, b)
+            | Self::LessEqualTo(a, b) => {
                 a.has_attr_dependency(attribute) || b.has_attr_dependency(attribute)
             }
             Self::Constant(_) => false,
@@ -197,7 +207,11 @@ impl AttributeDependencies for Condition {
                 a.include_attr_dependency(set);
                 b.include_attr_dependency(set);
             }
-            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::GreaterEqualTo(a, b)
+            | Self::LessEqualTo(a, b) => {
                 a.include_attr_dependency(set);
                 b.include_attr_dependency(set);
             }
@@ -210,9 +224,11 @@ impl HasDice for Condition {
     fn has_dice(&self) -> bool {
         match self {
             Self::Not(condition) => condition.has_dice(),
-            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
-                a.has_dice() || b.has_dice()
-            }
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::GreaterEqualTo(a, b)
+            | Self::LessEqualTo(a, b) => a.has_dice() || b.has_dice(),
             Self::Constant(_) => false,
             Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => a.has_dice() || b.has_dice(),
         }
@@ -224,9 +240,11 @@ impl Depth for Condition {
         1 + match self {
             Self::Constant(_) => 0,
             Self::Not(a) => a.get_depth(),
-            Self::GreaterThan(a, b) | Self::LessThan(a, b) | Self::EqualTo(a, b) => {
-                a.get_depth().max(b.get_depth())
-            }
+            Self::GreaterThan(a, b)
+            | Self::LessThan(a, b)
+            | Self::EqualTo(a, b)
+            | Self::GreaterEqualTo(a, b)
+            | Self::LessEqualTo(a, b) => a.get_depth().max(b.get_depth()),
             Self::And(a, b) | Self::Or(a, b) | Self::Xor(a, b) => a.get_depth().max(b.get_depth()),
         }
     }
@@ -243,6 +261,8 @@ impl Display for Condition {
             Self::And(a, b) => write!(f, "({a}) AND ({b})"),
             Self::Or(a, b) => write!(f, "({a}) OR ({b})"),
             Self::Xor(a, b) => write!(f, "({a}) != ({b})"),
+            Self::GreaterEqualTo(a, b) => write!(f, "({a}) >= ({b})"),
+            Self::LessEqualTo(a, b) => write!(f, "({a}) <= ({b})"),
         }
     }
 }
