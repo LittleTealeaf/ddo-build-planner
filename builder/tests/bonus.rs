@@ -1,3 +1,5 @@
+//! Tests attributes of bonuses and values
+
 use builder::{
     attribute::{Attribute, AttributeDependencies},
     bonus::{Bonus, BonusType, Condition, Depth, HasDice, ToValue, Value},

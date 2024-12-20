@@ -1,3 +1,5 @@
+//! Tests that item sets have valid attributes
+
 use builder::attribute::Attribute;
 use data::{load_item_sets, ParseError};
 use itertools::chain;

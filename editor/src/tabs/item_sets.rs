@@ -104,7 +104,7 @@ impl HandleView<App> for TabItemSets {
     fn handle_view<'a>(
         &'a self,
         app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
+    ) -> Element<'a, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         let ui = || {
             Column::new()
                 .push(

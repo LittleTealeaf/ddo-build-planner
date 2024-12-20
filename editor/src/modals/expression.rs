@@ -508,13 +508,13 @@ impl HandleView<App> for ModalExpression {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
+    ) -> Element<'a, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         column!(
             row!(
                 text(
                     self.title
-                        .as_ref()
-                        .unwrap_or(&String::from("Configure Expression"))
+                        .clone()
+                        .unwrap_or_else(|| String::from("Configure Expression"))
                 ),
                 horizontal_space().width(Length::Fill),
                 button("Cancel")

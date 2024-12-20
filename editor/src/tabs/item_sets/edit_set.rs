@@ -159,7 +159,7 @@ impl HandleView<App> for ItemSetEditor {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
+    ) -> Element<'a, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         column!(
             row!(
                 text("Editing: ").size(30),

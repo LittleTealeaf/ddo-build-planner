@@ -244,14 +244,14 @@ impl HandleView<App> for ModalBonus {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
-    ) -> iced::Element<'_, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
+    ) -> iced::Element<'a, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
     {
         column!(
             row!(
                 text(
                     self.title
-                        .as_ref()
-                        .unwrap_or(&String::from("Configure Bonus"))
+                        .clone()
+                        .unwrap_or_else(|| String::from("Configure Bonus"))
                 ),
                 horizontal_space(),
                 button(text("Cancel"))

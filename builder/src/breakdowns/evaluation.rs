@@ -128,7 +128,7 @@ impl Breakdowns {
     }
 }
 
-impl<'a> Snapshot<'a> {
+impl Snapshot<'_> {
     fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut map = HashMap::new();
         let mut stacking = Decimal::ZERO;

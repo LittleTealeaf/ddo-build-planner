@@ -1,6 +1,6 @@
-// Tests that revolve around testing properly implemented logic
-// This does not test the actual content of the game, but rather the universal logic things.
-// Basically, testing logic that should apply to basically all characters
+//! Tests that revolve around testing properly implemented logic
+//! This does not test the actual content of the game, but rather the universal logic things.
+//! Basically, testing logic that should apply to basically all characters
 use builder::{
     attribute::{Attribute, GetBonuses},
     bonus::{Bonus, BonusSource, BonusTemplate, BonusType},
