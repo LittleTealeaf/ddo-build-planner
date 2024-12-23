@@ -10,7 +10,7 @@ where
     App: Application + Sized,
 {
     /// Handes the view with a reference to the application
-    fn handle_view<'a>(&'a self, app: &'a App) -> Element<'_, App::Message, App::Theme, Renderer>;
+    fn handle_view<'a>(&'a self, app: &'a App) -> Element<'a, App::Message, App::Theme, Renderer>;
 }
 
 /// Provides a new `handle_message` function

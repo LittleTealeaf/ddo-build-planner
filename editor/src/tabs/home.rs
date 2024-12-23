@@ -14,7 +14,7 @@ impl HandleView<App> for TabHome {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
+    ) -> Element<'a, <App as Application>::Message, <App as Application>::Theme, iced::Renderer>
     {
         column!(
             button(text("Attribute")).on_press(Message::DebugOpenAttribute),

@@ -1,3 +1,5 @@
+//! tests that set bonuses have valid attributes
+
 mod utils;
 use anyhow::Result;
 use builder::attribute::AttributeDependencies;

@@ -1,3 +1,5 @@
+//! Tests breakdowns functionalities
+
 use builder::{
     attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType, Condition, Value},

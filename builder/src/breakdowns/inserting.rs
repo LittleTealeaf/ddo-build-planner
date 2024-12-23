@@ -168,7 +168,10 @@ impl Breakdowns {
         }
     }
 
-    fn get_dependants<'a>(&'a self, attribute: &'a Attribute) -> impl Iterator<Item = &Bonus> + '_ {
+    fn get_dependants<'a>(
+        &'a self,
+        attribute: &'a Attribute,
+    ) -> impl Iterator<Item = &'a Bonus> + 'a {
         let filter = |bonus: &&Bonus| bonus.has_attr_dependency(attribute);
         self.get_bonuses().filter(filter)
     }

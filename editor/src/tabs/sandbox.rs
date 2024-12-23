@@ -304,7 +304,7 @@ impl HandleView<App> for TabSandbox {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
+    ) -> Element<'a, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         column!(
             row!(
                 button(text("Reload")).on_press(Msg::NewBreakdowns.into()),

@@ -128,7 +128,7 @@ impl Breakdowns {
     }
 }
 
-impl<'a> Snapshot<'a> {
+impl Snapshot<'_> {
     fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut map = HashMap::new();
         let mut stacking = Decimal::ZERO;
@@ -173,7 +173,9 @@ impl<'a> Snapshot<'a> {
             Condition::Constant(value) => return *value,
             Condition::Not(cond) => !self.evaluate_condition(cond),
             Condition::GreaterThan(a, b) => self.evaluate_value(a) > self.evaluate_value(b),
+            Condition::GreaterEqualTo(a, b) => self.evaluate_value(a) >= self.evaluate_value(b),
             Condition::LessThan(a, b) => self.evaluate_value(a) < self.evaluate_value(b),
+            Condition::LessEqualTo(a, b) => self.evaluate_value(a) <= self.evaluate_value(b),
             Condition::EqualTo(a, b) => self.evaluate_value(a) == self.evaluate_value(b),
             Condition::And(a, b) => self.evaluate_condition(a) && self.evaluate_condition(b),
             Condition::Or(a, b) => self.evaluate_condition(a) || self.evaluate_condition(b),

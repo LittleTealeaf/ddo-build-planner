@@ -9,7 +9,9 @@ use super::{InternalSelector, ModalExpression};
 pub enum ConditionType {
     Not,
     GreaterThan,
+    GreaterEqualTo,
     LessThan,
+    LessEqualTo,
     EqualTo,
     True,
     False,
@@ -44,6 +46,8 @@ impl Display for ConditionType {
             Self::And => write!(f, "And"),
             Self::Or => write!(f, "Or"),
             Self::Xor => write!(f, "Xor"),
+            Self::GreaterEqualTo => write!(f, "Greater or Equal To"),
+            Self::LessEqualTo => write!(f, "Less or Equal To"),
         }
     }
 }
@@ -67,7 +71,9 @@ impl ModalExpression {
         Some(match condition_type {
             ConditionType::Not => !cond_a?,
             ConditionType::GreaterThan => val_a?.greater_than(val_b?),
+            ConditionType::GreaterEqualTo => val_a?.greater_or_equal_to(val_b?),
             ConditionType::LessThan => val_a?.less_than(val_b?),
+            ConditionType::LessEqualTo => val_a?.less_or_equal_to(val_b?),
             ConditionType::EqualTo => val_a?.equal_to(val_b?),
             ConditionType::True => Condition::TRUE,
             ConditionType::False => Condition::FALSE,
@@ -101,10 +107,20 @@ impl InternalSelector {
                 value_b = Some(selector.add_selector_value(b));
                 condition_type = ConditionType::GreaterThan;
             }
+            Condition::GreaterEqualTo(a, b) => {
+                value_a = Some(selector.add_selector_value(a));
+                value_b = Some(selector.add_selector_value(b));
+                condition_type = ConditionType::GreaterEqualTo;
+            }
             Condition::LessThan(a, b) => {
                 value_a = Some(selector.add_selector_value(a));
                 value_b = Some(selector.add_selector_value(b));
                 condition_type = ConditionType::LessThan;
+            }
+            Condition::LessEqualTo(a, b) => {
+                value_a = Some(selector.add_selector_value(a));
+                value_b = Some(selector.add_selector_value(b));
+                condition_type = ConditionType::LessEqualTo;
             }
             Condition::EqualTo(a, b) => {
                 value_a = Some(selector.add_selector_value(a));

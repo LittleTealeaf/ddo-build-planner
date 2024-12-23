@@ -1,7 +1,4 @@
-use core::{
-    fmt::{self, Display},
-    iter::once,
-};
+use core::fmt::{self, Display};
 
 use rust_decimal::prelude::Decimal;
 use serde::{Deserialize, Serialize};
@@ -74,7 +71,7 @@ impl GetBonuses for PastLifeFeat {
 impl StaticValues for PastLifeFeat {
     fn values() -> impl Iterator<Item = Self> {
         chain_tree!(
-            once(Self::HeroicCompletionist),
+            [Self::HeroicCompletionist, Self::RacialCompletionist],
             IconicPastLife::values().map(Self::Iconic),
             HeroicPastLife::values().map(Self::Heroic),
             RacialPastLife::values().map(Self::Racial),

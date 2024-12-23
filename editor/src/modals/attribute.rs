@@ -328,7 +328,7 @@ impl HandleView<App> for ModalAttribute {
     fn handle_view<'a>(
         &'a self,
         _app: &'a App,
-    ) -> Element<'_, <App as Application>::Message, <App as Application>::Theme, Renderer> {
+    ) -> Element<'a, <App as Application>::Message, <App as Application>::Theme, Renderer> {
         let filter = self.filter.to_lowercase();
 
         column!(

@@ -25,6 +25,7 @@ use crate::{
 use self::base::get_base_bonuses;
 
 /// Breakdowns is an object that handles calculating the final attribute values for a character.
+///
 /// This object is used to both display final attribute values ([`Self::get_attribute`]),
 /// as well as list out the bonus breakdown of on particular attribute ([`Self::get_breakdowns`])
 /// of a particular variable

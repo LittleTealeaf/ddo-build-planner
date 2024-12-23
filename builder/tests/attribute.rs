@@ -1,3 +1,5 @@
+//! Tests serialization of set bonuses
+
 use builder::attribute::Attribute;
 use ron::{from_str, to_string};
 use utils::enums::StaticValues;
