@@ -18,7 +18,7 @@ workspace = true
 builder = { path = "../builder/" }
 utils = { path = "../utils/" }
 ui = { path = "../ui/" }
-serde = { version = "1.0.216" }
+serde = { version = "1.0.217" }
 iced = { version = "0.12.1", features = ["tokio"] }
 tokio = { version = "1.42.0", features = ["fs", "io-util", "macros", "rt"] }
 ron = { version = "0.8.1" }
