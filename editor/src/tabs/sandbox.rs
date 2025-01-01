@@ -28,9 +28,15 @@ pub struct TabSandbox {
     breakdowns: Breakdowns,
     bonuses: Vec<BonusTemplate>,
     toggles: Vec<Toggle>,
-    /// (Current, Max)
-    slider: Vec<(SliderAttribute, f32, f32)>,
+    slider: Vec<SliderState>,
     tab: TabSandboxTab,
+}
+
+#[derive(Debug, Clone)]
+struct SliderState {
+    attribute: SliderAttribute,
+    value: f32,
+    max: f32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -124,8 +130,12 @@ impl HandleMessage<TabSandboxMessage> for App {
                 }
 
                 let toggles = tab.toggles.iter().map(|toggle| toggle.toggle_bonus(true));
-                let sliders = tab.slider.iter().filter_map(|(slider, value, _)| {
-                    Some(slider.slider_bonus(Decimal::from_f32(*value)?))
+                let sliders = tab.slider.iter().filter_map(|state| {
+                    Some(
+                        state
+                            .attribute
+                            .slider_bonus(Decimal::from_f32(state.value)?),
+                    )
                 });
 
                 let bonuses = toggles.chain(sliders);
@@ -274,14 +284,11 @@ impl HandleMessage<TabSandboxMessage> for App {
                 let result = values
                     .into_iter()
                     .map(|(slider, value)| {
-                        Ok((
-                            slider,
-                            f32::try_from(value)?,
-                            f32::try_from(
-                                tab.breakdowns
-                                    .evaluate_attribute(&Attribute::SliderMax(slider)),
-                            )?,
-                        ))
+                        Ok(SliderState {
+                            attribute: slider,
+                            value: f32::try_from(value)?,
+                            max: f32::try_from(value)?,
+                        })
                     })
                     .collect::<Result<Vec<_>, rust_decimal::Error>>();
 
@@ -365,18 +372,17 @@ impl HandleView<App> for TabSandbox {
                                 .into()
                         })
                 ))),
-                TabSandboxTab::Sliders => Element::from(scrollable(column(
-                    self.slider.iter().map(|(slder, value, max)| {
+                TabSandboxTab::Sliders =>
+                    Element::from(scrollable(column(self.slider.iter().map(|state| {
                         row!(
-                            text(format!("{slder}")),
-                            slider(0f32..=*max, *value, |value| {
-                                Msg::SetSider(*slder, value).into()
+                            text(format!("{}", state.attribute)),
+                            slider(0f32..=state.max, state.value, |value| {
+                                Msg::SetSider(state.attribute, value).into()
                             }),
-                            text(format!("{value}"))
+                            text(format!("{}", state.value))
                         )
                         .into()
-                    })
-                ))),
+                    })))),
                 TabSandboxTab::Breakdowns => Element::from(column!(
                     row!(button("Track New Attribute")
                         .on_press(Msg::OpenTrackAttributePrompt.into())),
