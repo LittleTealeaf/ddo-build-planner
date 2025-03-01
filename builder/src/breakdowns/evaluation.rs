@@ -80,7 +80,7 @@ impl Breakdowns {
         C: Into<Option<&'a Condition>>,
     {
         Option::<&'a Condition>::from_into(condition)
-            .map_or(true, |cond| self.snapshot().evaluate_condition(cond))
+            .is_none_or(|cond| self.snapshot().evaluate_condition(cond))
     }
 
     /// Evaluates a given value based on values within the current [`Breakdowns`] object.
@@ -136,7 +136,7 @@ impl Snapshot<'_> {
         for bonus in self.bonuses.get(attribute)? {
             let condition = bonus
                 .condition()
-                .map_or(true, |cond| self.evaluate_condition(cond));
+                .is_none_or(|cond| self.evaluate_condition(cond));
 
             if condition {
                 let value = self.evaluate_value(bonus.value());
