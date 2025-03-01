@@ -418,7 +418,7 @@ impl AttributeDependencies for Bonus {
             || self
                 .condition
                 .as_ref()
-                .map_or(false, |cond| cond.has_attr_dependency(attribute))
+                .is_some_and(|cond| cond.has_attr_dependency(attribute))
     }
 
     fn include_attr_dependency(&self, set: &mut HashSet<Attribute>) {

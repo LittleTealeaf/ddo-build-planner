@@ -311,6 +311,6 @@ impl AttributeDependencies for BonusTemplate {
             || self
                 .condition
                 .as_ref()
-                .map_or(false, |cond| cond.has_attr_dependency(attribute))
+                .is_some_and(|cond| cond.has_attr_dependency(attribute))
     }
 }
