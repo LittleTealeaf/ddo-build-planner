@@ -49,7 +49,6 @@ unwrap_in_result = "warn"
 wildcard_dependencies = "warn"
 redundant_feature_names = "warn"
 renamed_function_params = "warn"
-
 too_many_lines = { level = "allow", priority = 1 }
 module_name_repetitions = { level = "allow", priority = 1 }
 needless_collect = { level = "allow", priority = 1 }
