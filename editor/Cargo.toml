@@ -21,7 +21,7 @@ ui = { path = "../ui/" }
 serde = { version = "1.0.219" }
 iced = { version = "0.12.1", features = ["tokio"] }
 tokio = { version = "1.44.1", features = ["fs", "io-util", "macros", "rt"] }
-ron = { version = "0.8.1" }
+ron = { version = "0.9.0" }
 iced_aw = { version = "0.9.3", default-features = false, features = [
 	"tabs",
 	"tab_bar",
