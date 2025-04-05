@@ -44,7 +44,7 @@ where
         self.data.as_ref()
     }
 
-    pub fn get_mut(&mut self) -> Option<&mut T> {
+    pub const fn get_mut(&mut self) -> Option<&mut T> {
         self.modified = true;
         self.data.as_mut()
     }

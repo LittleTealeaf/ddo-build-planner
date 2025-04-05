@@ -56,17 +56,17 @@ impl ItemTemplate {
     }
 
     /// Returns a mutable reference to the mut slots of this [`ItemTemplate`].
-    pub fn slots_mut(&mut self) -> &mut Vec<GearSlot> {
+    pub const fn slots_mut(&mut self) -> &mut Vec<GearSlot> {
         &mut self.slots
     }
 
     /// Returns a mutable reference to the mut prevent slots of this [`ItemTemplate`].
-    pub fn prevent_slots_mut(&mut self) -> &mut Vec<GearSlot> {
+    pub const fn prevent_slots_mut(&mut self) -> &mut Vec<GearSlot> {
         &mut self.prevent_slots
     }
 
     /// Returns a mutable reference to the crafting slots of this [`ItemTemplate`]
-    pub fn crafting_slots_mut(&mut self) -> &mut Vec<CraftingSlot> {
+    pub const fn crafting_slots_mut(&mut self) -> &mut Vec<CraftingSlot> {
         &mut self.crafting_slots
     }
 
@@ -81,7 +81,7 @@ impl ItemTemplate {
     }
 
     /// Sets the minimum level of this [`ItemTemplate`].
-    pub fn set_minimum_level(&mut self, minimum_level: i32) {
+    pub const fn set_minimum_level(&mut self, minimum_level: i32) {
         self.minimum_level = minimum_level;
     }
 
