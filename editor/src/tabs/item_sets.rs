@@ -91,6 +91,8 @@ impl HandleMessage<TabSetBonusesMessage> for App {
                     item_sets.push(editor.item_set.clone());
                 }
 
+                item_sets.sort_by_key(|item| item.name().to_owned());
+
                 Command::batch([
                     self.handle_message(DataMessage::SetBonuses(DataContainerMessage::Modified)),
                     self.handle_message(TabSetBonusesMessage::CancelEdit),
