@@ -1,0 +1,1 @@
+Data in `data` are stored in line-heavy condensed Rust-Object-Notation format. Do not edit them directly, they are serialized by the rest of the program, and formatted to be as many lines as possible in order to minimize space and improve GIT performance.
