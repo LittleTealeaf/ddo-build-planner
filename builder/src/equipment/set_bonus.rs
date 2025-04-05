@@ -73,7 +73,7 @@ impl ItemSet {
     }
 
     /// Returns a mutable reference to the bonuses of this [`SetBonus`].
-    pub fn bonuses_mut(&mut self) -> &mut OrdMap<i32, Vec<BonusTemplate>> {
+    pub const fn bonuses_mut(&mut self) -> &mut OrdMap<i32, Vec<BonusTemplate>> {
         &mut self.bonuses
     }
 }

@@ -239,7 +239,7 @@ impl ModalAttribute {
     ) -> Result<impl Iterator<Item = Attribute> + '_, ModalAttributeError> {
         if !self.multiselect {
             return Err(ModalAttributeError::NotMultiselected);
-        };
+        }
 
         Ok(self
             .selected

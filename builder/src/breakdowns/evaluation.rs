@@ -119,7 +119,7 @@ struct Snapshot<'a> {
 
 /// Snapshot Conversion
 impl Breakdowns {
-    fn snapshot(&mut self) -> Snapshot<'_> {
+    const fn snapshot(&mut self) -> Snapshot<'_> {
         Snapshot {
             cache: &mut self.cache,
             bonuses: &self.bonuses,
