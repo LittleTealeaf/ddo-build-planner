@@ -814,6 +814,23 @@ v:v("5"),
 )],
 },
 ),(
+n:"The Desert\'s Biting Sands",
+b:{
+2:[(
+a:scc(d(fo)),
+t:ar,
+v:v("2"),
+),(
+a:spow(d(fo)),
+t:ar,
+v:v("10"),
+),(
+a:shel(c),
+t:ar,
+v:v("10"),
+)],
+},
+),(
 n:"Wayward Warrior",
 b:{
 2:[(
