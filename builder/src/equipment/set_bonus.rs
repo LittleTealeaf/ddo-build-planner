@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     attribute::Attribute,
     bonus::{BonusTemplate, ToValue},
+    breakdowns::DynamicBonus,
 };
 
 /// Describes an item set with it's name and bonuses
@@ -16,6 +17,18 @@ pub struct ItemSet {
     name: String,
     #[serde(rename = "b", alias = "bonuses")]
     bonuses: OrdMap<i32, Vec<BonusTemplate>>,
+}
+
+impl DynamicBonus for ItemSet {
+    fn attribute(&self) -> Attribute {
+        Attribute::ItemSet(self.name.clone())
+    }
+
+    fn tiered_bonuses(
+        &self,
+    ) -> impl IntoIterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)> {
+        self.bonuses.clone().into_iter()
+    }
 }
 
 impl ItemSet {

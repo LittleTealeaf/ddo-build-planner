@@ -14,6 +14,7 @@ use im::OrdSet;
 use rust_decimal::Decimal;
 
 pub use breakdown::*;
+pub use dynamic::DynamicBonus;
 use serde::{Deserialize, Serialize};
 
 use crate::{

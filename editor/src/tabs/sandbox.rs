@@ -7,7 +7,6 @@ use builder::{
     attribute::Attribute,
     bonus::{BonusSource, BonusTemplate},
     breakdowns::{Breakdowns, DiceStrategy},
-    equipment::set_bonus::ItemSet,
     types::{self, toggle::Toggle},
 };
 use iced::{
@@ -141,8 +140,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                     return self.handle_message(error!("Item sets not loaded"));
                 };
 
-                let dynamic_bonuses = item_sets.iter().cloned().map(ItemSet::to_dynamic_bonus);
-                tab.breakdowns.import_dynamic_bonuses(dynamic_bonuses);
+                tab.breakdowns.import_dynamic_bonuses(item_sets.clone());
 
                 Command::none()
             }
@@ -240,7 +238,7 @@ impl HandleMessage<TabSandboxMessage> for App {
             TabSandboxMessage::DeleteBonus(index) => {
                 tab.bonuses.remove(index);
 
-                Command::none()
+                self.handle_message(Msg::UpdateBonuses)
             }
             TabSandboxMessage::UpdateBonuses => {
                 let bonuses = tab
@@ -251,7 +249,10 @@ impl HandleMessage<TabSandboxMessage> for App {
 
                 tab.breakdowns.insert_bonuses(bonuses);
 
-                self.handle_message(Msg::RefreshSliders)
+                Command::batch([
+                    self.handle_message(Msg::RefreshSliders),
+                    self.handle_message(Msg::RefreshToggles),
+                ])
             }
             TabSandboxMessage::SetToggle(toggle, value) => {
                 tab.breakdowns.insert_bonus(toggle.toggle_bonus(value));

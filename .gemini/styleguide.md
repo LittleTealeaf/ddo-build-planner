@@ -1,0 +1,2 @@
+- Rust style is already checked and formatted via rustfmt
+- `item_sets.ron` should not be checked or critiqued, it is automatically generated via code as a "serialized source file" that is condensed in pre-processing, it's format is spread out and non-readable to keep size down and better accept git changes

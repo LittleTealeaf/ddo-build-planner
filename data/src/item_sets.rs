@@ -29,7 +29,7 @@ pub trait IncludeItemSets: Sized {
 
 impl IncludeItemSets for Breakdowns {
     fn include_item_sets(&mut self) -> Result<(), SpannedError> {
-        self.import_dynamic_bonuses(load_item_sets()?.into_iter().map(ItemSet::to_dynamic_bonus));
+        self.import_dynamic_bonuses(load_item_sets()?);
         Ok(())
     }
 }

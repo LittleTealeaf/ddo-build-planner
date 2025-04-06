@@ -298,31 +298,48 @@ mod condition {
 }
 
 mod dynamic {
-    use builder::{bonus::BonusTemplate, types::ability::Ability};
+    use core::iter::once;
+
+    use builder::{bonus::BonusTemplate, breakdowns::DynamicBonus, types::ability::Ability};
 
     use super::*;
 
     #[test]
     fn bonus_doesnt_apply_by_default() {
+        struct DB;
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
+                vec![BonusTemplate::new(Ability::All, DebugValue(0), 10)].into_iter()
+            }
+        }
+
         let mut breakdowns = Breakdowns::new();
 
-        breakdowns.import_dynamic_bonus(
-            Attribute::Debug(0),
-            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)],
-        );
+        breakdowns.import_dynamic_bonus(DB);
 
         assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 0.into());
     }
 
     #[test]
     fn bonus_applies_if_value_exists() {
+        struct DB;
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
+                vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)]
+            }
+        }
+
         let mut breakdowns = Breakdowns::new();
 
-        breakdowns.import_dynamic_bonus(
-            Attribute::Debug(0),
-            vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)],
-        );
-
+        breakdowns.import_dynamic_bonus(DB);
         breakdowns.insert_bonus(Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0)));
 
         assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 10.into());
@@ -330,12 +347,20 @@ mod dynamic {
 
     #[test]
     fn bonuses_get_cloned() {
+        struct DB;
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
+                vec![BonusTemplate::new(Ability::All, DebugValue(1), 10)]
+            }
+        }
+
         let mut breakdowns = Breakdowns::new();
 
-        breakdowns.import_dynamic_bonus(
-            Attribute::Debug(0),
-            vec![BonusTemplate::new(Ability::All, DebugValue(0), 10)],
-        );
+        breakdowns.import_dynamic_bonus(DB);
 
         let before = breakdowns.evaluate_attribute_from(Ability::Constitution);
 
@@ -349,6 +374,46 @@ mod dynamic {
         let after = breakdowns.evaluate_attribute_from(Ability::Constitution);
 
         assert_eq!(after - before, 10.into());
+    }
+
+    #[test]
+    fn tiered_bonuses_work() {
+        struct DB;
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+
+            fn tiered_bonuses(
+                &self,
+            ) -> impl IntoIterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)>
+            {
+                vec![
+                    (
+                        1,
+                        once(BonusTemplate::new(DebugValue(1), DebugValue(1), 10)),
+                    ),
+                    (
+                        2,
+                        once(BonusTemplate::new(DebugValue(2), DebugValue(2), 20)),
+                    ),
+                ]
+            }
+        }
+
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.import_dynamic_bonus(DB);
+
+        breakdowns.insert_bonus(Bonus::new(DebugValue(0), DebugValue(0), 1, DebugValue(0)));
+
+        assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 10.into());
+        assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(2)), 0.into());
+
+        breakdowns.insert_bonus(Bonus::new(DebugValue(0), DebugValue(0), 2, DebugValue(0)));
+
+        assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 10.into());
+        assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(2)), 20.into());
     }
 }
 
