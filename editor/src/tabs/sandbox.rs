@@ -97,7 +97,10 @@ impl HandleMessage<TabSandboxMessage> for App {
         &mut self,
         message: TabSandboxMessage,
     ) -> Command<<Self as Application>::Message> {
+        dbg!(&message);
         let tab = &mut self.tab_sandbox;
+
+        dbg!(&tab.bonuses);
 
         match message {
             TabSandboxMessage::SetDiceStrategy(strategy) => {
