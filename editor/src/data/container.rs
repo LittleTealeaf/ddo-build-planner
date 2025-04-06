@@ -23,6 +23,7 @@ where
     modified: bool,
     saving: bool,
     path: PathBuf,
+    on_load_listener: Vec<Message>,
 }
 
 use super::DataMessage;
@@ -37,6 +38,7 @@ where
             modified: false,
             saving: false,
             path,
+            on_load_listener: Vec::new(),
         }
     }
 
@@ -56,6 +58,16 @@ where
 
     pub const fn saving(&self) -> bool {
         self.saving
+    }
+
+    pub fn with_on_load<M>(self, on_load: M) -> Self
+    where
+        Message: From<M>,
+    {
+        Self {
+            on_load_listener: [self.on_load_listener, vec![on_load.into()]].concat(),
+            ..self
+        }
     }
 }
 
@@ -97,7 +109,14 @@ where
                 self.modified = false;
                 self.data = Some(data);
 
-                self.handle_message(DataContainerMessage::Modified)
+                // let mod_msg = self.handle_message(DataContainerMessage::Modified);
+                let mut cmds = vec![self.handle_message(DataContainerMessage::Modified)];
+
+                while let Some(listener) = self.on_load_listener.pop() {
+                    cmds.push(Command::run_message(listener));
+                }
+
+                Command::batch(cmds)
             }
             DataContainerMessage::Save => {
                 let Some(data) = &self.data else {

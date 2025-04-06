@@ -6,7 +6,7 @@ use itertools::chain;
 use ui::HandleMessage;
 use utils::enums::StaticValues;
 
-use crate::{App, Message};
+use crate::{tabs::sandbox::TabSandboxMessage, App, Message};
 
 use self::container::{DataContainer, DataContainerMessage};
 
@@ -24,7 +24,8 @@ impl Data {
         let root: PathBuf = PathBuf::from_iter([".", "data", "data"]);
 
         Self {
-            item_sets: DataContainer::new(root.join("item_sets.ron")),
+            item_sets: DataContainer::new(root.join("item_sets.ron"))
+                .with_on_load(TabSandboxMessage::RefreshItemSets),
         }
     }
 
