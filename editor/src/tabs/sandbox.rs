@@ -97,10 +97,7 @@ impl HandleMessage<TabSandboxMessage> for App {
         &mut self,
         message: TabSandboxMessage,
     ) -> Command<<Self as Application>::Message> {
-        dbg!(&message);
         let tab = &mut self.tab_sandbox;
-
-        dbg!(&tab.bonuses);
 
         match message {
             TabSandboxMessage::SetDiceStrategy(strategy) => {
@@ -134,8 +131,8 @@ impl HandleMessage<TabSandboxMessage> for App {
                 tab.breakdowns.insert_bonuses(bonuses);
 
                 Command::batch([
-                    Command::message(Msg::RefreshItemSets),
-                    Command::message(Msg::UpdateBonuses),
+                    self.handle_message(Msg::RefreshItemSets),
+                    self.handle_message(Msg::UpdateBonuses),
                 ])
             }
             TabSandboxMessage::RefreshItemSets => {
@@ -248,7 +245,7 @@ impl HandleMessage<TabSandboxMessage> for App {
                     .bonuses
                     .iter()
                     .cloned()
-                    .map(|bonus| bonus.to_bonus(BonusSource::Debug(0)));
+                    .map(|bonus| bonus.to_bonus(BonusSource::Sandbox));
 
                 tab.breakdowns.insert_bonuses(bonuses);
 

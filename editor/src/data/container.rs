@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use iced::{Application, Command};
+use itertools::chain;
 use ron::{from_str, ser::to_string_pretty};
 use serde::{Deserialize, Serialize};
 use tokio::{
@@ -23,7 +24,7 @@ where
     modified: bool,
     saving: bool,
     path: PathBuf,
-    on_load_listener: Vec<Message>,
+    on_modified_listener: Vec<Message>,
 }
 
 use super::DataMessage;
@@ -38,7 +39,7 @@ where
             modified: false,
             saving: false,
             path,
-            on_load_listener: Vec::new(),
+            on_modified_listener: Vec::new(),
         }
     }
 
@@ -60,12 +61,12 @@ where
         self.saving
     }
 
-    pub fn with_on_load<M>(self, on_load: M) -> Self
+    pub fn with_on_modified<M>(self, on_modified: M) -> Self
     where
         Message: From<M>,
     {
         Self {
-            on_load_listener: [self.on_load_listener, vec![on_load.into()]].concat(),
+            on_modified_listener: [self.on_modified_listener, vec![on_modified.into()]].concat(),
             ..self
         }
     }
@@ -109,14 +110,7 @@ where
                 self.modified = false;
                 self.data = Some(data);
 
-                // let mod_msg = self.handle_message(DataContainerMessage::Modified);
-                let mut cmds = vec![self.handle_message(DataContainerMessage::Modified)];
-
-                while let Some(listener) = self.on_load_listener.pop() {
-                    cmds.push(Command::run_message(listener));
-                }
-
-                Command::batch(cmds)
+                self.handle_message(DataContainerMessage::Modified)
             }
             DataContainerMessage::Save => {
                 let Some(data) = &self.data else {
@@ -141,7 +135,14 @@ where
             }
             DataContainerMessage::Modified => {
                 self.modified = true;
-                self.handle_message(DataContainerMessage::<T>::Save)
+
+                Command::batch(chain!(
+                    [self.handle_message(DataContainerMessage::<T>::Save)],
+                    self.on_modified_listener
+                        .iter()
+                        .cloned()
+                        .map(|msg| { Command::run_message(msg) })
+                ))
             }
         }
     }

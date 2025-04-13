@@ -25,7 +25,7 @@ impl Data {
 
         Self {
             item_sets: DataContainer::new(root.join("item_sets.ron"))
-                .with_on_load(TabSandboxMessage::RefreshItemSets),
+                .with_on_modified(TabSandboxMessage::RefreshItemSets),
         }
     }
 

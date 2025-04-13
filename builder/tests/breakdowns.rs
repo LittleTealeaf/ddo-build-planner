@@ -312,7 +312,7 @@ mod dynamic {
             fn attribute(&self) -> Attribute {
                 Attribute::Debug(0)
             }
-            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
+            fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
                 vec![BonusTemplate::new(Ability::All, DebugValue(0), 10)].into_iter()
             }
         }
@@ -332,8 +332,8 @@ mod dynamic {
             fn attribute(&self) -> Attribute {
                 Attribute::Debug(0)
             }
-            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
-                vec![BonusTemplate::new(DebugValue(1), DebugValue(1), 10)]
+            fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
+                once(BonusTemplate::new(DebugValue(1), DebugValue(1), 10))
             }
         }
 
@@ -353,8 +353,8 @@ mod dynamic {
             fn attribute(&self) -> Attribute {
                 Attribute::Debug(0)
             }
-            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
-                vec![BonusTemplate::new(Ability::All, DebugValue(1), 10)]
+            fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
+                once(BonusTemplate::new(Ability::All, DebugValue(1), 10))
             }
         }
 
@@ -387,9 +387,8 @@ mod dynamic {
 
             fn tiered_bonuses(
                 &self,
-            ) -> impl IntoIterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)>
-            {
-                vec![
+            ) -> impl Iterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)> {
+                [
                     (
                         1,
                         once(BonusTemplate::new(DebugValue(1), DebugValue(1), 10)),
@@ -399,6 +398,7 @@ mod dynamic {
                         once(BonusTemplate::new(DebugValue(2), DebugValue(2), 20)),
                     ),
                 ]
+                .into_iter()
             }
         }
 
@@ -424,8 +424,8 @@ mod dynamic {
             fn attribute(&self) -> Attribute {
                 Attribute::Debug(0)
             }
-            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
-                vec![BonusTemplate::new(Attribute::Debug(1), DebugValue(1), 10)]
+            fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
+                once(BonusTemplate::new(Attribute::Debug(1), DebugValue(1), 10))
             }
         }
 
@@ -468,6 +468,55 @@ mod dynamic {
             2,
             BonusSource::Debug(0),
         ));
+
+        // There should be 1 bonuse here
+        assert_eq!(
+            breakdown
+                .get_bonuses()
+                .filter(|bonus| bonus
+                    .source()
+                    .eq(&BonusSource::Attribute(Attribute::Debug(0))))
+                .count(),
+            1
+        );
+    }
+
+    #[test]
+    fn bonuses_clear_when_re_adding() {
+        struct DB;
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+            fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
+                once(BonusTemplate::new(Attribute::Debug(1), DebugValue(1), 10))
+            }
+        }
+
+        let mut breakdown = Breakdowns::new();
+
+        breakdown.import_dynamic_bonus(DB);
+
+        breakdown.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Debug(0),
+            1,
+            BonusSource::Debug(0),
+        ));
+
+        // There should be 1 bonuse here
+        assert_eq!(
+            breakdown
+                .get_bonuses()
+                .filter(|bonus| bonus
+                    .source()
+                    .eq(&BonusSource::Attribute(Attribute::Debug(0))))
+                .count(),
+            1
+        );
+
+        breakdown.import_dynamic_bonus(DB);
 
         // There should be 1 bonuse here
         assert_eq!(
@@ -611,6 +660,10 @@ mod stacking {
 }
 
 mod breakdowns {
+    use core::iter::once;
+
+    use builder::{bonus::BonusTemplate, breakdowns::DynamicBonus};
+
     use super::*;
 
     #[test]
@@ -712,6 +765,64 @@ mod breakdowns {
                 .value(),
             &Decimal::TEN
         );
+    }
+
+    #[test]
+    fn breakdowns_include_dynamic_bonuses() {
+        struct DB;
+
+        // Dynamic Bonus that when Debug(0) > 0 then add a 1 BonusType::Debug(1) to Debug(1)
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+            fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
+                once(BonusTemplate::new(
+                    Attribute::Debug(1),
+                    BonusType::Debug(1),
+                    1,
+                ))
+            }
+        }
+
+        let mut breakdowns = Breakdowns::new();
+        breakdowns.import_dynamic_bonus(DB);
+
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            1,
+            BonusSource::Debug(0),
+        ));
+
+        breakdowns.add_breakdown(Attribute::Debug(1));
+        breakdowns.import_dynamic_bonus(DB);
+
+        breakdowns.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Stacking,
+            1,
+            BonusSource::Debug(0),
+        ));
+
+        // Check that there are no overwrites
+        {
+            let bd = breakdowns
+                .breakdowns()
+                .get(&Attribute::Debug(1))
+                .expect("Expected Breakdown");
+
+            let bonuses = bd.bonuses();
+            assert_eq!(bonuses.len(), 1);
+
+            let bte = bonuses.first().expect("Expected Bonus Type Entry");
+
+            assert!(bte.applied().is_some());
+            assert!(bte.disabled().is_empty());
+
+            assert!(bte.overwritten().is_empty());
+        }
     }
 
     // TODO: additional tests for breakdowns

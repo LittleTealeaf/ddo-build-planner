@@ -39,20 +39,18 @@ impl Breakdowns {
             let attribute = dynamic_bonus.attribute();
             attributes.insert(attribute.clone());
 
-            let custom = dynamic_bonus.custom_bonuses().into_iter();
-            let tiered =
-                dynamic_bonus
-                    .tiered_bonuses()
-                    .into_iter()
-                    .flat_map(move |(tier, bonuses)| {
-                        let condition = attribute
-                            .clone()
-                            .to_value()
-                            .greater_or_equal_to(tier.to_value());
-                        bonuses
-                            .into_iter()
-                            .map(move |bonus| bonus.with_condition_and(condition.clone()))
-                    });
+            let custom = dynamic_bonus.custom_bonuses();
+            let tiered = dynamic_bonus
+                .tiered_bonuses()
+                .flat_map(move |(tier, bonuses)| {
+                    let condition = attribute
+                        .clone()
+                        .to_value()
+                        .greater_or_equal_to(tier.to_value());
+                    bonuses
+                        .into_iter()
+                        .map(move |bonus| bonus.with_condition_and(condition.clone()))
+                });
 
             let bonuses = custom.chain(tiered);
 
@@ -60,7 +58,6 @@ impl Breakdowns {
         });
 
         self.dynamic_bonuses.extend(dynamic_bonuses);
-
         self.recalculate_attributes(attributes);
     }
 }
@@ -72,14 +69,14 @@ pub trait DynamicBonus {
     /// The attribute that the dynamic bonuses are associated with
     fn attribute(&self) -> Attribute;
     /// Any custom bonuses that don't fall under the [`DynamicBonus::tiered_bonuses`] format. Returns some iterator of bonus templates
-    fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
+    fn custom_bonuses(&self) -> impl Iterator<Item = BonusTemplate> {
         empty()
     }
 
     /// Returns an iterator of the minimum attribute value, and it's corresponding list of bonuses that should be applied
     fn tiered_bonuses(
         &self,
-    ) -> impl IntoIterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)> {
+    ) -> impl Iterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)> {
         empty::<(i32, Empty<BonusTemplate>)>()
     }
 }

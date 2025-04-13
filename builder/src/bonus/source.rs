@@ -27,6 +27,8 @@ pub enum BonusSource {
     Debug(usize),
     /// Only used for initial values
     Base,
+    /// Used for the editor Sandbox mode
+    Sandbox,
 }
 
 impl Display for BonusSource {
@@ -38,6 +40,7 @@ impl Display for BonusSource {
             Self::Debug(num) => write!(f, "Debug: {num}"),
             Self::Base => write!(f, "Base"),
             Self::ToggleGroup(group) => write!(f, "Toggle Group: {group}"),
+            Self::Sandbox => write!(f, "Sandbox"),
         }
     }
 }
@@ -82,7 +85,7 @@ where
 impl StaticValues for BonusSource {
     fn values() -> impl Iterator<Item = Self> {
         chain!(
-            [Self::Base],
+            [Self::Base, Self::Sandbox],
             Attribute::values().map(Self::Attribute),
             Slider::values().map(Self::Slider)
         )

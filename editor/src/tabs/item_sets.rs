@@ -15,8 +15,6 @@ use crate::{
 
 use self::edit_set::{ItemSetEditor, ItemSetEditorMessage};
 
-use super::sandbox::TabSandboxMessage;
-
 #[derive(Debug, Clone, Default)]
 pub struct TabItemSets {
     filter: String,
@@ -97,7 +95,6 @@ impl HandleMessage<TabSetBonusesMessage> for App {
 
                 Command::batch([
                     self.handle_message(DataMessage::SetBonuses(DataContainerMessage::Modified)),
-                    self.handle_message(TabSandboxMessage::RefreshItemSets),
                     self.handle_message(TabSetBonusesMessage::CancelEdit),
                 ])
             }

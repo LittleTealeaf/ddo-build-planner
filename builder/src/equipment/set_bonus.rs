@@ -26,7 +26,7 @@ impl DynamicBonus for ItemSet {
 
     fn tiered_bonuses(
         &self,
-    ) -> impl IntoIterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)> {
+    ) -> impl Iterator<Item = (i32, impl IntoIterator<Item = BonusTemplate>)> {
         self.bonuses.clone().into_iter()
     }
 }
