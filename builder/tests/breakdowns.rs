@@ -415,6 +415,71 @@ mod dynamic {
         assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(1)), 10.into());
         assert_eq!(breakdowns.evaluate_attribute_from(DebugValue(2)), 20.into());
     }
+
+    #[test]
+    fn bonuses_do_not_duplicate() {
+        struct DB;
+
+        impl DynamicBonus for DB {
+            fn attribute(&self) -> Attribute {
+                Attribute::Debug(0)
+            }
+            fn custom_bonuses(&self) -> impl IntoIterator<Item = BonusTemplate> {
+                vec![BonusTemplate::new(Attribute::Debug(1), DebugValue(1), 10)]
+            }
+        }
+
+        let mut breakdown = Breakdowns::new();
+
+        breakdown.import_dynamic_bonus(DB);
+
+        // There should be no bonuses here
+        assert_eq!(
+            breakdown
+                .get_bonuses()
+                .filter(|bonus| bonus
+                    .source()
+                    .eq(&BonusSource::Attribute(Attribute::Debug(0))))
+                .count(),
+            0
+        );
+
+        breakdown.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Debug(0),
+            1,
+            BonusSource::Debug(0),
+        ));
+
+        // There should be 1 bonuse here
+        assert_eq!(
+            breakdown
+                .get_bonuses()
+                .filter(|bonus| bonus
+                    .source()
+                    .eq(&BonusSource::Attribute(Attribute::Debug(0))))
+                .count(),
+            1
+        );
+
+        breakdown.insert_bonus(Bonus::new(
+            Attribute::Debug(0),
+            BonusType::Debug(0),
+            2,
+            BonusSource::Debug(0),
+        ));
+
+        // There should be 1 bonuse here
+        assert_eq!(
+            breakdown
+                .get_bonuses()
+                .filter(|bonus| bonus
+                    .source()
+                    .eq(&BonusSource::Attribute(Attribute::Debug(0))))
+                .count(),
+            1
+        );
+    }
 }
 
 mod sources {
