@@ -19,4 +19,4 @@ debug = []
 [dependencies]
 im = "15.1.0"
 itertools = "0.14.0"
-ron = "0.9.0"
+ron = "0.10.1"
