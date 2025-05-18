@@ -140,10 +140,7 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
             Value::iter_min([
                 Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
                 Value::condition(
-                    [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                        .map(Condition::has)
-                        .cond_any()
-                        .unwrap(),
+                    base_utils::is_wearing_armor().unwrap_or(Condition::FALSE),
                     ArmorClass::ArmorMaxDex,
                     Value::MAX,
                 ),
@@ -162,12 +159,15 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
             Value::iter_sum([
                 ArmorClass::Bonus.to_value(),
                 ArmorClass::NaturalArmor.to_value(),
-                ArmorClass::ShieldBonus.to_value()
-                    * (Value::ONE + (ArmorClass::ShieldScalar.to_value()) / Value::ONE_HUNDRED),
-                ArmorClass::ArmorBonus.to_value()
-                    * (Value::ONE + (ArmorClass::ArmorScalar.to_value() / Value::ONE_HUNDRED)),
+                ArmorClass::ShieldBonus
+                    .to_value()
+                    .scale_with(ArmorClass::ShieldScalar.to_value()),
+                ArmorClass::ArmorBonus
+                    .to_value()
+                    .scale_with(ArmorClass::ArmorScalar.to_value()),
                 Value::TEN,
-            ]) * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
+            ])
+            .scale_with(ArmorClass::TotalScalar.to_value()),
         ),
     ]
 }
@@ -177,14 +177,16 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Health::Bonus,
             BonusType::Stacking,
-            Health::Base.to_value() * (Health::BaseModifier.to_value() + Value::ONE_HUNDRED)
-                / Value::ONE_HUNDRED,
+            Health::Base
+                .to_value()
+                .scale_with(Health::BaseModifier.to_value()),
         ),
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
-            Health::Bonus.to_value() * (Health::Modifier.to_value() + Value::ONE_HUNDRED)
-                / Value::ONE_HUNDRED,
+            Health::Bonus
+                .to_value()
+                .scale_with(Health::Modifier.to_value()),
         ),
     ]
 }
@@ -407,7 +409,7 @@ fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
             one_hand_main_hand.clone()
                 & chain!(
                     [
-                        one_hand_off_hand.clone(),
+                        Condition::has(Flag::TwoWeaponFighting),
                         Condition::has(OffHandType::Shield(ShieldType::Buckler))
                             & !Condition::has(Flag::BucklerSingleWeaponFighting)
                     ],
@@ -435,4 +437,19 @@ fn dodge() -> impl Iterator<Item = BonusTemplate> {
         )
         .with_display_source(Dodge::Bonus),
     )
+}
+
+mod base_utils {
+    use super::{ArmorType, Condition, ConditionFold};
+
+    pub fn is_wearing_armor() -> Option<Condition> {
+        [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+            .map(Condition::has)
+            .cond_any()
+    }
+
+    #[test]
+    fn test_is_wearing_armor() {
+        assert!(is_wearing_armor().is_some());
+    }
 }

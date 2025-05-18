@@ -282,6 +282,24 @@ impl Value {
     pub fn min(self, other: Self) -> Self {
         Self::Min(Box::new(self), Box::new(other))
     }
+
+    /// Shortcut to dividing by 100
+    #[must_use]
+    pub fn as_percent(self) -> Self {
+        self / Self::ONE_HUNDRED
+    }
+
+    /// Shortcut to dividing by 100 and adding 1
+    #[must_use]
+    pub fn as_scalar(self) -> Self {
+        Self::ONE + self.as_percent()
+    }
+
+    /// Shortcut to scaling this number by some other number's %
+    #[must_use]
+    pub fn scale_with(self, other: Self) -> Self {
+        self * other.as_scalar()
+    }
 }
 
 /// Implements a shortcut to using [`Value::from`]

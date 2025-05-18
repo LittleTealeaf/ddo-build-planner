@@ -37,6 +37,7 @@ pub struct Bonus {
     #[serde(rename = "a", alias = "attr", alias = "attribute")]
     attribute: Attribute,
     #[serde(rename = "t", alias = "type", alias = "bonus_type")]
+    #[allow(clippy::struct_field_names)]
     bonus_type: BonusType,
     #[serde(rename = "v", alias = "val", alias = "value")]
     value: Value,
