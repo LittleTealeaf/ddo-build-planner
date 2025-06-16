@@ -33,7 +33,7 @@ iced_aw = { version = "0.9.3", default-features = false, features = [
 ] }
 fuzzy-filter = "0.1.0"
 itertools = "0.14.0"
-rust_decimal = "1.37.1"
+rust_decimal = "1.37.2"
 anyhow = "1.0.97"
 im = { version = "15.1.0", features = ["serde"] }
 
