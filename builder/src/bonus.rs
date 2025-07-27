@@ -37,7 +37,7 @@ pub struct Bonus {
     #[serde(rename = "a", alias = "attr", alias = "attribute")]
     attribute: Attribute,
     #[serde(rename = "t", alias = "type", alias = "bonus_type")]
-    bonus_type: BonusType,
+    r#type: BonusType,
     #[serde(rename = "v", alias = "val", alias = "value")]
     value: Value,
     #[serde(
@@ -71,7 +71,7 @@ impl Bonus {
     {
         Self {
             attribute: attribute.into(),
-            bonus_type: bonus_type.into(),
+            r#type: bonus_type.into(),
             value: value.into(),
             source: source.into(),
             condition: None,
@@ -150,7 +150,7 @@ impl Bonus {
         T: Into<BonusType>,
     {
         Self {
-            bonus_type: bonus_type.into(),
+            r#type: bonus_type.into(),
             ..self
         }
     }
@@ -302,7 +302,7 @@ impl Bonus {
     /// ```
     #[must_use]
     pub const fn bonus_type(&self) -> &BonusType {
-        &self.bonus_type
+        &self.r#type
     }
 
     /// Returns the value of the bonus
@@ -397,7 +397,7 @@ impl Bonus {
     {
         Self {
             attribute: attribute.into(),
-            bonus_type: self.bonus_type,
+            r#type: self.r#type,
             value: self.value.clone(),
             source: self.source.clone(),
             display_source: self.display_source.clone(),
@@ -435,13 +435,13 @@ impl Display for Bonus {
             write!(
                 f,
                 "{} {} bonus to {} if {}",
-                self.value, self.bonus_type, self.attribute, condition
+                self.value, self.r#type, self.attribute, condition
             )
         } else {
             write!(
                 f,
                 "{} {} bonus to {}",
-                self.value, self.bonus_type, self.attribute
+                self.value, self.r#type, self.attribute
             )
         }
     }
