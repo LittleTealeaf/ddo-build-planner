@@ -177,12 +177,12 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Health::Bonus,
             BonusType::Stacking,
-            Health::Base.to_value() * Health::BaseModifier.to_value().scalar(),
+            Health::Base.to_value() * Health::BaseScalar.to_value().scalar(),
         ),
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
-            Health::Bonus.to_value() * Health::Modifier.to_value().scalar(),
+            Health::Bonus.to_value() * Health::Scalar.to_value().scalar(),
         ),
     ]
 }
@@ -201,7 +201,7 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             SpellPoints::Total,
             BonusType::Stacking,
-            SpellPoints::Base.to_value() * SpellPoints::Modifier.to_value().scalar(),
+            SpellPoints::Base.to_value() * SpellPoints::Scalar.to_value().scalar(),
         ),
     ]
 }
