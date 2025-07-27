@@ -133,26 +133,30 @@ fn skill() -> impl IntoIterator<Item = BonusTemplate> {
 
 fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
     [
+        // Maximum Dexterity Bonus
+        BonusTemplate::new(
+            ArmorClass::MaxDexBonus,
+            BonusType::AbilityModifier,
+            Value::condition(
+                [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+                    .map(Condition::has)
+                    .cond_any()
+                    .unwrap(),
+                ArmorClass::ArmorMaxDex,
+                Value::MAX,
+            )
+            .min(Value::condition(
+                Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
+                ArmorClass::ShieldMaxDex,
+                Value::MAX,
+            )),
+        ),
         // Dexterity Bonus to Armor Class
         BonusTemplate::new(
             ArmorClass::Bonus,
             BonusType::AbilityModifier,
-            Value::iter_min([
-                Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity)),
-                Value::condition(
-                    [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                        .map(Condition::has)
-                        .cond_any()
-                        .unwrap(),
-                    ArmorClass::ArmorMaxDex,
-                    Value::MAX,
-                ),
-                Value::condition(
-                    Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
-                    ArmorClass::ShieldMaxDex,
-                    Value::MAX,
-                ),
-            ]),
+            Value::Attribute(Attribute::AbilityModifier(Ability::Dexterity))
+                .min(ArmorClass::MaxDexBonus.to_value()),
         )
         .with_display_source(Attribute::AbilityModifier(Ability::Dexterity)),
         // Total Armor Class Bonus
@@ -199,8 +203,7 @@ fn spell_points() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             SpellPoints::Total,
             BonusType::Stacking,
-            SpellPoints::Base.to_value()
-                * (Value::ONE + (SpellPoints::Modifier.to_value() / Value::ONE_HUNDRED)),
+            SpellPoints::Base.to_value() * SpellPoints::Modifier.to_value().scalar(),
         ),
     ]
 }
@@ -427,7 +430,13 @@ fn dodge() -> impl Iterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Dodge::Total,
             BonusType::Stacking,
-            Value::min(Dodge::Bonus.to_value(), Dodge::Cap.to_value()),
+            Value::min(
+                Value::min(
+                    Dodge::Bonus.to_value(),
+                    Dodge::Cap.to_value() + ArmorClass::MaxDexBonus.to_value().min(val!(25)),
+                ) + Dodge::Temporary.to_value(),
+                val!(95),
+            ),
         )
         .with_display_source(Dodge::Bonus),
     )
