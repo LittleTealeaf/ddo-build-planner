@@ -162,12 +162,10 @@ fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
             Value::iter_sum([
                 ArmorClass::Bonus.to_value(),
                 ArmorClass::NaturalArmor.to_value(),
-                ArmorClass::ShieldBonus.to_value()
-                    * (Value::ONE + (ArmorClass::ShieldScalar.to_value()) / Value::ONE_HUNDRED),
-                ArmorClass::ArmorBonus.to_value()
-                    * (Value::ONE + (ArmorClass::ArmorScalar.to_value() / Value::ONE_HUNDRED)),
+                ArmorClass::ShieldBonus.to_value() * ArmorClass::ShieldScalar.to_value().scalar(),
+                ArmorClass::ArmorBonus.to_value() * ArmorClass::ArmorScalar.to_value().scalar(),
                 Value::TEN,
-            ]) * (Value::ONE + (ArmorClass::TotalScalar.to_value() / Value::ONE_HUNDRED)),
+            ]) * ArmorClass::TotalScalar.to_value().scalar(),
         ),
     ]
 }
@@ -177,14 +175,12 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Health::Bonus,
             BonusType::Stacking,
-            Health::Base.to_value() * (Health::BaseModifier.to_value() + Value::ONE_HUNDRED)
-                / Value::ONE_HUNDRED,
+            Health::Base.to_value() * Health::BaseModifier.to_value().scalar(),
         ),
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
-            Health::Bonus.to_value() * (Health::Modifier.to_value() + Value::ONE_HUNDRED)
-                / Value::ONE_HUNDRED,
+            Health::Bonus.to_value() * Health::BaseModifier.to_value().scalar(),
         ),
     ]
 }
