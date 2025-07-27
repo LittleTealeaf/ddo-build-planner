@@ -479,6 +479,6 @@ mod tests {
 
         assert_eq!(bonus.attribute(), deserialized.attribute());
         assert!(deserialized.condition.is_none());
-        assert_eq!(bonus.bonus_type, deserialized.bonus_type);
+        assert_eq!(bonus.bonus_type(), deserialized.bonus_type());
     }
 }
