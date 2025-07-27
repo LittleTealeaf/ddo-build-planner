@@ -22,7 +22,7 @@ impl RacialPastLife {
     /// All racial past lives
     /// This does include races that are 'aliases' for other races, such as Wood Elf, which
     /// simply will just add bonuses to the base race
-    pub const RACES: [Self; 16] = [
+    pub const RACES: [Self; 17] = [
         Self(Race::Aasimar),
         Self(Race::Dragonborn),
         Self(Race::Drow),
