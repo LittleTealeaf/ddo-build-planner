@@ -382,17 +382,20 @@ fn weapon_damage() -> impl Iterator<Item = BonusTemplate> {
 
 fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
     let one_hand_main_hand = WeaponType::ONE_HANDED_MELEE_WEAPONS
-        .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+        .map(MainHandType::Weapon)
+        .map(Condition::has)
         .cond_any()
         .expect("Expected Condition");
 
     let one_hand_off_hand = WeaponType::ONE_HANDED_MELEE_WEAPONS
-        .map(|weapon| Condition::has(OffHandType::Weapon(weapon)))
+        .map(OffHandType::Weapon)
+        .map(Condition::has)
         .cond_any()
         .expect("Expected Condition");
 
     let two_handed_melee_weapon_condition = WeaponType::TWO_HANDED_MELEE_WEAPONS
-        .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+        .map(MainHandType::Weapon)
+        .map(Condition::has)
         .cond_any()
         .expect("Expected Condition");
 
