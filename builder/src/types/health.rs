@@ -17,15 +17,15 @@ pub enum Health {
     #[serde(rename = "B", alias = "Base")]
     Base,
     /// Bonuses from combat style feats
-    #[serde(rename = "bm", alias = "BaseModifier")]
-    BaseModifier,
+    #[serde(rename = "bm", alias = "BaseModifier", alias = "BaseScalar")]
+    BaseScalar,
     /// Bonus hit points, this is the standard one
     #[serde(rename = "b", alias = "Bonus")]
     #[default]
     Bonus,
     /// Final modifier over all hit points
-    #[serde(rename = "m", alias = "Modifier")]
-    Modifier,
+    #[serde(rename = "m", alias = "Modifier", alias = "Scalar")]
+    Scalar,
     /// Total hit points
     #[serde(rename = "t", alias = "Total")]
     Total,
@@ -35,9 +35,9 @@ impl Health {
     /// All possible values
     pub const VALUES: [Self; 5] = [
         Self::Base,
-        Self::BaseModifier,
+        Self::BaseScalar,
         Self::Bonus,
-        Self::Modifier,
+        Self::Scalar,
         Self::Total,
     ];
 }
@@ -46,9 +46,9 @@ impl Display for Health {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Base => write!(f, "Base Hit Points"),
-            Self::BaseModifier => write!(f, "Base Hit Points Modifier"),
+            Self::BaseScalar => write!(f, "Base Hit Points Scalar"),
             Self::Bonus => write!(f, "Bonus Hit Points"),
-            Self::Modifier => write!(f, "Hit Point Modifier"),
+            Self::Scalar => write!(f, "Hit Point Scalar"),
             Self::Total => write!(f, "Total Hit Points"),
         }
     }

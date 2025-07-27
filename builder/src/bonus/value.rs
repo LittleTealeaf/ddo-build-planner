@@ -282,6 +282,12 @@ impl Value {
     pub fn min(self, other: Self) -> Self {
         Self::Min(Box::new(self), Box::new(other))
     }
+
+    /// Shortcut to calculating `1 + val / 100`
+    #[must_use]
+    pub fn scalar(self) -> Self {
+        Self::ONE + (self / Self::ONE_HUNDRED)
+    }
 }
 
 /// Implements a shortcut to using [`Value::from`]

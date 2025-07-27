@@ -46,6 +46,9 @@ pub enum ArmorClass {
     /// Shield Max Dex Bonus
     #[serde(rename = "smd", alias = "ShieldMaxDex")]
     ShieldMaxDex,
+    /// Max Dex Bonus
+    #[serde(rename = "md", alias = "MaxDexBonus")]
+    MaxDexBonus,
     /// Natural Armor
     #[serde(rename = "n", alias = "NaturalArmor")]
     NaturalArmor,
@@ -56,7 +59,7 @@ pub enum ArmorClass {
 
 impl ArmorClass {
     /// All possible values
-    pub const VALUES: [Self; 10] = [
+    pub const VALUES: [Self; 11] = [
         Self::TotalScalar,
         Self::Total,
         Self::Bonus,
@@ -67,6 +70,7 @@ impl ArmorClass {
         Self::ArmorMaxDex,
         Self::ShieldMaxDex,
         Self::NaturalArmor,
+        Self::MaxDexBonus,
     ];
 }
 
@@ -83,6 +87,7 @@ impl Display for ArmorClass {
             Self::ShieldMaxDex => write!(f, "Shield Max Dex Bonus"),
             Self::NaturalArmor => write!(f, "Natural Armor"),
             Self::TotalScalar => write!(f, "Armor Class Scalar"),
+            Self::MaxDexBonus => write!(f, "Maximum Dexterity Bonus"),
         }
     }
 }

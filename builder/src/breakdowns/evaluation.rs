@@ -131,17 +131,17 @@ impl Breakdowns {
 impl Snapshot<'_> {
     fn calculate_attribute(&mut self, attribute: &Attribute) -> Option<Decimal> {
         let mut map = HashMap::new();
-        let mut stacking = Decimal::ZERO;
+        let mut stacking_bonus = Decimal::ZERO;
 
         for bonus in self.bonuses.get(attribute)? {
-            let condition = bonus
+            let apply_value = bonus
                 .condition()
                 .is_none_or(|cond| self.evaluate_condition(cond));
 
-            if condition {
+            if apply_value {
                 let value = self.evaluate_value(bonus.value());
                 if bonus.bonus_type().is_stacking() {
-                    stacking += value;
+                    stacking_bonus += value;
                 } else {
                     let val = map.get_mut_or(bonus.bonus_type(), Decimal::MIN);
                     *val = value.max(*val);
@@ -149,7 +149,7 @@ impl Snapshot<'_> {
             }
         }
 
-        Some(stacking + map.values().sum::<Decimal>())
+        Some(stacking_bonus + map.values().sum::<Decimal>())
     }
 
     fn evaluate_attribute(&mut self, attribute: &Attribute) -> Decimal {

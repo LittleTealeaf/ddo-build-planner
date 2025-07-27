@@ -270,6 +270,15 @@ impl GetBonuses for Race {
                     .with_condition(Condition::toggled(SeasonalAffinity::Winter))
                     .with_display_source(Attribute::toggle(SeasonalAffinity::Winter)),
             ]),
+            Self::Dhampir => Some(vec![BonusTemplate::new(
+                Ability::Strength,
+                BonusType::Stacking,
+                Value::TWO,
+            )]),
+            Self::Bargainer => Some(vec![
+                BonusTemplate::new(Ability::Charisma, BonusType::Stacking, Value::ONE),
+                BonusTemplate::new(Ability::Intelligence, BonusType::Stacking, Value::ONE),
+            ]),
         })?
     }
 }

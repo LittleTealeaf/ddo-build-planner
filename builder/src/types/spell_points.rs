@@ -19,8 +19,8 @@ pub enum SpellPoints {
     #[serde(rename = "b", alias = "Base")]
     Base,
     /// Additive modifier to total spell points
-    #[serde(rename = "m", alias = "Modifier")]
-    Modifier,
+    #[serde(rename = "m", alias = "Modifier", alias = "Scalar")]
+    Scalar,
     /// Total spell points
     #[serde(rename = "t", alias = "Total")]
     Total,
@@ -30,7 +30,7 @@ impl Display for SpellPoints {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Base => write!(f, "Spell Points"),
-            Self::Modifier => write!(f, "Spell Point Modifier"),
+            Self::Scalar => write!(f, "Spell Point Scalar"),
             Self::Total => write!(f, "Total Spell Points"),
             Self::Scaled => write!(f, "Scaled Spell Points"),
         }
@@ -45,6 +45,6 @@ impl ToAttribute for SpellPoints {
 
 impl StaticValues for SpellPoints {
     fn values() -> impl Iterator<Item = Self> {
-        [Self::Scaled, Self::Base, Self::Modifier, Self::Total].into_iter()
+        [Self::Scaled, Self::Base, Self::Scalar, Self::Total].into_iter()
     }
 }

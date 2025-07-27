@@ -142,10 +142,11 @@ impl Breakdowns {
 
             let attribute_bonuses = attribute.get_bonuses(value);
 
-            let dynamic_bonuses = (value > Decimal::ZERO)
-                .then(|| self.dynamic_bonuses.get(&attribute))
-                .unwrap_or_default()
-                .cloned();
+            let dynamic_bonuses = if value > Decimal::ZERO {
+                self.dynamic_bonuses.get(&attribute).cloned()
+            } else {
+                None
+            };
 
             let mut children = HashSet::new();
 

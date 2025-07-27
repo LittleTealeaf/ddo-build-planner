@@ -13,63 +13,94 @@ use super::flag::{Flag, ToFlag};
 #[derive(Hash, Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Race {
     /// Dragonborn Race
+    #[serde(rename = "db", alias = "Dragonborn")]
     Dragonborn,
     /// Drow Race
+    #[serde(rename = "dr", alias = "Drow")]
     Drow,
     /// Dwarf Race
+    #[serde(rename = "dw", alias = "Dwarf")]
     Dwarf,
     /// Elf Race
+    #[serde(rename = "el", alias = "Elf")]
     Elf,
     /// Gnome Race
+    #[serde(rename = "gn", alias = "Gnome")]
     Gnome,
     /// Halfling Race
+    #[serde(rename = "hl", alias = "Halfling")]
     Halfling,
     /// Half-Elf Race
+    #[serde(rename = "he", alias = "HalfElf")]
     HalfElf,
     /// Half-Orc Race
+    #[serde(rename = "ho", alias = "HalfOrc")]
     HalfOrc,
     /// Human Race
+    #[serde(rename = "h", alias = "Human")]
     Human,
     /// Tiefling Race
+    #[serde(rename = "ti", alias = "Tiefling")]
     Tiefling,
     /// Warforged Race
+    #[serde(rename = "wf", alias = "Warforged")]
     Warforged,
     /// Wood-Elf Race
+    #[serde(rename = "we", alias = "WoodElf")]
     WoodElf,
     /// Aasimar Race
+    #[serde(rename = "a", alias = "Aasimar")]
     Aasimar,
     /// Shifter Race
+    #[serde(rename = "sh", alias = "Shifter")]
     Shifter,
     /// Tabaxi Race
+    #[serde(rename = "ta", alias = "Tabaxi")]
     Tabaxi,
     /// Bladeforged Race
+    #[serde(rename = "bf", alias = "Bladeforged")]
     Bladeforged,
     /// Deep-Gnome Race
+    #[serde(rename = "dg", alias = "DeepGnome")]
     DeepGnome,
     /// Morninglord Race
+    #[serde(rename = "ml", alias = "Morninglord")]
     Morninglord,
     /// Purple Dragon Knight Race
-    #[serde(rename = "PDK", alias = "PurpleDragonKnight")]
+    #[serde(rename = "pd", alias = "PDK", alias = "PurpleDragonKnight")]
     PurpleDragonKnight,
     /// Razorclaw Race
+    #[serde(rename = "rc", alias = "Razorclaw")]
     Razorclaw,
     /// Scoundrel Race
+    #[serde(rename = "sc", alias = "Scoundrel")]
     Scoundrel,
     /// Scourge Race
+    #[serde(rename = "so", alias = "Scourge")]
     Scourge,
     /// Shadarkai Race
+    #[serde(rename = "sk", alias = "Shadarkai")]
     Shadarkai,
     /// Trailblazer Race
+    #[serde(rename = "tr", alias = "Trailblaze")]
     Trailblazer,
     /// Eladrin
+    #[serde(rename = "ea", alias = "Eladrin")]
     Eladrin,
     /// Eladrin Chaosmancer
+    #[serde(rename = "cm", alias = "Chaosmancer")]
     Chaosmancer,
+    /// Dhampir
+    #[serde(rename = "dh", alias = "Dhampir")]
+    Dhampir,
+    /// Dark Dhampir Bargainer
+    #[serde(rename = "ba", alias = "Bargainer")]
+    Bargainer,
 }
 
 impl Race {
     /// All Races
-    pub const ALL: [Self; 26] = [
+    pub const ALL: [Self; 28] = [
         Self::Dragonborn,
         Self::Drow,
         Self::Dwarf,
@@ -96,6 +127,8 @@ impl Race {
         Self::Trailblazer,
         Self::Eladrin,
         Self::Chaosmancer,
+        Self::Dhampir,
+        Self::Bargainer,
     ];
 }
 
@@ -128,6 +161,8 @@ impl Display for Race {
             Self::Trailblazer => write!(f, "Tabaxi Trailblazer"),
             Self::Eladrin => write!(f, "Eladrin"),
             Self::Chaosmancer => write!(f, "Chaosmancer"),
+            Self::Dhampir => write!(f, "Dhampir"),
+            Self::Bargainer => write!(f, "Dark Dhampir Bargainer"),
         }
     }
 }

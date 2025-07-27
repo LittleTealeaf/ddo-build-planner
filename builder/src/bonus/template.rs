@@ -272,7 +272,7 @@ impl BonusTemplate {
     {
         Bonus {
             attribute: self.attribute,
-            bonus_type: self.bonus_type,
+            r#type: self.bonus_type,
             value: self.value,
             condition: self.condition,
             display_source: self.display_source,
@@ -285,7 +285,7 @@ impl From<Bonus> for BonusTemplate {
     fn from(value: Bonus) -> Self {
         Self {
             attribute: value.attribute,
-            bonus_type: value.bonus_type,
+            bonus_type: value.r#type,
             value: value.value,
             condition: value.condition,
             display_source: value.display_source,
