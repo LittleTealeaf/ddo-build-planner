@@ -19,7 +19,7 @@ pub enum SpellPoints {
     #[serde(rename = "b", alias = "Base")]
     Base,
     /// Additive modifier to total spell points
-    #[serde(rename = "m", alias="Modifier", alias = "Scalar")]
+    #[serde(rename = "m", alias = "Modifier", alias = "Scalar")]
     Scalar,
     /// Total spell points
     #[serde(rename = "t", alias = "Total")]
