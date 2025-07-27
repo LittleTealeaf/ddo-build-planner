@@ -134,23 +134,21 @@ fn skill() -> impl IntoIterator<Item = BonusTemplate> {
 fn armor_class() -> impl IntoIterator<Item = BonusTemplate> {
     [
         // Maximum Dexterity Bonus
-        BonusTemplate::new(
-            ArmorClass::MaxDexBonus,
-            BonusType::AbilityModifier,
-            Value::condition(
-                [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
-                    .map(Condition::has)
-                    .cond_any()
-                    .unwrap(),
-                ArmorClass::ArmorMaxDex,
-                Value::MAX,
-            )
-            .min(Value::condition(
-                Condition::has(OffHandType::Shield(ShieldType::TowerShield)),
-                ArmorClass::ShieldMaxDex,
-                Value::MAX,
-            )),
-        ),
+        BonusTemplate::new(ArmorClass::MaxDexBonus, BonusType::AbilityModifier, {
+            let has_armor = [ArmorType::Light, ArmorType::Medium, ArmorType::Heavy]
+                .map(Condition::has)
+                .cond_any()
+                .unwrap();
+
+            let armor_max_dex = Value::condition(has_armor, ArmorClass::ArmorMaxDex, Value::MAX);
+
+            let has_tower_shield = Condition::has(OffHandType::Shield(ShieldType::TowerShield));
+
+            let shield_max_dex =
+                Value::condition(has_tower_shield, ArmorClass::ShieldMaxDex, Value::MAX);
+
+            armor_max_dex.min(shield_max_dex)
+        }),
         // Dexterity Bonus to Armor Class
         BonusTemplate::new(
             ArmorClass::Bonus,
@@ -229,19 +227,15 @@ fn spell_power_universal() -> impl IntoIterator<Item = BonusTemplate> {
 
 fn sheltering() -> impl IntoIterator<Item = BonusTemplate> {
     [
-        BonusTemplate::new(
-            Sheltering::MagicalCap,
-            BonusType::Stacking,
-            Value::condition(
-                Condition::has(ArmorType::Medium) | Condition::has(ArmorType::Heavy),
-                Sheltering::Magical,
-                Value::condition(
-                    Condition::has(ArmorType::Light),
-                    Value::ONE_HUNDRED,
-                    val!(50),
-                ),
-            ),
-        ),
+        BonusTemplate::new(Sheltering::MagicalCap, BonusType::Stacking, {
+            let light_armor = Condition::has(ArmorType::Light);
+            let light_armor_cap = Value::condition(light_armor, Value::ONE_HUNDRED, val!(50));
+
+            let medium_heavy_armor =
+                Condition::has(ArmorType::Medium) | Condition::has(ArmorType::Heavy);
+
+            Value::condition(medium_heavy_armor, Sheltering::Magical, light_armor_cap)
+        }),
         BonusTemplate::new(
             Sheltering::MagicalTotal,
             BonusType::Stacking,
@@ -312,7 +306,7 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
     [
         {
             // HEROIC COMPLETIONIST
-            let condition = PlayerClass::values()
+            let heroic_completionist_condition = PlayerClass::values()
                 .map(|class| (class.get_parent_class().unwrap_or(class), class))
                 .into_grouped_hash_map()
                 .into_values()
@@ -325,11 +319,12 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                 .cond_all()
                 .expect("Expected Condition");
 
-            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist).with_condition(condition)
+            BonusTemplate::feat(PastLifeFeat::HeroicCompletionist)
+                .with_condition(heroic_completionist_condition)
         },
         {
             // RACIAL COMPLETIONIST
-            let condition = RacialPastLife::RACES
+            let racial_completionist_condition = RacialPastLife::RACES
                 .map(|race| (race.get_base().unwrap_or(race), race))
                 .into_grouped_hash_map()
                 .into_values()
@@ -342,7 +337,8 @@ fn completionist_feats() -> impl IntoIterator<Item = BonusTemplate> {
                 .cond_all()
                 .expect("Expected Condition");
 
-            BonusTemplate::feat(PastLifeFeat::RacialCompletionist).with_condition(condition)
+            BonusTemplate::feat(PastLifeFeat::RacialCompletionist)
+                .with_condition(racial_completionist_condition)
         },
     ]
 }
@@ -395,56 +391,48 @@ fn melee_fighting_styles() -> impl IntoIterator<Item = BonusTemplate> {
         .cond_any()
         .expect("Expected Condition");
 
+    let two_handed_melee_weapon_condition = WeaponType::TWO_HANDED_MELEE_WEAPONS
+        .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
+        .cond_any()
+        .expect("Expected Condition");
+
+    let single_weapon_fighting_condition = one_hand_main_hand.clone()
+        & chain!(
+            [
+                one_hand_off_hand.clone(),
+                Condition::has(OffHandType::Shield(ShieldType::Buckler))
+                    & !Condition::has(Flag::BucklerSingleWeaponFighting)
+            ],
+            [
+                ShieldType::LargeShield,
+                ShieldType::TowerShield,
+                ShieldType::SmallShield
+            ]
+            .map(|st| Condition::has(OffHandType::Shield(st))),
+        )
+        .cond_none()
+        .expect("Expected Condition");
+
+    let two_weapon_fighting_condition = one_hand_main_hand & one_hand_off_hand;
+
     [
-        BonusTemplate::flag(Flag::TwoHandedFighting).with_condition(
-            WeaponType::TWO_HANDED_MELEE_WEAPONS
-                .map(|weapon| Condition::has(MainHandType::Weapon(weapon)))
-                .cond_any()
-                .expect("Expected Condition"),
-        ),
-        BonusTemplate::flag(Flag::SingleWeaponFighting).with_condition(
-            one_hand_main_hand.clone()
-                & chain!(
-                    [
-                        one_hand_off_hand.clone(),
-                        Condition::has(OffHandType::Shield(ShieldType::Buckler))
-                            & !Condition::has(Flag::BucklerSingleWeaponFighting)
-                    ],
-                    [
-                        ShieldType::LargeShield,
-                        ShieldType::TowerShield,
-                        ShieldType::SmallShield
-                    ]
-                    .map(|st| Condition::has(OffHandType::Shield(st))),
-                )
-                .cond_none()
-                .expect("Expected Condition"),
-        ),
-        BonusTemplate::flag(Flag::TwoWeaponFighting)
-            .with_condition(one_hand_main_hand & one_hand_off_hand),
+        BonusTemplate::flag(Flag::TwoHandedFighting)
+            .with_condition(two_handed_melee_weapon_condition),
+        BonusTemplate::flag(Flag::SingleWeaponFighting)
+            .with_condition(single_weapon_fighting_condition),
+        BonusTemplate::flag(Flag::TwoWeaponFighting).with_condition(two_weapon_fighting_condition),
     ]
 }
 
 fn dodge() -> impl Iterator<Item = BonusTemplate> {
     once(
-        BonusTemplate::new(
-            Dodge::Total,
-            BonusType::Stacking,
-            {
-                // The maximum bonus to dodge cap from dexterity is 25
-                let dodge_cap_dex_bonus = ArmorClass::MaxDexBonus.to_value().min(val!(25));
-                let effective_dodge_cap = Dodge::Cap.to_value() + dodge_cap_dex_bonus;
-
-                let dodge_bonus = Dodge::Bonus.to_value();
-                let temporary_bonus = Dodge::Temporary.to_value();
-
-                let total_dodge_before_final_cap =
-                    Value::min(dodge_bonus, effective_dodge_cap) + temporary_bonus;
-
-                // Total dodge is capped at 95%
-                Value::min(total_dodge_before_final_cap, val!(95))
-            }
-        )
+        BonusTemplate::new(Dodge::Total, BonusType::Stacking, {
+            let dodge_cap =
+                Dodge::Cap.to_value() + ArmorClass::MaxDexBonus.to_value().min(val!(25));
+            let capped_dodge = Dodge::Bonus.to_value().min(dodge_cap);
+            let temporary_dodge = capped_dodge + Dodge::Temporary.to_value();
+            temporary_dodge.min(val!(95))
+        })
         .with_display_source(Dodge::Bonus),
     )
 }
