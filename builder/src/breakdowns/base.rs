@@ -430,13 +430,20 @@ fn dodge() -> impl Iterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Dodge::Total,
             BonusType::Stacking,
-            Value::min(
-                Value::min(
-                    Dodge::Bonus.to_value(),
-                    Dodge::Cap.to_value() + ArmorClass::MaxDexBonus.to_value().min(val!(25)),
-                ) + Dodge::Temporary.to_value(),
-                val!(95),
-            ),
+            {
+                // The maximum bonus to dodge cap from dexterity is 25
+                let dodge_cap_dex_bonus = ArmorClass::MaxDexBonus.to_value().min(val!(25));
+                let effective_dodge_cap = Dodge::Cap.to_value() + dodge_cap_dex_bonus;
+
+                let dodge_bonus = Dodge::Bonus.to_value();
+                let temporary_bonus = Dodge::Temporary.to_value();
+
+                let total_dodge_before_final_cap =
+                    Value::min(dodge_bonus, effective_dodge_cap) + temporary_bonus;
+
+                // Total dodge is capped at 95%
+                Value::min(total_dodge_before_final_cap, val!(95))
+            }
         )
         .with_display_source(Dodge::Bonus),
     )
