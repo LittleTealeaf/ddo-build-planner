@@ -65,11 +65,15 @@ pub enum Race {
     Eladrin,
     /// Eladrin Chaosmancer
     Chaosmancer,
+    /// Dhampir
+    Dhampir,
+    /// Dark Dhampir Bargainer
+    Bargainer,
 }
 
 impl Race {
     /// All Races
-    pub const ALL: [Self; 26] = [
+    pub const ALL: [Self; 28] = [
         Self::Dragonborn,
         Self::Drow,
         Self::Dwarf,
@@ -96,6 +100,8 @@ impl Race {
         Self::Trailblazer,
         Self::Eladrin,
         Self::Chaosmancer,
+        Self::Dhampir,
+        Self::Bladeforged,
     ];
 }
 
@@ -128,6 +134,8 @@ impl Display for Race {
             Self::Trailblazer => write!(f, "Tabaxi Trailblazer"),
             Self::Eladrin => write!(f, "Eladrin"),
             Self::Chaosmancer => write!(f, "Chaosmancer"),
+            Self::Dhampir => write!(f, "Dhampir"),
+            Self::Bargainer => write!(f, "Dark Dhampir Bargainer"),
         }
     }
 }

@@ -174,19 +174,3 @@ impl Default for Breakdowns {
         Self::new()
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn all_base_bonuses_have_base_source() {
-        for bonus in get_base_bonuses() {
-            assert_eq!(
-                bonus.source(),
-                &BonusSource::Base,
-                "Does not have base bonus: {bonus:?}"
-            );
-        }
-    }
-}

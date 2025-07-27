@@ -39,6 +39,7 @@ impl RacialPastLife {
         Self(Race::Tiefling),
         Self(Race::Warforged),
         Self(Race::Eladrin),
+        Self(Race::Dhampir),
     ];
 
     /// Converts back to the race
@@ -75,6 +76,7 @@ impl RacialPastLife {
             Race::Tabaxi => Some(Skill::Tumble),
             Race::Warforged => Some(Skill::Repair),
             Race::Eladrin => Some(Skill::Listen),
+            Race::Dhampir => Some(Skill::Hide),
             _ => None,
         }
     }
@@ -91,7 +93,7 @@ impl RacialPastLife {
             Race::Elf | Race::Halfling | Race::Shifter | Race::Tabaxi | Race::Eladrin => {
                 Some(Ability::Dexterity)
             }
-            Race::HalfOrc => Some(Ability::Strength),
+            Race::Dhampir | Race::HalfOrc => Some(Ability::Strength),
             _ => None,
         }
     }
