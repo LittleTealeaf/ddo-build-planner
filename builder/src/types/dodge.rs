@@ -16,9 +16,9 @@ pub enum Dodge {
     /// Bonuses to Dodge Cap
     #[serde(rename = "c", alias = "Cap")]
     Cap,
-    /// Temporary Bonuses
-    #[serde(rename = "p", alias = "Temporary")]
-    Temporary,
+    /// Uncapped Bonuses
+    #[serde(rename = "u", alias = "Uncapped")]
+    Uncapped,
     /// Effective Final Dodge
     #[serde(rename = "t", alias = "Total")]
     Total,
@@ -26,7 +26,7 @@ pub enum Dodge {
 
 impl Dodge {
     /// All values
-    pub const ALL: [Self; 4] = [Self::Bonus, Self::Cap, Self::Total, Self::Temporary];
+    pub const ALL: [Self; 4] = [Self::Bonus, Self::Cap, Self::Total, Self::Uncapped];
 }
 
 impl Display for Dodge {
@@ -35,7 +35,7 @@ impl Display for Dodge {
             Self::Bonus => write!(f, "Dodge Bonus"),
             Self::Cap => write!(f, "Dodge Cap"),
             Self::Total => write!(f, "Total Dodge"),
-            Self::Temporary => write!(f, "Temporary Dodge Bonus"),
+            Self::Uncapped => write!(f, "Uncapped Dodge Bonus"),
         }
     }
 }

@@ -430,7 +430,7 @@ fn dodge() -> impl Iterator<Item = BonusTemplate> {
             let dodge_cap =
                 Dodge::Cap.to_value() + ArmorClass::MaxDexBonus.to_value().min(val!(25));
             let capped_dodge = Dodge::Bonus.to_value().min(dodge_cap);
-            let temporary_dodge = capped_dodge + Dodge::Temporary.to_value();
+            let temporary_dodge = capped_dodge + Dodge::Uncapped.to_value();
             temporary_dodge.min(val!(95))
         })
         .with_display_source(Dodge::Bonus),
