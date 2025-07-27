@@ -17,7 +17,7 @@ pub enum Dodge {
     #[serde(rename = "c", alias = "Cap")]
     Cap,
     /// Temporary Bonuses
-    #[serde(rename="p", alias="Temporary")]
+    #[serde(rename = "p", alias = "Temporary")]
     Temporary,
     /// Effective Final Dodge
     #[serde(rename = "t", alias = "Total")]

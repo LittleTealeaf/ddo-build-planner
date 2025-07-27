@@ -184,7 +184,7 @@ fn health() -> impl IntoIterator<Item = BonusTemplate> {
         BonusTemplate::new(
             Health::Total,
             BonusType::Stacking,
-            Health::Bonus.to_value() * Health::BaseModifier.to_value().scalar(),
+            Health::Bonus.to_value() * Health::Modifier.to_value().scalar(),
         ),
     ]
 }

@@ -128,7 +128,7 @@ impl Race {
         Self::Eladrin,
         Self::Chaosmancer,
         Self::Dhampir,
-        Self::Bladeforged,
+        Self::Bargainer,
     ];
 }
 
