@@ -34,7 +34,7 @@ iced_aw = { version = "0.9.3", default-features = false, features = [
 fuzzy-filter = "0.1.0"
 itertools = "0.14.0"
 rust_decimal = "1.37.1"
-anyhow = "1.0.97"
+anyhow = "1.0.100"
 im = { version = "15.1.0", features = ["serde"] }
 
 [dev-dependencies]
