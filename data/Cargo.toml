@@ -18,13 +18,13 @@ example = []
 
 [dependencies]
 builder = { path = "../builder/" }
-serde = { version = "1.0.219", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive"] }
 utils = { path = "../utils/" }
 ron = "0.9.0"
 anyhow = "1.0.97"
 
 [build-dependencies]
-serde = { version = "1.0.219" }
+serde = { version = "1.0.228" }
 ron = "0.9.0"
 builder = { path = "../builder/" }
 itertools = "0.14.0"
