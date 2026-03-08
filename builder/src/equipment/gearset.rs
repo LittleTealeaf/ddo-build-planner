@@ -7,5 +7,5 @@ use super::item::Item;
 /// Describes a specific gearset
 #[derive(Debug, Clone)]
 pub struct Gearset {
-    items: HashMap<Gearset, Item>,
+    items: HashMap<Self, Item>,
 }

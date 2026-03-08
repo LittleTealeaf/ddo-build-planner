@@ -19,11 +19,11 @@ pub enum FeatRequirement {
     /// Ability Score
     AbilityScore(Ability, u8),
     /// Requires any of the given requirements
-    Any(Vec<FeatRequirement>),
+    Any(Vec<Self>),
     /// Requires all of the given requirements
-    All(Vec<FeatRequirement>),
+    All(Vec<Self>),
     /// Negates a requirement
-    Not(Box<FeatRequirement>),
+    Not(Box<Self>),
 }
 
 impl FeatRequirement {

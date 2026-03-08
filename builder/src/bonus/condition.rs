@@ -20,7 +20,7 @@ use super::{Depth, HasDice, Value};
 pub enum Condition {
     /// Requires that a condition is not true
     #[serde(rename = "n", alias = "Not")]
-    Not(Box<Condition>),
+    Not(Box<Self>),
     /// Requires that one value is greater than the next value
     #[serde(rename = "g", alias = "GreaterThan")]
     GreaterThan(Value, Value),

@@ -12,6 +12,7 @@ use utils::enums::StaticValues;
 ///
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum BonusType {
     /// Used in debugging bonus types
     #[serde(rename = "d", alias = "Debug")]
@@ -118,6 +119,7 @@ pub enum BonusType {
     /// assert_eq!(BonusType::Stacking, bonus_type);
     /// ```
     #[serde(rename = "s", alias = "stck", alias = "Stacking")]
+    #[default]
     Stacking,
     /// Used when things don't stack, but they don't really have a bonus type.
     #[serde(rename = "st", alias = "std", alias = "Standard")]
@@ -201,11 +203,6 @@ impl BonusType {
     ];
 }
 
-impl Default for BonusType {
-    fn default() -> Self {
-        Self::Stacking
-    }
-}
 
 impl BonusType {
     /// Returns `true` if the bonus type is [`Stacking`]
