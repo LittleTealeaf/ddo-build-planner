@@ -11,8 +11,9 @@ use utils::enums::StaticValues;
 /// added. However, bonuses of different [`BonusType`] will stack.
 ///
 /// Any bonus with a type of [`BonusType::Stacking`] will always stack no matter what.
-#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord, Hash, Serialize, Deserialize, Default,
+)]
 pub enum BonusType {
     /// Used in debugging bonus types
     #[serde(rename = "d", alias = "Debug")]
@@ -202,7 +203,6 @@ impl BonusType {
         Self::Luck,
     ];
 }
-
 
 impl BonusType {
     /// Returns `true` if the bonus type is [`Stacking`]
