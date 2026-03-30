@@ -20,12 +20,12 @@ example = []
 builder = { path = "../builder/" }
 serde = { version = "1.0.219", features = ["derive"] }
 utils = { path = "../utils/" }
-ron = "0.12.0"
+ron = "0.12.1"
 anyhow = "1.0.102"
 
 [build-dependencies]
 serde = { version = "1.0.219" }
-ron = "0.12.0"
+ron = "0.12.1"
 builder = { path = "../builder/" }
 itertools = "0.14.0"
 utils = { path = "../utils/" }
