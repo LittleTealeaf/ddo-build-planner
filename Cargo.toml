@@ -1,6 +1,6 @@
 [workspace]
-members = ["builder", "app", "data", "editor", "utils", "ui"]
-default-members = ["app"]
+members = ["core"]
+default-members = ["core"]
 resolver = "2"
 
 [workspace.package]

@@ -1,5 +1,5 @@
 [package]
-name = "ui"
+name = "core"
 edition.workspace = true
 version.workspace = true
 repository.workspace = true
@@ -7,15 +7,15 @@ authors.workspace = true
 readme.workspace = true
 description.workspace = true
 categories.workspace = true
-keywords.workspace = true
 license-file.workspace = true
+keywords.workspace = true
 
 [lints]
 workspace = true
 
-
 [dependencies]
-iced = { version = "0.12.1", features = ["tokio"] }
-utils = { path = "../utils/" }
-builder = { path = "../builder/" }
-iced_aw = { version = "0.9.3", default-features = false, features = ["icons"] }
+derive_more = {version = "2.1.1", features = ["full"]}
+serde = {version = "1.0.228", features = ["derive"]}
+im = { version = "15.1.0", features = ["serde"] }
+rust_decimal = "1.42.1"
+rust_decimal_macros = "1.40.0"
