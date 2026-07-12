@@ -1,0 +1,18 @@
+
+
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, derive_more::Display,
+)]
+pub enum BonusType {
+    Standard,
+    Stacking,
+    Enhancement,
+    Competence,
+    Insightful,
+    Quality,
+    Exceptional,
+    Sacred,
+    Profane,
+    Ability,
+}
+

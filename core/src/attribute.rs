@@ -1,20 +1,27 @@
-use crate::types::ability::Ability;
+use crate::types::{ability::Ability, skill::Skill, spell_power::SpellPower};
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, derive_more::Display, Hash)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    derive_more::Display,
+    Hash,
+    serde::Serialize,
+    serde::Deserialize,
+    derive_more::From,
+)]
 pub enum Attribute {
+    #[from(skip)]
     #[display("{_0} Score")]
     AbilityScore(Ability),
+    #[from(skip)]
     #[display("{_0} Modifier")]
     AbilityModifier(Ability),
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn testing() {
-        let attribute = Attribute::AbilityScore(Ability::Charisma);
-        let s = format!("{attribute}");
-        println!("{s}");
-    }
+    #[display("{_0}")]
+    Skill(Skill),
+    #[display("Spell Power: {_0}")]
+    SpellPower(SpellPower),
 }

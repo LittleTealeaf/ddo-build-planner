@@ -1,0 +1,27 @@
+#[derive(
+    Debug,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Clone,
+    Copy,
+    derive_more::Display,
+    serde::Deserialize,
+    serde::Serialize,
+)]
+pub enum SavingThrow {
+    Fortitude,
+    Reflex,
+    Will,
+    Poison,
+    Disease,
+    Traps,
+    Spell,
+    Magic,
+    Enchantment,
+    Illusion,
+    Fear,
+    Curse,
+}

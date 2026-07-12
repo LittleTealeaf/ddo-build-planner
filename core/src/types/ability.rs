@@ -1,4 +1,4 @@
-use crate::traits::IterValues;
+use crate::{attribute::Attribute, traits::IterValues};
 
 #[derive(
     Debug,
@@ -31,6 +31,16 @@ impl Ability {
         Self::Wisdom,
         Self::Charisma,
     ];
+
+    #[must_use]
+    pub const fn score(self) -> Attribute {
+        Attribute::AbilityScore(self)
+    }
+
+    #[must_use]
+    pub const fn modifier(self) -> Attribute {
+        Attribute::AbilityModifier(self)
+    }
 }
 
 impl IterValues for Ability {
