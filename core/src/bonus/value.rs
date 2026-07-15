@@ -15,6 +15,8 @@ use crate::{attribute::Attribute, bonus::BonusCondition};
 pub enum BonusValue {
     Const(Decimal),
     Attribute(Attribute),
+    #[display("Context[{_0}]({_1})")]
+    Context(u32, Box<Self>),
     #[display("Min({_0}, {_1})")]
     Min(Box<Self>, Box<Self>),
     #[display("Max({_0}, {_1})")]
@@ -68,6 +70,13 @@ impl BonusValue {
 }
 
 impl BonusValue {
+    pub fn context<V>(config: u32, value: V) -> Self
+    where
+        V: Into<Self>,
+    {
+        Self::Context(config, Box::new(value.into()))
+    }
+
     #[must_use]
     pub fn dice<C, S>(count: C, size: S) -> Self
     where
