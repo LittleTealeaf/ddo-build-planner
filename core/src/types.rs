@@ -1,8 +1,9 @@
 pub mod ability;
-pub mod skill;
-pub mod damage_type;
 pub mod alignment;
+pub mod bonus_provider;
+pub mod damage_type;
 pub mod save;
+pub mod skill;
+pub mod spell_power;
 pub mod spell_school;
 pub mod spell_selector;
-pub mod spell_power;
