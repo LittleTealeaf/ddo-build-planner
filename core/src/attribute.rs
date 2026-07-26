@@ -1,6 +1,6 @@
 use crate::types::{
     ability::Ability, damage_type::DamageType, save::SavingThrow, sheltering::Sheltering,
-    skill::Skill, spell_power::SpellPower,
+    skill::Skill, spell_power::SpellPower, spell_selector::SpellSelector,
 };
 
 #[derive(
@@ -26,12 +26,28 @@ pub enum Attribute {
     #[display("{_0}")]
     Skill(Skill),
     #[display("Spell Power: {_0}")]
+    #[from(skip)]
     SpellPower(SpellPower),
+    #[display("Caster Level: {_0}")]
+    #[from(skip)]
+    CasterLevel(SpellSelector),
+    #[display("Spell DC: {_0}")]
+    #[from(skip)]
+    SpellDC(SpellSelector),
     #[display("{_0} Saving Throw")]
     SavingThrow(SavingThrow),
+    #[display("Armor Check Penalty")]
     ArmorCheckPenalty,
+    #[display("{_0} Absorption")]
     Absorption(DamageType),
+    #[display("{_0}")]
     Sheltering(Sheltering),
+    Doublestrike,
+    Doubleshot,
+    #[display("Melee Power")]
+    MeleePower,
+    #[display("Ranged Power")]
+    RangedPower,
 }
 
 impl Attribute {

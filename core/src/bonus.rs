@@ -11,7 +11,7 @@ pub use condition::*;
 pub use source::*;
 pub use value::*;
 
-use crate::attribute::Attribute;
+use crate::{attribute::Attribute, bonus::traits::ContainsAttribute};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct Bonus {
@@ -116,7 +116,21 @@ impl Bonus {
 
     #[must_use]
     pub const fn value(&self) -> &BonusValue {
-
         &self.value
+    }
+
+    #[must_use]
+    pub const fn attribute(&self) -> &Attribute {
+        &self.attribute
+    }
+}
+
+impl ContainsAttribute for Bonus {
+    fn contains_attribute(&self, attribute: &Attribute) -> bool {
+        self.value.contains_attribute(attribute)
+            || self
+                .condition()
+                .as_ref()
+                .is_some_and(|cond| cond.contains_attribute(attribute))
     }
 }

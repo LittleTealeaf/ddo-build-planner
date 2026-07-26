@@ -12,10 +12,16 @@
     serde::Serialize,
 )]
 pub enum Sheltering {
+    #[display("Physical Sheltering")]
     Physical,
+    #[display("Magical Sheltering")]
     Magical,
+    #[display("Magical Sheltering Cap")]
     MagicalCap,
+    #[display("Magical Sheltering Uncapped Bonus")]
     MagicalUncapped,
+    #[display("PRR Damage Reduction")]
     PhysicalReduction,
+    #[display("MRR Damage Reduction")]
     MagicalReduction,
 }

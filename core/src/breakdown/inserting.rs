@@ -1,3 +1,5 @@
+use im::OrdSet;
+
 use crate::{bonus::Bonus, breakdown::Breakdown};
 
 impl Breakdown {
@@ -5,6 +7,11 @@ impl Breakdown {
     where
         I: IntoIterator<Item = Bonus>,
     {
-        todo!()
+        let mut to_reset = OrdSet::new();
+    
+        while let Some(item) = to_reset.remove_min() {
+            self.cache.reset_attribute(&item);
+            to_reset.extend(self.bonuses.get_dependant_attributes(&item).cloned());
+        }
     }
 }

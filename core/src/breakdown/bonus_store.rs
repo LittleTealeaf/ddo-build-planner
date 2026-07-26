@@ -1,16 +1,41 @@
 use std::collections::HashMap;
 
 use im::OrdMap;
-use itertools::chain;
+use itertools::{chain, Itertools};
 
 use crate::{
-    attribute::Attribute, bonus::Bonus, breakdown::Breakdown, types::bonus_provider::BonusProvider,
+    attribute::Attribute,
+    bonus::{traits::ContainsAttribute, Bonus},
+    bonuses::core_bonuses,
+    breakdown::Breakdown,
+    types::bonus_provider::BonusProvider,
 };
 
 #[derive(Debug, Clone)]
 pub(super) struct BonusStore {
     bonuses: HashMap<Attribute, BonusEntry>,
     providers: HashMap<BonusProvider, Vec<Attribute>>,
+}
+
+impl Default for BonusStore {
+    fn default() -> Self {
+        Self {
+            bonuses: core_bonuses()
+                .chunk_by(|bonus| bonus.attribute().clone())
+                .into_iter()
+                .map(|(attribute, bonuses)| {
+                    (
+                        attribute,
+                        BonusEntry {
+                            core: bonuses.collect(),
+                            snapshots: OrdMap::default(),
+                        },
+                    )
+                })
+                .collect(),
+            providers: HashMap::default(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -45,6 +70,18 @@ impl BonusStore {
         I: IntoIterator<Item = Bonus>,
     {
         for bonus in bonuses {}
+    }
+
+    pub fn get_dependant_attributes<'a>(
+        &'a self,
+        attribute: &'a Attribute,
+    ) -> impl Iterator<Item = &'a Attribute> {
+        self.bonuses
+            .values()
+            .flat_map(|entry| entry.core.iter().chain(entry.snapshots.values().flatten()))
+            .filter(|bonus| bonus.contains_attribute(attribute))
+            .map(Bonus::attribute)
+            .unique()
     }
 }
 
