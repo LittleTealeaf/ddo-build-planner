@@ -1,4 +1,7 @@
-use crate::types::{ability::Ability, skill::Skill, spell_power::SpellPower};
+use crate::types::{
+    ability::Ability, damage_type::DamageType, save::SavingThrow, sheltering::Sheltering,
+    skill::Skill, spell_power::SpellPower,
+};
 
 #[derive(
     Debug,
@@ -24,4 +27,16 @@ pub enum Attribute {
     Skill(Skill),
     #[display("Spell Power: {_0}")]
     SpellPower(SpellPower),
+    #[display("{_0} Saving Throw")]
+    SavingThrow(SavingThrow),
+    ArmorCheckPenalty,
+    Absorption(DamageType),
+    Sheltering(Sheltering),
+}
+
+impl Attribute {
+    #[must_use]
+    pub const fn multiplicative(&self) -> bool {
+        matches!(self, Self::Absorption(_))
+    }
 }

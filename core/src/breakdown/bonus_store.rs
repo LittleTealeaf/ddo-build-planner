@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Debug, Clone)]
-pub struct BonusStore {
+pub(super) struct BonusStore {
     bonuses: HashMap<Attribute, BonusEntry>,
     providers: HashMap<BonusProvider, Vec<Attribute>>,
 }

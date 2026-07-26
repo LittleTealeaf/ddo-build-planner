@@ -1,6 +1,7 @@
 use itertools::chain;
 
 use crate::{
+    attribute::Attribute,
     traits::IterValues,
     types::{alignment::Alignment, damage_type::DamageType},
 };
@@ -42,6 +43,11 @@ impl SpellPower {
         Self::Damage(DamageType::Aligned(Alignment::Chaotic)),
         Self::Damage(DamageType::Light),
     ];
+
+    #[must_use]
+    pub const fn spellpower(self) -> Attribute {
+        Attribute::SpellPower(self)
+    }
 }
 
 impl IterValues for SpellPower {

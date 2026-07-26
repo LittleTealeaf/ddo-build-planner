@@ -7,7 +7,10 @@ use rust_decimal::Decimal;
 
 use itertools::Itertools;
 
-use crate::{attribute::Attribute, bonus::BonusCondition};
+use crate::{
+    attribute::Attribute,
+    bonus::{traits::ContainsAttribute, BonusCondition},
+};
 
 #[derive(
     Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, derive_more::Display,
@@ -314,5 +317,41 @@ impl Sum for BonusValue {
 impl Product for BonusValue {
     fn product<I: Iterator<Item = Self>>(iter: I) -> Self {
         Self::iter_product(iter).unwrap_or(Self::ONE)
+    }
+}
+
+impl ContainsAttribute for BonusValue {
+    fn contains_attribute(&self, attribute: &Attribute) -> bool {
+        match self {
+            Self::Const(_) => false,
+            Self::Attribute(attr) => attr == attribute,
+            Self::Context(_, bonus_value)
+            | Self::Floor(bonus_value)
+            | Self::Ceil(bonus_value)
+            | Self::Round(bonus_value)
+            | Self::Abs(bonus_value) => bonus_value.contains_attribute(attribute),
+            Self::Min(bonus_value, bonus_value1)
+            | Self::Max(bonus_value, bonus_value1)
+            | Self::Add(bonus_value, bonus_value1)
+            | Self::Sub(bonus_value, bonus_value1)
+            | Self::Mul(bonus_value, bonus_value1)
+            | Self::Div(bonus_value, bonus_value1)
+            | Self::Rem(bonus_value, bonus_value1) => {
+                bonus_value.contains_attribute(attribute)
+                    || bonus_value1.contains_attribute(attribute)
+            }
+            Self::If {
+                condition,
+                if_true,
+                if_false,
+            } => {
+                condition.contains_attribute(attribute)
+                    || if_true.contains_attribute(attribute)
+                    || if_false.contains_attribute(attribute)
+            }
+            Self::Dice { count, size } => {
+                count.contains_attribute(attribute) || size.contains_attribute(attribute)
+            }
+        }
     }
 }

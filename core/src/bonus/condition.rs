@@ -4,7 +4,10 @@ use core::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, 
 
 use itertools::Itertools;
 
-use crate::bonus::BonusValue;
+use crate::{
+    attribute::Attribute,
+    bonus::{traits::ContainsAttribute, BonusValue},
+};
 
 #[derive(
     Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, derive_more::Display,
@@ -204,5 +207,27 @@ impl BitXor for BonusCondition {
 impl BitXorAssign for BonusCondition {
     fn bitxor_assign(&mut self, rhs: Self) {
         *self = self.clone().bitxor(rhs);
+    }
+}
+
+impl ContainsAttribute for BonusCondition {
+    fn contains_attribute(&self, attribute: &Attribute) -> bool {
+        match self {
+            Self::Not(bonus_condition) => bonus_condition.contains_attribute(attribute),
+            Self::GreaterThan(val, val1)
+            | Self::GreaterEqualTo(val, val1)
+            | Self::LessThan(val, val1)
+            | Self::LessEqualTo(val, val1)
+            | Self::EqualTo(val, val1) => {
+                val1.contains_attribute(attribute) || val.contains_attribute(attribute)
+            }
+            Self::Constant(_) => false,
+            Self::And(bonus_condition, bonus_condition1)
+            | Self::Or(bonus_condition, bonus_condition1)
+            | Self::Xor(bonus_condition, bonus_condition1) => {
+                bonus_condition.contains_attribute(attribute)
+                    || bonus_condition1.contains_attribute(attribute)
+            }
+        }
     }
 }

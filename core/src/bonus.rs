@@ -4,6 +4,8 @@ mod source;
 pub mod traits;
 mod value;
 
+use core::fmt::Display;
+
 pub use bonus_type::*;
 pub use condition::*;
 pub use source::*;
@@ -18,6 +20,21 @@ pub struct Bonus {
     r#type: BonusType,
     condition: Option<BonusCondition>,
     source: BonusSource,
+}
+
+impl Display for Bonus {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f,
+            "+({}) {} bonus to {}",
+            self.value, self.r#type, self.attribute
+        )?;
+        if let Some(condition) = &self.condition {
+            write!(f, " if {condition}")?;
+        }
+        write!(f, " [{}]", self.source)?;
+        Ok(())
+    }
 }
 
 impl Bonus {
@@ -90,5 +107,16 @@ impl Bonus {
     #[must_use]
     pub const fn condition(&self) -> &Option<BonusCondition> {
         &self.condition
+    }
+
+    #[must_use]
+    pub const fn bonus_type(&self) -> &BonusType {
+        &self.r#type
+    }
+
+    #[must_use]
+    pub const fn value(&self) -> &BonusValue {
+
+        &self.value
     }
 }

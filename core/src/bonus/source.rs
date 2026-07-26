@@ -13,6 +13,8 @@ use crate::attribute::Attribute;
     serde::Deserialize,
 )]
 pub enum BonusSource {
+    #[display("{_0}")]
+    Custom(String),
     #[display("Attribute: {_0}")]
     Attribute(Attribute),
     #[display("Item: {_0}")]

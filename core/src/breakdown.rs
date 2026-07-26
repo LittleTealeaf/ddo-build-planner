@@ -1,13 +1,13 @@
-use crate::breakdown::bonus_store::BonusStore;
+use crate::breakdown::{bonus_store::BonusStore, calculate::BonusCache};
 
-mod inserting;
 mod bonus_store;
-
+mod calculate;
+mod inserting;
 
 #[derive(Debug, Clone)]
 pub struct Breakdown {
-    bonuses: BonusStore
+    bonuses: BonusStore,
+    cache: BonusCache,
 }
-
 
 impl Breakdown {}
