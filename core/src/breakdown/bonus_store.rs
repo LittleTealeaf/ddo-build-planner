@@ -69,7 +69,7 @@ impl BonusStore {
     where
         I: IntoIterator<Item = Bonus>,
     {
-        for bonus in bonuses {}
+        
     }
 
     pub fn get_dependant_attributes<'a>(
