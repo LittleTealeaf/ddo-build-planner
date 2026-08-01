@@ -1,7 +1,5 @@
+use itertools::Itertools;
 use std::collections::HashMap;
-
-use im::OrdMap;
-use itertools::{chain, Itertools};
 
 use crate::{
     attribute::Attribute,
@@ -13,7 +11,7 @@ use crate::{
 
 #[derive(Debug, Clone)]
 pub(super) struct BonusStore {
-    bonuses: HashMap<Attribute, BonusEntry>,
+    bonuses: HashMap<Attribute, Vec<BonusEntry>>,
     providers: HashMap<BonusProvider, Vec<Attribute>>,
 }
 
@@ -26,10 +24,14 @@ impl Default for BonusStore {
                 .map(|(attribute, bonuses)| {
                     (
                         attribute,
-                        BonusEntry {
-                            core: bonuses.collect(),
-                            snapshots: OrdMap::default(),
-                        },
+                        bonuses
+                            .into_iter()
+                            .map(|bonus| BonusEntry {
+                                bonus,
+                                provider: BonusProvider::Core,
+                                snapshot: None,
+                            })
+                            .collect(),
                     )
                 })
                 .collect(),
@@ -38,13 +40,18 @@ impl Default for BonusStore {
     }
 }
 
-#[derive(Debug, Clone)]
-struct BonusEntry {
-    core: Vec<Bonus>,
-    snapshots: OrdMap<u32, Vec<Bonus>>,
+#[derive(Clone, Debug)]
+pub(super) struct BonusEntry {
+    pub bonus: Bonus,
+    pub provider: BonusProvider,
+    pub snapshot: Option<u32>,
 }
 
 impl BonusStore {
+    pub fn get_entries(&self, attribute: &Attribute) -> Option<&Vec<BonusEntry>> {
+        self.bonuses.get(attribute)
+    }
+
     pub fn get_bonuses(
         &self,
         attribute: &Attribute,
@@ -52,36 +59,51 @@ impl BonusStore {
     ) -> impl Iterator<Item = &Bonus> {
         self.bonuses
             .get(attribute)
-            .map(|entry| {
-                chain!(
-                    entry.core.iter(),
-                    snapshot
-                        .and_then(|cfg| entry.snapshots.get(&cfg))
-                        .into_iter()
-                        .flatten()
-                )
-            })
             .into_iter()
             .flatten()
+            .filter_map(move |entry| {
+                entry
+                    .snapshot
+                    .is_none_or(|snap| Some(snap) == snapshot)
+                    .then_some(&entry.bonus)
+            })
     }
 
-    pub fn insert_bonuses<I>(&mut self, bonuses: I, provider: BonusProvider, snapshot: Option<u32>)
+    pub fn insert_bonuses<I>(
+        &mut self,
+        bonuses: I,
+        provider: &BonusProvider,
+        snapshot: Option<u32>,
+    ) -> impl Iterator<Item = Attribute> + '_
     where
         I: IntoIterator<Item = Bonus>,
     {
-        
+        let entry = self.providers.entry(provider.clone()).or_default();
+        let removed_attributes = entry.clone();
+        entry.clear();
+        for bonus in bonuses {
+            entry.push(bonus.attribute().clone());
+            let att_entry = self.bonuses.entry(bonus.attribute().clone()).or_default();
+            att_entry.push(BonusEntry {
+                bonus,
+                snapshot,
+                provider: provider.clone(),
+            });
+        }
+
+        entry.iter().cloned().chain(removed_attributes)
     }
 
     pub fn get_dependant_attributes<'a>(
         &'a self,
         attribute: &'a Attribute,
     ) -> impl Iterator<Item = &'a Attribute> {
-        self.bonuses
-            .values()
-            .flat_map(|entry| entry.core.iter().chain(entry.snapshots.values().flatten()))
-            .filter(|bonus| bonus.contains_attribute(attribute))
-            .map(Bonus::attribute)
-            .unique()
+        self.bonuses.iter().filter_map(move |(attr, bonuses)| {
+            bonuses
+                .iter()
+                .any(|entry| entry.bonus.contains_attribute(attr))
+                .then_some(attribute)
+        })
     }
 }
 

@@ -1,5 +1,5 @@
 [package]
-name = "core"
+name = "ddo_core"
 edition.workspace = true
 version.workspace = true
 repository.workspace = true

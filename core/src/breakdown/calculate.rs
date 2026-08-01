@@ -10,12 +10,12 @@ use crate::{
 };
 
 #[derive(Debug, Clone, Default)]
-pub(super) struct BonusCache {
+pub(super) struct CalcCache {
     values: HashMap<BonusValue, Decimal>,
     conditions: HashMap<BonusCondition, bool>,
 }
 
-impl BonusCache {
+impl CalcCache {
     pub fn reset_attribute(&mut self, attribute: &Attribute) {
         self.values
             .retain(|key, _| !key.contains_attribute(attribute));
@@ -24,26 +24,34 @@ impl BonusCache {
     }
 }
 
+#[derive(derive_more::From)]
 pub(super) struct BonusCalculator<'a> {
-    cache: &'a mut BonusCache,
+    cache: &'a mut CalcCache,
     bonuses: &'a BonusStore,
 }
 
 impl Breakdown {
-    const fn calculator(&mut self) -> BonusCalculator<'_> {
+    pub(super) const fn calculator(&mut self) -> BonusCalculator<'_> {
         BonusCalculator {
-            cache: &mut self.cache,
+            cache: &mut self.calc_cache,
             bonuses: &self.bonuses,
         }
     }
 
-    pub fn evaluate_attribute(&mut self, attribute: Attribute) -> Decimal {
-        self.calculator()
-            .get_value(&BonusValue::Attribute(attribute), None)
+    pub fn evaluate_attribute(&mut self, attribute: Attribute, snapshot: Option<u32>) -> Decimal {
+        self.calculator().evaluate_attribute(attribute, snapshot)
     }
 }
 
 impl BonusCalculator<'_> {
+    pub(super) fn evaluate_attribute(
+        &mut self,
+        attribute: Attribute,
+        snapshot: Option<u32>,
+    ) -> Decimal {
+        self.get_value(&BonusValue::Attribute(attribute), snapshot)
+    }
+
     fn get_condition(&mut self, condition: &BonusCondition, snapshot: Option<u32>) -> bool {
         if let Some(value) = self.cache.conditions.get(condition) {
             return *value;

@@ -3,8 +3,8 @@
 pub mod attribute;
 pub mod bonus;
 pub mod bonuses;
+pub mod breakdown;
 pub mod effect;
 pub mod stat;
 pub mod traits;
 pub mod types;
-pub mod breakdown;
