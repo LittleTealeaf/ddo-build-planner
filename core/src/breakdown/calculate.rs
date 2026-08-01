@@ -107,7 +107,7 @@ impl BonusCalculator<'_> {
     fn calculate_value(&mut self, value: &BonusValue, snapshot: Option<u32>) -> Decimal {
         match value {
             BonusValue::Attribute(attribute) => self.calculate_attribute(attribute, snapshot),
-            BonusValue::Context(cont, bonus_value) => self.get_value(bonus_value, Some(*cont)),
+            BonusValue::Snapshot(snap, bonus_value) => self.get_value(bonus_value, Some(*snap)),
             BonusValue::Min(val1, val2) => self
                 .get_value(val1, snapshot)
                 .min(self.get_value(val2, snapshot)),

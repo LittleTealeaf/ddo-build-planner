@@ -19,7 +19,7 @@ pub enum BonusValue {
     Const(Decimal),
     Attribute(Attribute),
     #[display("Context[{_0}]({_1})")]
-    Context(u32, Box<Self>),
+    Snapshot(u32, Box<Self>),
     #[display("Min({_0}, {_1})")]
     Min(Box<Self>, Box<Self>),
     #[display("Max({_0}, {_1})")]
@@ -77,7 +77,7 @@ impl BonusValue {
     where
         V: Into<Self>,
     {
-        Self::Context(config, Box::new(value.into()))
+        Self::Snapshot(config, Box::new(value.into()))
     }
 
     #[must_use]
@@ -325,7 +325,7 @@ impl ContainsAttribute for BonusValue {
         match self {
             Self::Const(_) => false,
             Self::Attribute(attr) => attr == attribute,
-            Self::Context(_, bonus_value)
+            Self::Snapshot(_, bonus_value)
             | Self::Floor(bonus_value)
             | Self::Ceil(bonus_value)
             | Self::Round(bonus_value)
