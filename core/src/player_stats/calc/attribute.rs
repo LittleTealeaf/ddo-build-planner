@@ -6,7 +6,7 @@ use rust_decimal_macros::dec;
 use crate::{
     attribute::Attribute,
     bonus::{BonusCondition, BonusType, BonusValue},
-    breakdown::calc::BreakdownCalculator,
+    player_stats::calc::BreakdownCalculator,
 };
 
 impl BreakdownCalculator<'_> {

@@ -5,7 +5,7 @@ use crate::{
     attribute::Attribute,
     bonus::{traits::ContainsAttribute, Bonus},
     bonuses::core_bonuses,
-    breakdown::Breakdown,
+    player_stats::PlayerStats,
     types::bonus_provider::BonusProvider,
 };
 
@@ -107,7 +107,7 @@ impl BonusStore {
     }
 }
 
-impl Breakdown {
+impl PlayerStats {
     pub fn get_bonuses(&self, attribute: &Attribute) -> impl Iterator<Item = &Bonus> {
         self.bonuses.get_bonuses(attribute, None)
     }

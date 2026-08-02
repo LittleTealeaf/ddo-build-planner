@@ -1,6 +1,6 @@
-use crate::{bonus::Bonus, breakdown::Breakdown, types::bonus_provider::BonusProvider};
+use crate::{bonus::Bonus, player_stats::PlayerStats, types::bonus_provider::BonusProvider};
 
-impl Breakdown {
+impl PlayerStats {
     pub fn insert_bonuses<I>(&mut self, bonuses: I, provider: &BonusProvider, snapshot: Option<u32>)
     where
         I: IntoIterator<Item = Bonus>,

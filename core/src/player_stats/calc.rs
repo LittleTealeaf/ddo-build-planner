@@ -8,7 +8,7 @@ use rust_decimal::Decimal;
 use crate::{
     attribute::Attribute,
     bonus::{traits::ContainsAttribute, BonusCondition, BonusValue},
-    breakdown::{BonusStore, Breakdown},
+    player_stats::{BonusStore, PlayerStats},
 };
 
 #[derive(Debug, Clone, Default)]
@@ -59,7 +59,7 @@ impl BreakdownCalculator<'_> {
     }
 }
 
-impl Breakdown {
+impl PlayerStats {
     #[must_use]
     pub(super) const fn calculator(&mut self) -> BreakdownCalculator<'_> {
         BreakdownCalculator {

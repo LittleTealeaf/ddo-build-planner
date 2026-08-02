@@ -3,7 +3,7 @@
 pub mod attribute;
 pub mod bonus;
 pub mod bonuses;
-pub mod breakdown;
+pub mod player_stats;
 pub mod effect;
 pub mod stat;
 pub mod traits;
