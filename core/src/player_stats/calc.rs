@@ -68,17 +68,28 @@ impl PlayerStats {
         }
     }
 
-    pub fn evaluate_attribute(&mut self, attribute: Attribute, snapshot: Option<u32>) -> Decimal {
-        self.calculator().evaluate_attribute(attribute, snapshot)
+    pub fn evaluate_attribute<A>(&mut self, attribute: A, snapshot: Option<u32>) -> Decimal
+    where
+        A: Into<Attribute>,
+    {
+        self.calculator()
+            .evaluate_attribute(attribute.into(), snapshot)
     }
 
-    pub fn track_breakdown(&mut self, attribute: Attribute) {
+    pub fn track_breakdown<A>(&mut self, attribute: A)
+    where
+        A: Into<Attribute>,
+    {
+        let attribute = attribute.into();
         if !self.calc_cache.breakdowns.contains_key(&attribute) {
             self.calculator().update_breakdown(attribute);
         }
     }
 
-    pub fn remove_tracked_breakdown(&mut self, attribute: &Attribute) -> Option<AttributeBreakdown> {
+    pub fn remove_tracked_breakdown(
+        &mut self,
+        attribute: &Attribute,
+    ) -> Option<AttributeBreakdown> {
         self.calc_cache.breakdowns.remove(attribute)
     }
 

@@ -13,10 +13,16 @@ keywords.workspace = true
 [lints]
 workspace = true
 
+[features]
+debug = []
+
 [dependencies]
-derive_more = {version = "2.1.1", features = ["full"]}
-serde = {version = "1.0.228", features = ["derive"]}
+derive_more = { version = "2.1.1", features = ["full"] }
+serde = { version = "1.0.228", features = ["derive"] }
 im = { version = "15.1.0", features = ["serde"] }
 rust_decimal = "1.42.1"
 rust_decimal_macros = "1.40.0"
 itertools = "0.14.0"
+
+[dev-dependencies]
+ddo_core = { path = ".", features = ["debug"] }

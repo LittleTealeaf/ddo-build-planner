@@ -31,7 +31,7 @@ fn abilities() -> impl Iterator<Item = Bonus> {
         [
             Bonus::new(
                 ability.modifier(),
-                (ability.score().to_value() - val!(10)) / val!(2),
+                ((ability.score().to_value() - val!(10)) / val!(2)).floor(),
                 BonusType::Ability,
                 ability.score(),
             ),

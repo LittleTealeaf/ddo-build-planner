@@ -129,6 +129,7 @@ dependencies = [
 name = "ddo_core"
 version = "0.0.1"
 dependencies = [
+ "ddo_core",
  "derive_more",
  "im",
  "itertools",

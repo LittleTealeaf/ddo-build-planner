@@ -89,6 +89,11 @@ impl Bonuses {
         let entry = self.providers.entry(provider.clone()).or_default();
         let removed_attributes = entry.clone();
         entry.clear();
+        for attribute in &removed_attributes {
+            if let Some(bonuses) = self.bonuses.get_mut(attribute) {
+                bonuses.retain(|bonus| &bonus.provider != provider);
+            }
+        }
         for bonus in bonuses {
             entry.push(bonus.attribute().clone());
             let att_entry = self.bonuses.entry(bonus.attribute().clone()).or_default();

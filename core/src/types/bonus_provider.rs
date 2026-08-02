@@ -12,6 +12,8 @@
 )]
 pub enum BonusProvider {
     Core,
+    #[cfg(feature = "debug")]
+    Debug(String),
     Item(String),
     SetBonus(String),
 }
