@@ -123,6 +123,11 @@ impl Bonus {
     pub const fn attribute(&self) -> &Attribute {
         &self.attribute
     }
+
+    #[must_use]
+    pub const fn source(&self) -> &BonusSource {
+        &self.source
+    }
 }
 
 impl ContainsAttribute for Bonus {

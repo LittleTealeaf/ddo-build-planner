@@ -6,15 +6,15 @@ use rust_decimal_macros::dec;
 use crate::{
     attribute::Attribute,
     bonus::{BonusCondition, BonusType, BonusValue},
-    player_stats::calc::BreakdownCalculator,
+    player_stats::calc::StatsCalculator,
 };
 
-impl BreakdownCalculator<'_> {
+impl StatsCalculator<'_> {
     pub fn evaluate_attribute(&mut self, attribute: Attribute, snapshot: Option<u32>) -> Decimal {
         self.get_value(&BonusValue::Attribute(attribute), snapshot)
     }
 
-    fn get_condition(&mut self, condition: &BonusCondition, snapshot: Option<u32>) -> bool {
+    pub fn get_condition(&mut self, condition: &BonusCondition, snapshot: Option<u32>) -> bool {
         if let Some(value) = self.cache.conditions.get(condition) {
             return *value;
         }
@@ -59,7 +59,7 @@ impl BreakdownCalculator<'_> {
         }
     }
 
-    fn get_value(&mut self, value: &BonusValue, snapshot: Option<u32>) -> Decimal {
+    pub fn get_value(&mut self, value: &BonusValue, snapshot: Option<u32>) -> Decimal {
         if let Some(val) = self.cache.values.get(value) {
             return *val;
         }
@@ -131,7 +131,7 @@ impl BreakdownCalculator<'_> {
         let multiply = attribute.multiplicative();
         let mut stacking = if multiply { dec!(1) } else { dec!(0) };
 
-        for bonus in self.bonuses.get_bonuses(attribute, snapshot) {
+        for bonus in self.bonuses.get_snapshot_bonuses(attribute, snapshot) {
             if let Some(condition) = bonus.condition() {
                 if !self.get_condition(condition, snapshot) {
                     continue;

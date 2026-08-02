@@ -10,12 +10,12 @@ use crate::{
 };
 
 #[derive(Debug, Clone)]
-pub(super) struct BonusStore {
+pub(super) struct Bonuses {
     bonuses: HashMap<Attribute, Vec<BonusEntry>>,
     providers: HashMap<BonusProvider, Vec<Attribute>>,
 }
 
-impl Default for BonusStore {
+impl Default for Bonuses {
     fn default() -> Self {
         Self {
             bonuses: core_bonuses()
@@ -47,12 +47,20 @@ pub(super) struct BonusEntry {
     pub snapshot: Option<u32>,
 }
 
-impl BonusStore {
-    pub fn get_entries(&self, attribute: &Attribute) -> Option<&Vec<BonusEntry>> {
+impl Bonuses {
+    pub fn get_snapshots(&self, attribute: &Attribute) -> im::OrdSet<u32> {
+        self.get_bonuses(attribute)
+            .into_iter()
+            .flatten()
+            .filter_map(|bonus| bonus.snapshot)
+            .collect()
+    }
+
+    pub fn get_bonuses(&self, attribute: &Attribute) -> Option<&Vec<BonusEntry>> {
         self.bonuses.get(attribute)
     }
 
-    pub fn get_bonuses(
+    pub fn get_snapshot_bonuses(
         &self,
         attribute: &Attribute,
         snapshot: Option<u32>,
@@ -109,7 +117,7 @@ impl BonusStore {
 
 impl PlayerStats {
     pub fn get_bonuses(&self, attribute: &Attribute) -> impl Iterator<Item = &Bonus> {
-        self.bonuses.get_bonuses(attribute, None)
+        self.bonuses.get_snapshot_bonuses(attribute, None)
     }
 
     pub fn get_snapshot_bonuses(
@@ -117,6 +125,6 @@ impl PlayerStats {
         attribute: &Attribute,
         snapshot: u32,
     ) -> impl Iterator<Item = &Bonus> {
-        self.bonuses.get_bonuses(attribute, Some(snapshot))
+        self.bonuses.get_snapshot_bonuses(attribute, Some(snapshot))
     }
 }
