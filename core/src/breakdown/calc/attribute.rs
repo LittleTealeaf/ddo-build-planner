@@ -5,50 +5,12 @@ use rust_decimal_macros::dec;
 
 use crate::{
     attribute::Attribute,
-    bonus::{traits::ContainsAttribute, BonusCondition, BonusType, BonusValue},
-    breakdown::{BonusStore, Breakdown},
+    bonus::{BonusCondition, BonusType, BonusValue},
+    breakdown::calc::BreakdownCalculator,
 };
 
-#[derive(Debug, Clone, Default)]
-pub(super) struct CalcCache {
-    values: HashMap<BonusValue, Decimal>,
-    conditions: HashMap<BonusCondition, bool>,
-}
-
-impl CalcCache {
-    pub fn reset_attribute(&mut self, attribute: &Attribute) {
-        self.values
-            .retain(|key, _| !key.contains_attribute(attribute));
-        self.conditions
-            .retain(|key, _| !key.contains_attribute(attribute));
-    }
-}
-
-#[derive(derive_more::From)]
-pub(super) struct BonusCalculator<'a> {
-    cache: &'a mut CalcCache,
-    bonuses: &'a BonusStore,
-}
-
-impl Breakdown {
-    pub(super) const fn calculator(&mut self) -> BonusCalculator<'_> {
-        BonusCalculator {
-            cache: &mut self.calc_cache,
-            bonuses: &self.bonuses,
-        }
-    }
-
+impl BreakdownCalculator<'_> {
     pub fn evaluate_attribute(&mut self, attribute: Attribute, snapshot: Option<u32>) -> Decimal {
-        self.calculator().evaluate_attribute(attribute, snapshot)
-    }
-}
-
-impl BonusCalculator<'_> {
-    pub(super) fn evaluate_attribute(
-        &mut self,
-        attribute: Attribute,
-        snapshot: Option<u32>,
-    ) -> Decimal {
         self.get_value(&BonusValue::Attribute(attribute), snapshot)
     }
 
