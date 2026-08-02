@@ -1,9 +1,12 @@
 mod common;
 
-use ddo_core::{player_stats::PlayerStats, types::ability::Ability};
+use ddo_core::{
+    player_stats::PlayerStats,
+    types::{ability::Ability, skill::Skill},
+};
 use rust_decimal_macros::dec;
 
-use crate::common::player_stats::set_ability_score;
+use crate::common::player_stats::{set_ability_modifier, set_ability_score};
 
 mod ability_score {
     use super::*;
@@ -74,6 +77,19 @@ mod ability_modifier {
         for ability in Ability::VALUES {
             set_ability_score(&mut stats, ability, dec!(11));
             assert_eq!(dec!(0), stats.evaluate_attribute(ability.modifier(), None));
+        }
+    }
+}
+
+mod skills {
+    use super::*;
+
+    #[test]
+    fn skill_improved_by_stat() {
+        let mut stats = PlayerStats::default();
+        for skill in Skill::VALUES {
+            let ability = skill.ability();
+            set_ability_modifier(&mut stats, ability, dec!(0));
         }
     }
 }

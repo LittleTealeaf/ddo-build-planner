@@ -13,8 +13,8 @@ use crate::{
 
 #[derive(Debug, Clone, Default)]
 pub(super) struct BreakdownCache {
-    values: HashMap<BonusValue, Decimal>,
-    conditions: HashMap<BonusCondition, bool>,
+    values: HashMap<(BonusValue, Option<u32>), Decimal>,
+    conditions: HashMap<(BonusCondition, Option<u32>), bool>,
     breakdowns: HashMap<Attribute, AttributeBreakdown>,
 }
 
@@ -36,15 +36,16 @@ impl StatsCalculator<'_> {
             if Some(&attribute) == last_attribute.as_ref() {
                 continue;
             }
-
-            self.cache
-                .values
-                .retain(|key, _| !key.contains_attribute(&attribute));
-            self.cache
-                .values
-                .retain(|key, _| !key.contains_attribute(&attribute));
+            println!("Reset Attribute {attribute}");
 
             attributes.extend(self.bonuses.get_dependant_attributes(&attribute).cloned());
+
+            self.cache
+                .values
+                .retain(|(key, _), _| !key.contains_attribute(&attribute));
+            self.cache
+                .conditions
+                .retain(|(key, _), _| !key.contains_attribute(&attribute));
 
             if self.cache.breakdowns.contains_key(&attribute) {
                 breakdowns_to_update.insert(attribute.clone());

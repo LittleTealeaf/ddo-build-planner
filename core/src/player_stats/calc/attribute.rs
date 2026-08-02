@@ -15,7 +15,7 @@ impl StatsCalculator<'_> {
     }
 
     pub fn get_condition(&mut self, condition: &BonusCondition, snapshot: Option<u32>) -> bool {
-        if let Some(value) = self.cache.conditions.get(condition) {
+        if let Some(value) = self.cache.conditions.get(&(condition.clone(), snapshot)) {
             return *value;
         }
         if let BonusCondition::Constant(val) = condition {
@@ -24,7 +24,9 @@ impl StatsCalculator<'_> {
 
         let value = self.calculate_condition(condition, snapshot);
 
-        self.cache.conditions.insert(condition.clone(), value);
+        self.cache
+            .conditions
+            .insert((condition.clone(), snapshot), value);
         value
     }
 
@@ -60,7 +62,7 @@ impl StatsCalculator<'_> {
     }
 
     pub fn get_value(&mut self, value: &BonusValue, snapshot: Option<u32>) -> Decimal {
-        if let Some(val) = self.cache.values.get(value) {
+        if let Some(val) = self.cache.values.get(&(value.clone(), snapshot)) {
             return *val;
         }
         if let BonusValue::Const(val) = value {
@@ -69,7 +71,7 @@ impl StatsCalculator<'_> {
 
         let val = self.calculate_value(value, snapshot);
 
-        self.cache.values.insert(value.clone(), val);
+        self.cache.values.insert((value.clone(), snapshot), val);
 
         val
     }

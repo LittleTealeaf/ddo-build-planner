@@ -114,8 +114,8 @@ impl Bonuses {
         self.bonuses.iter().filter_map(move |(attr, bonuses)| {
             bonuses
                 .iter()
-                .any(|entry| entry.bonus.contains_attribute(attr))
-                .then_some(attribute)
+                .any(|entry| entry.bonus.contains_attribute(attribute))
+                .then_some(attr)
         })
     }
 }
