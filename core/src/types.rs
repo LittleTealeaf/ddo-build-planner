@@ -5,6 +5,6 @@ pub mod damage_type;
 pub mod save;
 pub mod sheltering;
 pub mod skill;
-pub mod spell_power;
+pub mod spell_damage_type;
 pub mod spell_school;
 pub mod spell_selector;

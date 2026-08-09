@@ -20,12 +20,12 @@ use crate::{
     serde::Serialize,
     derive_more::From,
 )]
-pub enum SpellPower {
+pub enum SpellDamageType {
     Universal,
     Damage(DamageType),
 }
 
-impl SpellPower {
+impl SpellDamageType {
     pub const SPELL_POWERS: [Self; 15] = [
         Self::Damage(DamageType::Acid),
         Self::Damage(DamageType::Fire),
@@ -45,12 +45,22 @@ impl SpellPower {
     ];
 
     #[must_use]
-    pub const fn spellpower(self) -> Attribute {
+    pub const fn spell_power(self) -> Attribute {
         Attribute::SpellPower(self)
+    }
+
+    #[must_use]
+    pub const fn spell_critical_chance(self) -> Attribute {
+        Attribute::SpellCriticalChance(self)
+    }
+
+    #[must_use]
+    pub const fn spell_critical_damage(self) -> Attribute {
+        Attribute::SpellCriticalDamage(self)
     }
 }
 
-impl IterValues for SpellPower {
+impl IterValues for SpellDamageType {
     fn values() -> impl Iterator<Item = Self> {
         chain!([Self::Universal], DamageType::values().map(Self::Damage))
     }

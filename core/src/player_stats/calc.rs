@@ -36,7 +36,6 @@ impl StatsCalculator<'_> {
             if Some(&attribute) == last_attribute.as_ref() {
                 continue;
             }
-            println!("Reset Attribute {attribute}");
 
             attributes.extend(self.bonuses.get_dependant_attributes(&attribute).cloned());
 

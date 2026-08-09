@@ -1,4 +1,5 @@
 use ddo_core::{
+    attribute::Attribute,
     bonus::{Bonus, BonusSource, BonusType},
     player_stats::PlayerStats,
     types::ability::Ability,
@@ -21,58 +22,43 @@ macro_rules! provider {
     };
 }
 
-pub fn set_ability_score(stats: &mut PlayerStats, ability: Ability, value: Decimal) {
-    let provider = provider!();
+pub fn set_attribute_value<I: Into<Attribute>>(
+    stats: &mut PlayerStats,
+    attribute: I,
+    value: Decimal,
+) {
+    let attribute = attribute.into();
+    let provider = provider!(format!("{attribute}"));
 
     stats.clear_provider(&provider);
-    let current = stats.evaluate_attribute(ability.score(), None);
-    println!(
-        "Found Score of {current} and Modifier of {}",
-        stats.evaluate_attribute(ability.modifier(), None)
-    );
-
+    let current = stats.evaluate_attribute(attribute.clone(), None);
+    let difference = value - current;
     stats.insert_bonus(
         Bonus::new(
-            ability.score(),
-            value - current,
+            attribute.clone(),
+            difference,
             BonusType::Stacking,
             BonusSource::Debug(0),
         ),
         &provider,
         None,
     );
+    let result = stats.evaluate_attribute(attribute.clone(), None);
+    assert_eq!(
+        value, result,
+        "Expected Attribute ({attribute}) to be {value}, found {result}"
+    );
+}
 
-    let current = stats.evaluate_attribute(ability.score(), None);
-    let current_modifier = stats.evaluate_attribute(ability.modifier(), None);
-    println!("Finished Score of {current} and Modifier of {current_modifier}");
+pub fn set_ability_score(stats: &mut PlayerStats, ability: Ability, value: Decimal) {
+    set_attribute_value(stats, ability.score(), value);
 }
 
 pub fn set_ability_modifier(stats: &mut PlayerStats, ability: Ability, value: Decimal) {
     set_ability_score(stats, ability, (value + dec!(5)) * dec!(2));
-}
-
-#[test]
-fn test_set_ability_scores() {
-    let mut stats = PlayerStats::default();
-    for i in [5, 10, 20, 30, 20, 15, 35, 32, 43, 84, 23, 103, 9] {
-        set_ability_score(&mut stats, Ability::Charisma, Decimal::from(i));
-        assert_eq!(
-            Decimal::from(i),
-            stats.evaluate_attribute(Ability::Charisma.score(), None)
-        );
-    }
-}
-
-#[test]
-fn test_set_ability_modifier() {
-    let mut stats = PlayerStats::default();
-    for i in -4..=10 {
-        println!("Testing {i}");
-        let val = Decimal::from(i);
-        set_ability_modifier(&mut stats, Ability::Constitution, val);
-        assert_eq!(
-            val,
-            stats.evaluate_attribute(Ability::Constitution.modifier(), None)
-        );
-    }
+    let result = stats.evaluate_attribute(ability.modifier(), None);
+    assert_eq!(
+        value, result,
+        "Expected {ability} Ability Modifier to be {value}, found {result}"
+    );
 }

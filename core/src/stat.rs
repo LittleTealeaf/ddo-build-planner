@@ -1,7 +1,7 @@
 use crate::{
     attribute::Attribute,
     traits::IterValues,
-    types::{ability::Ability, skill::Skill, spell_power::SpellPower, spell_school::SpellSchool},
+    types::{ability::Ability, skill::Skill, spell_damage_type::SpellDamageType, spell_school::SpellSchool},
 };
 
 #[derive(
@@ -37,7 +37,7 @@ impl Stat {
             Self::Attribute(attribute) => vec![attribute],
             Self::AllAbilityScores => Vec::from(Ability::VALUES.map(Attribute::AbilityScore)),
             Self::AllSkills => Vec::from(Skill::VALUES.map(Attribute::Skill)),
-            Self::Potency => Vec::from(SpellPower::SPELL_POWERS.map(Attribute::SpellPower)),
+            Self::Potency => Vec::from(SpellDamageType::SPELL_POWERS.map(Attribute::SpellPower)),
             Self::AbilitySkills(ability) => Skill::values()
                 .filter(|skill| skill.ability() == ability)
                 .map(Attribute::Skill)

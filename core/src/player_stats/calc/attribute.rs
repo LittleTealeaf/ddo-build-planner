@@ -15,6 +15,10 @@ impl StatsCalculator<'_> {
     }
 
     pub fn get_condition(&mut self, condition: &BonusCondition, snapshot: Option<u32>) -> bool {
+        if let BonusCondition::Constant(val) = &condition {
+            return *val;
+        }
+
         if let Some(value) = self.cache.conditions.get(&(condition.clone(), snapshot)) {
             return *value;
         }

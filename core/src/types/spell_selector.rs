@@ -3,7 +3,7 @@ use itertools::chain;
 use crate::{
     attribute::Attribute,
     traits::IterValues,
-    types::{spell_power::SpellPower, spell_school::SpellSchool},
+    types::{spell_damage_type::SpellDamageType, spell_school::SpellSchool},
 };
 
 #[derive(
@@ -24,7 +24,7 @@ pub enum SpellSelector {
     #[display("{_0} School")]
     School(SpellSchool),
     #[display("{_0} Spells")]
-    Power(SpellPower),
+    Power(SpellDamageType),
 }
 
 impl SpellSelector {
@@ -43,7 +43,7 @@ impl IterValues for SpellSelector {
     fn values() -> impl Iterator<Item = Self> {
         chain!(
             SpellSchool::values().map(Self::School),
-            SpellPower::values().map(Self::Power),
+            SpellDamageType::values().map(Self::Power),
         )
     }
 }

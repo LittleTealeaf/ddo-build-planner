@@ -121,6 +121,14 @@ impl Bonuses {
 }
 
 impl PlayerStats {
+    pub fn bonuses(&self) -> impl Iterator<Item = &Bonus> {
+        self.bonuses
+            .bonuses
+            .values()
+            .flatten()
+            .map(|entry| &entry.bonus)
+    }
+
     pub fn get_bonuses(&self, attribute: &Attribute) -> impl Iterator<Item = &Bonus> {
         self.bonuses.get_snapshot_bonuses(attribute, None)
     }

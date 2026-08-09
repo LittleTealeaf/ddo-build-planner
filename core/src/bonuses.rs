@@ -9,7 +9,7 @@ use crate::{
     traits::IterValues,
     types::{
         ability::Ability, alignment::Alignment, damage_type::DamageType, save::SavingThrow,
-        sheltering::Sheltering, skill::Skill, spell_power::SpellPower,
+        sheltering::Sheltering, skill::Skill, spell_damage_type::SpellDamageType,
     },
     val,
 };
@@ -19,7 +19,7 @@ pub fn core_bonuses() -> impl Iterator<Item = Bonus> {
         abilities(),
         armor_check_penalty(),
         skill_bonuses(),
-        universal_spell_power(),
+        universal_spell_stats(),
         skill_to_spellpower(),
         saving_throws(),
         sheltering(),
@@ -94,7 +94,7 @@ fn skill_to_spellpower() -> impl Iterator<Item = Bonus> {
     ) -> impl Iterator<Item = Bonus> {
         damages.into_iter().map(move |damage| {
             Bonus::new(
-                SpellPower::from(damage).spellpower(),
+                SpellDamageType::from(damage).spell_power(),
                 skill.attribute(),
                 BonusType::Stacking,
                 skill.attribute(),
@@ -126,14 +126,28 @@ fn skill_to_spellpower() -> impl Iterator<Item = Bonus> {
     )
 }
 
-fn universal_spell_power() -> impl Iterator<Item = Bonus> {
-    SpellPower::SPELL_POWERS.into_iter().map(|power| {
-        Bonus::new(
-            power.spellpower(),
-            SpellPower::Universal.spellpower(),
-            BonusType::Stacking,
-            SpellPower::Universal.spellpower(),
-        )
+fn universal_spell_stats() -> impl Iterator<Item = Bonus> {
+    SpellDamageType::SPELL_POWERS.into_iter().flat_map(|power| {
+        [
+            Bonus::new(
+                power.spell_power(),
+                SpellDamageType::Universal.spell_power(),
+                BonusType::Stacking,
+                SpellDamageType::Universal.spell_power(),
+            ),
+            Bonus::new(
+                power.spell_critical_chance(),
+                SpellDamageType::Universal.spell_critical_chance(),
+                BonusType::Stacking,
+                SpellDamageType::Universal.spell_critical_chance(),
+            ),
+            Bonus::new(
+                power.spell_critical_damage(),
+                SpellDamageType::Universal.spell_critical_damage(),
+                BonusType::Stacking,
+                SpellDamageType::Universal.spell_critical_damage(),
+            ),
+        ]
     })
 }
 

@@ -1,6 +1,9 @@
 use itertools::chain;
 
-use crate::{traits::IterValues, types::alignment::Alignment};
+use crate::{
+    traits::IterValues,
+    types::{alignment::Alignment, spell_damage_type::SpellDamageType},
+};
 
 #[derive(
     Debug,
@@ -55,6 +58,13 @@ pub enum DamageType {
     Aligned(Alignment),
     /// Untyped Damage
     Untyped,
+}
+
+impl DamageType {
+    #[must_use]
+    pub const fn spell_damage(self) -> SpellDamageType {
+        SpellDamageType::Damage(self)
+    }
 }
 
 impl IterValues for DamageType {

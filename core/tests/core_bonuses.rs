@@ -90,6 +90,11 @@ mod skills {
         for skill in Skill::VALUES {
             let ability = skill.ability();
             set_ability_modifier(&mut stats, ability, dec!(0));
+            assert_eq!(dec!(0), stats.evaluate_attribute(skill, None));
+            set_ability_modifier(&mut stats, ability, dec!(1));
+            assert_eq!(dec!(1), stats.evaluate_attribute(skill, None));
+            set_ability_modifier(&mut stats, ability, dec!(-1));
+            assert_eq!(dec!(-1), stats.evaluate_attribute(skill, None));
         }
     }
 }
