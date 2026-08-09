@@ -10,8 +10,31 @@ use crate::{
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AttributeBreakdown {
+    attribute: Attribute,
     base: BreakdownSnapshot,
     snapshots: im::HashMap<u32, BreakdownSnapshot>,
+}
+
+impl AttributeBreakdown {
+    #[must_use]
+    pub const fn attribute(&self) -> &Attribute {
+        &self.attribute
+    }
+
+    #[must_use]
+    pub const fn base(&self) -> &BreakdownSnapshot {
+        &self.base
+    }
+
+    pub fn snapshot(&self, snapshot: u32) -> Option<&BreakdownSnapshot> {
+        self.snapshots.get(&snapshot)
+    }
+}
+
+impl From<AttributeBreakdown> for Attribute {
+    fn from(value: AttributeBreakdown) -> Self {
+        value.attribute
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -79,25 +102,29 @@ impl CalculatedBonus {
 
 impl StatsCalculator<'_> {
     pub fn update_breakdown(&mut self, attribute: Attribute) {
-        let breakdown = self.build_breakdowns(&attribute);
+        let breakdown = self.build_breakdowns(attribute.clone());
         self.cache.breakdowns.insert(attribute, breakdown);
     }
 
-    fn build_breakdowns(&mut self, attribute: &Attribute) -> AttributeBreakdown {
-        let base = self.build_snapshot_breakdown(attribute, None);
-        let snapshots = self.bonuses.get_snapshots(attribute);
+    fn build_breakdowns(&mut self, attribute: Attribute) -> AttributeBreakdown {
+        let base = self.build_snapshot_breakdown(&attribute, None);
+        let snapshots = self.bonuses.get_snapshots(&attribute);
 
         let snapshots = snapshots
             .into_iter()
             .map(|snapshot| {
                 (
                     snapshot,
-                    self.build_snapshot_breakdown(attribute, Some(snapshot)),
+                    self.build_snapshot_breakdown(&attribute, Some(snapshot)),
                 )
             })
             .collect();
 
-        AttributeBreakdown { base, snapshots }
+        AttributeBreakdown {
+            attribute,
+            base,
+            snapshots,
+        }
     }
 
     fn build_snapshot_breakdown(
@@ -108,13 +135,21 @@ impl StatsCalculator<'_> {
         let value = self.evaluate_attribute(attribute.clone(), snapshot);
 
         let bonuses = self.bonuses.get_snapshot_bonuses(attribute, snapshot);
-        let calculated_bonuses = bonuses.map(|bonus| CalculatedBonus {
-            value: self.get_value(bonus.value(), snapshot),
-            enabled: bonus
-                .condition()
-                .as_ref()
-                .is_none_or(|condition| self.get_condition(condition, snapshot)),
-            bonus: bonus.clone(),
+        let calculated_bonuses = bonuses.filter_map(|bonus| {
+            if let Some(show_condition) = bonus.show_condition() {
+                if !self.get_condition(show_condition, snapshot) {
+                    return None;
+                }
+            }
+
+            Some(CalculatedBonus {
+                value: self.get_value(bonus.value(), snapshot),
+                enabled: bonus
+                    .condition()
+                    .as_ref()
+                    .is_none_or(|condition| self.get_condition(condition, snapshot)),
+                bonus: bonus.clone(),
+            })
         });
 
         let mut applied = Vec::new();

@@ -1,3 +1,11 @@
+use crate::{
+    bonus::{
+        traits::{ToAttribute, ToValue},
+        Bonus, BonusSource, BonusType,
+    },
+    val,
+};
+
 #[derive(
     Debug,
     PartialEq,
@@ -24,4 +32,32 @@ pub enum Sheltering {
     PhysicalReduction,
     #[display("MRR Damage Reduction")]
     MagicalReduction,
+}
+
+impl Sheltering {
+    #[must_use]
+    pub fn core_bonuses() -> impl IntoIterator<Item = Bonus> {
+        [
+            Bonus::new(
+                Self::MagicalReduction,
+                {
+                    let magical = Self::Magical.attribute().to_value();
+                    let magical_cap = Self::MagicalCap.attribute().to_value();
+                    let magical_uncapped = Self::MagicalUncapped.attribute().to_value();
+                    let capped_magical = magical.min(magical_cap);
+                    let total_magical = capped_magical + magical_uncapped;
+
+                    val!(1) - (val!(100) / (val!(100) + total_magical))
+                },
+                BonusType::Stacking,
+                BonusSource::Custom("Sheltering".to_owned()),
+            ),
+            Bonus::new(
+                Self::PhysicalReduction,
+                val!(1) - (val!(100) / (val!(100) + Self::Physical.attribute().to_value())),
+                BonusType::Stacking,
+                BonusSource::Custom("Sheltering".to_owned()),
+            ),
+        ]
+    }
 }

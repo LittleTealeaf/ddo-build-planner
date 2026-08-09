@@ -1,6 +1,7 @@
 use crate::types::{
     ability::Ability, damage_type::DamageType, save::SavingThrow, sheltering::Sheltering,
     skill::Skill, spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
+    weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
 };
 
 #[derive(
@@ -54,6 +55,10 @@ pub enum Attribute {
     MeleePower,
     #[display("Ranged Power")]
     RangedPower,
+    #[display("{_0} {_1}")]
+    Weapon(WeaponAttribute, WeaponSlot),
+    #[display("Feat: {_0}")]
+    Feat(String),
 }
 
 impl Attribute {

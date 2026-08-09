@@ -1,4 +1,12 @@
-use crate::{traits::IterValues, types::ability::Ability};
+use itertools::chain;
+
+use crate::{
+    attribute::Attribute,
+    bonus::{traits::ToValue, Bonus, BonusType},
+    traits::IterValues,
+    types::ability::Ability,
+    val,
+};
 
 #[derive(
     Debug,
@@ -91,5 +99,37 @@ impl Skill {
 impl IterValues for Skill {
     fn values() -> impl Iterator<Item = Self> {
         Self::VALUES.into_iter()
+    }
+}
+
+impl Skill {
+    pub fn core_bonuses() -> impl Iterator<Item = Bonus> {
+        chain!(
+            Self::values().map(|skill| {
+                Bonus::new(
+                    skill,
+                    skill.ability().modifier(),
+                    BonusType::Ability,
+                    skill.ability().modifier(),
+                )
+            }),
+            [
+                (Self::Balance, val!(-1)),
+                (Self::Hide, val!(-1)),
+                (Self::Jump, val!(-1)),
+                (Self::MoveSilently, val!(-1)),
+                (Self::Swim, val!(-2)),
+                (Self::Tumble, val!(-1)),
+            ]
+            .into_iter()
+            .map(|(skill, scale)| {
+                Bonus::new(
+                    skill,
+                    scale * Attribute::ArmorCheckPenalty.to_value(),
+                    BonusType::Stacking,
+                    Attribute::ArmorCheckPenalty,
+                )
+            }),
+        )
     }
 }

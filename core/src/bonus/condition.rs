@@ -211,22 +211,22 @@ impl BitXorAssign for BonusCondition {
 }
 
 impl ContainsAttribute for BonusCondition {
-    fn contains_attribute(&self, attribute: &Attribute) -> bool {
+    fn any_attribute<'a, F>(&'a self, fun: &F) -> bool
+    where
+        F: Fn(&'a Attribute) -> bool,
+    {
         match self {
-            Self::Not(bonus_condition) => bonus_condition.contains_attribute(attribute),
+            Self::Not(bonus_condition) => bonus_condition.any_attribute(fun),
             Self::GreaterThan(val, val1)
             | Self::GreaterEqualTo(val, val1)
             | Self::LessThan(val, val1)
             | Self::LessEqualTo(val, val1)
-            | Self::EqualTo(val, val1) => {
-                val1.contains_attribute(attribute) || val.contains_attribute(attribute)
-            }
+            | Self::EqualTo(val, val1) => val1.any_attribute(fun) || val.any_attribute(fun),
             Self::Constant(_) => false,
             Self::And(bonus_condition, bonus_condition1)
             | Self::Or(bonus_condition, bonus_condition1)
             | Self::Xor(bonus_condition, bonus_condition1) => {
-                bonus_condition.contains_attribute(attribute)
-                    || bonus_condition1.contains_attribute(attribute)
+                bonus_condition.any_attribute(fun) || bonus_condition1.any_attribute(fun)
             }
         }
     }

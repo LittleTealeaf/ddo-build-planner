@@ -19,6 +19,7 @@ pub struct Bonus {
     value: BonusValue,
     r#type: BonusType,
     condition: Option<BonusCondition>,
+    show_condition: Option<BonusCondition>,
     source: BonusSource,
 }
 
@@ -50,6 +51,7 @@ impl Bonus {
             value: value.into(),
             r#type: bonus_type.into(),
             condition: None,
+            show_condition: None,
             source: source.into(),
         }
     }
@@ -105,8 +107,63 @@ impl Bonus {
     }
 
     #[must_use]
+    pub fn with_show_condition<C>(self, condition: C) -> Self
+    where
+        C: Into<BonusCondition>,
+    {
+        Self {
+            show_condition: Some(condition.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_show_condition_maybe(self, condition: Option<BonusCondition>) -> Self {
+        if let Some(condition) = condition {
+            self.with_show_condition(condition)
+        } else {
+            self
+        }
+    }
+
+    #[must_use]
+    pub fn with_show_condition_and<C>(self, condition: C) -> Self
+    where
+        C: Into<BonusCondition>,
+    {
+        let condition = condition.into();
+        Self {
+            show_condition: match self.show_condition {
+                Some(cond) => Some(cond & condition),
+                None => Some(condition),
+            },
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_show_condition_or<C>(self, condition: C) -> Self
+    where
+        C: Into<BonusCondition>,
+    {
+        let condition = condition.into();
+        Self {
+            show_condition: match self.show_condition {
+                Some(cond) => Some(cond | condition),
+                None => Some(condition),
+            },
+            ..self
+        }
+    }
+
+    #[must_use]
     pub const fn condition(&self) -> &Option<BonusCondition> {
         &self.condition
+    }
+
+    #[must_use]
+    pub const fn show_condition(&self) -> &Option<BonusCondition> {
+        &self.show_condition
     }
 
     #[must_use]
@@ -131,11 +188,14 @@ impl Bonus {
 }
 
 impl ContainsAttribute for Bonus {
-    fn contains_attribute(&self, attribute: &Attribute) -> bool {
-        self.value.contains_attribute(attribute)
+    fn any_attribute<'a, F>(&'a self, fun: &F) -> bool
+    where
+        F: Fn(&'a Attribute) -> bool,
+    {
+        self.value.any_attribute(fun)
             || self
                 .condition()
                 .as_ref()
-                .is_some_and(|cond| cond.contains_attribute(attribute))
+                .is_some_and(|cond| cond.any_attribute(fun))
     }
 }

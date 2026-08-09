@@ -1,4 +1,8 @@
-use crate::{traits::IterValues, types::ability::Ability};
+use crate::{
+    bonus::{Bonus, BonusType},
+    traits::IterValues,
+    types::ability::Ability,
+};
 
 #[derive(
     Debug,
@@ -57,5 +61,18 @@ impl SavingThrow {
 impl IterValues for SavingThrow {
     fn values() -> impl Iterator<Item = Self> {
         Self::VALUES.into_iter()
+    }
+}
+
+impl SavingThrow {
+    pub fn core_bonuses() -> impl Iterator<Item = Bonus> {
+        Self::values().filter_map(|save| {
+            Some(Bonus::new(
+                save,
+                save.ability()?.modifier(),
+                BonusType::Ability,
+                save.ability()?.modifier(),
+            ))
+        })
     }
 }

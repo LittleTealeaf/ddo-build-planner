@@ -1,6 +1,13 @@
 use core::iter::{empty, once};
 
-use crate::{bonus::Bonus, player_stats::PlayerStats, types::bonus_provider::BonusProvider};
+use crate::{
+    attribute::Attribute,
+    bonus::{traits::ToValue, Bonus},
+    feat::Feat,
+    player_stats::PlayerStats,
+    types::bonus_provider::BonusProvider,
+    val,
+};
 
 impl PlayerStats {
     pub fn clear_provider(&mut self, provider: &BonusProvider) {
@@ -15,10 +22,31 @@ impl PlayerStats {
     where
         I: IntoIterator<Item = Bonus>,
     {
+        // Insert bonuses
         let attributes = self
             .bonuses
             .insert_bonuses(bonuses, provider, snapshot)
             .collect::<Vec<_>>();
         self.calculator().reset_attributes(attributes);
+    }
+
+    pub fn load_feats<I>(&mut self, feats: I)
+    where
+        I: IntoIterator<Item = Feat>,
+    {
+        self.insert_bonuses(
+            feats.into_iter().flat_map(|feat| {
+                let name = feat.name().clone();
+                feat.into_bonuses().map(move |bonus| {
+                    bonus.with_show_condition_and(
+                        Attribute::Feat(name.clone())
+                            .to_value()
+                            .greater_than(val!(0)),
+                    )
+                })
+            }),
+            &BonusProvider::Feats,
+            None,
+        );
     }
 }

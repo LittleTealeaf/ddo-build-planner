@@ -1,7 +1,7 @@
 mod attribute;
 mod breakdown;
 
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::collections::{BinaryHeap, HashMap};
 
 use rust_decimal::Decimal;
 
@@ -18,6 +18,7 @@ pub(super) struct BreakdownCache {
     breakdowns: HashMap<Attribute, AttributeBreakdown>,
 }
 
+#[derive(derive_more::From)]
 pub(super) struct StatsCalculator<'a> {
     cache: &'a mut BreakdownCache,
     bonuses: &'a Bonuses,
@@ -30,7 +31,7 @@ impl StatsCalculator<'_> {
     {
         let mut attributes = BinaryHeap::from_iter(attributes);
         let mut last_attribute = None;
-        let mut breakdowns_to_update = HashSet::new();
+        let mut breakdowns_to_update = Vec::new();
 
         while let Some(attribute) = attributes.pop() {
             if Some(&attribute) == last_attribute.as_ref() {
@@ -46,8 +47,8 @@ impl StatsCalculator<'_> {
                 .conditions
                 .retain(|(key, _), _| !key.contains_attribute(&attribute));
 
-            if self.cache.breakdowns.contains_key(&attribute) {
-                breakdowns_to_update.insert(attribute.clone());
+            if let Some(breakdown) = self.cache.breakdowns.remove(&attribute) {
+                breakdowns_to_update.push(breakdown.into());
             }
 
             last_attribute = Some(attribute);

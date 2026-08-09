@@ -27,5 +27,11 @@ where
 }
 
 pub trait ContainsAttribute {
-    fn contains_attribute(&self, attribute: &Attribute) -> bool;
+    fn any_attribute<'a, F>(&'a self, fun: &F) -> bool
+    where
+        F: Fn(&'a Attribute) -> bool;
+
+    fn contains_attribute(&self, attribute: &Attribute) -> bool {
+        self.any_attribute(&|attr| attr == attribute)
+    }
 }

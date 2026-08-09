@@ -138,6 +138,12 @@ impl StatsCalculator<'_> {
         let mut stacking = if multiply { dec!(1) } else { dec!(0) };
 
         for bonus in self.bonuses.get_snapshot_bonuses(attribute, snapshot) {
+            if let Some(condition) = bonus.show_condition() {
+                if !self.get_condition(condition, snapshot) {
+                    continue;
+                }
+            }
+
             if let Some(condition) = bonus.condition() {
                 if !self.get_condition(condition, snapshot) {
                     continue;

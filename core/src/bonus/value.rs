@@ -321,15 +321,18 @@ impl Product for BonusValue {
 }
 
 impl ContainsAttribute for BonusValue {
-    fn contains_attribute(&self, attribute: &Attribute) -> bool {
+    fn any_attribute<'a, F>(&'a self, fun: &F) -> bool
+    where
+        F: Fn(&'a Attribute) -> bool,
+    {
         match self {
             Self::Const(_) => false,
-            Self::Attribute(attr) => attr == attribute,
+            Self::Attribute(attr) => fun(attr),
             Self::Snapshot(_, bonus_value)
             | Self::Floor(bonus_value)
             | Self::Ceil(bonus_value)
             | Self::Round(bonus_value)
-            | Self::Abs(bonus_value) => bonus_value.contains_attribute(attribute),
+            | Self::Abs(bonus_value) => bonus_value.any_attribute(fun),
             Self::Min(bonus_value, bonus_value1)
             | Self::Max(bonus_value, bonus_value1)
             | Self::Add(bonus_value, bonus_value1)
@@ -337,21 +340,18 @@ impl ContainsAttribute for BonusValue {
             | Self::Mul(bonus_value, bonus_value1)
             | Self::Div(bonus_value, bonus_value1)
             | Self::Rem(bonus_value, bonus_value1) => {
-                bonus_value.contains_attribute(attribute)
-                    || bonus_value1.contains_attribute(attribute)
+                bonus_value.any_attribute(fun) || bonus_value1.any_attribute(fun)
             }
             Self::If {
                 condition,
                 if_true,
                 if_false,
             } => {
-                condition.contains_attribute(attribute)
-                    || if_true.contains_attribute(attribute)
-                    || if_false.contains_attribute(attribute)
+                condition.any_attribute(fun)
+                    || if_true.any_attribute(fun)
+                    || if_false.any_attribute(fun)
             }
-            Self::Dice { count, size } => {
-                count.contains_attribute(attribute) || size.contains_attribute(attribute)
-            }
+            Self::Dice { count, size } => count.any_attribute(fun) || size.any_attribute(fun),
         }
     }
 }

@@ -1,11 +1,12 @@
+mod core;
+
 use itertools::Itertools;
 use std::collections::HashMap;
 
 use crate::{
     attribute::Attribute,
     bonus::{traits::ContainsAttribute, Bonus},
-    bonuses::core_bonuses,
-    player_stats::PlayerStats,
+    player_stats::{bonuses::core::core_bonuses, PlayerStats},
     types::bonus_provider::BonusProvider,
 };
 

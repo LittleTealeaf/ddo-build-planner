@@ -23,6 +23,8 @@ pub enum BonusSource {
     Item(String),
     #[display("Set Bonus: {_0}")]
     SetBonus(String),
+    #[display("Feat: {_0}")]
+    Feat(String)
 }
 
 impl From<Attribute> for BonusSource {

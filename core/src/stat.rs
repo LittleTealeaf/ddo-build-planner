@@ -1,7 +1,10 @@
 use crate::{
     attribute::Attribute,
     traits::IterValues,
-    types::{ability::Ability, skill::Skill, spell_damage_type::SpellDamageType, spell_school::SpellSchool},
+    types::{
+        ability::Ability, skill::Skill, spell_damage_type::SpellDamageType,
+        spell_school::SpellSchool, weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
+    },
 };
 
 #[derive(
@@ -26,6 +29,8 @@ pub enum Stat {
     AllSkills,
     #[display("{_0} Skills")]
     AbilitySkills(Ability),
+    #[display("{_0}")]
+    Weapon(WeaponAttribute),
     #[display("Potency")]
     Potency,
     SpellDC,
@@ -34,6 +39,9 @@ pub enum Stat {
 impl Stat {
     pub fn into_attributes(self) -> Vec<Attribute> {
         match self {
+            Self::Weapon(attribute) => WeaponSlot::values()
+                .map(|slot| Attribute::Weapon(attribute, slot))
+                .collect(),
             Self::Attribute(attribute) => vec![attribute],
             Self::AllAbilityScores => Vec::from(Ability::VALUES.map(Attribute::AbilityScore)),
             Self::AllSkills => Vec::from(Skill::VALUES.map(Attribute::Skill)),

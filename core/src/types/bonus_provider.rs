@@ -1,3 +1,5 @@
+use crate::types::equipment_slot::EquipmentSlot;
+
 #[derive(
     Debug,
     Clone,
@@ -11,9 +13,11 @@
     serde::Deserialize,
 )]
 pub enum BonusProvider {
-    Core,
     #[cfg(feature = "debug")]
     Debug(String),
+    Core,
+    Feats,
     Item(String),
     SetBonus(String),
+    Equipment(EquipmentSlot),
 }
