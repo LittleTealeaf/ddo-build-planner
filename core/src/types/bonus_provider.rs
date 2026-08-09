@@ -17,7 +17,7 @@ pub enum BonusProvider {
     Debug(String),
     Core,
     Feats,
-    Item(String),
     SetBonus(String),
-    Equipment(EquipmentSlot),
+    #[display("{_0} (Set {_1})")]
+    Equipment(EquipmentSlot, u32),
 }
