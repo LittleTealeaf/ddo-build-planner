@@ -1,4 +1,4 @@
-use crate::{bonus::Bonus, effect::Effect, feat::prerequisite::Prerequisite};
+use crate::{bonus::Bonus, effect::Effect, items::feat::prerequisite::Prerequisite};
 
 mod prerequisite;
 

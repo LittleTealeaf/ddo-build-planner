@@ -7,5 +7,4 @@ pub mod effect;
 pub mod stat;
 pub mod traits;
 pub mod types;
-pub mod item;
-pub mod feat;
+pub mod items;

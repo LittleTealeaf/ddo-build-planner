@@ -3,7 +3,7 @@ use core::iter::{empty, once};
 use crate::{
     attribute::Attribute,
     bonus::{traits::ToValue, Bonus},
-    feat::Feat,
+    items::feat::Feat,
     player_stats::PlayerStats,
     types::bonus_provider::BonusProvider,
     val,
