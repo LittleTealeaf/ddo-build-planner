@@ -3,7 +3,7 @@ use ddo_core::items::feat::Feat;
 #[macro_export]
 macro_rules! load_data {
     ($function: ident, $type: ty, $file: expr) => {
-        fn $function() -> Result<$type, ron::de::SpannedError> {
+        pub fn $function() -> Result<$type, ron::de::SpannedError> {
             ron::from_str(include_str!(concat!(env!("OUT_DIR"), "/", $file)))
         }
 
