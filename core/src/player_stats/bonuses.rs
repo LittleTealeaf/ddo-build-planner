@@ -20,22 +20,17 @@ impl Default for Bonuses {
     fn default() -> Self {
         Self {
             bonuses: core_bonuses()
-                .chunk_by(|bonus| bonus.attribute().clone())
-                .into_iter()
-                .map(|(attribute, bonuses)| {
+                .map(|bonus| {
                     (
-                        attribute,
-                        bonuses
-                            .into_iter()
-                            .map(|bonus| BonusEntry {
-                                bonus,
-                                provider: BonusProvider::Core,
-                                snapshot: None,
-                            })
-                            .collect(),
+                        bonus.attribute().clone(),
+                        BonusEntry {
+                            bonus,
+                            provider: BonusProvider::Core,
+                            snapshot: None,
+                        },
                     )
                 })
-                .collect(),
+                .into_group_map(),
             providers: HashMap::default(),
         }
     }
