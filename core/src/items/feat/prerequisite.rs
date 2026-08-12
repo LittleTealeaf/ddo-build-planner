@@ -16,5 +16,5 @@ use crate::types::ability::Ability;
 )]
 pub enum Prerequisite {
     #[display("{_1} {_0} Score")]
-    AbilityScore(Ability, Decimal)
+    AbilityScore(Ability, Decimal),
 }

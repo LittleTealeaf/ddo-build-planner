@@ -9,5 +9,5 @@ pub mod skill;
 pub mod spell_damage_type;
 pub mod spell_school;
 pub mod spell_selector;
-pub mod weapon_slot;
 pub mod weapon_attribute;
+pub mod weapon_slot;

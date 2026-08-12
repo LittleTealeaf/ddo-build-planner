@@ -2,9 +2,9 @@
 
 pub mod attribute;
 pub mod bonus;
-pub mod player_stats;
 pub mod effect;
+pub mod items;
+pub mod player_stats;
 pub mod stat;
 pub mod traits;
 pub mod types;
-pub mod items;
