@@ -1,5 +1,5 @@
 [workspace]
-members = ["core", "data"]
+members = ["core", "data", "iced_ui"]
 default-members = ["core"]
 resolver = "2"
 
