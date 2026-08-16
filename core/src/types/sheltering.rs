@@ -3,6 +3,7 @@ use crate::{
         traits::{ToAttribute, ToValue},
         Bonus, BonusSource, BonusType,
     },
+    traits::IterValues,
     val,
 };
 
@@ -35,6 +36,15 @@ pub enum Sheltering {
 }
 
 impl Sheltering {
+    pub const VALUES: [Self; 6] = [
+        Self::Physical,
+        Self::Magical,
+        Self::MagicalCap,
+        Self::MagicalUncapped,
+        Self::PhysicalReduction,
+        Self::MagicalReduction,
+    ];
+
     #[must_use]
     pub fn core_bonuses() -> impl IntoIterator<Item = Bonus> {
         [
@@ -59,5 +69,11 @@ impl Sheltering {
                 BonusSource::Custom("Sheltering".to_owned()),
             ),
         ]
+    }
+}
+
+impl IterValues for Sheltering {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
     }
 }

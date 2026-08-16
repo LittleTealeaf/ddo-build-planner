@@ -1,9 +1,11 @@
+use core::fmt::Debug;
+
 use iced::{application, Application, Element, Program, Task};
 
-use crate::effect::Effect;
+use crate::signal::Signal;
 
 pub trait App: Sized + 'static {
-    type Message: Send + 'static;
+    type Message: Send + 'static + Debug;
     fn boot() -> (Self, Option<Task<Self::Message>>);
 
     fn title(&self) -> String;
@@ -12,7 +14,11 @@ pub trait App: Sized + 'static {
 
     /// # Errors
     /// Errors when given update process fails
-    fn update(&mut self, message: Self::Message) -> anyhow::Result<Effect<Self::Message, ()>>;
+    fn update(&mut self, message: Self::Message) -> anyhow::Result<Signal<Self::Message, ()>>;
+
+    fn on_error(&mut self, error: String) {
+        eprintln!("Error: {error}");
+    }
 
     fn application() -> Application<impl Program> {
         application(
@@ -20,65 +26,73 @@ pub trait App: Sized + 'static {
                 let (app, maybe_task) = Self::boot();
                 (app, maybe_task.unwrap_or_else(Task::none))
             },
-            |app: &mut Self, message: Self::Message| {
-                app.process_message(message).unwrap_or_default()
+            |app: &mut Self, message: Self::Message| match process_message(app, message) {
+                Ok(task) => task,
+                Err(error) => {
+                    app.on_error(format!("{error}"));
+                    Task::none()
+                }
             },
             Self::view,
         )
         .title(Self::title)
     }
+}
 
-    /// # Errors
-    /// Errors when given update process fails
-    fn process_message(&mut self, message: Self::Message) -> anyhow::Result<Task<Self::Message>> {
-        self.update(message)
-            .and_then(|effect| self.process_effect(effect))
+fn process_message<A>(app: &mut A, message: A::Message) -> anyhow::Result<Task<A::Message>>
+where
+    A: App,
+{
+    #[cfg(debug_assertions)]
+    {
+        println!("Msg: {message:?}");
     }
+    let result = app.update(message)?;
+    process_effect(app, result)
+}
 
-    /// # Errors
-    /// Errors when given update process fails
-    fn process_effect(
-        &mut self,
-        effect: Effect<Self::Message, ()>,
-    ) -> anyhow::Result<Task<Self::Message>> {
-        match effect {
-            Effect::Out(()) | Effect::Done => Ok(Task::none()),
-            Effect::Task(task) => Ok(task),
-            Effect::Msg(message) => self.process_message(message),
-            Effect::Batch(effects) => {
-                let mut errors = Vec::new();
-                let mut tasks = Vec::new();
-                for effect in effects {
-                    match self.process_effect(effect) {
-                        Ok(task) => tasks.push(task),
-                        Err(error) => errors.push(error),
-                    }
-                }
-
-                if errors.is_empty() {
-                    Ok(Task::batch(tasks))
-                } else {
-                    Err(anyhow::anyhow!("Multiple Errors Occurred: {errors:?}"))
+fn process_effect<A>(
+    app: &mut A,
+    effect: Signal<A::Message, ()>,
+) -> anyhow::Result<Task<A::Message>>
+where
+    A: App,
+{
+    match effect {
+        Signal::Out(()) | Signal::Done => Ok(Task::none()),
+        Signal::Task(task) => Ok(task),
+        Signal::Message(message) => process_message(app, message),
+        Signal::Batch(effects) => {
+            let mut errors = Vec::new();
+            let mut tasks = Vec::new();
+            for effect in effects {
+                match process_effect(app, effect) {
+                    Ok(task) => tasks.push(task),
+                    Err(error) => errors.push(error),
                 }
             }
-            Effect::Sequence(effects) => {
-                let mut task = Task::none();
-                for effect in effects {
-                    task = task.chain(self.process_effect(effect)?);
-                }
-                Ok(task)
+
+            if errors.is_empty() {
+                Ok(Task::batch(tasks))
+            } else {
+                Err(anyhow::anyhow!("Multiple Errors Occurred: {errors:?}"))
             }
-            Effect::OnError(effect, on_error) => {
-                let result = self.process_effect(*effect);
-                match result {
-                    Ok(task) => Ok(task),
-                    Err(error) => {
-                        eprintln!("Gracefully caught error: {error:?}");
-                        on_error.map_or_else(
-                            || Ok(Task::none()),
-                            |message| self.process_message(message),
-                        )
-                    }
+        }
+        Signal::Sequence(effects) => {
+            let mut task = Task::none();
+            for effect in effects {
+                task = task.chain(process_effect(app, effect)?);
+            }
+            Ok(task)
+        }
+        Signal::OnError(message, on_error) => {
+            let result = process_effect(app, *message);
+            match result {
+                Ok(task) => Ok(task),
+                Err(error) => {
+                    eprintln!("Gracefully caught error: {error:?}");
+                    on_error
+                        .map_or_else(|| Ok(Task::none()), |message| process_message(app, message))
                 }
             }
         }

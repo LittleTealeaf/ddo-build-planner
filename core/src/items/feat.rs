@@ -1,8 +1,14 @@
+use getset::{Getters, Setters, WithSetters};
+use serde::{Deserialize, Serialize};
+
 use crate::{bonus::Bonus, effect::Effect, items::feat::prerequisite::Prerequisite};
 
 mod prerequisite;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, Getters, Setters, WithSetters,
+)]
+#[getset(get = "pub", set = "pub", set_with = "pub")]
 pub struct Feat {
     name: String,
     description: String,
@@ -11,16 +17,6 @@ pub struct Feat {
 }
 
 impl Feat {
-    #[must_use]
-    pub const fn name(&self) -> &String {
-        &self.name
-    }
-
-    #[must_use]
-    pub const fn effects(&self) -> &Vec<Effect> {
-        &self.effects
-    }
-
     pub fn into_bonuses(self) -> impl Iterator<Item = Bonus> {
         self.effects.into_iter().flat_map(Effect::into_bonuses)
     }

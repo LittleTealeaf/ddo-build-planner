@@ -161,7 +161,7 @@ impl StatsCalculator<'_> {
                 }
                 ty => {
                     values
-                        .entry(*ty)
+                        .entry(ty)
                         .and_modify(|val: &mut Decimal| {
                             if &value > val {
                                 *val = value;

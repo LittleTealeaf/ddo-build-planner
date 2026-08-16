@@ -1,3 +1,5 @@
+use itertools::chain;
+
 use crate::{
     attribute::Attribute,
     traits::IterValues,
@@ -20,7 +22,7 @@ use crate::{
     serde::Deserialize,
     derive_more::From,
 )]
-pub enum Stat {
+pub enum Property {
     #[display("Attribute: {_0}")]
     Attribute(Attribute),
     #[display("All Ability Scores")]
@@ -36,7 +38,7 @@ pub enum Stat {
     SpellDC,
 }
 
-impl Stat {
+impl Property {
     pub fn into_attributes(self) -> Vec<Attribute> {
         match self {
             Self::Weapon(attribute) => WeaponSlot::values()
@@ -52,5 +54,21 @@ impl Stat {
                 .collect(),
             Self::SpellDC => Vec::from(SpellSchool::VALUES.map(SpellSchool::spell_dc)),
         }
+    }
+}
+
+impl IterValues for Property {
+    fn values() -> impl Iterator<Item = Self> {
+        chain!(
+            WeaponAttribute::values().map(Self::Weapon),
+            Attribute::values().map(Self::Attribute),
+            Ability::values().map(Self::AbilitySkills),
+            [
+                Self::AllAbilityScores,
+                Self::AllSkills,
+                Self::SpellDC,
+                Self::Potency,
+            ]
+        )
     }
 }

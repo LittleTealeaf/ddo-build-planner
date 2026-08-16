@@ -163,6 +163,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-fs"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8034a681df4aed8b8edbd7fbe472401ecf009251c8b40556b304567052e294c5"
+dependencies = [
+ "async-lock",
+ "blocking",
+ "futures-lite",
+]
+
+[[package]]
 name = "async-io"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -773,6 +784,7 @@ version = "0.0.1"
 dependencies = [
  "ddo_core",
  "derive_more",
+ "getset",
  "im",
  "itertools",
  "rust_decimal",
@@ -860,12 +872,15 @@ name = "editor"
 version = "0.0.1"
 dependencies = [
  "anyhow",
+ "async-fs",
  "ddo_core",
  "derive_more",
  "iced",
  "iced_futures",
+ "iced_ui",
  "im",
  "itertools",
+ "ron",
  "rust_decimal",
  "rust_decimal_macros",
  "serde",
@@ -1231,6 +1246,17 @@ dependencies = [
  "cfg-if",
  "libc",
  "r-efi 6.0.0",
+]
+
+[[package]]
+name = "getset"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6cf442baaabe4213ce7d1239afc26c039180b6456da2cededa316ae2c8a77a77"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.118",
 ]
 
 [[package]]

@@ -1,21 +1,31 @@
+use getset::{Getters, Setters, WithSetters};
+use serde::{Deserialize, Serialize};
+
 use crate::{
     bonus::{Bonus, BonusCondition, BonusSource, BonusType, BonusValue},
-    stat::Stat,
+    property::Property,
 };
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, Getters, Setters, WithSetters,
+)]
+#[getset(set = "pub", get = "pub")]
 pub struct Effect {
-    stat: Stat,
+    #[getset(set_with = "pub")]
+    stat: Property,
+    #[getset(set_with = "pub")]
     value: BonusValue,
+    #[getset(set_with = "pub")]
     r#type: BonusType,
     condition: Option<BonusCondition>,
+    #[getset(set_with = "pub")]
     source: BonusSource,
 }
 
 impl Effect {
     pub fn new<A, V, T, S>(stat: A, value: V, bonus_type: T, source: S) -> Self
     where
-        A: Into<Stat>,
+        A: Into<Property>,
         V: Into<BonusValue>,
         T: Into<BonusType>,
         S: Into<BonusSource>,

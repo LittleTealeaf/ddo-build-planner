@@ -1,14 +1,16 @@
 use std::collections::HashMap;
 
+use getset::{CopyGetters, Getters};
 use rust_decimal::Decimal;
 
 use crate::{
     attribute::Attribute,
-    bonus::{Bonus, BonusCondition, BonusSource, BonusType, BonusValue},
+    bonus::{Bonus, BonusType},
     player_stats::calc::StatsCalculator,
 };
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Getters)]
+#[getset(get = "pub")]
 pub struct AttributeBreakdown {
     attribute: Attribute,
     base: BreakdownSnapshot,
@@ -16,16 +18,6 @@ pub struct AttributeBreakdown {
 }
 
 impl AttributeBreakdown {
-    #[must_use]
-    pub const fn attribute(&self) -> &Attribute {
-        &self.attribute
-    }
-
-    #[must_use]
-    pub const fn base(&self) -> &BreakdownSnapshot {
-        &self.base
-    }
-
     pub fn snapshot(&self, snapshot: u32) -> Option<&BreakdownSnapshot> {
         self.snapshots.get(&snapshot)
     }
@@ -37,67 +29,23 @@ impl From<AttributeBreakdown> for Attribute {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Getters)]
+#[getset(get = "pub")]
 pub struct BreakdownSnapshot {
     value: Decimal,
-    applied: Vec<CalculatedBonus>,
-    overwritten: Vec<CalculatedBonus>,
-    disabled: Vec<CalculatedBonus>,
+    applied_bonuses: Vec<CalculatedBonus>,
+    overwritten_bonuses: Vec<CalculatedBonus>,
+    disabled_bonuses: Vec<CalculatedBonus>,
 }
 
-impl BreakdownSnapshot {
-    #[must_use]
-    pub const fn value(&self) -> Decimal {
-        self.value
-    }
-
-    #[must_use]
-    pub const fn applied_bonuses(&self) -> &Vec<CalculatedBonus> {
-        &self.applied
-    }
-
-    #[must_use]
-    pub const fn overwritten_bonuses(&self) -> &Vec<CalculatedBonus> {
-        &self.overwritten
-    }
-
-    #[must_use]
-    pub const fn disabled_bonuses(&self) -> &Vec<CalculatedBonus> {
-        &self.disabled
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Getters, CopyGetters)]
 pub struct CalculatedBonus {
+    #[getset(get = "pub")]
     value: Decimal,
+    #[getset(get_copy = "pub")]
     enabled: bool,
+    #[getset(get = "pub")]
     bonus: Bonus,
-}
-
-impl CalculatedBonus {
-    pub const fn value(&self) -> Decimal {
-        self.value
-    }
-
-    pub const fn bonus_value(&self) -> &BonusValue {
-        self.bonus.value()
-    }
-
-    pub const fn source(&self) -> &BonusSource {
-        self.bonus.source()
-    }
-
-    pub const fn condition(&self) -> Option<&BonusCondition> {
-        self.bonus.condition().as_ref()
-    }
-
-    pub const fn bonus_type(&self) -> &BonusType {
-        self.bonus.bonus_type()
-    }
-
-    pub const fn is_enabled(&self) -> bool {
-        self.enabled
-    }
 }
 
 impl StatsCalculator<'_> {
@@ -167,7 +115,7 @@ impl StatsCalculator<'_> {
                 BonusType::Stacking => applied.push(bonus),
                 other => {
                     typed_applied
-                        .entry(*other)
+                        .entry(other)
                         .and_modify(|entry| {
                             if entry.value < bonus.value {
                                 let mut b = bonus.clone();
@@ -184,9 +132,9 @@ impl StatsCalculator<'_> {
 
         BreakdownSnapshot {
             value,
-            applied,
-            overwritten,
-            disabled,
+            applied_bonuses: applied,
+            overwritten_bonuses: overwritten,
+            disabled_bonuses: disabled,
         }
     }
 }

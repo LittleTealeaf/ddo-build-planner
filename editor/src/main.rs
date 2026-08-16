@@ -1,5 +1,7 @@
+use editor::EditorApp;
+use iced_ui::app::App;
 
-
-pub fn main() {
-
+/// # Errors
+pub fn main() -> iced::Result {
+    EditorApp::application().run()
 }

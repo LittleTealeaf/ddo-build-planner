@@ -1,7 +1,12 @@
-use crate::types::{
-    ability::Ability, damage_type::DamageType, save::SavingThrow, sheltering::Sheltering,
-    skill::Skill, spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
-    weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
+use itertools::chain;
+
+use crate::{
+    traits::IterValues,
+    types::{
+        ability::Ability, damage_type::DamageType, save::SavingThrow, sheltering::Sheltering,
+        skill::Skill, spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
+        weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
+    },
 };
 
 #[derive(
@@ -65,5 +70,32 @@ impl Attribute {
     #[must_use]
     pub const fn multiplicative(&self) -> bool {
         matches!(self, Self::Absorption(_))
+    }
+}
+
+impl IterValues for Attribute {
+    fn values() -> impl Iterator<Item = Self> {
+        chain!(
+            Ability::values().flat_map(|abil| [abil.modifier(), abil.score()]),
+            Skill::values().map(Into::into),
+            SpellDamageType::values().flat_map(|ty| [
+                ty.spell_power(),
+                ty.spell_critical_chance(),
+                ty.spell_critical_damage()
+            ]),
+            SpellSelector::values().flat_map(|sel| { [sel.caster_level(), sel.spell_dc()] }),
+            SavingThrow::values().map(Into::into),
+            DamageType::values().map(Self::Absorption),
+            Sheltering::values().map(Into::into),
+            [
+                Self::Doublestrike,
+                Self::Doubleshot,
+                Self::MeleePower,
+                Self::RangedPower,
+            ],
+            WeaponAttribute::values().flat_map(|attr| {
+                WeaponSlot::values().map(move |slot| Self::Weapon(attr, slot))
+            })
+        )
     }
 }

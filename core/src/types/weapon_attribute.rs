@@ -1,3 +1,5 @@
+use crate::traits::IterValues;
+
 #[derive(
     Hash,
     PartialEq,
@@ -15,4 +17,18 @@ pub enum WeaponAttribute {
     Attack,
     Damage,
     CriticalThreat,
+}
+
+impl WeaponAttribute {
+    pub const VALUES: [Self; 3] = [
+        Self::Attack,
+        Self::Damage,
+        Self::CriticalThreat
+    ];
+}
+
+impl IterValues for WeaponAttribute {
+    fn values() -> impl Iterator<Item = Self> {
+        Self::VALUES.into_iter()
+    }
 }

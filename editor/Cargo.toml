@@ -18,6 +18,7 @@ workspace = true
 debug = []
 
 [dependencies]
+async-fs = "2.2.0"
 derive_more = { version = "2.1.1", features = ["full"] }
 serde = { version = "1.0.228", features = ["derive"] }
 im = { version = "15.1.0", features = ["serde"] }
@@ -25,9 +26,11 @@ rust_decimal = "1.42.1"
 rust_decimal_macros = "1.40.0"
 itertools = "0.14.0"
 ddo_core = { path = "../core" }
+iced_ui = { path = "../iced_ui" }
 iced = { version = "0.14.0", features = ["tokio", "svg"] }
 iced_futures = "0.14.0"
 anyhow = "1.0.100"
+ron = "0.12.1"
 
 [dev-dependencies]
 ddo_core = { path = "../core", features = ["debug"] }

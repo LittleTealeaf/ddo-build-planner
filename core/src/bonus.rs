@@ -8,18 +8,44 @@ use core::fmt::Display;
 
 pub use bonus_type::*;
 pub use condition::*;
+use getset::{CopyGetters, Getters, Setters, WithSetters};
+use serde::{Deserialize, Serialize};
 pub use source::*;
 pub use value::*;
 
 use crate::{attribute::Attribute, bonus::traits::ContainsAttribute};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    Hash,
+    Serialize,
+    Deserialize,
+    Getters,
+    Setters,
+    WithSetters,
+    CopyGetters,
+)]
 pub struct Bonus {
+    #[getset(get = "pub", set = "pub", set_with = "pub")]
     attribute: Attribute,
+
+    #[getset(get = "pub", set = "pub", set_with = "pub")]
     value: BonusValue,
-    r#type: BonusType,
+
+    #[allow(clippy::struct_field_names)]
+    #[getset(get_copy = "pub", set = "pub", set_with = "pub")]
+    bonus_type: BonusType,
+
+    #[getset(get = "pub")]
     condition: Option<BonusCondition>,
+
+    #[getset(get = "pub")]
     show_condition: Option<BonusCondition>,
+
+    #[getset(set = "pub", set_with = "pub")]
     source: BonusSource,
 }
 
@@ -28,7 +54,7 @@ impl Display for Bonus {
         write!(
             f,
             "+({}) {} bonus to {}",
-            self.value, self.r#type, self.attribute
+            self.value, self.bonus_type, self.attribute
         )?;
         if let Some(condition) = &self.condition {
             write!(f, " if {condition}")?;
@@ -49,7 +75,7 @@ impl Bonus {
         Self {
             attribute: attribute.into(),
             value: value.into(),
-            r#type: bonus_type.into(),
+            bonus_type: bonus_type.into(),
             condition: None,
             show_condition: None,
             source: source.into(),
@@ -154,36 +180,6 @@ impl Bonus {
             },
             ..self
         }
-    }
-
-    #[must_use]
-    pub const fn condition(&self) -> &Option<BonusCondition> {
-        &self.condition
-    }
-
-    #[must_use]
-    pub const fn show_condition(&self) -> &Option<BonusCondition> {
-        &self.show_condition
-    }
-
-    #[must_use]
-    pub const fn bonus_type(&self) -> &BonusType {
-        &self.r#type
-    }
-
-    #[must_use]
-    pub const fn value(&self) -> &BonusValue {
-        &self.value
-    }
-
-    #[must_use]
-    pub const fn attribute(&self) -> &Attribute {
-        &self.attribute
-    }
-
-    #[must_use]
-    pub const fn source(&self) -> &BonusSource {
-        &self.source
     }
 }
 

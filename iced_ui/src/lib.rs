@@ -1,4 +1,4 @@
-pub mod effect;
+pub mod signal;
 pub mod component;
-pub mod service;
 pub mod app;
+pub mod model;

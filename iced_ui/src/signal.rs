@@ -3,8 +3,8 @@ use iced::Task;
 use iced_futures::MaybeSend;
 
 #[derive(Debug, Default)]
-pub enum Effect<M, O> {
-    Msg(M),
+pub enum Signal<M, O> {
+    Message(M),
     Out(O),
     Task(Task<M>),
     Batch(Vec<Self>),
@@ -14,7 +14,7 @@ pub enum Effect<M, O> {
     Done,
 }
 
-impl<M, O> Effect<M, O>
+impl<M, O> Signal<M, O>
 where
     M: 'static + MaybeSend,
 {
@@ -29,7 +29,7 @@ where
     where
         Msg: Into<M>,
     {
-        Self::Msg(message.into())
+        Self::Message(message.into())
     }
 
     #[must_use]
@@ -99,28 +99,28 @@ where
             (left, right) => Self::Batch(vec![left, right]),
         }
     }
-    fn inner_map<MN, ON, F>(self, map_out: &F) -> anyhow::Result<Effect<MN, ON>>
+    fn inner_map<MN, ON, F>(self, map_out: &F) -> anyhow::Result<Signal<MN, ON>>
     where
         MN: Send + MaybeSend + 'static,
         M: MaybeSend + 'static + Into<MN>,
-        F: Fn(O) -> anyhow::Result<Effect<MN, ON>>,
+        F: Fn(O) -> anyhow::Result<Signal<MN, ON>>,
     {
         match self {
-            Self::OnError(effect, on_error) => Ok(Effect::OnError(
+            Self::OnError(effect, on_error) => Ok(Signal::OnError(
                 Box::new(effect.inner_map(map_out)?),
                 on_error.map(Into::into),
             )),
-            Self::Done => Ok(Effect::Done),
+            Self::Done => Ok(Signal::Done),
             Self::Out(message) => map_out(message),
-            Self::Task(task) => Ok(Effect::Task(task.map(Into::into))),
-            Self::Msg(message) => Ok(Effect::Msg(message.into())),
-            Self::Batch(batch) => Ok(Effect::Batch(
+            Self::Task(task) => Ok(Signal::Task(task.map(Into::into))),
+            Self::Message(message) => Ok(Signal::Message(message.into())),
+            Self::Batch(batch) => Ok(Signal::Batch(
                 batch
                     .into_iter()
                     .map(|effect| effect.inner_map(map_out))
                     .collect::<anyhow::Result<Vec<_>>>()?,
             )),
-            Self::Sequence(sequence) => Ok(Effect::Sequence(
+            Self::Sequence(sequence) => Ok(Signal::Sequence(
                 sequence
                     .into_iter()
                     .map(|effect| effect.inner_map(map_out))
@@ -132,33 +132,33 @@ where
     /// # Errors
     ///
     /// This function will return an error if the provided map function returns an error.
-    pub fn map<MN, ON, F>(self, map_out: F) -> anyhow::Result<Effect<MN, ON>>
+    pub fn map<MN, ON, F>(self, map_out: F) -> anyhow::Result<Signal<MN, ON>>
     where
         MN: Send + MaybeSend + 'static,
         M: MaybeSend + 'static + Into<MN>,
-        F: Fn(O) -> anyhow::Result<Effect<MN, ON>>,
+        F: Fn(O) -> anyhow::Result<Signal<MN, ON>>,
     {
         self.inner_map(&map_out)
     }
 }
 
-impl<M> Effect<M, ()>
+impl<M> Signal<M, ()>
 where
     M: MaybeSend + 'static,
 {
     /// # Errors
     ///
     /// This function will return an error if the provided map function returns an error.
-    pub fn map_empty<MN, ON>(self) -> anyhow::Result<Effect<MN, ON>>
+    pub fn map_empty<MN, ON>(self) -> anyhow::Result<Signal<MN, ON>>
     where
         MN: Send + MaybeSend + 'static,
         M: Into<MN>,
     {
-        self.map(|()| Ok(Effect::Done))
+        self.map(|()| Ok(Signal::Done))
     }
 }
 
-impl<M, O> From<Task<M>> for Effect<M, O>
+impl<M, O> From<Task<M>> for Signal<M, O>
 where
     M: 'static + MaybeSend,
 {

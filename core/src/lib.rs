@@ -5,6 +5,6 @@ pub mod bonus;
 pub mod effect;
 pub mod items;
 pub mod player_stats;
-pub mod stat;
+pub mod property;
 pub mod traits;
 pub mod types;
