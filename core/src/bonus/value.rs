@@ -98,10 +98,14 @@ impl BonusValue {
         T: Into<Self>,
         F: Into<Self>,
     {
-        Self::If {
-            condition: Box::new(condition.into()),
-            if_true: Box::new(if_true.into()),
-            if_false: Box::new(if_false.into()),
+        match condition.into() {
+            BonusCondition::Constant(true) => if_true.into(),
+            BonusCondition::Constant(false) => if_false.into(),
+            condition => Self::If {
+                condition: Box::new(condition),
+                if_true: Box::new(if_true.into()),
+                if_false: Box::new(if_false.into()),
+            },
         }
     }
 
@@ -142,12 +146,18 @@ impl BonusValue {
 
     #[must_use]
     pub fn max(self, other: Self) -> Self {
-        Self::Max(Box::new(self), Box::new(other))
+        match (self, other) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left.max(right)),
+            (left, right) => Self::Max(Box::new(left), Box::new(right)),
+        }
     }
 
     #[must_use]
     pub fn min(self, other: Self) -> Self {
-        Self::Min(Box::new(self), Box::new(other))
+        match (self, other) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left.min(right)),
+            (left, right) => Self::Min(Box::new(left), Box::new(right)),
+        }
     }
 
     #[must_use]
@@ -240,41 +250,59 @@ try_from_primitive!(f32, f64);
 impl Add for BonusValue {
     type Output = Self;
     fn add(self, rhs: Self) -> Self::Output {
-        Self::Add(Box::new(self), Box::new(rhs))
+        match (self, rhs) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left + right),
+            (left, right) => Self::Add(Box::new(left), Box::new(right)),
+        }
     }
 }
 impl Sub for BonusValue {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self::Output {
-        Self::Sub(Box::new(self), Box::new(rhs))
+        match (self, rhs) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left - right),
+            (left, right) => Self::Sub(Box::new(left), Box::new(right)),
+        }
     }
 }
 
 impl Mul for BonusValue {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::Mul(Box::new(self), Box::new(rhs))
+        match (self, rhs) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left * right),
+            (left, right) => Self::Mul(Box::new(left), Box::new(right)),
+        }
     }
 }
 
 impl Div for BonusValue {
     type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
-        Self::Div(Box::new(self), Box::new(rhs))
+        match (self, rhs) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left / right),
+            (left, right) => Self::Div(Box::new(left), Box::new(right)),
+        }
     }
 }
 
 impl Rem for BonusValue {
     type Output = Self;
     fn rem(self, rhs: Self) -> Self::Output {
-        Self::Rem(Box::new(self), Box::new(rhs))
+        match (self, rhs) {
+            (Self::Const(left), Self::Const(right)) => Self::Const(left % right),
+            (left, right) => Self::Rem(Box::new(left), Box::new(right)),
+        }
     }
 }
 
 impl Neg for BonusValue {
     type Output = Self;
     fn neg(self) -> Self::Output {
-        Self::Mul(Box::new(self), Box::new(Self::NEGATIVE_ONE))
+        match self {
+            Self::Const(cst) => Self::Const(cst.neg()),
+            val => Self::Mul(Box::new(val), Box::new(Self::NEGATIVE_ONE)),
+        }
     }
 }
 

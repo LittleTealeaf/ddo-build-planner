@@ -38,6 +38,18 @@ pub enum BonusCondition {
 impl BonusCondition {
     pub const TRUE: Self = Self::Constant(true);
     pub const FALSE: Self = Self::Constant(false);
+
+    /// Returns `true` if the condition is an explicit Constant `true`
+    #[must_use]
+    pub const fn is_true(&self) -> bool {
+        matches!(&self, Self::Constant(true))
+    }
+
+    /// Returns `true` if the condition is an explicit Constant `false`
+    #[must_use]
+    pub const fn is_false(&self) -> bool {
+        matches!(&self, Self::Constant(true))
+    }
 }
 
 impl Default for BonusCondition {
@@ -52,7 +64,12 @@ impl BonusCondition {
     /// Returns true if both values are true
     #[must_use]
     pub fn and(self, other: Self) -> Self {
-        Self::And(Box::new(self), Box::new(other))
+        match (self, other) {
+            (Self::Constant(left), Self::Constant(right)) => Self::Constant(left && right),
+            (Self::Constant(true), other) | (other, Self::Constant(true)) => other,
+            (Self::Constant(false), _) | (_, Self::Constant(false)) => Self::FALSE,
+            (left, right) => Self::And(Box::new(left), Box::new(right)),
+        }
     }
 
     /// Logical OR
@@ -60,13 +77,31 @@ impl BonusCondition {
     /// Returns true if one value is true
     #[must_use]
     pub fn or(self, other: Self) -> Self {
-        Self::Or(Box::new(self), Box::new(other))
+        match (self, other) {
+            (Self::Constant(true), _) | (_, Self::Constant(true)) => Self::TRUE,
+            (Self::Constant(false), other) | (other, Self::Constant(false)) => other,
+            (left, right) => Self::Or(Box::new(left), Box::new(right)),
+        }
     }
 
     /// Logical XOR
     #[must_use]
     pub fn xor(self, other: Self) -> Self {
-        Self::Xor(Box::new(self), Box::new(other))
+        match (self, other) {
+            (Self::Constant(left), Self::Constant(right)) => Self::Constant(left ^ right),
+
+            // If one is false, XOR just returns the other value (false ^ X = X)
+            (Self::Constant(false), other) | (other, Self::Constant(false)) => other,
+
+            // If one is true, XOR returns the inverse of the other value (true ^ X = !X)
+            // We already know it's not a constant, so avoiding .not() additional calc
+            (Self::Constant(true), other) | (other, Self::Constant(true)) => {
+                Self::Not(Box::new(other))
+            }
+
+            // Otherwise, box them into a new Xor node
+            (left, right) => Self::Xor(Box::new(left), Box::new(right)),
+        }
     }
 
     /// Logical NAND
@@ -74,7 +109,7 @@ impl BonusCondition {
     /// Returns false if both outputs are true, otherwise returns true
     #[must_use]
     pub fn nand(self, other: Self) -> Self {
-        Self::Not(Box::new(self.and(other)))
+        self.and(other).not()
     }
 
     /// Logical NOR
@@ -82,7 +117,7 @@ impl BonusCondition {
     /// Returns true if both outputs are false
     #[must_use]
     pub fn nor(self, other: Self) -> Self {
-        Self::Not(Box::new(self.or(other)))
+        self.or(other).not()
     }
 
     /// Logical XNOR
@@ -90,7 +125,7 @@ impl BonusCondition {
     /// Returns true if the values are either both true or both false
     #[must_use]
     pub fn xnor(self, other: Self) -> Self {
-        Self::Not(Box::new(self.xor(other)))
+        self.xor(other).not()
     }
 }
 
@@ -165,7 +200,10 @@ impl Not for BonusCondition {
     type Output = Self;
 
     fn not(self) -> Self::Output {
-        Self::Not(Box::new(self))
+        match self {
+            Self::Constant(val) => Self::Constant(!val),
+            cond => Self::Not(Box::new(cond)),
+        }
     }
 }
 

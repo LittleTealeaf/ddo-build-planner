@@ -41,10 +41,10 @@ pub struct Bonus {
     bonus_type: BonusType,
 
     #[getset(get = "pub")]
-    condition: Option<BonusCondition>,
+    condition: BonusCondition,
 
     #[getset(get = "pub")]
-    show_condition: Option<BonusCondition>,
+    show_condition: BonusCondition,
 
     #[getset(get = "pub")]
     source: BonusSource,
@@ -57,8 +57,8 @@ impl Display for Bonus {
             "+({}) {} bonus to {}",
             self.value, self.bonus_type, self.attribute
         )?;
-        if let Some(condition) = &self.condition {
-            write!(f, " if {condition}")?;
+        if !self.condition.is_true() {
+            write!(f, " if {}", self.condition)?;
         }
         write!(f, " [{}]", self.source)?;
         Ok(())
@@ -77,86 +77,45 @@ impl Bonus {
             attribute: attribute.into(),
             value: value.into(),
             bonus_type: bonus_type.into(),
-            condition: None,
-            show_condition: None,
+            condition: BonusCondition::TRUE,
+            show_condition: BonusCondition::TRUE,
             source: source.into(),
         }
     }
 
     #[must_use]
     pub fn with_condition_maybe(self, condition: Option<BonusCondition>) -> Self {
-        if let Some(condition) = condition {
-            self.with_condition(Some(condition))
-        } else {
-            self
-        }
+        self.with_condition(condition.unwrap_or_default())
     }
 
     #[must_use]
-    pub fn with_condition_and<C>(self, condition: C) -> Self
-    where
-        C: Into<BonusCondition>,
-    {
-        let condition = condition.into();
+    pub fn with_condition_and(self, condition: BonusCondition) -> Self {
         Self {
-            condition: match self.condition {
-                Some(cond) => Some(cond & condition),
-                None => Some(condition),
-            },
+            condition: self.condition.and(condition),
             ..self
         }
     }
 
     #[must_use]
-    pub fn with_condition_or<C>(self, condition: C) -> Self
-    where
-        C: Into<BonusCondition>,
-    {
-        let condition = condition.into();
+    pub fn with_condition_or(self, condition: BonusCondition) -> Self {
         Self {
-            condition: match self.condition {
-                Some(cond) => Some(cond | condition),
-                None => Some(condition),
-            },
+            condition: self.condition.or(condition),
             ..self
         }
     }
 
     #[must_use]
-    pub fn with_show_condition_maybe(self, condition: Option<BonusCondition>) -> Self {
-        if let Some(condition) = condition {
-            self.with_show_condition(Some(condition))
-        } else {
-            self
-        }
-    }
-
-    #[must_use]
-    pub fn with_show_condition_and<C>(self, condition: C) -> Self
-    where
-        C: Into<BonusCondition>,
-    {
-        let condition = condition.into();
+    pub fn with_show_condition_and(self, condition: BonusCondition) -> Self {
         Self {
-            show_condition: match self.show_condition {
-                Some(cond) => Some(cond & condition),
-                None => Some(condition),
-            },
+            show_condition: self.show_condition.and(condition),
             ..self
         }
     }
 
     #[must_use]
-    pub fn with_show_condition_or<C>(self, condition: C) -> Self
-    where
-        C: Into<BonusCondition>,
-    {
-        let condition = condition.into();
+    pub fn with_show_condition_or(self, condition: BonusCondition) -> Self {
         Self {
-            show_condition: match self.show_condition {
-                Some(cond) => Some(cond | condition),
-                None => Some(condition),
-            },
+            show_condition: self.show_condition.or(condition),
             ..self
         }
     }
@@ -167,10 +126,6 @@ impl ContainsAttribute for Bonus {
     where
         F: Fn(&'a Attribute) -> bool,
     {
-        self.value.any_attribute(fun)
-            || self
-                .condition()
-                .as_ref()
-                .is_some_and(|cond| cond.any_attribute(fun))
+        self.value.any_attribute(fun) || self.condition.any_attribute(fun)
     }
 }

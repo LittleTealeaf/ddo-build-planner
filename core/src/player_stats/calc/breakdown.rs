@@ -84,18 +84,13 @@ impl StatsCalculator<'_> {
 
         let bonuses = self.bonuses.get_snapshot_bonuses(attribute, snapshot);
         let calculated_bonuses = bonuses.filter_map(|bonus| {
-            if let Some(show_condition) = bonus.show_condition() {
-                if !self.get_condition(show_condition, snapshot) {
-                    return None;
-                }
+            if !self.get_condition(bonus.show_condition(), snapshot) {
+                return None;
             }
 
             Some(CalculatedBonus {
                 value: self.get_value(bonus.value(), snapshot),
-                enabled: bonus
-                    .condition()
-                    .as_ref()
-                    .is_none_or(|condition| self.get_condition(condition, snapshot)),
+                enabled: self.get_condition(bonus.condition(), snapshot),
                 bonus: bonus.clone(),
             })
         });
