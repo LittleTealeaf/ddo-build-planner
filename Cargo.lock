@@ -875,6 +875,7 @@ dependencies = [
  "async-fs",
  "ddo_core",
  "derive_more",
+ "getset",
  "iced",
  "iced_futures",
  "iced_ui",
