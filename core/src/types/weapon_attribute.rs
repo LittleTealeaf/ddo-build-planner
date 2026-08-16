@@ -20,11 +20,7 @@ pub enum WeaponAttribute {
 }
 
 impl WeaponAttribute {
-    pub const VALUES: [Self; 3] = [
-        Self::Attack,
-        Self::Damage,
-        Self::CriticalThreat
-    ];
+    pub const VALUES: [Self; 3] = [Self::Attack, Self::Damage, Self::CriticalThreat];
 }
 
 impl IterValues for WeaponAttribute {
