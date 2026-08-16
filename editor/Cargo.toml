@@ -1,0 +1,33 @@
+
+[package]
+name = "editor"
+edition.workspace = true
+version.workspace = true
+repository.workspace = true
+authors.workspace = true
+readme.workspace = true
+description.workspace = true
+categories.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+debug = []
+
+[dependencies]
+derive_more = { version = "2.1.1", features = ["full"] }
+serde = { version = "1.0.228", features = ["derive"] }
+im = { version = "15.1.0", features = ["serde"] }
+rust_decimal = "1.42.1"
+rust_decimal_macros = "1.40.0"
+itertools = "0.14.0"
+ddo_core = { path = "../core" }
+iced = { version = "0.14.0", features = ["tokio", "svg"] }
+iced_futures = "0.14.0"
+anyhow = "1.0.100"
+
+[dev-dependencies]
+ddo_core = { path = "../core", features = ["debug"] }
