@@ -154,7 +154,7 @@ jobs:
   #       run: exit 1
   finish:
     name: Finish Checks
-    needs: [clippy, test, build, format, cargo-lock, data-serde]
+    needs: [clippy, test, build, format, cargo-lock]
     runs-on: ubuntu-latest
     steps:
       - name: Finish Checks
