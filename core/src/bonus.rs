@@ -28,15 +28,16 @@ use crate::{attribute::Attribute, bonus::traits::ContainsAttribute};
     WithSetters,
     CopyGetters,
 )]
+#[getset(set = "pub", set_with = "pub")]
 pub struct Bonus {
-    #[getset(get = "pub", set = "pub", set_with = "pub")]
+    #[getset(get = "pub")]
     attribute: Attribute,
 
-    #[getset(get = "pub", set = "pub", set_with = "pub")]
+    #[getset(get = "pub")]
     value: BonusValue,
 
     #[allow(clippy::struct_field_names)]
-    #[getset(get_copy = "pub", set = "pub", set_with = "pub")]
+    #[getset(get_copy = "pub")]
     bonus_type: BonusType,
 
     #[getset(get = "pub")]
@@ -45,7 +46,7 @@ pub struct Bonus {
     #[getset(get = "pub")]
     show_condition: Option<BonusCondition>,
 
-    #[getset(set = "pub", set_with = "pub")]
+    #[getset(get = "pub")]
     source: BonusSource,
 }
 
@@ -83,20 +84,9 @@ impl Bonus {
     }
 
     #[must_use]
-    pub fn with_condition<C>(self, condition: C) -> Self
-    where
-        C: Into<BonusCondition>,
-    {
-        Self {
-            condition: Some(condition.into()),
-            ..self
-        }
-    }
-
-    #[must_use]
     pub fn with_condition_maybe(self, condition: Option<BonusCondition>) -> Self {
         if let Some(condition) = condition {
-            self.with_condition(condition)
+            self.with_condition(Some(condition))
         } else {
             self
         }
@@ -133,20 +123,9 @@ impl Bonus {
     }
 
     #[must_use]
-    pub fn with_show_condition<C>(self, condition: C) -> Self
-    where
-        C: Into<BonusCondition>,
-    {
-        Self {
-            show_condition: Some(condition.into()),
-            ..self
-        }
-    }
-
-    #[must_use]
     pub fn with_show_condition_maybe(self, condition: Option<BonusCondition>) -> Self {
         if let Some(condition) = condition {
-            self.with_show_condition(condition)
+            self.with_show_condition(Some(condition))
         } else {
             self
         }
