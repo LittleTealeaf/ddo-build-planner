@@ -10,11 +10,11 @@ use crate::common::player_stats::{set_ability_modifier, set_ability_score};
 
 mod ability_score {
     use super::*;
+    use test_log::test;
 
     #[test]
     fn base_is_8() {
         let mut stats = PlayerStats::default();
-
         for ability in Ability::VALUES {
             let value = stats.evaluate_attribute(ability.score(), None);
             assert_eq!(value, dec!(8));
@@ -23,6 +23,7 @@ mod ability_score {
 }
 
 mod ability_modifier {
+    use test_log::test;
 
     use super::*;
 
@@ -83,6 +84,7 @@ mod ability_modifier {
 
 mod skills {
     use super::*;
+    use test_log::test;
 
     #[test]
     fn skill_improved_by_stat() {

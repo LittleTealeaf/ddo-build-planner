@@ -50,6 +50,7 @@ pub struct CalculatedBonus {
 
 impl StatsCalculator<'_> {
     pub fn update_breakdown(&mut self, attribute: Attribute) {
+        log::debug!("Building Breaking: {attribute}");
         let breakdown = self.build_breakdowns(attribute.clone());
         self.cache.breakdowns.insert(attribute, breakdown);
     }

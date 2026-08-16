@@ -19,18 +19,16 @@ impl StatsCalculator<'_> {
             return *val;
         }
 
-        if let Some(value) = self.cache.conditions.get(&(condition.clone(), snapshot)) {
+        let index = (condition.clone(), snapshot);
+
+        if let Some(value) = self.cache.conditions.get(&index) {
             return *value;
-        }
-        if let BonusCondition::Constant(val) = condition {
-            return *val;
         }
 
         let value = self.calculate_condition(condition, snapshot);
+        log::debug!("Calculated Condition: {condition:?} = {value}");
 
-        self.cache
-            .conditions
-            .insert((condition.clone(), snapshot), value);
+        self.cache.conditions.insert(index, value);
         value
     }
 
@@ -66,16 +64,18 @@ impl StatsCalculator<'_> {
     }
 
     pub fn get_value(&mut self, value: &BonusValue, snapshot: Option<u32>) -> Decimal {
-        if let Some(val) = self.cache.values.get(&(value.clone(), snapshot)) {
+        if let BonusValue::Const(val) = value {
             return *val;
         }
-        if let BonusValue::Const(val) = value {
+        let index = (value.clone(), snapshot);
+        if let Some(val) = self.cache.values.get(&index) {
             return *val;
         }
 
         let val = self.calculate_value(value, snapshot);
+        log::debug!("Calculated Value: {value:?} = {val}");
 
-        self.cache.values.insert((value.clone(), snapshot), val);
+        self.cache.values.insert(index, val);
 
         val
     }
@@ -133,6 +133,7 @@ impl StatsCalculator<'_> {
     }
 
     fn calculate_attribute(&mut self, attribute: &Attribute, snapshot: Option<u32>) -> Decimal {
+        log::debug!("Calculating Attribute: {attribute}");
         let mut values = HashMap::new();
         let multiply = attribute.multiplicative();
         let mut stacking = if multiply { dec!(1) } else { dec!(0) };

@@ -37,6 +37,7 @@ impl StatsCalculator<'_> {
             if Some(&attribute) == last_attribute.as_ref() {
                 continue;
             }
+            log::debug!("Clearing Attribute Cache: {attribute}");
 
             attributes.extend(self.bonuses.get_dependant_attributes(&attribute).cloned());
 
@@ -77,11 +78,7 @@ impl PlayerStats {
             .evaluate_attribute(attribute.into(), snapshot)
     }
 
-    pub fn track_breakdown<A>(&mut self, attribute: A)
-    where
-        A: Into<Attribute>,
-    {
-        let attribute = attribute.into();
+    pub fn track_breakdown<A>(&mut self, attribute: Attribute) {
         if !self.calc_cache.breakdowns.contains_key(&attribute) {
             self.calculator().update_breakdown(attribute);
         }

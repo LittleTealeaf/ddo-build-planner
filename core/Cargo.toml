@@ -24,6 +24,8 @@ rust_decimal = "1.42.1"
 rust_decimal_macros = "1.40.0"
 itertools = "0.14.0"
 getset = "0.1.7"
+log = "0.4.33"
 
 [dev-dependencies]
 ddo_core = { path = ".", features = ["debug"] }
+test-log = "0.2.21"

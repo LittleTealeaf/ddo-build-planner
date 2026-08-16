@@ -22,6 +22,7 @@ impl PlayerStats {
     where
         I: IntoIterator<Item = Bonus>,
     {
+        log::debug!("Inserting Bonuses for [{provider}] using snapshot {snapshot:?}");
         // Insert bonuses
         let attributes = self
             .bonuses
@@ -34,8 +35,10 @@ impl PlayerStats {
     where
         I: IntoIterator<Item = Feat>,
     {
+        log::debug!("Loading Feats...");
         self.insert_bonuses(
             feats.into_iter().flat_map(|feat| {
+                log::debug!("Loading Bonuses: {}", feat.name());
                 let name = feat.name().clone();
                 feat.into_bonuses().map(move |bonus| {
                     bonus.with_show_condition_and(

@@ -23,6 +23,9 @@ use crate::{
     derive_more::From,
 )]
 pub enum Attribute {
+    #[cfg(feature = "debug")]
+    #[from(skip)]
+    Debug(u32),
     #[from(skip)]
     #[display("{_0} Score")]
     AbilityScore(Ability),
