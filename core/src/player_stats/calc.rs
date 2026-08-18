@@ -25,11 +25,7 @@ pub(super) struct StatsCalculator<'a> {
 }
 
 impl StatsCalculator<'_> {
-    pub fn reset_attributes<I>(&mut self, attributes: I)
-    where
-        I: IntoIterator<Item = Attribute>,
-    {
-        let mut attributes = BinaryHeap::from_iter(attributes);
+    pub fn reset_attributes(&mut self, mut attributes: BinaryHeap<Attribute>) {
         let mut last_attribute = None;
         let mut breakdowns_to_update = Vec::new();
 
@@ -78,7 +74,7 @@ impl PlayerStats {
             .evaluate_attribute(attribute.into(), snapshot)
     }
 
-    pub fn track_breakdown<A>(&mut self, attribute: Attribute) {
+    pub fn track_breakdown(&mut self, attribute: Attribute) {
         if !self.calc_cache.breakdowns.contains_key(&attribute) {
             self.calculator().update_breakdown(attribute);
         }

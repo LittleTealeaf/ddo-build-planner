@@ -1,6 +1,6 @@
 mod core;
 
-use itertools::Itertools;
+use itertools::{chain, Itertools};
 use std::collections::HashMap;
 
 use crate::{
@@ -73,25 +73,30 @@ impl Bonuses {
             })
     }
 
-    pub fn insert_bonuses<I>(
-        &mut self,
-        bonuses: I,
-        provider: &BonusProvider,
-        snapshot: Option<u32>,
-    ) -> impl Iterator<Item = Attribute> + '_
-    where
-        I: IntoIterator<Item = Bonus>,
-    {
-        let entry = self.providers.entry(provider.clone()).or_default();
-        let removed_attributes = entry.clone();
-        entry.clear();
-        for attribute in &removed_attributes {
+    pub fn clear_provider(&mut self, provider: &BonusProvider) -> Option<Vec<Attribute>> {
+        let attributes = self.providers.remove(provider)?;
+        for attribute in &attributes {
             if let Some(bonuses) = self.bonuses.get_mut(attribute) {
                 bonuses.retain(|bonus| &bonus.provider != provider);
             }
         }
+        Some(attributes)
+    }
+
+    pub fn insert_bonuses<I>(
+        &mut self,
+        bonuses: I,
+        provider: BonusProvider,
+        snapshot: Option<u32>,
+    ) -> impl Iterator<Item = Attribute>
+    where
+        I: IntoIterator<Item = Bonus>,
+    {
+        let removed_attributes = self.clear_provider(&provider).unwrap_or_default();
+        let mut new_attributes = Vec::new();
+
         for bonus in bonuses {
-            entry.push(bonus.attribute().clone());
+            new_attributes.push(bonus.attribute().clone());
             let att_entry = self.bonuses.entry(bonus.attribute().clone()).or_default();
             att_entry.push(BonusEntry {
                 bonus,
@@ -100,7 +105,9 @@ impl Bonuses {
             });
         }
 
-        entry.iter().cloned().chain(removed_attributes)
+        self.providers.insert(provider, new_attributes.clone());
+
+        chain!(removed_attributes, new_attributes)
     }
 
     pub fn get_dependant_attributes<'a>(

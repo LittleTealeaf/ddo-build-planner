@@ -40,7 +40,7 @@ pub fn set_attribute_value<I: Into<Attribute>>(
             BonusType::Stacking,
             BonusSource::Debug(0),
         ),
-        &provider,
+        provider,
         None,
     );
     let result = stats.evaluate_attribute(attribute.clone(), None);

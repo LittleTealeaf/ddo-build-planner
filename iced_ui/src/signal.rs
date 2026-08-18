@@ -33,11 +33,11 @@ where
     }
 
     #[must_use]
-    pub fn on_error<Msg>(self, effect: Msg) -> Self
+    pub fn on_error<Msg>(self, signal: Msg) -> Self
     where
         Msg: Into<M>,
     {
-        Self::OnError(Box::new(self), Some(effect.into()))
+        Self::OnError(Box::new(self), Some(signal.into()))
     }
 
     #[must_use]
@@ -45,26 +45,18 @@ where
         Self::OnError(Box::new(self), None)
     }
 
-    pub fn sequence<I>(effects: I) -> Self
+    pub fn batch<I>(signals: I) -> Self
     where
         I: IntoIterator<Item = Self>,
     {
-        let iter = effects.into_iter();
-        // Pre-allocate memory based on the iterator's size hint
-        let mut flat = Vec::with_capacity(iter.size_hint().0);
+        signals.into_iter().fold(Self::Done, Self::merge)
+    }
 
-        for effect in iter {
-            match effect {
-                Self::Done => {}
-                Self::Sequence(mut items) => flat.append(&mut items),
-                other => flat.push(other),
-            }
-        }
-
-        match flat.len() {
-            0..=1 => flat.pop().unwrap_or_else(|| Self::Done),
-            _ => Self::Sequence(flat),
-        }
+    pub fn sequence<I>(signals: I) -> Self
+    where
+        I: IntoIterator<Item = Self>,
+    {
+        signals.into_iter().fold(Self::Done, Self::chain)
     }
 
     #[must_use]
@@ -74,12 +66,12 @@ where
             (Self::Sequence(left), Self::Sequence(right)) => {
                 Self::Sequence(left.into_iter().chain(right).collect())
             }
-            (effect, Self::Sequence(effects)) => {
-                Self::Sequence(once(effect).chain(effects).collect())
+            (signal, Self::Sequence(signals)) => {
+                Self::Sequence(once(signal).chain(signals).collect())
             }
-            (Self::Sequence(mut effects), effect) => {
-                effects.push(effect);
-                Self::Sequence(effects)
+            (Self::Sequence(mut signals), signal) => {
+                signals.push(signal);
+                Self::Sequence(signals)
             }
             (left, right) => Self::Sequence(vec![left, right]),
         }
@@ -92,9 +84,9 @@ where
             (Self::Batch(left), Self::Batch(right)) => {
                 Self::Batch(left.into_iter().chain(right).collect())
             }
-            (effect, Self::Batch(mut effects)) | (Self::Batch(mut effects), effect) => {
-                effects.push(effect);
-                Self::Batch(effects)
+            (signal, Self::Batch(mut signals)) | (Self::Batch(mut signals), signal) => {
+                signals.push(signal);
+                Self::Batch(signals)
             }
             (left, right) => Self::Batch(vec![left, right]),
         }
@@ -106,8 +98,8 @@ where
         F: Fn(O) -> anyhow::Result<Signal<MN, ON>>,
     {
         match self {
-            Self::OnError(effect, on_error) => Ok(Signal::OnError(
-                Box::new(effect.inner_map(map_out)?),
+            Self::OnError(signal, on_error) => Ok(Signal::OnError(
+                Box::new(signal.inner_map(map_out)?),
                 on_error.map(Into::into),
             )),
             Self::Done => Ok(Signal::Done),
@@ -117,13 +109,13 @@ where
             Self::Batch(batch) => Ok(Signal::Batch(
                 batch
                     .into_iter()
-                    .map(|effect| effect.inner_map(map_out))
+                    .map(|signal| signal.inner_map(map_out))
                     .collect::<anyhow::Result<Vec<_>>>()?,
             )),
             Self::Sequence(sequence) => Ok(Signal::Sequence(
                 sequence
                     .into_iter()
-                    .map(|effect| effect.inner_map(map_out))
+                    .map(|signal| signal.inner_map(map_out))
                     .collect::<anyhow::Result<Vec<_>>>()?,
             )),
         }
