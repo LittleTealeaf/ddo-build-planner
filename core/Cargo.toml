@@ -26,6 +26,7 @@ itertools = "0.14.0"
 getset = "0.1.7"
 log = "0.4.33"
 strum = {version = "0.28.0", features = ["derive"]}
+bon = "3.9.3"
 
 [dev-dependencies]
 ddo_core = { path = ".", features = ["debug"] }

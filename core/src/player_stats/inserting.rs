@@ -3,6 +3,7 @@ use core::iter::once;
 use crate::{
     attribute::Attribute,
     bonus::{traits::ToValue, Bonus},
+    effect::Effect,
     items::feat::Feat,
     player_stats::PlayerStats,
     types::bonus_provider::BonusProvider,
@@ -14,6 +15,26 @@ impl PlayerStats {
         if let Some(attributes) = self.bonuses.clear_provider(provider) {
             self.calculator().reset_attributes(attributes.into());
         }
+    }
+
+    pub fn insert_effect(
+        &mut self,
+        effect: Effect,
+        provider: BonusProvider,
+        snapshot: Option<u32>,
+    ) {
+        self.insert_effects(once(effect), provider, snapshot);
+    }
+
+    pub fn insert_effects<I>(&mut self, effects: I, provider: BonusProvider, snapshot: Option<u32>)
+    where
+        I: IntoIterator<Item = Effect>,
+    {
+        self.insert_bonuses(
+            effects.into_iter().flat_map(Effect::into_bonuses),
+            provider,
+            snapshot,
+        );
     }
 
     pub fn insert_bonus(&mut self, bonus: Bonus, provider: BonusProvider, snapshot: Option<u32>) {
@@ -39,6 +60,9 @@ impl PlayerStats {
         I: IntoIterator<Item = Feat>,
     {
         log::debug!("Loading Feats...");
+        // self.insert_effects(
+        //     // feats.into_iter().map()
+        // )
         self.insert_bonuses(
             feats.into_iter().flat_map(|feat| {
                 log::debug!("Loading Bonuses: {}", feat.name());

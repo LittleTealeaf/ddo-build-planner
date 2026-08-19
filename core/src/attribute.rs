@@ -3,10 +3,7 @@ use itertools::chain;
 use crate::{
     traits::IterValues,
     types::{
-        ability::Ability, damage_type::DamageType, health::PlayerHealth, level::PlayerLevel,
-        save::SavingThrow, sheltering::Sheltering, skill::Skill,
-        spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
-        weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
+        ability::Ability, damage_type::DamageType, health::PlayerHealth, level::PlayerLevel, past_life::PastLife, player_race::PlayerRace, save::SavingThrow, sheltering::Sheltering, skill::Skill, spell_damage_type::SpellDamageType, spell_selector::SpellSelector, weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot
     },
 };
 
@@ -71,6 +68,8 @@ pub enum Attribute {
     #[display("{_0} Level")]
     Level(PlayerLevel),
     Health(PlayerHealth),
+    IsRace(PlayerRace),
+    PastLife(PastLife),
 }
 
 impl Attribute {
@@ -105,6 +104,8 @@ impl IterValues for Attribute {
             }),
             PlayerLevel::values().map(Into::into),
             PlayerHealth::values().map(Into::into),
+            PlayerRace::values().map(Into::into),
+            PastLife::values().map(Into::into),
         )
     }
 }

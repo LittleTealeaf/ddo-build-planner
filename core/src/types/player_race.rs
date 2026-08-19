@@ -1,5 +1,7 @@
 use strum::VariantArray;
 
+use crate::types::{ability::Ability, past_life::PastLife, skill::Skill};
+
 #[derive(
     Hash,
     PartialEq,
@@ -57,4 +59,27 @@ pub enum PlayerRace {
     ShadarKai,
     #[display("Tabaxi Trailblazer")]
     TabaxiTrailblazer,
+}
+
+impl PlayerRace {
+    #[must_use]
+    pub const fn get_parent_race(self) -> Option<Self> {
+        match self {
+            Self::WoodElf => Some(Self::Elf),
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn past_life(self) -> PastLife {
+        PastLife::Racial(self)
+    }
+
+    pub const fn past_life_skill(self) -> Skill {
+        todo!()
+    }
+
+    pub const fn past_life_ability(self) -> Ability {
+        todo!()
+    }
 }

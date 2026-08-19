@@ -12,12 +12,13 @@ use crate::{
 #[getset(set = "pub", get = "pub")]
 pub struct Effect {
     #[getset(set_with = "pub")]
-    stat: Property,
+    property: Property,
     #[getset(set_with = "pub")]
     value: BonusValue,
     #[getset(set_with = "pub")]
     r#type: BonusType,
     condition: Option<BonusCondition>,
+    show_condition: Option<BonusCondition>,
     #[getset(set_with = "pub")]
     source: BonusSource,
 }
@@ -31,11 +32,12 @@ impl Effect {
         S: Into<BonusSource>,
     {
         Self {
-            stat: stat.into(),
+            property: stat.into(),
             value: value.into(),
             r#type: bonus_type.into(),
             condition: None,
             source: source.into(),
+            show_condition: None
         }
     }
 
@@ -83,7 +85,7 @@ impl Effect {
 
 impl Effect {
     pub fn into_bonuses(self) -> impl Iterator<Item = Bonus> {
-        self.stat
+        self.property
             .into_attributes()
             .into_iter()
             .map(move |attribute| {
