@@ -1,5 +1,3 @@
-use crate::traits::IterValues;
-
 #[derive(
     Hash,
     PartialEq,
@@ -12,19 +10,13 @@ use crate::traits::IterValues;
     serde::Serialize,
     serde::Deserialize,
     derive_more::Display,
+    strum::VariantArray,
 )]
 pub enum WeaponAttribute {
     Attack,
     Damage,
+    #[display("Critical Threat Range")]
     CriticalThreat,
-}
-
-impl WeaponAttribute {
-    pub const VALUES: [Self; 3] = [Self::Attack, Self::Damage, Self::CriticalThreat];
-}
-
-impl IterValues for WeaponAttribute {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
-    }
+    #[display("Critical Multiplier")]
+    CriticalMultiplier,
 }

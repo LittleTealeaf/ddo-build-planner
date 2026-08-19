@@ -45,14 +45,16 @@ impl Property {
                 .map(|slot| Attribute::Weapon(attribute, slot))
                 .collect(),
             Self::Attribute(attribute) => vec![attribute],
-            Self::AllAbilityScores => Vec::from(Ability::VALUES.map(Attribute::AbilityScore)),
-            Self::AllSkills => Vec::from(Skill::VALUES.map(Attribute::Skill)),
+            Self::AllAbilityScores => Ability::values()
+                .map(Attribute::AbilityScore)
+                .collect::<Vec<_>>(),
+            Self::AllSkills => Skill::values().map(Attribute::Skill).collect(),
             Self::Potency => Vec::from(SpellDamageType::SPELL_POWERS.map(Attribute::SpellPower)),
             Self::AbilitySkills(ability) => Skill::values()
                 .filter(|skill| skill.ability() == ability)
                 .map(Attribute::Skill)
                 .collect(),
-            Self::SpellDC => Vec::from(SpellSchool::VALUES.map(SpellSchool::spell_dc)),
+            Self::SpellDC => SpellSchool::values().map(SpellSchool::spell_dc).collect(),
         }
     }
 }

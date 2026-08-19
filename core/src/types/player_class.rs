@@ -1,4 +1,4 @@
-use crate::{attribute::Attribute, traits::IterValues, types::level::PlayerLevel};
+use crate::{attribute::Attribute, types::level::PlayerLevel};
 
 #[derive(
     Hash,
@@ -12,6 +12,7 @@ use crate::{attribute::Attribute, traits::IterValues, types::level::PlayerLevel}
     serde::Serialize,
     serde::Deserialize,
     derive_more::Display,
+    strum::VariantArray,
 )]
 pub enum PlayerClass {
     Alchemist,
@@ -51,33 +52,6 @@ pub enum PlayerClass {
 }
 
 impl PlayerClass {
-    pub const VALUES: [Self; 24] = [
-        Self::Alchemist,
-        Self::Artificer,
-        Self::Barbarian,
-        Self::Bard,
-        Self::Cleric,
-        Self::Druid,
-        Self::FavoredSoul,
-        Self::Fighter,
-        Self::Monk,
-        Self::Paladin,
-        Self::Ranger,
-        Self::Rogue,
-        Self::Sorcerer,
-        Self::Warlock,
-        Self::Wizard,
-        Self::StormSinger,
-        Self::DarkApostate,
-        Self::BlightCaster,
-        Self::DragonDisciple,
-        Self::SacredFist,
-        Self::DarkHunter,
-        Self::ArcaneTrickster,
-        Self::WildMage,
-        Self::AcolyteOfTheSkin,
-    ];
-
     #[must_use]
     pub const fn level(self) -> Attribute {
         Attribute::Level(PlayerLevel::Heroic(self))
@@ -109,11 +83,5 @@ impl PlayerClass {
             | Self::AcolyteOfTheSkin
             | Self::Alchemist => 6,
         }
-    }
-}
-
-impl IterValues for PlayerClass {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
     }
 }

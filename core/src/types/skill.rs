@@ -20,6 +20,7 @@ use crate::{
     derive_more::Display,
     serde::Deserialize,
     serde::Serialize,
+    strum::VariantArray,
 )]
 pub enum Skill {
     Balance,
@@ -50,30 +51,6 @@ pub enum Skill {
 }
 
 impl Skill {
-    pub const VALUES: [Self; 21] = [
-        Self::Balance,
-        Self::Bluff,
-        Self::Concentration,
-        Self::Diplomacy,
-        Self::DisableDevice,
-        Self::Haggle,
-        Self::Heal,
-        Self::Hide,
-        Self::Intimidate,
-        Self::Jump,
-        Self::Listen,
-        Self::MoveSilently,
-        Self::OpenLock,
-        Self::Perform,
-        Self::Repair,
-        Self::Search,
-        Self::Spellcraft,
-        Self::Spot,
-        Self::Swim,
-        Self::Tumble,
-        Self::UseMagicalDevice,
-    ];
-
     #[must_use]
     pub const fn ability(self) -> Ability {
         match self {
@@ -93,12 +70,6 @@ impl Skill {
             | Self::Perform
             | Self::UseMagicalDevice => Ability::Charisma,
         }
-    }
-}
-
-impl IterValues for Skill {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
     }
 }
 

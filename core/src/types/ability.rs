@@ -17,6 +17,7 @@ use crate::{
     derive_more::Display,
     serde::Deserialize,
     serde::Serialize,
+    strum::VariantArray,
 )]
 pub enum Ability {
     Strength,
@@ -28,15 +29,6 @@ pub enum Ability {
 }
 
 impl Ability {
-    pub const VALUES: [Self; 6] = [
-        Self::Strength,
-        Self::Dexterity,
-        Self::Constitution,
-        Self::Intelligence,
-        Self::Wisdom,
-        Self::Charisma,
-    ];
-
     #[must_use]
     pub const fn score(self) -> Attribute {
         Attribute::AbilityScore(self)
@@ -45,12 +37,6 @@ impl Ability {
     #[must_use]
     pub const fn modifier(self) -> Attribute {
         Attribute::AbilityModifier(self)
-    }
-}
-
-impl IterValues for Ability {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
     }
 }
 

@@ -16,6 +16,7 @@ use crate::{
     derive_more::Display,
     serde::Deserialize,
     serde::Serialize,
+    strum::VariantArray,
 )]
 pub enum SavingThrow {
     Fortitude,
@@ -33,20 +34,6 @@ pub enum SavingThrow {
 }
 
 impl SavingThrow {
-    const VALUES: [Self; 11] = [
-        Self::Fortitude,
-        Self::Reflex,
-        Self::Will,
-        Self::Poison,
-        Self::Traps,
-        Self::Spell,
-        Self::Magic,
-        Self::Enchantment,
-        Self::Illusion,
-        Self::Fear,
-        Self::Curse,
-    ];
-
     #[must_use]
     pub const fn ability(self) -> Option<Ability> {
         match self {
@@ -55,12 +42,6 @@ impl SavingThrow {
             Self::Fortitude => Some(Ability::Constitution),
             _ => None,
         }
-    }
-}
-
-impl IterValues for SavingThrow {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
     }
 }
 

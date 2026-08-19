@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{attribute::Attribute, traits::IterValues, types::spell_selector::SpellSelector};
+use crate::{attribute::Attribute, types::spell_selector::SpellSelector};
 
 #[derive(
     Hash,
@@ -14,6 +14,7 @@ use crate::{attribute::Attribute, traits::IterValues, types::spell_selector::Spe
     Serialize,
     Deserialize,
     derive_more::Display,
+    strum::VariantArray,
 )]
 pub enum SpellSchool {
     /// Abjuration Spells
@@ -35,18 +36,6 @@ pub enum SpellSchool {
 }
 
 impl SpellSchool {
-    /// Returns all of the Spell School values as an array.
-    pub const VALUES: [Self; 8] = [
-        Self::Abjuration,
-        Self::Conjuration,
-        Self::Divination,
-        Self::Enchantment,
-        Self::Evocation,
-        Self::Illusion,
-        Self::Necromancy,
-        Self::Transmutation,
-    ];
-
     #[must_use]
     pub const fn spell_dc(self) -> Attribute {
         SpellSelector::School(self).spell_dc()
@@ -55,11 +44,5 @@ impl SpellSchool {
     #[must_use]
     pub const fn caster_level(self) -> Attribute {
         SpellSelector::School(self).caster_level()
-    }
-}
-
-impl IterValues for SpellSchool {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
     }
 }

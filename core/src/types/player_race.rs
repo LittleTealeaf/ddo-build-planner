@@ -1,6 +1,4 @@
-use crate::traits::IterValues;
-
-
+use strum::VariantArray;
 
 #[derive(
     Hash,
@@ -14,7 +12,7 @@ use crate::traits::IterValues;
     serde::Serialize,
     serde::Deserialize,
     derive_more::Display,
-    strum::VariantArray
+    VariantArray,
 )]
 pub enum PlayerRace {
     Human,
@@ -26,8 +24,6 @@ pub enum PlayerRace {
     Dragonborn,
     #[display("Drow Elf")]
     DrowElf,
-    #[display("Deep Gnome")]
-    DeepGnome,
     Gnome,
     #[display("Half-Elf")]
     HalfElf,
@@ -60,11 +56,5 @@ pub enum PlayerRace {
     Scoundrel,
     ShadarKai,
     #[display("Tabaxi Trailblazer")]
-    TabaxiTrailblazer
-}
-
-impl IterValues for PlayerRace {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VARIANTS.into_iter()
-    }
+    TabaxiTrailblazer,
 }

@@ -1,10 +1,9 @@
 use itertools::chain;
 
 use crate::{
-    attribute::Attribute,
     bonus::{
         traits::{ToAttribute, ToValue},
-        Bonus, BonusCondition, BonusSource, BonusType, BonusValue,
+        Bonus, BonusSource, BonusType, BonusValue,
     },
     traits::IterValues,
     types::{ability::Ability, level::PlayerLevel, player_class::PlayerClass},
@@ -24,6 +23,7 @@ use crate::{
     serde::Deserialize,
     derive_more::Display,
     derive_more::From,
+    strum::VariantArray,
 )]
 pub enum PlayerHealth {
     Base,
@@ -31,16 +31,6 @@ pub enum PlayerHealth {
     Bonus,
     Multiplier,
     Total,
-}
-
-impl PlayerHealth {
-    pub const VALUES: [Self; 5] = [
-        Self::Base,
-        Self::BaseMultiplier,
-        Self::Bonus,
-        Self::Multiplier,
-        Self::Total,
-    ];
 }
 
 impl PlayerHealth {
@@ -94,11 +84,5 @@ impl PlayerHealth {
                     .greater_than(val!(0))
             ))
         )
-    }
-}
-
-impl IterValues for PlayerHealth {
-    fn values() -> impl Iterator<Item = Self> {
-        Self::VALUES.into_iter()
     }
 }
