@@ -66,6 +66,18 @@ impl PlayerStats {
         }
     }
 
+    pub fn evaluate_value(&mut self, value: &BonusValue, snapshot: Option<u32>) -> Decimal {
+        self.calculator().get_value(value, snapshot)
+    }
+
+    pub fn evaluate_condition(
+        &mut self,
+        condition: &BonusCondition,
+        snapshot: Option<u32>,
+    ) -> bool {
+        self.calculator().get_condition(condition, snapshot)
+    }
+
     pub fn evaluate_attribute<A>(&mut self, attribute: A, snapshot: Option<u32>) -> Decimal
     where
         A: Into<Attribute>,

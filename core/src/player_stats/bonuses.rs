@@ -74,6 +74,11 @@ impl Bonuses {
     }
 
     pub fn clear_provider(&mut self, provider: &BonusProvider) -> Option<Vec<Attribute>> {
+        if matches!(provider, BonusProvider::Core) {
+            log::error!("Attempted to clear Core bonuses. Skipping");
+            return None;
+        }
+        log::debug!("Clearing Bonuses from Provider {provider}");
         let attributes = self.providers.remove(provider)?;
         for attribute in &attributes {
             if let Some(bonuses) = self.bonuses.get_mut(attribute) {
@@ -95,17 +100,21 @@ impl Bonuses {
         let removed_attributes = self.clear_provider(&provider).unwrap_or_default();
         let mut new_attributes = Vec::new();
 
-        for bonus in bonuses {
-            new_attributes.push(bonus.attribute().clone());
-            let att_entry = self.bonuses.entry(bonus.attribute().clone()).or_default();
-            att_entry.push(BonusEntry {
-                bonus,
-                snapshot,
-                provider: provider.clone(),
-            });
+        if matches!(provider, BonusProvider::Core) {
+            log::error!("Attempting to insert Core bonuses. Skipping");
+        } else {
+            log::debug!("Inserting Bonuses from Provider {provider}");
+            for bonus in bonuses {
+                new_attributes.push(bonus.attribute().clone());
+                let att_entry = self.bonuses.entry(bonus.attribute().clone()).or_default();
+                att_entry.push(BonusEntry {
+                    bonus,
+                    snapshot,
+                    provider: provider.clone(),
+                });
+            }
+            self.providers.insert(provider, new_attributes.clone());
         }
-
-        self.providers.insert(provider, new_attributes.clone());
 
         chain!(removed_attributes, new_attributes)
     }

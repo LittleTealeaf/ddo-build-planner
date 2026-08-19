@@ -29,3 +29,4 @@ log = "0.4.33"
 [dev-dependencies]
 ddo_core = { path = ".", features = ["debug"] }
 test-log = "0.2.21"
+env_logger = "0.11.1"

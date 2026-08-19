@@ -161,7 +161,7 @@ impl BonusValue {
     }
 
     #[must_use]
-    pub fn scalar(self) -> Self {
+    pub fn as_multiplier(self) -> Self {
         Self::ONE + (self / Self::ONE_HUNDRED)
     }
 }

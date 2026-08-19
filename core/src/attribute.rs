@@ -3,8 +3,9 @@ use itertools::chain;
 use crate::{
     traits::IterValues,
     types::{
-        ability::Ability, damage_type::DamageType, save::SavingThrow, sheltering::Sheltering,
-        skill::Skill, spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
+        ability::Ability, damage_type::DamageType, health::PlayerHealth, level::PlayerLevel,
+        save::SavingThrow, sheltering::Sheltering, skill::Skill,
+        spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
         weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
     },
 };
@@ -67,6 +68,9 @@ pub enum Attribute {
     Weapon(WeaponAttribute, WeaponSlot),
     #[display("Feat: {_0}")]
     Feat(String),
+    #[display("{_0} Level")]
+    Level(PlayerLevel),
+    Health(PlayerHealth),
 }
 
 impl Attribute {
@@ -98,7 +102,9 @@ impl IterValues for Attribute {
             ],
             WeaponAttribute::values().flat_map(|attr| {
                 WeaponSlot::values().map(move |slot| Self::Weapon(attr, slot))
-            })
+            }),
+            PlayerLevel::values().map(Into::into),
+            PlayerHealth::values().map(Into::into),
         )
     }
 }

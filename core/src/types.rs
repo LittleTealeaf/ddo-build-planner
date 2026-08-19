@@ -11,3 +11,6 @@ pub mod spell_school;
 pub mod spell_selector;
 pub mod weapon_attribute;
 pub mod weapon_slot;
+pub mod level;
+pub mod player_class;
+pub mod health;
