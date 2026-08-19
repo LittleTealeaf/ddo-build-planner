@@ -14,3 +14,4 @@ pub mod weapon_slot;
 pub mod level;
 pub mod player_class;
 pub mod health;
+pub mod player_race;
