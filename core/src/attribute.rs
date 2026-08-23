@@ -69,6 +69,7 @@ pub enum Attribute {
     Level(PlayerLevel),
     Health(PlayerHealth),
     IsRace(PlayerRace),
+    #[display("Past Life: {_0}")]
     PastLife(PastLife),
 }
 

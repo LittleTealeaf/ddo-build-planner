@@ -194,6 +194,16 @@ impl BonusValue {
     pub const fn less_or_equal_to(self, other: Self) -> BonusCondition {
         BonusCondition::LessEqualTo(self, other)
     }
+
+    #[must_use]
+    pub const fn is_some(self) -> BonusCondition {
+        self.greater_than(Self::ZERO)
+    }
+
+    #[must_use]
+    pub const fn is_none(self) -> BonusCondition {
+        self.less_or_equal_to(Self::ZERO)
+    }
 }
 
 impl Not for BonusCondition {

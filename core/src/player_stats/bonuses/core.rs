@@ -4,8 +4,8 @@ use crate::{
     bonus::{traits::ToAttribute, Bonus, BonusType},
     types::{
         ability::Ability, alignment::Alignment, damage_type::DamageType, health::PlayerHealth,
-        level::PlayerLevel, save::SavingThrow, sheltering::Sheltering, skill::Skill,
-        spell_damage_type::SpellDamageType,
+        level::PlayerLevel, past_life::PastLife, save::SavingThrow, sheltering::Sheltering,
+        skill::Skill, spell_damage_type::SpellDamageType,
     },
 };
 
@@ -18,7 +18,8 @@ pub fn core_bonuses() -> impl Iterator<Item = Bonus> {
         universal_spell_stats(),
         skill_to_spellpower(),
         PlayerLevel::core_bonuses(),
-        PlayerHealth::core_bonuses()
+        PlayerHealth::core_bonuses(),
+        PastLife::core_bonuses(),
     ]
 }
 

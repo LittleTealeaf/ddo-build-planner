@@ -71,6 +71,24 @@ impl PlayerRace {
     }
 
     #[must_use]
+    pub const fn is_iconic(self) -> bool {
+        matches!(
+            self,
+            Self::ShadarKai
+                | Self::TabaxiTrailblazer
+                | Self::RazorclawShifter
+                | Self::DeepGnome
+                | Self::Chaosmancer
+                | Self::AasimarScourge
+                | Self::DarkBargainer
+                | Self::Morninglord
+                | Self::PurpleDragonKnight
+                | Self::Scoundrel
+                | Self::DuergarMindcleaver
+        )
+    }
+
+    #[must_use]
     pub const fn past_life(self) -> PastLife {
         PastLife::Racial(self)
     }

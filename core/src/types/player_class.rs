@@ -1,4 +1,7 @@
-use crate::{attribute::Attribute, types::level::PlayerLevel};
+use crate::{
+    attribute::Attribute,
+    types::{level::PlayerLevel, past_life::PastLife},
+};
 
 #[derive(
     Hash,
@@ -53,8 +56,29 @@ pub enum PlayerClass {
 
 impl PlayerClass {
     #[must_use]
+    pub const fn past_life(self) -> PastLife {
+        PastLife::Class(self)
+    }
+
+    #[must_use]
     pub const fn level(self) -> Attribute {
         Attribute::Level(PlayerLevel::Heroic(self))
+    }
+
+    #[must_use]
+    pub const fn parent_class(self) -> Option<Self> {
+        match self {
+            Self::AcolyteOfTheSkin => Some(Self::Warlock),
+            Self::WildMage => Some(Self::Sorcerer),
+            Self::ArcaneTrickster => Some(Self::Rogue),
+            Self::DarkHunter => Some(Self::Ranger),
+            Self::SacredFist => Some(Self::Paladin),
+            Self::DragonDisciple => Some(Self::Monk),
+            Self::BlightCaster => Some(Self::Druid),
+            Self::DarkApostate => Some(Self::Cleric),
+            Self::StormSinger => Some(Self::Bard),
+            _ => None,
+        }
     }
 
     #[must_use]
