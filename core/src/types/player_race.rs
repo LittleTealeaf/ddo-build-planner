@@ -93,11 +93,49 @@ impl PlayerRace {
         PastLife::Racial(self)
     }
 
-    pub const fn past_life_skill(self) -> Skill {
-        todo!()
+    #[must_use]
+    pub const fn past_life_skill(self) -> Option<Skill> {
+        match self {
+            Self::Human => Some(Skill::Haggle),
+            Self::Elf | Self::Shifter => Some(Skill::Spot),
+            Self::Halfling => Some(Skill::MoveSilently),
+            Self::Dwarf | Self::Duergar => Some(Skill::Balance),
+            Self::Dragonborn | Self::Tiefling => Some(Skill::Spellcraft),
+            Self::DrowElf => Some(Skill::Search),
+            Self::Gnome => Some(Skill::UseMagicalDevice),
+            Self::HalfElf => Some(Skill::Diplomacy),
+            Self::HalfOrc => Some(Skill::Intimidate),
+            Self::Aasimar => Some(Skill::Heal),
+            Self::Dhampir => Some(Skill::Hide),
+            Self::Eladrin => Some(Skill::Listen),
+            Self::Tabaxi => Some(Skill::Tumble),
+            Self::Warforged => Some(Skill::Repair),
+            _ => None,
+        }
     }
 
-    pub const fn past_life_ability(self) -> Ability {
-        todo!()
+    #[must_use]
+    pub const fn past_life_ability(self) -> Option<Ability> {
+        match self {
+            Self::Human => todo!(),
+            Self::Elf => todo!(),
+            Self::WoodElf => todo!(),
+            Self::Halfling => todo!(),
+            Self::Dwarf => todo!(),
+            Self::Dragonborn => todo!(),
+            Self::DrowElf => todo!(),
+            Self::Gnome => todo!(),
+            Self::HalfElf => todo!(),
+            Self::HalfOrc => todo!(),
+            Self::Tiefling => todo!(),
+            Self::Aasimar => todo!(),
+            Self::Dhampir => todo!(),
+            Self::Duergar => todo!(),
+            Self::Eladrin => todo!(),
+            Self::Shifter => todo!(),
+            Self::Tabaxi => todo!(),
+            Self::Warforged => todo!(),
+            _ => None,
+        }
     }
 }
