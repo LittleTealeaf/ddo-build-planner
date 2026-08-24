@@ -3,10 +3,10 @@ use itertools::{chain, Itertools};
 use crate::{
     bonus::{
         traits::{ToAttribute, ToValue},
-        Bonus, BonusCondition, BonusSource, BonusType,
+        Bonus, BonusCondition, BonusSource, BonusType, BonusValue,
     },
     traits::IterValues,
-    types::{ability::Ability, player_class::PlayerClass, player_race::PlayerRace, skill::Skill},
+    types::{player_class::PlayerClass, player_race::PlayerRace, skill::Skill},
     val,
 };
 
@@ -56,13 +56,9 @@ impl PastLife {
                         }),
                 );
 
-                chain!(
-                    Skill::values().map(ToAttribute::attribute),
-                    Ability::values().map(Ability::score)
-                )
-                .map(move |attribute| {
+                Skill::values().map(move |skill| {
                     Bonus::new(
-                        attribute,
+                        skill.attribute(),
                         val![2],
                         BonusType::Stacking,
                         BonusSource::Custom("Racial Completionist".to_owned()),
@@ -82,16 +78,12 @@ impl PastLife {
                             )
                         })
                         .into_values()
-                        .map(|val| val.greater_or_equal_to(val!(3))),
+                        .map(BonusValue::is_some),
                 );
 
-                chain!(
-                    Skill::values().map(ToAttribute::attribute),
-                    Ability::values().map(Ability::score)
-                )
-                .map(move |attribute| {
+                Skill::values().map(move |skill| {
                     Bonus::new(
-                        attribute,
+                        skill.attribute(),
                         val![2],
                         BonusType::Stacking,
                         BonusSource::Custom("Heroic Completionist".to_owned()),
