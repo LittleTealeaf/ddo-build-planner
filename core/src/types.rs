@@ -16,3 +16,7 @@ pub mod spell_school;
 pub mod spell_selector;
 pub mod weapon_attribute;
 pub mod weapon_slot;
+pub mod epic_past_life;
+pub mod armor_class;
+pub mod armor_type;
+pub mod weapon_type;
