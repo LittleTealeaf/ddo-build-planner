@@ -1,6 +1,3 @@
-//! Compiles the sourced data into the build file
-
-#![allow(clippy::std_instead_of_core)]
 use std::{
     env,
     fs::File,
@@ -9,13 +6,13 @@ use std::{
 };
 
 use anyhow::Result;
-use builder::equipment::set_bonus::ItemSet;
+use ddo_core::items::feat::Feat;
 use ron::de::from_reader;
 use serde::Serialize;
 
 fn main() -> Result<()> {
-    write_artifact("test", "This is Test Data")?;
-    write_artifact("item_sets", item_sets()?)?;
+    write_artifact("test", vec!["hello", "world"])?;
+    write_artifact("feats", read_artifact::<Vec<Feat>, _>("feats.ron")?)?;
     Ok(())
 }
 
@@ -31,9 +28,16 @@ where
     Ok(())
 }
 
-fn item_sets() -> Result<Vec<ItemSet>> {
-    println!("cargo:rerun-if-changed=./data/item_sets.ron");
-    let path = Path::new("./data/item_sets.ron");
+fn read_artifact<S, P>(name: P) -> Result<S>
+where
+    P: AsRef<Path>,
+    S: for<'de> serde::Deserialize<'de>,
+{
+    let path = Path::new("./data").join(name);
+    println!(
+        "cargo:rerun-if-changed={}",
+        path.to_str().ok_or_else(|| anyhow::anyhow!("Error"))?
+    );
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let items = from_reader(reader)?;

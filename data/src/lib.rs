@@ -1,16 +1,29 @@
-//! This crate contains large datasets such as items.
+use ddo_core::items::feat::Feat;
 
-#[macro_use]
-mod util;
+#[macro_export]
+macro_rules! load_data {
+    ($function: ident, $type: ty, $file: expr) => {
+        /// Loads Data that has been Serialized in the binary
+        ///
+        /// # Errors
+        /// Returns an error if there is a parsing issue from the data
+        pub fn $function() -> Result<$type, ron::de::SpannedError> {
+            ron::from_str(include_str!(concat!(env!("OUT_DIR"), "/", $file)))
+        }
 
-/// Data Parsing Error
-pub type ParseError = SpannedError;
+        paste::item! {
+            #[cfg(test)]
+            #[test]
+            fn [<test_ $function>]() {
+                $function().unwrap();
+            }
+        }
+    };
+}
 
-#[cfg(feature = "example")]
-mod example;
-#[cfg(feature = "example")]
-pub use example::*;
+load_data!(load_feats, Vec<Feat>, "feats");
 
-mod item_sets;
-pub use item_sets::*;
-use ron::error::SpannedError;
+#[cfg(test)]
+mod test {
+    load_data!(test_data, Vec<String>, "test");
+}

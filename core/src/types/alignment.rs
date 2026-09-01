@@ -1,0 +1,21 @@
+#[derive(
+    Debug,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Clone,
+    Copy,
+    derive_more::Display,
+    serde::Deserialize,
+    serde::Serialize,
+    strum::VariantArray,
+)]
+pub enum Alignment {
+    Good,
+    Evil,
+    Neutral,
+    Lawful,
+    Chaotic,
+}
