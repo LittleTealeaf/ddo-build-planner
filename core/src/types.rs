@@ -20,3 +20,4 @@ pub mod epic_past_life;
 pub mod armor_class;
 pub mod armor_type;
 pub mod weapon_type;
+pub mod lore;

@@ -4,8 +4,8 @@ use crate::{
     traits::IterValues,
     types::{
         ability::Ability, armor_class::ArmorClass, armor_type::ArmorType, damage_type::DamageType,
-        health::PlayerHealth, level::PlayerLevel, past_life::PastLife, player_race::PlayerRace,
-        save::SavingThrow, sheltering::Sheltering, skill::Skill,
+        health::PlayerHealth, level::PlayerLevel, lore::Lore, past_life::PastLife,
+        player_race::PlayerRace, save::SavingThrow, sheltering::Sheltering, skill::Skill,
         spell_damage_type::SpellDamageType, spell_selector::SpellSelector,
         weapon_attribute::WeaponAttribute, weapon_slot::WeaponSlot,
     },
@@ -82,6 +82,8 @@ pub enum Attribute {
     #[display("Toggle: {_0}")]
     #[from(skip)]
     Toggle(String),
+    #[display("{_0}")]
+    Lore(Lore),
 }
 
 impl Attribute {
@@ -120,6 +122,7 @@ impl IterValues for Attribute {
             PastLife::values().map(Into::into),
             ArmorClass::values().map(Into::into),
             ArmorType::values().map(Into::into),
+            Lore::values().map(Into::into),
         )
     }
 }
