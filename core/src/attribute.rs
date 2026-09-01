@@ -79,6 +79,9 @@ pub enum Attribute {
     ArmorClass(ArmorClass),
     #[display("Wearing {_0} Armor")]
     IsWearingArmor(ArmorType),
+    #[display("Toggle: {_0}")]
+    #[from(skip)]
+    Toggle(String),
 }
 
 impl Attribute {

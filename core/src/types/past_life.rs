@@ -1,5 +1,3 @@
-use core::iter::once;
-
 use itertools::{chain, Itertools};
 
 use crate::{
@@ -10,6 +8,7 @@ use crate::{
     },
     traits::IterValues,
     types::{
+        ability::Ability,
         armor_class::ArmorClass,
         damage_type::DamageType,
         epic_past_life::{EpicPastLife, EpicSphere},
@@ -89,9 +88,13 @@ impl PastLife {
                         }),
                 );
 
-                Skill::values().map(move |skill| {
+                chain!(
+                    Skill::values().map(ToAttribute::attribute),
+                    Ability::values().map(Ability::score),
+                )
+                .map(move |attribute| {
                     Bonus::new(
-                        skill.attribute(),
+                        attribute,
                         val![2],
                         BonusType::Stacking,
                         BonusSource::Custom("Racial Completionist".to_owned()),
@@ -114,9 +117,13 @@ impl PastLife {
                         .map(BonusValue::is_some),
                 );
 
-                Skill::values().map(move |skill| {
+                chain!(
+                    Skill::values().map(ToAttribute::attribute),
+                    Ability::values().map(Ability::score),
+                )
+                .map(move |attribute| {
                     Bonus::new(
-                        skill.attribute(),
+                        attribute,
                         val![2],
                         BonusType::Stacking,
                         BonusSource::Custom("Heroic Completionist".to_owned()),
